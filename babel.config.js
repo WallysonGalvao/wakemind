@@ -1,10 +1,22 @@
 module.exports = function (api) {
   api.cache(true);
 
-  const isProduction = process.env.NODE_ENV === 'production';
-
   return {
-    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
-    plugins: isProduction ? ['transform-remove-console'] : [],
+    presets: [['babel-preset-expo'], 'nativewind/babel'],
+
+    plugins: [
+      [
+        'module-resolver',
+        {
+          root: ['./'],
+
+          alias: {
+            '@': './',
+            'tailwind.config': './tailwind.config.js',
+          },
+        },
+      ],
+      'react-native-worklets/plugin',
+    ],
   };
 };
