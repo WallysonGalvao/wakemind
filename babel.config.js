@@ -18,5 +18,10 @@ module.exports = function (api) {
       ],
       'react-native-worklets/plugin',
     ],
+    env: {
+      production: {
+        plugins: ['transform-remove-console'],
+      },
+    },
   };
 };
