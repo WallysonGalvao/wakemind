@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
@@ -11,6 +12,7 @@ import { MOCK_ALARMS } from '@/data/alarms';
 import type { Alarm } from '@/types/alarm';
 
 export default function AlarmsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [alarms, setAlarms] = useState<Alarm[]>(MOCK_ALARMS);
 
@@ -30,12 +32,14 @@ export default function AlarmsScreen() {
       {/* Header */}
       <View className="bg-background-dark/95 px-6 pb-4" style={{ paddingTop: insets.top + 12 }}>
         <View className="flex-row items-center justify-between">
-          <Text className="text-3xl font-extrabold tracking-tight text-white">Your Alarms</Text>
+          <Text className="text-3xl font-extrabold tracking-tight text-white">
+            {t('alarms.title')}
+          </Text>
           <Pressable
             accessibilityRole="button"
             className="rounded-lg px-2 py-1 active:bg-primary-500/10"
           >
-            <Text className="text-lg font-semibold text-primary-500">Edit</Text>
+            <Text className="text-lg font-semibold text-primary-500">{t('alarms.edit')}</Text>
           </Pressable>
         </View>
       </View>
@@ -52,7 +56,7 @@ export default function AlarmsScreen() {
       </ScrollView>
 
       {/* Floating Action Button */}
-      <FloatingActionButton label="New Alarm" icon="add" onPress={handleNewAlarm} />
+      <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
 
       {/* Background Gradient Effects */}
       <View className="pointer-events-none absolute left-0 top-0 -z-10 h-full w-full">

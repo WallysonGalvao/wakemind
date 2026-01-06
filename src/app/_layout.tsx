@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import '@/i18n';
 
 export const unstable_settings = {
   anchor: '(tabs)',
