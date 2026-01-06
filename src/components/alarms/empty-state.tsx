@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { MaterialIcons } from '@expo/vector-icons';
 import { Image, type ImageSource } from 'expo-image';
 import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
 import { Dimensions, StyleSheet, View } from 'react-native';
 
+import { MaterialSymbol } from '../common/material-symbol';
 import { Text } from '../ui/text';
 
 interface EmptyStateProps {
@@ -70,8 +70,8 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
         </View>
 
         {/* Floating Icon Badge */}
-        <View className="absolute bottom-2 right-2 rounded-full border border-slate-100 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-surface-dark">
-          <MaterialIcons name="schedule" size={28} color="#135bec" />
+        <View className="absolute bottom-2 right-2 items-center justify-center rounded-full border border-slate-100 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-surface-dark">
+          <MaterialSymbol name="schedule" size={28} color="#135bec" />
         </View>
       </View>
 

@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 
-import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +9,7 @@ import { AlarmCard } from '@/components/alarms/alarm-card';
 import { AlarmsHeader } from '@/components/alarms/alarms-header';
 import { EmptyState } from '@/components/alarms/empty-state';
 import { FloatingActionButton } from '@/components/common/floating-action-button';
+import { MaterialSymbol } from '@/components/common/material-symbol';
 import { Text } from '@/components/ui/text';
 import type { Alarm } from '@/types/alarm';
 
@@ -68,7 +68,7 @@ export default function AlarmsScreen() {
           className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 shadow-lg shadow-primary-500/25 active:scale-[0.98]"
           accessibilityRole="button"
         >
-          <MaterialIcons name="add-alarm" size={24} color="#ffffff" />
+          <MaterialSymbol name="add_alarm" size={24} color="#ffffff" />
           <Text className="text-lg font-bold text-white">{t('alarms.setFirstAlarm')}</Text>
         </Pressable>
       </EmptyState>

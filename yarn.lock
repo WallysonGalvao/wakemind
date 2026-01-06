@@ -1244,6 +1244,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo-google-fonts/material-symbols-outlined@npm:^0.4.28":
+  version: 0.4.28
+  resolution: "@expo-google-fonts/material-symbols-outlined@npm:0.4.28"
+  checksum: 685cf50240d0d381c67021fa35f3e6118cc0edb069ecf9d5fd816f7e7e7e4e9f997a3bcf52aa6fe3f3d75af6cdbfc38b45759420988ac4638e0e8fb19136ecdd
+  languageName: node
+  linkType: hard
+
+"@expo-google-fonts/material-symbols@npm:^0.4.16":
+  version: 0.4.16
+  resolution: "@expo-google-fonts/material-symbols@npm:0.4.16"
+  checksum: 5926f0c5eb59e56fe31c1e1d498f10c8c9c969e41c38eeb9371271a5e3861987270c02fbffd36d6b0c0cf2399bf5b3cd2903d0e4ef49aec5fa7a0d904380b43e
+  languageName: node
+  linkType: hard
+
 "@expo/cli@npm:54.0.20":
   version: 54.0.20
   resolution: "@expo/cli@npm:54.0.20"
@@ -13148,6 +13162,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wakemind@workspace:."
   dependencies:
+    "@expo-google-fonts/material-symbols": ^0.4.16
+    "@expo-google-fonts/material-symbols-outlined": ^0.4.28
     "@expo/html-elements": ^0.10.1
     "@expo/vector-icons": ^15.0.3
     "@gluestack-ui/core": ^3.0.10

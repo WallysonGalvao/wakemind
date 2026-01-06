@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { MaterialIcons } from '@expo/vector-icons';
-
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+
 import { useColorScheme } from 'react-native';
+
+import { MaterialSymbol } from '@/components/common/material-symbol';
 
 export default function TabLayout() {
   const { t } = useTranslation();
@@ -28,18 +29,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t('tabs.alarms'),
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="alarm" size={28} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialSymbol name="alarm" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: t('tabs.settings'),
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="settings" size={28} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialSymbol name="settings" size={28} color={color} />,
         }}
       />
     </Tabs>
