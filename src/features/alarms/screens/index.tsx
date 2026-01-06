@@ -61,7 +61,7 @@ export default function AlarmsScreen() {
       <EmptyState
         title={t('alarms.emptyTitle')}
         description={t('alarms.emptyDescription')}
-        image={require('@/assets/images/sunrise.png')}
+        image={require('@/assets/images/sunrise-grayscale.png')}
       >
         <Pressable
           onPress={handleNewAlarm}

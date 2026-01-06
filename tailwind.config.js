@@ -18,6 +18,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Custom theme colors
+        'brand-primary': '#135bec',
+        'background-light': '#f6f6f8',
+        'background-dark': '#0F1621',
+        'surface-dark': '#192233',
+        'surface-light': '#ffffff',
         primary: {
           0: 'rgb(var(--color-primary-0)/<alpha-value>)',
           50: 'rgb(var(--color-primary-50)/<alpha-value>)',
@@ -165,7 +171,7 @@ module.exports = {
           success: 'rgb(var(--color-background-success)/<alpha-value>)',
           info: 'rgb(var(--color-background-info)/<alpha-value>)',
           light: '#FBFBFB',
-          dark: '#181719',
+          dark: '#0F1621',
         },
         indicator: {
           primary: 'rgb(var(--color-indicator-primary)/<alpha-value>)',
@@ -174,13 +180,14 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
+        heading: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
         mono: undefined,
+        sans: ['Inter', 'sans-serif'],
         jakarta: ['var(--font-plus-jakarta-sans)'],
         roboto: ['var(--font-roboto)'],
         code: ['var(--font-source-code-pro)'],
-        inter: ['var(--font-inter)'],
+        inter: ['Inter', 'sans-serif'],
         'space-mono': ['var(--font-space-mono)'],
       },
       fontWeight: {
