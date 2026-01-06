@@ -1,0 +1,255 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Your Alarms</title>
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Config -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#135bec',
+              'background-light': '#f6f6f8',
+              'background-dark': '#101622',
+              'surface-dark': '#1a2230', // Slightly lighter than background-dark for cards
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif'],
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              '2xl': '1rem',
+              full: '9999px',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Custom Toggle Switch Styles */
+      .toggle-checkbox:checked {
+        right: 0;
+        border-color: #135bec;
+      }
+      .toggle-checkbox:checked + .toggle-label {
+        background-color: #135bec;
+      }
+      /* Smooth fade for inactive items */
+      .alarm-inactive .time-display {
+        color: #64748b; /* slate-500 */
+      }
+      .alarm-inactive .meta-display {
+        color: #475569; /* slate-600 */
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="font-display selection:bg-primary/30 relative flex min-h-screen flex-col overflow-x-hidden bg-background-light dark:bg-background-dark"
+  >
+    <!-- Top Navigation -->
+    <header
+      class="sticky top-0 z-20 bg-background-light/95 backdrop-blur-sm transition-colors duration-300 dark:bg-background-dark/95"
+    >
+      <div class="flex items-center justify-between px-6 pb-4 pt-12">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Your Alarms
+        </h1>
+        <button
+          class="text-primary hover:bg-primary/10 rounded-lg px-2 py-1 text-lg font-semibold transition-colors hover:text-blue-400"
+        >
+          Edit
+        </button>
+      </div>
+    </header>
+    <!-- Main Content: Alarm List -->
+    <main class="flex-1 space-y-4 px-4 pb-32">
+      <!-- Active Alarm 1 -->
+      <div
+        class="dark:bg-surface-dark group relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 active:scale-[0.99] dark:border-slate-800"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-baseline gap-2">
+              <span
+                class="time-display text-5xl font-bold tracking-tight text-slate-900 dark:text-white"
+                >05:30</span
+              >
+              <span class="text-xl font-medium text-slate-500 dark:text-slate-400">AM</span>
+            </div>
+            <div class="mt-1 flex items-center gap-2 text-slate-600 dark:text-slate-400">
+              <span aria-hidden="true" class="material-symbols-outlined text-[20px]"
+                >calculate</span
+              >
+              <p class="text-sm font-medium leading-normal">
+                Math Challenge <span class="mx-1 text-slate-400 dark:text-slate-600">•</span> Daily
+              </p>
+            </div>
+          </div>
+          <!-- Toggle Switch -->
+          <div class="shrink-0 pl-4">
+            <label class="relative inline-flex cursor-pointer items-center">
+              <input checked="" class="peer sr-only" type="checkbox" />
+              <div
+                class="peer-checked:bg-primary peer h-[32px] w-[52px] rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-[28px] after:w-[28px] after:rounded-full after:border after:border-gray-300 after:bg-white after:shadow-sm after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-slate-700"
+              ></div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- Active Alarm 2 -->
+      <div
+        class="dark:bg-surface-dark group relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 active:scale-[0.99] dark:border-slate-800"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-baseline gap-2">
+              <span
+                class="time-display text-5xl font-bold tracking-tight text-slate-900 dark:text-white"
+                >06:00</span
+              >
+              <span class="text-xl font-medium text-slate-500 dark:text-slate-400">AM</span>
+            </div>
+            <div class="mt-1 flex items-center gap-2 text-slate-600 dark:text-slate-400">
+              <span aria-hidden="true" class="material-symbols-outlined text-[20px]"
+                >psychology</span
+              >
+              <p class="text-sm font-medium leading-normal">
+                Memory Match <span class="mx-1 text-slate-400 dark:text-slate-600">•</span> Mon,
+                Wed, Fri
+              </p>
+            </div>
+          </div>
+          <div class="shrink-0 pl-4">
+            <label class="relative inline-flex cursor-pointer items-center">
+              <input checked="" class="peer sr-only" type="checkbox" />
+              <div
+                class="peer-checked:bg-primary peer h-[32px] w-[52px] rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-[28px] after:w-[28px] after:rounded-full after:border after:border-gray-300 after:bg-white after:shadow-sm after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-slate-700"
+              ></div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- Inactive Alarm -->
+      <div
+        class="dark:bg-surface-dark/50 alarm-inactive group relative rounded-2xl border border-slate-100 bg-white/50 p-5 shadow-sm transition-all duration-300 dark:border-slate-800/50"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-baseline gap-2">
+              <span
+                class="time-display text-5xl font-bold tracking-tight text-slate-400 transition-colors dark:text-slate-600"
+                >07:15</span
+              >
+              <span class="text-xl font-medium text-slate-400 dark:text-slate-600">AM</span>
+            </div>
+            <div
+              class="meta-display mt-1 flex items-center gap-2 text-slate-400 transition-colors dark:text-slate-600"
+            >
+              <span aria-hidden="true" class="material-symbols-outlined text-[20px]"
+                >directions_run</span
+              >
+              <p class="text-sm font-medium leading-normal">
+                Squats Challenge
+                <span class="mx-1 text-slate-300 dark:text-slate-700">•</span> Weekends
+              </p>
+            </div>
+          </div>
+          <div class="shrink-0 pl-4">
+            <label class="relative inline-flex cursor-pointer items-center">
+              <input class="peer sr-only" type="checkbox" />
+              <div
+                class="peer-checked:bg-primary peer h-[32px] w-[52px] rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-[28px] after:w-[28px] after:rounded-full after:border after:border-gray-300 after:bg-white after:shadow-sm after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-slate-700"
+              ></div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- Another Inactive Alarm Example -->
+      <div
+        class="dark:bg-surface-dark/50 alarm-inactive group relative rounded-2xl border border-slate-100 bg-white/50 p-5 shadow-sm transition-all duration-300 dark:border-slate-800/50"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-baseline gap-2">
+              <span
+                class="time-display text-5xl font-bold tracking-tight text-slate-400 transition-colors dark:text-slate-600"
+                >08:00</span
+              >
+              <span class="text-xl font-medium text-slate-400 dark:text-slate-600">AM</span>
+            </div>
+            <div
+              class="meta-display mt-1 flex items-center gap-2 text-slate-400 transition-colors dark:text-slate-600"
+            >
+              <span aria-hidden="true" class="material-symbols-outlined text-[20px]"
+                >barcode_scanner</span
+              >
+              <p class="text-sm font-medium leading-normal">
+                Barcode Scan <span class="mx-1 text-slate-300 dark:text-slate-700">•</span> Once
+              </p>
+            </div>
+          </div>
+          <div class="shrink-0 pl-4">
+            <label class="relative inline-flex cursor-pointer items-center">
+              <input class="peer sr-only" type="checkbox" />
+              <div
+                class="peer-checked:bg-primary peer h-[32px] w-[52px] rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-[28px] after:w-[28px] after:rounded-full after:border after:border-gray-300 after:bg-white after:shadow-sm after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-slate-700"
+              ></div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Floating Action Button -->
+    <div class="pointer-events-none fixed bottom-8 left-0 right-0 z-10 flex justify-center">
+      <button
+        class="bg-primary group pointer-events-auto flex transform items-center gap-3 rounded-full py-4 pl-5 pr-7 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] ring-1 ring-white/10 transition-all hover:scale-105 hover:bg-blue-600 active:scale-95 dark:shadow-[0_8px_30px_rgb(19,91,236,0.2)]"
+      >
+        <span class="material-symbols-outlined text-[28px]">add</span>
+        <span class="text-lg font-bold tracking-tight">New Alarm</span>
+      </button>
+    </div>
+    <!-- Background Gradient Ambience -->
+    <div class="pointer-events-none fixed left-0 top-0 -z-10 h-full w-full overflow-hidden">
+      <div
+        class="bg-primary/5 absolute -right-[10%] -top-[10%] h-[500px] w-[500px] rounded-full blur-[120px]"
+      ></div>
+      <div
+        class="bg-primary/5 absolute -left-[10%] top-[40%] h-[300px] w-[300px] rounded-full blur-[80px]"
+      ></div>
+    </div>
+  </body>
+</html>
