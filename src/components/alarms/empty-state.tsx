@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Image, type ImageSource } from 'expo-image';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
 import { Dimensions, StyleSheet, View } from 'react-native';
@@ -19,12 +26,37 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
   const screenHeight = Dimensions.get('window').height;
   const glowSize = 280; // Size of the glow circle
 
+  // Pulse animation values
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(0.75);
+
+  useEffect(() => {
+    // Pulse scale animation: 1 -> 1.15 -> 1
+    scale.value = withRepeat(
+      withTiming(1.15, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+      -1, // infinite
+      true // reverse
+    );
+
+    // Pulse opacity animation: 0.75 -> 1 -> 0.75
+    opacity.value = withRepeat(
+      withTiming(1, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+      -1, // infinite
+      true // reverse
+    );
+  }, [opacity, scale]);
+
+  const animatedGlowStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
   return (
     <View className="items-center justify-center px-6" style={{ minHeight: screenHeight * 0.8 }}>
       {/* Abstract Visual Representation */}
       <View className="relative mb-14">
-        {/* Decorative Glow - Radial gradient from center to edges */}
-        <View style={styles.glowContainer}>
+        {/* Decorative Glow - Radial gradient with pulse animation */}
+        <Animated.View style={[styles.glowContainer, animatedGlowStyle]}>
           <Svg width={glowSize} height={glowSize} viewBox={`0 0 ${glowSize} ${glowSize}`}>
             <Defs>
               <RadialGradient
@@ -49,10 +81,10 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
               fill="url(#glowGradient)"
             />
           </Svg>
-        </View>
+        </Animated.View>
 
         {/* Icon Container */}
-        <View className="relative h-48 w-48 items-center justify-center overflow-hidden rounded-full border-4 border-surface-light bg-black shadow-2xl dark:border-surface-dark">
+        <View className="relative h-48 w-48 items-center justify-center overflow-hidden rounded-full shadow-2xl">
           {image ? (
             <>
               <Image
