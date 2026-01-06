@@ -2,9 +2,10 @@ import React from 'react';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { View } from 'react-native';
+import { View, useColorScheme } from 'react-native';
 
-import type { Alarm } from '../../types/alarm';
+import type { Alarm } from '@/types/alarm';
+
 import { Switch } from '../ui/switch';
 import { Text } from '../ui/text';
 
@@ -15,11 +16,27 @@ interface AlarmCardProps {
 
 export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
   const isActive = alarm.isEnabled;
+  const colorScheme = useColorScheme();
+
+  // Get icon color based on theme and active state
+  const getIconColor = () => {
+    if (colorScheme === 'dark') {
+      return isActive ? '#64748b' : '#475569';
+    }
+    return isActive ? '#64748b' : '#94a3b8';
+  };
+
+  const trackColor = {
+    false: colorScheme === 'dark' ? '#475569' : '#cbd5e1',
+    true: '#135bec',
+  };
 
   return (
     <View
-      className={`rounded-2xl border p-5 ${
-        isActive ? 'border-outline-200 bg-background-50' : 'border-outline-100 bg-background-50/50'
+      className={`rounded-2xl border p-5 shadow-sm ${
+        isActive
+          ? 'border-slate-200 bg-white dark:border-slate-700 dark:bg-[#1a2230]'
+          : 'border-slate-100 bg-white/50 dark:border-slate-800/50 dark:bg-[#1a2230]/50'
       }`}
     >
       <View className="flex-row items-center justify-between">
@@ -29,14 +46,18 @@ export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
           <View className="flex-row items-baseline gap-2">
             <Text
               className={`text-5xl font-bold tracking-tight ${
-                isActive ? 'text-typography-900' : 'text-typography-400'
+                isActive
+                  ? 'text-slate-900 dark:text-white'
+                  : 'text-slate-400 dark:text-slate-600'
               }`}
             >
               {alarm.time}
             </Text>
             <Text
               className={`text-xl font-medium ${
-                isActive ? 'text-typography-500' : 'text-typography-400'
+                isActive
+                  ? 'text-slate-500 dark:text-slate-400'
+                  : 'text-slate-400 dark:text-slate-600'
               }`}
             >
               {alarm.period}
@@ -48,15 +69,23 @@ export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
             <MaterialIcons
               name={alarm.challengeIcon as keyof typeof MaterialIcons.glyphMap}
               size={20}
-              color={isActive ? '#64748b' : '#94a3b8'}
+              color={getIconColor()}
             />
             <Text
               className={`text-sm font-medium ${
-                isActive ? 'text-typography-600' : 'text-typography-400'
+                isActive
+                  ? 'text-slate-600 dark:text-slate-400'
+                  : 'text-slate-400 dark:text-slate-600'
               }`}
             >
               {alarm.challenge}
-              <Text className={`${isActive ? 'text-typography-400' : 'text-typography-300'}`}>
+              <Text
+                className={
+                  isActive
+                    ? 'text-slate-400 dark:text-slate-600'
+                    : 'text-slate-300 dark:text-slate-700'
+                }
+              >
                 {' • '}
               </Text>
               {alarm.schedule}
@@ -69,7 +98,7 @@ export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
           <Switch
             value={alarm.isEnabled}
             onValueChange={(value) => onToggle(alarm.id, value)}
-            trackColor={{ false: '#cbd5e1', true: '#135bec' }}
+            trackColor={trackColor}
             thumbColor="#ffffff"
             size="lg"
           />

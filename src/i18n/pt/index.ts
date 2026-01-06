@@ -4,7 +4,9 @@ import { backPT } from './back'
 import { countriesPT } from './countries'
 import { expoPT } from './expo'
 import { quickActionsPT } from './quick-actions'
+import { settingsPT } from './settings'
 import { sportsPT } from './sports'
+import { tabsPT } from './tabs'
 
 export default {
   ...appPT,
@@ -13,5 +15,7 @@ export default {
   ...sportsPT,
   ...expoPT,
   ...quickActionsPT,
+  ...settingsPT,
+  ...tabsPT,
   ...accessibilityPT,
 }

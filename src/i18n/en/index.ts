@@ -4,7 +4,9 @@ import { backEN } from './back'
 import { countriesEN } from './countries'
 import { expoEN } from './expo'
 import { quickActionsEN } from './quick-actions'
+import { settingsEN } from './settings'
 import { sportsEN } from './sports'
+import { tabsEN } from './tabs'
 
 export default {
   ...appEN,
@@ -13,5 +15,7 @@ export default {
   ...sportsEN,
   ...expoEN,
   ...quickActionsEN,
+  ...settingsEN,
+  ...tabsEN,
   ...accessibilityEN,
 }

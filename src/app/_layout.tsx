@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
 
 export const unstable_settings = {
@@ -14,16 +14,17 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
+  const isDark = theme === 'dark';
 
   return (
-    <GluestackUIProvider mode="dark">
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <GluestackUIProvider mode={theme}>
+      <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
         </Stack>
-        <StatusBar style="auto" />
+        <StatusBar style={isDark ? 'light' : 'dark'} />
       </ThemeProvider>
     </GluestackUIProvider>
   );

@@ -28,11 +28,14 @@ export default function AlarmsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-background-dark">
+    <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
-      <View className="bg-background-dark/95 px-6 pb-4" style={{ paddingTop: insets.top + 12 }}>
+      <View
+        className="bg-background-light/95 px-6 pb-4 dark:bg-background-dark/95"
+        style={{ paddingTop: insets.top + 12 }}
+      >
         <View className="flex-row items-center justify-between">
-          <Text className="text-3xl font-extrabold tracking-tight text-white">
+          <Text className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             {t('alarms.title')}
           </Text>
           <Pressable
