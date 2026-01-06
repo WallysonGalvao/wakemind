@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 
-import { Pressable, View } from 'react-native';
+import { Pressable, useColorScheme, View } from 'react-native';
 
 import { AlarmCard } from '@/components/alarms/alarm-card';
 import { AlarmsHeader } from '@/components/alarms/alarms-header';
@@ -19,7 +19,14 @@ function ItemSeparator() {
 
 export default function AlarmsScreen() {
   const { t } = useTranslation();
+  const colorScheme = useColorScheme();
   const [alarms, setAlarms] = useState<Alarm[]>([]);
+
+  // Use grayscale image in dark mode, colored in light mode
+  const sunriseImage =
+    colorScheme === 'dark'
+      ? require('@/assets/images/sunrise-grayscale.png')
+      : require('@/assets/images/sunrise.png');
 
   const hasAlarms = alarms.length > 0;
 
@@ -61,7 +68,7 @@ export default function AlarmsScreen() {
       <EmptyState
         title={t('alarms.emptyTitle')}
         description={t('alarms.emptyDescription')}
-        image={require('@/assets/images/sunrise-grayscale.png')}
+        image={sunriseImage}
       >
         <Pressable
           onPress={handleNewAlarm}
@@ -73,7 +80,7 @@ export default function AlarmsScreen() {
         </Pressable>
       </EmptyState>
     );
-  }, [t]);
+  }, [t, sunriseImage]);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
