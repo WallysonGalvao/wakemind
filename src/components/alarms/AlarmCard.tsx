@@ -4,9 +4,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import { View } from 'react-native';
 
-import { Switch } from '@/components/ui/switch';
-import { Text } from '@/components/ui/text';
-import type { Alarm } from '@/types/alarm';
+import type { Alarm } from '../../types/alarm';
+import { Switch } from '../ui/switch';
+import { Text } from '../ui/text';
 
 interface AlarmCardProps {
   alarm: Alarm;

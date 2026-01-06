@@ -4,11 +4,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { AlarmCard } from '@/components/alarms/AlarmCard';
-import { FloatingActionButton } from '@/components/common/FloatingActionButton';
-import { Text } from '@/components/ui/text';
-import { MOCK_ALARMS } from '@/data/alarms';
-import type { Alarm } from '@/types/alarm';
+import { AlarmCard } from '../../components/alarms/AlarmCard';
+import { FloatingActionButton } from '../../components/common/FloatingActionButton';
+import { Text } from '../../components/ui/text';
+import { MOCK_ALARMS } from '../../data/alarms';
+import type { Alarm } from '../../types/alarm';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
