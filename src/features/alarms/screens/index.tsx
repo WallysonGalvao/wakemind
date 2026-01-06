@@ -1,74 +1,97 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
+import { MaterialIcons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { AlarmCard } from '@/components/alarms/alarm-card';
+import { AlarmsHeader } from '@/components/alarms/alarms-header';
+import { EmptyState } from '@/components/alarms/empty-state';
 import { FloatingActionButton } from '@/components/common/floating-action-button';
 import { Text } from '@/components/ui/text';
-import { MOCK_ALARMS } from '@/data/alarms';
 import type { Alarm } from '@/types/alarm';
+
+function ItemSeparator() {
+  return <View className="h-4" />;
+}
 
 export default function AlarmsScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
-  const [alarms, setAlarms] = useState<Alarm[]>(MOCK_ALARMS);
+  const [alarms, setAlarms] = useState<Alarm[]>([]);
 
-  // Dynamic style based on safe area - must use useMemo to satisfy no-inline-styles
-  const headerStyle = useMemo(() => ({ paddingTop: insets.top + 12 }), [insets.top]);
+  const hasAlarms = alarms.length > 0;
 
-  const handleToggleAlarm = (id: string, value: boolean) => {
+  const handleToggleAlarm = useCallback((id: string, value: boolean) => {
     setAlarms((prev) =>
       prev.map((alarm) => (alarm.id === id ? { ...alarm, isEnabled: value } : alarm))
     );
-  };
+  }, []);
 
   const handleNewAlarm = () => {
     // TODO: Navigate to create alarm screen
     console.log('New alarm pressed');
   };
 
+  const handleEditPress = () => {
+    // TODO: Handle edit mode
+    console.log('Edit pressed');
+  };
+
+  const keyExtractor = useCallback((item: Alarm) => item.id, []);
+
+  const renderHeader = useCallback(() => {
+    return (
+      <AlarmsHeader
+        title={t('alarms.title')}
+        editLabel={t('alarms.edit')}
+        onEditPress={handleEditPress}
+      />
+    );
+  }, [t]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Alarm }) => <AlarmCard alarm={item} onToggle={handleToggleAlarm} />,
+    [handleToggleAlarm]
+  );
+
+  const renderEmpty = useCallback(() => {
+    return (
+      <EmptyState
+        title={t('alarms.emptyTitle')}
+        description={t('alarms.emptyDescription')}
+        image={require('@/assets/images/sunrise.png')}
+      >
+        <Pressable
+          onPress={handleNewAlarm}
+          className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 shadow-lg shadow-primary-500/25 active:scale-[0.98]"
+          accessibilityRole="button"
+        >
+          <MaterialIcons name="add-alarm" size={24} color="#ffffff" />
+          <Text className="text-lg font-bold text-white">{t('alarms.setFirstAlarm')}</Text>
+        </Pressable>
+      </EmptyState>
+    );
+  }, [t]);
+
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
-      {/* Header */}
-      <View
-        className="bg-background-light/95 px-6 pb-4 backdrop-blur-sm dark:bg-background-dark/95"
-        style={headerStyle}
-      >
-        <View className="flex-row items-center justify-between">
-          <Text className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            {t('alarms.title')}
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            className="rounded-lg px-2 py-1 active:bg-primary-500/10"
-          >
-            <Text className="text-lg font-semibold text-primary-500">{t('alarms.edit')}</Text>
-          </Pressable>
-        </View>
-      </View>
-
-      {/* Alarm List */}
-      <ScrollView
-        className="flex-1 px-4"
-        contentContainerClassName="gap-4 pb-36"
+      <FlashList
+        data={alarms}
+        keyExtractor={keyExtractor}
+        ListHeaderComponent={hasAlarms ? renderHeader : null}
+        renderItem={renderItem}
+        ListEmptyComponent={renderEmpty}
+        contentContainerClassName="px-4 pb-36"
         showsVerticalScrollIndicator={false}
-      >
-        {alarms.map((alarm) => (
-          <AlarmCard key={alarm.id} alarm={alarm} onToggle={handleToggleAlarm} />
-        ))}
-      </ScrollView>
+        ItemSeparatorComponent={ItemSeparator}
+      />
 
       {/* Floating Action Button */}
-      <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
-
-      {/* Background Gradient Effects */}
-      <View className="pointer-events-none absolute left-0 top-0 -z-10 h-full w-full">
-        <View className="absolute -right-[10%] -top-[10%] h-[500px] w-[500px] rounded-full bg-primary-500/5" />
-        <View className="absolute -left-[10%] top-[40%] h-[300px] w-[300px] rounded-full bg-primary-500/5" />
-      </View>
+      {hasAlarms ? (
+        <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
+      ) : null}
     </View>
   );
 }

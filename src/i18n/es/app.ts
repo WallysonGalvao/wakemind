@@ -3,6 +3,10 @@ export const appES = {
   'alarms.title': 'Tus Alarmas',
   'alarms.edit': 'Editar',
   'alarms.newAlarm': 'Nueva Alarma',
+  'alarms.emptyTitle': 'Sin Alarmas Configuradas',
+  'alarms.emptyDescription':
+    'Tu enfoque matutino comienza aquí. Configura tu hora de despertar para activar tu día.',
+  'alarms.setFirstAlarm': 'Configurar Primera Alarma',
 
   // Alarm Card
   'alarm.daily': 'Diariamente',

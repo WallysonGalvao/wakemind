@@ -3,6 +3,10 @@ export const appPT = {
   'alarms.title': 'Seus Alarmes',
   'alarms.edit': 'Editar',
   'alarms.newAlarm': 'Novo Alarme',
+  'alarms.emptyTitle': 'Nenhum Alarme Configurado',
+  'alarms.emptyDescription':
+    'Seu foco matinal começa aqui. Configure seu horário de despertar para ativar seu dia.',
+  'alarms.setFirstAlarm': 'Configurar Primeiro Alarme',
 
   // Alarm Card
   'alarm.daily': 'Diariamente',
