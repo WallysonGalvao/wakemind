@@ -5,7 +5,8 @@ import { Period as PeriodEnum } from '@/types/alarm-enums';
 
 export interface AlarmValidationResult {
   isValid: boolean;
-  error?: string;
+  errorKey?: string;
+  errorParams?: Record<string, string>;
 }
 
 /**
@@ -71,14 +72,14 @@ export function validateAlarmInput(
   if (!input.time || typeof input.time !== 'string') {
     return {
       isValid: false,
-      error: 'Time is required and must be a string',
+      errorKey: 'validation.alarm.timeRequired',
     };
   }
 
   if (!validateTimeFormat(input.time)) {
     return {
       isValid: false,
-      error: 'Invalid time format. Expected format: HH:MM (e.g., "05:30")',
+      errorKey: 'validation.alarm.timeFormat',
     };
   }
 
@@ -86,14 +87,14 @@ export function validateAlarmInput(
   if (!input.period) {
     return {
       isValid: false,
-      error: 'Period (AM/PM) is required',
+      errorKey: 'validation.alarm.periodRequired',
     };
   }
 
   if (!validatePeriod(input.period)) {
     return {
       isValid: false,
-      error: 'Invalid period. Must be "AM" or "PM"',
+      errorKey: 'validation.alarm.periodInvalid',
     };
   }
 
@@ -101,7 +102,8 @@ export function validateAlarmInput(
   if (isDuplicateTime(existingAlarms, input.time, input.period, excludeId)) {
     return {
       isValid: false,
-      error: `An alarm already exists for ${input.time} ${input.period}`,
+      errorKey: 'validation.alarm.duplicate',
+      errorParams: { time: input.time, period: input.period },
     };
   }
 
@@ -109,7 +111,7 @@ export function validateAlarmInput(
   if (!input.challenge || typeof input.challenge !== 'string' || !input.challenge.trim()) {
     return {
       isValid: false,
-      error: 'Challenge type is required',
+      errorKey: 'validation.alarm.challengeRequired',
     };
   }
 
@@ -121,7 +123,7 @@ export function validateAlarmInput(
   ) {
     return {
       isValid: false,
-      error: 'Challenge icon is required',
+      errorKey: 'validation.alarm.challengeIconRequired',
     };
   }
 
@@ -129,7 +131,7 @@ export function validateAlarmInput(
   if (!input.schedule || typeof input.schedule !== 'string' || !input.schedule.trim()) {
     return {
       isValid: false,
-      error: 'Schedule is required',
+      errorKey: 'validation.alarm.scheduleRequired',
     };
   }
 

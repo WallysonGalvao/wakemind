@@ -56,6 +56,17 @@ export const appEN = {
   'newAlarm.error.title': 'Error',
   'newAlarm.error.message': 'An unexpected error occurred. Please try again.',
 
+  // Validation Errors
+  'validation.alarm.timeRequired': 'Time is required and must be a string',
+  'validation.alarm.timeFormat': 'Invalid time format. Expected format: HH:MM (e.g., "05:30")',
+  'validation.alarm.periodRequired': 'Period (AM/PM) is required',
+  'validation.alarm.periodInvalid': 'Invalid period. Must be "AM" or "PM"',
+  'validation.alarm.duplicate': 'An alarm already exists for {{time}} {{period}}',
+  'validation.alarm.challengeRequired': 'Challenge type is required',
+  'validation.alarm.challengeIconRequired': 'Challenge icon is required',
+  'validation.alarm.scheduleRequired': 'Schedule is required',
+  'validation.alarm.notFound': 'Alarm not found',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',
