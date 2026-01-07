@@ -2,7 +2,7 @@ import React from 'react';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { Pressable, View, useColorScheme } from 'react-native';
+import { Pressable, useColorScheme, View } from 'react-native';
 
 import { Text } from '../ui/text';
 
@@ -40,10 +40,8 @@ export function SettingItem({
       {/* Content */}
       <View className="flex-1">
         <Text className="text-base font-semibold text-slate-900 dark:text-white">{title}</Text>
-        {description && (
-          <Text className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{description}</Text>
-        )}
-        {value && <Text className="mt-1 text-sm font-medium text-primary-500">{value}</Text>}
+        {description ? <Text className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{description}</Text> : null}
+        {value ? <Text className="mt-1 text-sm font-medium text-primary-500">{value}</Text> : null}
       </View>
 
       {/* Right Element or Arrow */}
