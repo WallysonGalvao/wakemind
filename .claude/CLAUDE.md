@@ -7,10 +7,16 @@
 
 Focus on these principles in all code:
 
-- e2e type-safety
-- error monitoring/observability
-- automated tests
-- readability/maintainability
+- **DRY (Don't Repeat Yourself)** - Extract reusable logic into hooks, components, or utilities
+- **Type-safety** - Use TypeScript strictly, avoid `any`, prefer interfaces/types
+- **Testability** - Write code that's easy to test, separate concerns
+- **Consistency** - Follow established patterns in the codebase
+- **Performance** - Use `useMemo`, `useCallback`, avoid unnecessary re-renders
+- **Maintainability** - Clear naming, small functions, single responsibility
+- **Scalability** - Design for growth, avoid tight coupling
+- **Avoid prop drilling** - Use context, Zustand stores, or composition
+- **Error monitoring/observability** - Log errors, handle edge cases
+- **Automated tests** - Write tests for critical flows
 
 All detailed coding guidelines are in the skills:
 

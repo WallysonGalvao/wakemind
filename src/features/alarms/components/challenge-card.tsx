@@ -81,6 +81,7 @@ export function ChallengeCard({
               contentFit="cover"
               transition={200}
               accessibilityIgnoresInvertColors
+              style={{ width: '100%', height: '100%' }}
             />
           </View>
         ) : null}
