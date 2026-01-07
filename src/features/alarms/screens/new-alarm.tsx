@@ -148,7 +148,7 @@ export default function NewAlarmScreen() {
       >
         <Pressable
           onPress={handleCommit}
-          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary shadow-lg shadow-brand-primary/40 active:scale-[0.98]"
+          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary active:scale-[0.98]"
           accessibilityRole="button"
         >
           <Text className="mr-2 text-lg font-bold text-white">
