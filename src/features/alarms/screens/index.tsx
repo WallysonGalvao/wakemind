@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import { Pressable, useColorScheme, View } from 'react-native';
 
-import { AlarmCard } from '@/components/alarms/alarm-card';
-import { AlarmsHeader } from '@/components/alarms/alarms-header';
-import { EmptyState } from '@/components/alarms/empty-state';
+import { AlarmCard } from '../components/alarm-card';
+import { AlarmsHeader } from '../components/alarms-header';
+import { EmptyState } from '../components/empty-state';
+
 import { FloatingActionButton } from '@/components/common/floating-action-button';
 import { MaterialSymbol } from '@/components/common/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -39,7 +40,7 @@ export default function AlarmsScreen() {
   }, []);
 
   const handleNewAlarm = () => {
-    router.push('/new-alarm');
+    router.push('/alarm/new-alarm');
   };
 
   const handleEditPress = () => {

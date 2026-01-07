@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { View } from 'react-native';
 
-import { ProtocolToggle } from '@/components/alarms/protocol-toggle';
+import { ProtocolToggle } from './protocol-toggle';
+
 import { Text } from '@/components/ui/text';
 
 interface BackupProtocol {

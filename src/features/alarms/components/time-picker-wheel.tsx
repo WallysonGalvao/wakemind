@@ -71,7 +71,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerWheelProps
     <View className="relative overflow-hidden" style={{ height: PICKER_HEIGHT }}>
       {/* Selection indicator background */}
       <View
-        className="pointer-events-none absolute inset-x-0 z-0 rounded-lg border border-primary/20 bg-surface-highlight/50 dark:bg-surface-highlight"
+        className="border-primary/20 bg-surface-highlight/50 dark:bg-surface-highlight pointer-events-none absolute inset-x-0 z-0 rounded-lg border"
         style={{
           top: '38%',
           height: ITEM_HEIGHT - 8,
@@ -133,7 +133,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
   return (
     <View className="relative flex-col items-center justify-center py-8">
       {/* Decorative gradient */}
-      <View className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+      <View className="via-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-transparent" />
 
       {/* Time picker columns */}
       <View className="z-10 w-full max-w-[320px] flex-row items-center gap-2 px-4">
@@ -152,7 +152,12 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
 
         {/* Minutes */}
         <View className="flex-1">
-          <TimePickerColumn value={minute} onChange={handleMinuteChange} items={minutes} type="minute" />
+          <TimePickerColumn
+            value={minute}
+            onChange={handleMinuteChange}
+            items={minutes}
+            type="minute"
+          />
         </View>
 
         {/* AM/PM */}

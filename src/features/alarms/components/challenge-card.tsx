@@ -31,17 +31,17 @@ export function ChallengeCard({
   return (
     <Pressable
       onPress={onSelect}
-      className={`relative min-w-[280px] w-[80%] flex-shrink-0 overflow-hidden rounded-xl ${
+      className={`relative w-[80%] min-w-[280px] flex-shrink-0 overflow-hidden rounded-xl ${
         isSelected
-          ? 'border-2 border-primary bg-surface-dark shadow-lg shadow-primary/15'
-          : 'border border-surface-highlight bg-surface-dark/50'
+          ? 'border-primary shadow-primary/15 border-2 bg-surface-dark shadow-lg'
+          : 'border-surface-highlight border bg-surface-dark/50'
       }`}
       accessibilityRole="button"
     >
       {/* Selected checkmark */}
       {isSelected ? (
         <View className="absolute right-0 top-0 z-10 p-3">
-          <View className="flex size-6 items-center justify-center rounded-full bg-primary">
+          <View className="bg-primary flex size-6 items-center justify-center rounded-full">
             <MaterialSymbol name="check" size={14} color="#ffffff" />
           </View>
         </View>
@@ -54,11 +54,7 @@ export function ChallengeCard({
             isSelected ? 'bg-primary/20' : 'bg-surface-highlight'
           }`}
         >
-          <MaterialSymbol
-            name={icon}
-            size={30}
-            color={isSelected ? '#135bec' : '#94a3b8'}
-          />
+          <MaterialSymbol name={icon} size={30} color={isSelected ? '#135bec' : '#94a3b8'} />
         </View>
 
         {/* Title and description */}
@@ -72,7 +68,7 @@ export function ChallengeCard({
         {/* Preview image */}
         {imageUrl ? (
           <View
-            className={`mt-1 h-24 w-full overflow-hidden rounded-lg bg-center bg-cover bg-no-repeat ${
+            className={`mt-1 h-24 w-full overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat ${
               isSelected ? 'opacity-80' : 'opacity-40 grayscale'
             }`}
           >

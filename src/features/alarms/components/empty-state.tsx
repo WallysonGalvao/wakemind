@@ -12,8 +12,8 @@ import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
 import { Dimensions, StyleSheet, View } from 'react-native';
 
-import { MaterialSymbol } from '../common/material-symbol';
-import { Text } from '../ui/text';
+import { MaterialSymbol } from '@/components/common/material-symbol';
+import { Text } from '@/components/ui/text';
 
 interface EmptyStateProps {
   title: string;

@@ -48,16 +48,12 @@ export function ProtocolToggle({
       {/* Toggle switch */}
       <View
         className={`relative h-6 w-11 rounded-full ${
-          isEnabled
-            ? 'bg-primary/30'
-            : 'bg-slate-200 dark:bg-surface-highlight'
+          isEnabled ? 'bg-primary/30' : 'dark:bg-surface-highlight bg-slate-200'
         }`}
       >
         <View
           className={`absolute top-1 h-4 w-4 rounded-full shadow-sm ${
-            isEnabled
-              ? 'right-1 bg-primary'
-              : 'left-1 bg-slate-400 dark:bg-slate-500'
+            isEnabled ? 'bg-primary right-1' : 'left-1 bg-slate-400 dark:bg-slate-500'
           }`}
         />
       </View>
