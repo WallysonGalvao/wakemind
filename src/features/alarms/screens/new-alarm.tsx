@@ -12,7 +12,7 @@ import { CognitiveActivationSection } from '../components/cognitive-activation-s
 import { type DifficultyLevel, DifficultySelector } from '../components/difficulty-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
 
-import { MaterialSymbol } from '@/components/common/material-symbol';
+import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 
 const DEFAULT_HOUR = 6;

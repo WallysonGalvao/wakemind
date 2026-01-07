@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Pressable, View } from 'react-native';
 
-import { MaterialSymbol } from '@/components/common/material-symbol';
+import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 
 export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'adaptive';
@@ -28,7 +28,7 @@ export function DifficultySelector({
         {t('newAlarm.difficulty.label')}
       </Text>
 
-      <View className="flex h-12 w-full flex-row items-center justify-center rounded-xl bg-surface-highlight p-1">
+      <View className="bg-surface-highlight flex h-12 w-full flex-row items-center justify-center rounded-xl p-1">
         {difficulties.map((difficulty) => {
           const isSelected = selectedDifficulty === difficulty;
           const isAdaptive = difficulty === 'adaptive';
@@ -37,7 +37,7 @@ export function DifficultySelector({
             <Pressable
               key={difficulty}
               onPress={() => onDifficultyChange(difficulty)}
-              className={`flex-1 h-full flex-row items-center justify-center gap-1 rounded-lg transition-colors ${
+              className={`h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg transition-colors ${
                 isSelected ? 'bg-primary shadow-sm' : ''
               }`}
               accessibilityRole="button"

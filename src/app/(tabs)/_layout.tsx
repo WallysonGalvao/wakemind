@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useColorScheme } from 'react-native';
 
-import { MaterialSymbol } from '@/components/common/material-symbol';
+import { MaterialSymbol } from '@/components/material-symbol';
 
 export default function TabLayout() {
   const { t } = useTranslation();
