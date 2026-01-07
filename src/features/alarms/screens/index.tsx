@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { Pressable, useColorScheme, View } from 'react-native';
@@ -19,6 +20,7 @@ function ItemSeparator() {
 
 export default function AlarmsScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const [alarms, setAlarms] = useState<Alarm[]>([]);
 
@@ -37,8 +39,7 @@ export default function AlarmsScreen() {
   }, []);
 
   const handleNewAlarm = () => {
-    // TODO: Navigate to create alarm screen
-    console.log('New alarm pressed');
+    router.push('/new-alarm');
   };
 
   const handleEditPress = () => {

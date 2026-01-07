@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { SectionHeader } from '@/components/settings/section-header';
 import { SettingItem } from '@/components/settings/setting-item';
