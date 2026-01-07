@@ -53,8 +53,8 @@ export function CognitiveActivationSection({
         <Text className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
           {t('newAlarm.cognitiveActivation.title')}
         </Text>
-        <View className="bg-primary/10 rounded px-2 py-1">
-          <Text className="text-primary text-xs font-bold uppercase tracking-wider">
+        <View className="rounded bg-brand-primary/10 px-2 py-1">
+          <Text className="text-xs font-bold uppercase tracking-wider text-brand-primary">
             {t('newAlarm.cognitiveActivation.required')}
           </Text>
         </View>

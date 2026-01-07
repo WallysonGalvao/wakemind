@@ -38,12 +38,12 @@ export function DifficultySelector({
               key={difficulty}
               onPress={() => onDifficultyChange(difficulty)}
               className={`h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg transition-colors ${
-                isSelected ? 'bg-primary shadow-sm' : ''
+                isSelected ? 'bg-brand-primary shadow-sm' : ''
               }`}
               accessibilityRole="button"
             >
               {isAdaptive && isSelected ? (
-                <MaterialSymbol name="auto-awesome" size={16} className="text-white" />
+                <MaterialSymbol name="auto_awesome" size={16} className="text-white" />
               ) : null}
               <Text
                 className={`text-sm font-${isSelected ? 'bold' : 'medium'} ${

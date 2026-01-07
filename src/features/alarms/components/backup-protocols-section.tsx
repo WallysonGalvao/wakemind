@@ -32,12 +32,12 @@ export function BackupProtocolsSection({
         iconBgColor: 'bg-red-500/10',
       },
       wakeCheck: {
-        icon: 'check-circle',
+        icon: 'check_circle',
         iconColor: '#22c55e',
         iconBgColor: 'bg-green-500/10',
       },
       barcodeScan: {
-        icon: 'qr-code-scanner',
+        icon: 'qr_code_scanner',
         iconColor: '#a855f7',
         iconBgColor: 'bg-purple-500/10',
       },

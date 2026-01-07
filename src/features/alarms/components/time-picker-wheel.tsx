@@ -1,66 +1,109 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ScrollView, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
 
-const ITEM_HEIGHT = 56;
+const ITEM_HEIGHT = 48;
 const VISIBLE_ITEMS = 5;
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
-interface TimePickerWheelProps {
+interface TimePickerColumnProps {
   value: number;
   onChange: (value: number) => void;
   items: string[];
   type: 'hour' | 'minute' | 'period';
 }
 
-function TimePickerColumn({ value, onChange, items, type }: TimePickerWheelProps) {
+function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProps) {
   const scrollViewRef = useRef<ScrollView>(null);
   const [selectedIndex, setSelectedIndex] = useState(value);
+  const isInitialized = useRef(false);
+
+  // Scroll to initial position on mount
+  useEffect(() => {
+    if (!isInitialized.current && scrollViewRef.current) {
+      // Delay to ensure layout is ready
+      setTimeout(() => {
+        scrollViewRef.current?.scrollTo({
+          y: value * ITEM_HEIGHT,
+          animated: false,
+        });
+        isInitialized.current = true;
+      }, 50);
+    }
+  }, [value]);
+
+  // Update scroll when value changes from parent
+  useEffect(() => {
+    if (isInitialized.current && value !== selectedIndex) {
+      setSelectedIndex(value);
+      scrollViewRef.current?.scrollTo({
+        y: value * ITEM_HEIGHT,
+        animated: true,
+      });
+    }
+  }, [value, selectedIndex]);
 
   const handleScroll = useCallback(
     (event: any) => {
       const offsetY = event.nativeEvent.contentOffset.y;
       const index = Math.round(offsetY / ITEM_HEIGHT);
-      if (index !== selectedIndex && index >= 0 && index < items.length) {
-        setSelectedIndex(index);
-        onChange(index);
+      const clampedIndex = Math.max(0, Math.min(index, items.length - 1));
+
+      if (clampedIndex !== selectedIndex) {
+        setSelectedIndex(clampedIndex);
+        onChange(clampedIndex);
       }
     },
     [selectedIndex, items.length, onChange]
   );
 
-  const renderItem = (item: string, index: number) => {
+  const getItemStyle = (index: number) => {
     const distance = Math.abs(index - selectedIndex);
-    const isSelected = index === selectedIndex;
-
-    let textClassName = 'font-bold text-center';
-    let opacity = 1;
-    let blur = 0;
 
     if (distance === 0) {
-      textClassName += ' text-5xl text-primary scale-110';
+      return {
+        textClassName:
+          type === 'period'
+            ? 'text-2xl font-black text-brand-primary'
+            : 'text-5xl font-black text-brand-primary',
+        opacity: 1,
+      };
     } else if (distance === 1) {
-      textClassName += ' text-3xl text-slate-400 dark:text-slate-500';
-      opacity = 0.8;
+      return {
+        textClassName:
+          type === 'period'
+            ? 'text-xl font-bold text-slate-400 dark:text-[#455d8c]'
+            : 'text-3xl font-bold text-slate-400 dark:text-[#455d8c]',
+        opacity: 0.8,
+      };
     } else if (distance === 2) {
-      textClassName += ' text-2xl text-slate-400 dark:text-slate-500';
-      opacity = 0.5;
-      blur = 1;
+      return {
+        textClassName:
+          type === 'period'
+            ? 'text-lg font-bold text-slate-400 dark:text-[#455d8c]'
+            : 'text-2xl font-bold text-slate-400 dark:text-[#455d8c]',
+        opacity: 0.5,
+      };
     } else {
-      textClassName += ' text-xl text-slate-400 dark:text-slate-500';
-      opacity = 0.3;
-      blur = 1;
+      return {
+        textClassName: 'text-xl font-bold text-slate-400 dark:text-[#455d8c]',
+        opacity: 0.3,
+      };
     }
+  };
+
+  const renderItem = (item: string, index: number) => {
+    const { textClassName, opacity } = getItemStyle(index);
 
     return (
       <View
-        key={`${item}-${index}`}
+        key={`${type}-${item}-${index}`}
         className="items-center justify-center"
         style={{ height: ITEM_HEIGHT }}
       >
-        <Text className={textClassName} style={{ opacity }}>
+        <Text className={`text-center ${textClassName}`} style={{ opacity }}>
           {item}
         </Text>
       </View>
@@ -71,10 +114,10 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerWheelProps
     <View className="relative overflow-hidden" style={{ height: PICKER_HEIGHT }}>
       {/* Selection indicator background */}
       <View
-        className="border-primary/20 bg-surface-highlight/50 dark:bg-surface-highlight pointer-events-none absolute inset-x-0 z-0 rounded-lg border"
+        className="bg-surface-highlight/50 dark:bg-surface-highlight pointer-events-none absolute inset-x-0 z-0 rounded-lg border border-brand-primary/20"
         style={{
-          top: '38%',
-          height: ITEM_HEIGHT - 8,
+          top: ITEM_HEIGHT * 2,
+          height: ITEM_HEIGHT,
         }}
       />
 
@@ -131,12 +174,12 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
   );
 
   return (
-    <View className="relative flex-col items-center justify-center py-8">
+    <View className="relative flex-col items-center justify-center py-6">
       {/* Decorative gradient */}
-      <View className="via-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-transparent" />
+      <View className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-brand-primary/5 to-transparent" />
 
       {/* Time picker columns */}
-      <View className="z-10 w-full max-w-[320px] flex-row items-center gap-2 px-4">
+      <View className="z-10 w-full max-w-[320px] flex-row items-center gap-2 px-4 py-1">
         {/* Hours */}
         <View className="flex-1">
           <TimePickerColumn
