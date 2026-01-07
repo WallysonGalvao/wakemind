@@ -7,15 +7,16 @@ import { View } from 'react-native';
 import { ProtocolToggle } from './protocol-toggle';
 
 import { Text } from '@/components/ui/text';
+import { BackupProtocolId } from '@/types/alarm-enums';
 
-interface BackupProtocol {
-  id: 'snooze' | 'wakeCheck' | 'barcodeScan';
+export interface BackupProtocol {
+  id: BackupProtocolId;
   enabled: boolean;
 }
 
 interface BackupProtocolsSectionProps {
   protocols: BackupProtocol[];
-  onProtocolToggle: (id: BackupProtocol['id']) => void;
+  onProtocolToggle: (id: BackupProtocolId) => void;
 }
 
 export function BackupProtocolsSection({
@@ -24,19 +25,22 @@ export function BackupProtocolsSection({
 }: BackupProtocolsSectionProps) {
   const { t } = useTranslation();
 
-  const getProtocolConfig = (id: BackupProtocol['id']) => {
-    const configs = {
-      snooze: {
+  const getProtocolConfig = (id: BackupProtocolId) => {
+    const configs: Record<
+      BackupProtocolId,
+      { icon: string; iconColor: string; iconBgColor: string }
+    > = {
+      [BackupProtocolId.SNOOZE]: {
         icon: 'snooze',
         iconColor: '#ef4444',
         iconBgColor: 'bg-red-500/10',
       },
-      wakeCheck: {
+      [BackupProtocolId.WAKE_CHECK]: {
         icon: 'check_circle',
         iconColor: '#22c55e',
         iconBgColor: 'bg-green-500/10',
       },
-      barcodeScan: {
+      [BackupProtocolId.BARCODE_SCAN]: {
         icon: 'qr_code_scanner',
         iconColor: '#a855f7',
         iconBgColor: 'bg-purple-500/10',
@@ -56,7 +60,7 @@ export function BackupProtocolsSection({
       <View className="flex flex-col gap-3 px-4">
         {protocols.map((protocol) => {
           const config = getProtocolConfig(protocol.id);
-          const isBarcodeScan = protocol.id === 'barcodeScan';
+          const isBarcodeScan = protocol.id === BackupProtocolId.BARCODE_SCAN;
 
           return (
             <ProtocolToggle

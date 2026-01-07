@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { ScrollView, View } from 'react-native';
 
-import { ChallengeCard, type ChallengeType } from './challenge-card';
+import { ChallengeCard } from './challenge-card';
 
 import { Text } from '@/components/ui/text';
+import { ChallengeType } from '@/types/alarm-enums';
 
 interface Challenge {
   type: ChallengeType;
@@ -16,19 +17,19 @@ interface Challenge {
 
 const challenges: Challenge[] = [
   {
-    type: 'math',
+    type: ChallengeType.MATH,
     icon: 'calculate',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBaZGanzHGAyCw4f5jyO4UYjLZwk9fsdu2KaE7_At31J-EwNfpmmdKHb-ttr0iZu4lUXsJKxQaTccOarmb6gJwjDhZI-Hlyiub-8alsuMB9MuzC16g7OBWTVv7iBAk8FWZGTn_MZiMXj1Ztm5YNr2kWY2Xkq4S7R4z9MF6z38g6aGP1j5ezl5Pl_B6iIa5QWVQ7O6JeMNTDikSvJjHG-PvHrgtZNOx6ZWxH6WLDzCU7p47z4KbbgkqWo2yn_TJJOFe0f4lIJV_lWI3k',
   },
   {
-    type: 'memory',
+    type: ChallengeType.MEMORY,
     icon: 'psychology',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuC4Y0qOZl_dZW6qeLkKEFUBXK4iwO4CwqkemCyuQViyLu6xAJxcq-9hZOaLQYTXfqshsUPX-uxF3Qriui98_FAaiyEzBjABwwWHyB8gsvAI-NbiwnJlwddRtENvdxjp2WThWm2SXsZ-YCZd9Zt-mTwKJo_bkbBY2x6jZvhjplhhR5MsS5ykZlEh8LpD7zpCbHVUqwyozuhrJKt7fXuGCwzMzmaje0q--8XMrKATqnbpo20qRRgODYEZTaaNg5b_X4D3icZG1uywdDtr',
   },
   {
-    type: 'logic',
+    type: ChallengeType.LOGIC,
     icon: 'lightbulb',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBuo8XjWhsl97GmGLJOiEB1vBt5prKNso8p2OeEimlHwApXDD_95tuXcn3_ibiUkZdF8K3L-qTZ_r9C9weJ6b60guTb8gMDZzpxpmHay-ZQZxRP3qZ9YO88x6eTc6nstY7nnNP9dD1ur-Ogz7-AvQlzbDulG4F9v_IQS29xL61gbyM7BcMyMu_uxlw7vik1XsaOAhv98bxug8NjQlwuyc5Z-CL3mZ3UQuwtWHsUpry1A2ZA3HlxII3KgVqDBDP7vQQieopKUs1PUFPX',

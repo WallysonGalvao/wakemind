@@ -36,11 +36,11 @@ export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingA
       };
 
   return (
-    <View className="pointer-events-none absolute bottom-8 left-0 right-0 z-10 flex items-center">
+    <View className="pointer-events-box-none absolute bottom-8 left-0 right-0 z-10 flex items-center">
       <Pressable
         accessibilityRole="button"
         onPress={onPress}
-        className="pointer-events-auto flex-row items-center gap-3 rounded-full border border-white/10 bg-primary-500 py-4 pl-5 pr-7 active:scale-95 active:bg-primary-600"
+        className="flex-row items-center gap-3 rounded-full border border-white/10 bg-primary-500 py-4 pl-5 pr-7 active:scale-95 active:bg-primary-600"
         style={shadowStyle}
       >
         <MaterialIcons name={icon} size={28} color="#ffffff" />

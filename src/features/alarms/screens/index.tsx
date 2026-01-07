@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
@@ -13,6 +13,7 @@ import { EmptyState } from '../components/empty-state';
 import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
 
 function ItemSeparator() {
@@ -23,7 +24,8 @@ export default function AlarmsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const [alarms, setAlarms] = useState<Alarm[]>([]);
+  const alarms = useAlarmsStore((state) => state.alarms);
+  const toggleAlarm = useAlarmsStore((state) => state.toggleAlarm);
 
   // Use grayscale image in dark mode, colored in light mode
   const sunriseImage =
@@ -33,13 +35,15 @@ export default function AlarmsScreen() {
 
   const hasAlarms = alarms.length > 0;
 
-  const handleToggleAlarm = useCallback((id: string, value: boolean) => {
-    setAlarms((prev) =>
-      prev.map((alarm) => (alarm.id === id ? { ...alarm, isEnabled: value } : alarm))
-    );
-  }, []);
+  const handleToggleAlarm = useCallback(
+    (id: string) => {
+      toggleAlarm(id);
+    },
+    [toggleAlarm]
+  );
 
   const handleNewAlarm = useCallback(() => {
+    console.log('handleNewAlarm');
     router.push('/alarm/new-alarm');
   }, [router]);
 

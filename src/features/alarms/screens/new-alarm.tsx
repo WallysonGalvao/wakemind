@@ -7,37 +7,45 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pressable, ScrollView, View } from 'react-native';
 
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
-import { type ChallengeType } from '../components/challenge-card';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
-import { type DifficultyLevel, DifficultySelector } from '../components/difficulty-selector';
+import { DifficultySelector } from '../components/difficulty-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useAlarmsStore } from '@/stores/use-alarms-store';
+import { BackupProtocolId, ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
 
 const DEFAULT_HOUR = 6;
 const DEFAULT_MINUTE = 0;
-const DEFAULT_PERIOD = 'AM' as const;
+const DEFAULT_PERIOD = Period.AM;
+
+const CHALLENGE_CONFIG: Record<ChallengeType, { icon: string; label: string }> = {
+  [ChallengeType.MATH]: { icon: 'calculate', label: 'Math Challenge' },
+  [ChallengeType.MEMORY]: { icon: 'psychology', label: 'Memory Match' },
+  [ChallengeType.LOGIC]: { icon: 'lightbulb', label: 'Logic Puzzle' },
+};
 
 export default function NewAlarmScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const addAlarm = useAlarmsStore((state) => state.addAlarm);
 
   // Time state
   const [hour, setHour] = useState(DEFAULT_HOUR);
   const [minute, setMinute] = useState(DEFAULT_MINUTE);
-  const [period, setPeriod] = useState<'AM' | 'PM'>(DEFAULT_PERIOD);
+  const [period, setPeriod] = useState<Period>(DEFAULT_PERIOD);
 
   // Challenge state
-  const [selectedChallenge, setSelectedChallenge] = useState<ChallengeType>('math');
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>('adaptive');
+  const [selectedChallenge, setSelectedChallenge] = useState<ChallengeType>(ChallengeType.MATH);
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>(DifficultyLevel.ADAPTIVE);
 
   // Backup protocols state
   const [protocols, setProtocols] = useState([
-    { id: 'snooze' as const, enabled: false },
-    { id: 'wakeCheck' as const, enabled: true },
-    { id: 'barcodeScan' as const, enabled: false },
+    { id: BackupProtocolId.SNOOZE, enabled: false },
+    { id: BackupProtocolId.WAKE_CHECK, enabled: true },
+    { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
   ]);
 
   const handleClose = () => {
@@ -48,22 +56,22 @@ export default function NewAlarmScreen() {
     setHour(DEFAULT_HOUR);
     setMinute(DEFAULT_MINUTE);
     setPeriod(DEFAULT_PERIOD);
-    setSelectedChallenge('math');
-    setDifficulty('adaptive');
+    setSelectedChallenge(ChallengeType.MATH);
+    setDifficulty(DifficultyLevel.ADAPTIVE);
     setProtocols([
-      { id: 'snooze', enabled: false },
-      { id: 'wakeCheck', enabled: true },
-      { id: 'barcodeScan', enabled: false },
+      { id: BackupProtocolId.SNOOZE, enabled: false },
+      { id: BackupProtocolId.WAKE_CHECK, enabled: true },
+      { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
     ]);
   };
 
-  const handleTimeChange = (newHour: number, newMinute: number, newPeriod: 'AM' | 'PM') => {
+  const handleTimeChange = (newHour: number, newMinute: number, newPeriod: Period) => {
     setHour(newHour);
     setMinute(newMinute);
     setPeriod(newPeriod);
   };
 
-  const handleProtocolToggle = (id: 'snooze' | 'wakeCheck' | 'barcodeScan') => {
+  const handleProtocolToggle = (id: BackupProtocolId) => {
     setProtocols((prev) =>
       prev.map((protocol) =>
         protocol.id === id ? { ...protocol, enabled: !protocol.enabled } : protocol
@@ -72,14 +80,19 @@ export default function NewAlarmScreen() {
   };
 
   const handleCommit = () => {
-    // TODO: Save alarm and navigate back
-    const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
-    console.log('Commit alarm:', {
+    const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+    const challengeConfig = CHALLENGE_CONFIG[selectedChallenge];
+
+    addAlarm({
       time: timeString,
-      challenge: selectedChallenge,
+      period,
+      challenge: challengeConfig.label,
+      challengeIcon: challengeConfig.icon,
+      schedule: 'Daily',
       difficulty,
       protocols,
     });
+
     router.back();
   };
 

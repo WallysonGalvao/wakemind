@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
+import { Period } from '@/types/alarm-enums';
 
 const ITEM_HEIGHT = 48;
 const VISIBLE_ITEMS = 5;
@@ -143,14 +144,14 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
 interface TimePickerProps {
   hour: number;
   minute: number;
-  period: 'AM' | 'PM';
-  onTimeChange: (hour: number, minute: number, period: 'AM' | 'PM') => void;
+  period: Period;
+  onTimeChange: (hour: number, minute: number, period: Period) => void;
 }
 
 export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePickerProps) {
   const hours = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
-  const periods = ['AM', 'PM'];
+  const periods = [Period.AM, Period.PM];
 
   const handleHourChange = useCallback(
     (index: number) => {
@@ -168,7 +169,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
 
   const handlePeriodChange = useCallback(
     (index: number) => {
-      onTimeChange(hour, minute, index === 0 ? 'AM' : 'PM');
+      onTimeChange(hour, minute, index === 0 ? Period.AM : Period.PM);
     },
     [hour, minute, onTimeChange]
   );
@@ -206,7 +207,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
         {/* AM/PM */}
         <View className="flex-[0.5]">
           <TimePickerColumn
-            value={period === 'AM' ? 0 : 1}
+            value={period === Period.AM ? 0 : 1}
             onChange={handlePeriodChange}
             items={periods}
             type="period"

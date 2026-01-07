@@ -6,8 +6,7 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
-
-export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'adaptive';
+import { DifficultyLevel } from '@/types/alarm-enums';
 
 interface DifficultySelectorProps {
   selectedDifficulty: DifficultyLevel;
@@ -20,7 +19,12 @@ export function DifficultySelector({
 }: DifficultySelectorProps) {
   const { t } = useTranslation();
 
-  const difficulties: DifficultyLevel[] = ['easy', 'medium', 'hard', 'adaptive'];
+  const difficulties: DifficultyLevel[] = [
+    DifficultyLevel.EASY,
+    DifficultyLevel.MEDIUM,
+    DifficultyLevel.HARD,
+    DifficultyLevel.ADAPTIVE,
+  ];
 
   return (
     <View className="flex flex-col gap-2 px-4 py-3">
@@ -31,7 +35,7 @@ export function DifficultySelector({
       <View className="bg-surface-highlight flex h-12 w-full flex-row items-center justify-center rounded-xl p-1">
         {difficulties.map((difficulty) => {
           const isSelected = selectedDifficulty === difficulty;
-          const isAdaptive = difficulty === 'adaptive';
+          const isAdaptive = difficulty === DifficultyLevel.ADAPTIVE;
 
           return (
             <Pressable
