@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ScrollView, View } from 'react-native';
 
-import { ChallengeCard, type ChallengeType } from '@/components/alarms/challenge-card';
+import { ChallengeCard, type ChallengeType } from './challenge-card';
+
 import { Text } from '@/components/ui/text';
 
 interface Challenge {
@@ -52,8 +53,8 @@ export function CognitiveActivationSection({
         <Text className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
           {t('newAlarm.cognitiveActivation.title')}
         </Text>
-        <View className="rounded bg-primary/10 px-2 py-1">
-          <Text className="text-xs font-bold uppercase tracking-wider text-primary">
+        <View className="bg-primary/10 rounded px-2 py-1">
+          <Text className="text-primary text-xs font-bold uppercase tracking-wider">
             {t('newAlarm.cognitiveActivation.required')}
           </Text>
         </View>

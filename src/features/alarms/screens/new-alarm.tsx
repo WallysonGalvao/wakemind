@@ -6,11 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { BackupProtocolsSection } from '@/components/alarms/backup-protocols-section';
-import { type ChallengeType } from '@/components/alarms/challenge-card';
-import { CognitiveActivationSection } from '@/components/alarms/cognitive-activation-section';
-import { type DifficultyLevel, DifficultySelector } from '@/components/alarms/difficulty-selector';
-import { TimePickerWheel } from '@/components/alarms/time-picker-wheel';
+import { BackupProtocolsSection } from '../components/backup-protocols-section';
+import { type ChallengeType } from '../components/challenge-card';
+import { CognitiveActivationSection } from '../components/cognitive-activation-section';
+import { type DifficultyLevel, DifficultySelector } from '../components/difficulty-selector';
+import { TimePickerWheel } from '../components/time-picker-wheel';
+
 import { MaterialSymbol } from '@/components/common/material-symbol';
 import { Text } from '@/components/ui/text';
 
@@ -108,7 +109,7 @@ export default function NewAlarmScreen() {
           className="flex w-12 items-center justify-end"
           accessibilityRole="button"
         >
-          <Text className="text-base font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400">
+          <Text className="hover:text-primary text-base font-medium text-slate-500 transition-colors dark:text-slate-400">
             {t('newAlarm.reset')}
           </Text>
         </Pressable>
@@ -134,7 +135,7 @@ export default function NewAlarmScreen() {
         <DifficultySelector selectedDifficulty={difficulty} onDifficultyChange={setDifficulty} />
 
         {/* Divider */}
-        <View className="mx-4 my-4 h-px bg-surface-highlight" />
+        <View className="bg-surface-highlight mx-4 my-4 h-px" />
 
         {/* Backup Protocols Section */}
         <BackupProtocolsSection protocols={protocols} onProtocolToggle={handleProtocolToggle} />
@@ -147,7 +148,7 @@ export default function NewAlarmScreen() {
       >
         <Pressable
           onPress={handleCommit}
-          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/40 active:scale-[0.98]"
+          className="bg-primary shadow-primary/40 h-14 w-full flex-row items-center justify-center rounded-xl shadow-lg active:scale-[0.98]"
           accessibilityRole="button"
         >
           <Text className="mr-2 text-lg font-bold text-white">
