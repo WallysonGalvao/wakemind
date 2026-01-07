@@ -33,6 +33,7 @@ export const useAlarmsStore = create<AlarmsState>()(
           alarms: [
             ...state.alarms,
             {
+              // TODO: mOVE TO DAYJS OR UUID
               id: Date.now().toString(),
               time: alarmInput.time,
               period: alarmInput.period,

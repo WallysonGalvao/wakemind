@@ -20,6 +20,7 @@ const DEFAULT_HOUR = 6;
 const DEFAULT_MINUTE = 0;
 const DEFAULT_PERIOD = Period.AM;
 
+// TODO: Apply i18n
 const CHALLENGE_CONFIG: Record<ChallengeType, { icon: string; label: string }> = {
   [ChallengeType.MATH]: { icon: 'calculate', label: 'Math Challenge' },
   [ChallengeType.MEMORY]: { icon: 'psychology', label: 'Memory Match' },

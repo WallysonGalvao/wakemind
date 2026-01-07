@@ -21,3 +21,16 @@ export enum BackupProtocolId {
   WAKE_CHECK = 'wakeCheck',
   BARCODE_SCAN = 'barcodeScan',
 }
+
+export enum TimePickerType {
+  HOUR = 'hour',
+  MINUTE = 'minute',
+  PERIOD = 'period',
+}
+
+export enum Schedule {
+  DAILY = 'Daily',
+  WEEKDAYS = 'Weekdays',
+  WEEKENDS = 'Weekends',
+  ONCE = 'Once',
+}
