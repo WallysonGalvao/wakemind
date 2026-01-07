@@ -32,7 +32,7 @@ export function ChallengeCard({
       onPress={onSelect}
       className={`relative w-[80%] min-w-[280px] flex-shrink-0 overflow-hidden rounded-xl ${
         isSelected
-          ? 'border-2 border-brand-primary bg-surface-dark shadow-lg shadow-brand-primary/15'
+          ? 'border-2 border-brand-primary bg-surface-dark'
           : 'border-surface-highlight border bg-surface-dark/50'
       }`}
       accessibilityRole="button"

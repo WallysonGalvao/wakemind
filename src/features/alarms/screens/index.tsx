@@ -74,7 +74,7 @@ export default function AlarmsScreen() {
       >
         <Pressable
           onPress={handleNewAlarm}
-          className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 shadow-lg shadow-primary-500/25 active:scale-[0.98]"
+          className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 active:scale-[0.98]"
           accessibilityRole="button"
         >
           <MaterialSymbol name="add_alarm" size={24} className="text-white" />

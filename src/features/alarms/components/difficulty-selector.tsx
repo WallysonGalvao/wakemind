@@ -37,8 +37,8 @@ export function DifficultySelector({
             <Pressable
               key={difficulty}
               onPress={() => onDifficultyChange(difficulty)}
-              className={`h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg transition-colors ${
-                isSelected ? 'bg-brand-primary shadow-sm' : ''
+              className={`h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg ${
+                isSelected ? 'bg-brand-primary' : ''
               }`}
               accessibilityRole="button"
             >

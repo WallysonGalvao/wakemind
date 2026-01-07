@@ -38,6 +38,7 @@ This project uses **TailwindCSS + NativeWind** for styling. Follow these rules:
 - Do NOT use `StyleSheet.create()` - this is not the project pattern
 - Avoid inline `style={{}}` objects when possible
 - Never use CSS `filter` property (not supported in React Native)
+- **CRITICAL**: Avoid `shadow-*` and `transition-*` classes in conditional `className` on `Pressable` components (causes navigation context errors with Expo Router + React 19 + NativeWind)
 
 ### Examples
 
@@ -55,6 +56,15 @@ const styles = StyleSheet.create({ container: { flex: 1 } });
 
 // ❌ Bad - Inline styles for static values
 <View style={{ paddingBottom: 140, gap: 16 }}>
+
+// ❌ Bad - shadow-* in conditional Pressable (causes navigation context error)
+<Pressable className={`base-classes ${isSelected ? 'bg-primary shadow-lg' : ''}`}>
+
+// ✅ Good - Use inline style for shadows instead
+<Pressable
+  className={`base-classes ${isSelected ? 'bg-primary' : ''}`}
+  style={isSelected ? { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 } : undefined}
+>
 ```
 
 ## Accessibility
