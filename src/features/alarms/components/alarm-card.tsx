@@ -10,7 +10,7 @@ import type { Alarm } from '@/types/alarm';
 
 interface AlarmCardProps {
   alarm: Alarm;
-  onToggle: (id: string, value: boolean) => void;
+  onToggle: (id: string) => void;
 }
 
 export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
@@ -111,7 +111,7 @@ export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
           <View className="pl-4">
             <Switch
               value={alarm.isEnabled}
-              onValueChange={(value) => onToggle(alarm.id, value)}
+              onValueChange={() => onToggle(alarm.id)}
               trackColor={trackColor}
               thumbColor="#ffffff"
               size="lg"

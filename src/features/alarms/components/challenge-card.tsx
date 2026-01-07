@@ -6,8 +6,7 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
-
-export type ChallengeType = 'math' | 'memory' | 'logic';
+import type { ChallengeType } from '@/types/alarm-enums';
 
 interface ChallengeCardProps {
   type: ChallengeType;
