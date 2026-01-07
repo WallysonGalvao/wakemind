@@ -11,7 +11,7 @@ import { AlarmsHeader } from '../components/alarms-header';
 import { EmptyState } from '../components/empty-state';
 
 import { FloatingActionButton } from '@/components/common/floating-action-button';
-import { MaterialSymbol } from '@/components/common/material-symbol';
+import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import type { Alarm } from '@/types/alarm';
 
