@@ -52,6 +52,9 @@ export const appEN = {
   'newAlarm.backupProtocols.wakeCheck.description': 'Confirm 5m after alarm',
   'newAlarm.backupProtocols.barcodeScan.title': 'Barcode Scan',
   'newAlarm.backupProtocols.barcodeScan.description': 'Scan toothpaste to dismiss',
+  'newAlarm.validationError.title': 'Invalid Alarm',
+  'newAlarm.error.title': 'Error',
+  'newAlarm.error.message': 'An unexpected error occurred. Please try again.',
 
   // Common
   'common.am': 'AM',
@@ -60,4 +63,5 @@ export const appEN = {
   'common.cancel': 'Cancel',
   'common.delete': 'Delete',
   'common.confirm': 'Confirm',
+  'common.ok': 'OK',
 };

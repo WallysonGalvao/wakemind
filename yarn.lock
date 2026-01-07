@@ -5666,7 +5666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base64-js@npm:^1.2.3, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
+"base64-js@npm:^1.2.3, base64-js@npm:^1.3.0, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
   checksum: 669632eb3745404c2f822a18fc3a0122d2f9a7a13f7fb8b5823ee19d1d2ff9ee5b52c53367176ea4ad093c332fd5ab4bd0ebae5a8e27917a4105a4cfc86b1005
@@ -7318,6 +7318,17 @@ __metadata:
     expo: "*"
     react-native: "*"
   checksum: b8710f9b20a369971eda230434e634bf16abcca993af6e1c13b303a3e4e76317eca080f27667122278cb573ebad8d8ec85c8a12f31048445aed53375c171a1ea
+  languageName: node
+  linkType: hard
+
+"expo-crypto@npm:~15.0.8":
+  version: 15.0.8
+  resolution: "expo-crypto@npm:15.0.8"
+  dependencies:
+    base64-js: ^1.3.0
+  peerDependencies:
+    expo: "*"
+  checksum: 2109b56fb0316c6f357e62c8e4748a2af5d951d6777c30b649f51648ca15930ff48ac658c15fa09ff4f8f1c770d9758490a487df27b35ad0d759e83896df11f6
   languageName: node
   linkType: hard
 
@@ -13197,6 +13208,7 @@ __metadata:
     expo: ~54.0.30
     expo-blur: ~15.0.8
     expo-constants: ~18.0.12
+    expo-crypto: ~15.0.8
     expo-dev-client: ~6.0.20
     expo-font: ~14.0.10
     expo-haptics: ~15.0.8

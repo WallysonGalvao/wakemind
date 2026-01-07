@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
 
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
@@ -20,11 +20,10 @@ const DEFAULT_HOUR = 6;
 const DEFAULT_MINUTE = 0;
 const DEFAULT_PERIOD = Period.AM;
 
-// TODO: Apply i18n
-const CHALLENGE_CONFIG: Record<ChallengeType, { icon: string; label: string }> = {
-  [ChallengeType.MATH]: { icon: 'calculate', label: 'Math Challenge' },
-  [ChallengeType.MEMORY]: { icon: 'psychology', label: 'Memory Match' },
-  [ChallengeType.LOGIC]: { icon: 'lightbulb', label: 'Logic Puzzle' },
+const CHALLENGE_ICONS: Record<ChallengeType, string> = {
+  [ChallengeType.MATH]: 'calculate',
+  [ChallengeType.MEMORY]: 'psychology',
+  [ChallengeType.LOGIC]: 'lightbulb',
 };
 
 export default function NewAlarmScreen() {
@@ -82,19 +81,33 @@ export default function NewAlarmScreen() {
 
   const handleCommit = () => {
     const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-    const challengeConfig = CHALLENGE_CONFIG[selectedChallenge];
+    const challengeIcon = CHALLENGE_ICONS[selectedChallenge];
+    const challengeLabel = t(`newAlarm.challenges.${selectedChallenge}.title`);
 
-    addAlarm({
-      time: timeString,
-      period,
-      challenge: challengeConfig.label,
-      challengeIcon: challengeConfig.icon,
-      schedule: 'Daily',
-      difficulty,
-      protocols,
-    });
+    try {
+      addAlarm({
+        time: timeString,
+        period,
+        challenge: challengeLabel,
+        challengeIcon,
+        schedule: 'Daily',
+        difficulty,
+        protocols,
+      });
 
-    router.back();
+      router.back();
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(t('newAlarm.validationError.title'), error.message, [
+          { text: t('common.ok'), style: 'default' },
+        ]);
+      } else {
+        // Handle unexpected errors
+        Alert.alert(t('newAlarm.error.title'), t('newAlarm.error.message'), [
+          { text: t('common.ok'), style: 'default' },
+        ]);
+      }
+    }
   };
 
   const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;

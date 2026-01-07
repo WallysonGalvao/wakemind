@@ -1,9 +1,11 @@
+import * as Crypto from 'expo-crypto';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
 import type { Alarm } from '@/types/alarm';
 import type { DifficultyLevel, Period } from '@/types/alarm-enums';
+import { sanitizeAlarmInput, validateAlarmInput } from '@/utils/alarm-validation';
 import { createMMKVStorage } from '@/utils/storage';
 
 export interface AlarmInput {
@@ -26,30 +28,74 @@ interface AlarmsState {
 
 export const useAlarmsStore = create<AlarmsState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       alarms: [],
-      addAlarm: (alarmInput) =>
-        set((state) => ({
+      addAlarm: (alarmInput) => {
+        const state = get();
+
+        // Sanitize input
+        const sanitizedInput = sanitizeAlarmInput(alarmInput);
+
+        // Validate input
+        const validationResult = validateAlarmInput(sanitizedInput, state.alarms);
+
+        if (!validationResult.isValid) {
+          throw new Error(validationResult.error);
+        }
+
+        // Add alarm if validation passes
+        set({
           alarms: [
             ...state.alarms,
             {
-              // TODO: mOVE TO DAYJS OR UUID
-              id: Date.now().toString(),
-              time: alarmInput.time,
-              period: alarmInput.period,
-              challenge: alarmInput.challenge,
-              challengeIcon: alarmInput.challengeIcon,
-              schedule: alarmInput.schedule,
+              id: Crypto.randomUUID(),
+              time: sanitizedInput.time,
+              period: sanitizedInput.period,
+              challenge: sanitizedInput.challenge,
+              challengeIcon: sanitizedInput.challengeIcon,
+              schedule: sanitizedInput.schedule,
               isEnabled: true,
             },
           ],
-        })),
-      updateAlarm: (id, updatedAlarm) =>
-        set((state) => ({
+        });
+      },
+      updateAlarm: (id, updatedAlarm) => {
+        const state = get();
+
+        // If updating time or period, validate for duplicates
+        if (updatedAlarm.time || updatedAlarm.period) {
+          const existingAlarm = state.alarms.find((alarm) => alarm.id === id);
+          if (!existingAlarm) {
+            throw new Error('Alarm not found');
+          }
+
+          const timeToValidate = updatedAlarm.time || existingAlarm.time;
+          const periodToValidate = updatedAlarm.period || existingAlarm.period;
+
+          // Create a temporary input for validation
+          const tempInput: AlarmInput = {
+            time: timeToValidate,
+            period: periodToValidate,
+            challenge: updatedAlarm.challenge || existingAlarm.challenge,
+            challengeIcon: updatedAlarm.challengeIcon || existingAlarm.challengeIcon,
+            schedule: updatedAlarm.schedule || existingAlarm.schedule,
+          };
+
+          // Validate with excludeId to allow updating the same alarm
+          const validationResult = validateAlarmInput(tempInput, state.alarms, id);
+
+          if (!validationResult.isValid) {
+            throw new Error(validationResult.error);
+          }
+        }
+
+        // Update alarm if validation passes
+        set({
           alarms: state.alarms.map((alarm) =>
             alarm.id === id ? { ...alarm, ...updatedAlarm } : alarm
           ),
-        })),
+        });
+      },
       deleteAlarm: (id) =>
         set((state) => ({
           alarms: state.alarms.filter((alarm) => alarm.id !== id),

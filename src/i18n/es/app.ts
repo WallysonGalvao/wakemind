@@ -34,17 +34,20 @@ export const appES = {
   'newAlarm.cognitiveActivation.title': 'Activación Cognitiva',
   'newAlarm.cognitiveActivation.required': 'Obligatorio',
   'newAlarm.challenges.math.title': 'Desafío de Matemáticas',
-  'newAlarm.challenges.math.description': 'Resuelve 5 ecuaciones aritméticas para detener la alarma.',
+  'newAlarm.challenges.math.description':
+    'Resuelve 5 ecuaciones aritméticas para detener la alarma.',
   'newAlarm.challenges.memory.title': 'Matriz de Memoria',
   'newAlarm.challenges.memory.description': 'Memoriza y recuerda un patrón de bloques iluminados.',
   'newAlarm.challenges.logic.title': 'Rompecabezas Lógico',
-  'newAlarm.challenges.logic.description': 'Completa la secuencia para demostrar que estás despierto.',
+  'newAlarm.challenges.logic.description':
+    'Completa la secuencia para demostrar que estás despierto.',
   'newAlarm.difficulty.label': 'Nivel de Dificultad',
   'newAlarm.difficulty.easy': 'Fácil',
   'newAlarm.difficulty.medium': 'Medio',
   'newAlarm.difficulty.hard': 'Difícil',
   'newAlarm.difficulty.adaptive': 'Adaptativo',
-  'newAlarm.difficulty.adaptiveDescription': 'IA ajusta la dificultad según tu historial de despertar.',
+  'newAlarm.difficulty.adaptiveDescription':
+    'IA ajusta la dificultad según tu historial de despertar.',
   'newAlarm.backupProtocols.title': 'Protocolos de Respaldo',
   'newAlarm.backupProtocols.snooze.title': 'Posponer',
   'newAlarm.backupProtocols.snooze.description': 'Estricto (Deshabilitado)',
@@ -52,6 +55,9 @@ export const appES = {
   'newAlarm.backupProtocols.wakeCheck.description': 'Confirmar 5m después de alarma',
   'newAlarm.backupProtocols.barcodeScan.title': 'Escanear Código',
   'newAlarm.backupProtocols.barcodeScan.description': 'Escanea pasta de dientes para desactivar',
+  'newAlarm.validationError.title': 'Alarma Inválida',
+  'newAlarm.error.title': 'Error',
+  'newAlarm.error.message': 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
 
   // Common
   'common.am': 'AM',
@@ -60,4 +66,5 @@ export const appES = {
   'common.cancel': 'Cancelar',
   'common.delete': 'Eliminar',
   'common.confirm': 'Confirmar',
+  'common.ok': 'OK',
 };
