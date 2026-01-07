@@ -56,7 +56,7 @@ export function ChallengeCard({
           <MaterialSymbol
             name={icon}
             size={30}
-            className={isSelected ? 'text-primary' : 'text-slate-400'}
+            className={isSelected ? 'text-brand-primary' : 'text-slate-400'}
           />
         </View>
 
