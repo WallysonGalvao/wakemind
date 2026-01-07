@@ -1,35 +1,42 @@
 import React from 'react';
 
 import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme } from 'react-native';
+
+import { MaterialSymbol } from '@/components/common/material-symbol';
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
+        tabBarActiveTintColor: '#135bec',
+        tabBarInactiveTintColor: isDark ? '#64748b' : '#94a3b8',
+        tabBarStyle: {
+          backgroundColor: isDark ? '#1a2230' : '#ffffff',
+          borderTopColor: isDark ? '#334155' : '#e2e8f0',
+          borderTopWidth: 1,
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: t('tabs.alarms'),
+          tabBarIcon: ({ color }) => <MaterialSymbol name="alarm" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="settings"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: t('tabs.settings'),
+          tabBarIcon: ({ color }) => <MaterialSymbol name="settings" size={28} color={color} />,
         }}
       />
     </Tabs>
