@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import { Period } from '@/types/alarm-enums';
+import { Period, TimePickerType } from '@/types/alarm-enums';
 
 const ITEM_HEIGHT = 48;
 const VISIBLE_ITEMS = 5;
@@ -13,7 +13,7 @@ interface TimePickerColumnProps {
   value: number;
   onChange: (value: number) => void;
   items: string[];
-  type: 'hour' | 'minute' | 'period';
+  type: TimePickerType;
 }
 
 function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProps) {
@@ -66,7 +66,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
     if (distance === 0) {
       return {
         textClassName:
-          type === 'period'
+          type === TimePickerType.PERIOD
             ? 'text-2xl font-black text-brand-primary'
             : 'text-5xl font-black text-brand-primary',
         opacity: 1,
@@ -74,7 +74,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
     } else if (distance === 1) {
       return {
         textClassName:
-          type === 'period'
+          type === TimePickerType.PERIOD
             ? 'text-xl font-bold text-slate-400 dark:text-[#455d8c]'
             : 'text-3xl font-bold text-slate-400 dark:text-[#455d8c]',
         opacity: 0.8,
@@ -82,7 +82,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
     } else if (distance === 2) {
       return {
         textClassName:
-          type === 'period'
+          type === TimePickerType.PERIOD
             ? 'text-lg font-bold text-slate-400 dark:text-[#455d8c]'
             : 'text-2xl font-bold text-slate-400 dark:text-[#455d8c]',
         opacity: 0.5,
@@ -187,7 +187,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
             value={hour - 1}
             onChange={handleHourChange}
             items={hours}
-            type="hour"
+            type={TimePickerType.HOUR}
           />
         </View>
 
@@ -200,7 +200,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
             value={minute}
             onChange={handleMinuteChange}
             items={minutes}
-            type="minute"
+            type={TimePickerType.MINUTE}
           />
         </View>
 
@@ -210,7 +210,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
             value={period === Period.AM ? 0 : 1}
             onChange={handlePeriodChange}
             items={periods}
-            type="period"
+            type={TimePickerType.PERIOD}
           />
         </View>
       </View>
