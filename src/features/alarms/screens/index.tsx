@@ -10,7 +10,7 @@ import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
 import { EmptyState } from '../components/empty-state';
 
-import { FloatingActionButton } from '@/components/common/floating-action-button';
+import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import type { Alarm } from '@/types/alarm';
@@ -39,9 +39,9 @@ export default function AlarmsScreen() {
     );
   }, []);
 
-  const handleNewAlarm = () => {
+  const handleNewAlarm = useCallback(() => {
     router.push('/alarm/new-alarm');
-  };
+  }, [router]);
 
   const handleEditPress = () => {
     // TODO: Handle edit mode
@@ -77,12 +77,12 @@ export default function AlarmsScreen() {
           className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 shadow-lg shadow-primary-500/25 active:scale-[0.98]"
           accessibilityRole="button"
         >
-          <MaterialSymbol name="add_alarm" size={24} color="#ffffff" />
+          <MaterialSymbol name="add_alarm" size={24} className="text-white" />
           <Text className="text-lg font-bold text-white">{t('alarms.setFirstAlarm')}</Text>
         </Pressable>
       </EmptyState>
     );
-  }, [t, sunriseImage]);
+  }, [t, sunriseImage, handleNewAlarm]);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">

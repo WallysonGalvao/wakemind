@@ -5,8 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Modal, Pressable, ScrollView, View } from 'react-native';
 
-import { SectionHeader } from '@/components/settings/section-header';
-import { SettingItem } from '@/components/settings/setting-item';
+import { SectionHeader } from '../components/section-header';
+import { SettingItem } from '../components/setting-item';
+
 import { Text } from '@/components/ui/text';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
@@ -115,7 +116,9 @@ export default function SettingsScreen() {
   const getLanguageLabel = (lang: SupportedLanguage) => {
     // Normalize pt-BR to pt for display
     const normalizedLang = lang === 'pt-BR' ? 'pt' : lang;
-    return languageOptions.find((opt) => opt.value === normalizedLang)?.label || t('language.english');
+    return (
+      languageOptions.find((opt) => opt.value === normalizedLang)?.label || t('language.english')
+    );
   };
 
   return (

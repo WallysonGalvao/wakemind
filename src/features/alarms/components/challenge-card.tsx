@@ -20,7 +20,6 @@ interface ChallengeCardProps {
 }
 
 export function ChallengeCard({
-  type,
   title,
   description,
   icon,
@@ -42,7 +41,7 @@ export function ChallengeCard({
       {isSelected ? (
         <View className="absolute right-0 top-0 z-10 p-3">
           <View className="bg-primary flex size-6 items-center justify-center rounded-full">
-            <MaterialSymbol name="check" size={14} color="#ffffff" />
+            <MaterialSymbol name="check" size={14} className="text-white" />
           </View>
         </View>
       ) : null}
@@ -54,7 +53,11 @@ export function ChallengeCard({
             isSelected ? 'bg-primary/20' : 'bg-surface-highlight'
           }`}
         >
-          <MaterialSymbol name={icon} size={30} color={isSelected ? '#135bec' : '#94a3b8'} />
+          <MaterialSymbol
+            name={icon}
+            size={30}
+            className={isSelected ? 'text-primary' : 'text-slate-400'}
+          />
         </View>
 
         {/* Title and description */}
@@ -77,6 +80,7 @@ export function ChallengeCard({
               className="h-full w-full"
               contentFit="cover"
               transition={200}
+              accessibilityIgnoresInvertColors
             />
           </View>
         ) : null}

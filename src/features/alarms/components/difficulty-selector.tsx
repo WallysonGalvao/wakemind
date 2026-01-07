@@ -43,7 +43,7 @@ export function DifficultySelector({
               accessibilityRole="button"
             >
               {isAdaptive && isSelected ? (
-                <MaterialSymbol name="auto-awesome" size={16} color="#ffffff" />
+                <MaterialSymbol name="auto-awesome" size={16} className="text-white" />
               ) : null}
               <Text
                 className={`text-sm font-${isSelected ? 'bold' : 'medium'} ${
