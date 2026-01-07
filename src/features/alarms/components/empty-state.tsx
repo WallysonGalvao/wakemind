@@ -103,7 +103,7 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
 
         {/* Floating Icon Badge */}
         <View className="absolute bottom-2 right-2 items-center justify-center rounded-full border border-slate-100 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-surface-dark">
-          <MaterialSymbol name="schedule" size={28} color="#135bec" />
+          <MaterialSymbol name="schedule" size={28} className="text-primary" />
         </View>
       </View>
 

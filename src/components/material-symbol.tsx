@@ -1,8 +1,16 @@
 import React, { useMemo } from 'react';
 
 import { useFonts } from 'expo-font';
+import { cssInterop } from 'nativewind';
 
 import { Platform, type StyleProp, StyleSheet, Text, type TextStyle, View } from 'react-native';
+
+// Configure NativeWind to accept className on Text component
+cssInterop(Text, {
+  className: {
+    target: 'style',
+  },
+});
 
 export interface MaterialSymbolProps {
   /** Icon name from Material Symbols (e.g., 'schedule', 'add_alarm', 'settings') */
@@ -13,6 +21,8 @@ export interface MaterialSymbolProps {
   color?: string;
   /** Additional styles for the icon */
   style?: StyleProp<TextStyle>;
+  /** Tailwind CSS classes */
+  className?: string;
 }
 
 // Baseline offset correction factor (font has slight vertical offset)
@@ -24,7 +34,13 @@ const BASELINE_OFFSET_FACTOR = 0.1;
  *
  * @see https://fonts.google.com/icons for icon names (use underscore format, e.g., 'add_alarm')
  */
-export function MaterialSymbol({ name, size = 24, color = '#000000', style }: MaterialSymbolProps) {
+export function MaterialSymbol({
+  name,
+  size = 24,
+  color = '#000000',
+  style,
+  className,
+}: MaterialSymbolProps) {
   const [fontsLoaded] = useFonts({
     MaterialSymbolsRoundedFilled: require('@/assets/fonts/MaterialSymbolsRounded-Filled.ttf'),
   });
@@ -59,6 +75,7 @@ export function MaterialSymbol({ name, size = 24, color = '#000000', style }: Ma
   return (
     <Text
       style={[styles.icon, iconStyle, style]}
+      className={className}
       accessibilityRole="image"
       accessibilityLabel={`${name} icon`}
       accessibilityHint={`${name} icon`}

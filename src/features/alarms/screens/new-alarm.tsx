@@ -154,7 +154,7 @@ export default function NewAlarmScreen() {
           <Text className="mr-2 text-lg font-bold text-white">
             {t('newAlarm.commit', { time: formattedTime })}
           </Text>
-          <MaterialSymbol name="arrow-forward" size={24} color="#ffffff" />
+          <MaterialSymbol name="arrow-forward" size={24} className="text-white" />
         </Pressable>
       </View>
     </View>
