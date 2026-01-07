@@ -57,6 +57,17 @@ export const appPT = {
   'newAlarm.error.title': 'Erro',
   'newAlarm.error.message': 'Ocorreu um erro inesperado. Por favor, tente novamente.',
 
+  // Validation Errors
+  'validation.alarm.timeRequired': 'A hora é obrigatória e deve ser uma string',
+  'validation.alarm.timeFormat': 'Formato de hora inválido. Formato esperado: HH:MM (ex., "05:30")',
+  'validation.alarm.periodRequired': 'O período (AM/PM) é obrigatório',
+  'validation.alarm.periodInvalid': 'Período inválido. Deve ser "AM" ou "PM"',
+  'validation.alarm.duplicate': 'Já existe um alarme para {{time}} {{period}}',
+  'validation.alarm.challengeRequired': 'O tipo de desafio é obrigatório',
+  'validation.alarm.challengeIconRequired': 'O ícone do desafio é obrigatório',
+  'validation.alarm.scheduleRequired': 'O horário é obrigatório',
+  'validation.alarm.notFound': 'Alarme não encontrado',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',

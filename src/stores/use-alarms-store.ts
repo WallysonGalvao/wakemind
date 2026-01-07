@@ -1,4 +1,5 @@
 import * as Crypto from 'expo-crypto';
+import i18n from 'i18next';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -39,8 +40,9 @@ export const useAlarmsStore = create<AlarmsState>()(
         // Validate input
         const validationResult = validateAlarmInput(sanitizedInput, state.alarms);
 
-        if (!validationResult.isValid) {
-          throw new Error(validationResult.error);
+        if (!validationResult.isValid && validationResult.errorKey) {
+          const errorMessage = i18n.t(validationResult.errorKey, validationResult.errorParams);
+          throw new Error(errorMessage);
         }
 
         // Add alarm if validation passes
@@ -66,7 +68,7 @@ export const useAlarmsStore = create<AlarmsState>()(
         if (updatedAlarm.time || updatedAlarm.period) {
           const existingAlarm = state.alarms.find((alarm) => alarm.id === id);
           if (!existingAlarm) {
-            throw new Error('Alarm not found');
+            throw new Error(i18n.t('validation.alarm.notFound'));
           }
 
           const timeToValidate = updatedAlarm.time || existingAlarm.time;
@@ -84,8 +86,9 @@ export const useAlarmsStore = create<AlarmsState>()(
           // Validate with excludeId to allow updating the same alarm
           const validationResult = validateAlarmInput(tempInput, state.alarms, id);
 
-          if (!validationResult.isValid) {
-            throw new Error(validationResult.error);
+          if (!validationResult.isValid && validationResult.errorKey) {
+            const errorMessage = i18n.t(validationResult.errorKey, validationResult.errorParams);
+            throw new Error(errorMessage);
           }
         }
 

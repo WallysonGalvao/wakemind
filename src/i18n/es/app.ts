@@ -59,6 +59,17 @@ export const appES = {
   'newAlarm.error.title': 'Error',
   'newAlarm.error.message': 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
 
+  // Validation Errors
+  'validation.alarm.timeRequired': 'La hora es requerida y debe ser una cadena de texto',
+  'validation.alarm.timeFormat': 'Formato de hora inválido. Formato esperado: HH:MM (ej., "05:30")',
+  'validation.alarm.periodRequired': 'El período (AM/PM) es requerido',
+  'validation.alarm.periodInvalid': 'Período inválido. Debe ser "AM" o "PM"',
+  'validation.alarm.duplicate': 'Ya existe una alarma para {{time}} {{period}}',
+  'validation.alarm.challengeRequired': 'El tipo de desafío es requerido',
+  'validation.alarm.challengeIconRequired': 'El ícono del desafío es requerido',
+  'validation.alarm.scheduleRequired': 'El horario es requerido',
+  'validation.alarm.notFound': 'Alarma no encontrada',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',
