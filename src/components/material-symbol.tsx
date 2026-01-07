@@ -51,12 +51,13 @@ export function MaterialSymbol({
   const iconStyle = useMemo(
     () => ({
       fontSize: size,
-      color,
+      // Only apply color if className is not provided
+      ...(className ? {} : { color }),
       lineHeight: size,
       // Apply baseline correction
       ...(Platform.OS === 'ios' ? { top: baselineOffset } : {}),
     }),
-    [size, color, baselineOffset]
+    [size, color, baselineOffset, className]
   );
 
   const placeholderStyle = useMemo(
