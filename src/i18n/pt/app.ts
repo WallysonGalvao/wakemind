@@ -44,7 +44,8 @@ export const appPT = {
   'newAlarm.difficulty.medium': 'Médio',
   'newAlarm.difficulty.hard': 'Difícil',
   'newAlarm.difficulty.adaptive': 'Adaptativo',
-  'newAlarm.difficulty.adaptiveDescription': 'IA ajusta a dificuldade com base no seu histórico de despertar.',
+  'newAlarm.difficulty.adaptiveDescription':
+    'IA ajusta a dificuldade com base no seu histórico de despertar.',
   'newAlarm.backupProtocols.title': 'Protocolos de Backup',
   'newAlarm.backupProtocols.snooze.title': 'Soneca',
   'newAlarm.backupProtocols.snooze.description': 'Restrito (Desabilitado)',
@@ -52,6 +53,9 @@ export const appPT = {
   'newAlarm.backupProtocols.wakeCheck.description': 'Confirmar 5m após alarme',
   'newAlarm.backupProtocols.barcodeScan.title': 'Escanear Código',
   'newAlarm.backupProtocols.barcodeScan.description': 'Escaneie pasta de dente para desligar',
+  'newAlarm.validationError.title': 'Alarme Inválido',
+  'newAlarm.error.title': 'Erro',
+  'newAlarm.error.message': 'Ocorreu um erro inesperado. Por favor, tente novamente.',
 
   // Common
   'common.am': 'AM',
@@ -60,4 +64,5 @@ export const appPT = {
   'common.cancel': 'Cancelar',
   'common.delete': 'Excluir',
   'common.confirm': 'Confirmar',
+  'common.ok': 'OK',
 };
