@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { useFonts } from 'expo-font';
 import { cssInterop } from 'nativewind';
 
-import { Platform, type StyleProp, StyleSheet, Text, type TextStyle, View } from 'react-native';
+import { Platform, type StyleProp, StyleSheet, Text, type TextStyle } from 'react-native';
 
 // Configure NativeWind to accept className on Text component
 cssInterop(Text, {
@@ -32,6 +31,9 @@ const BASELINE_OFFSET_FACTOR = 0.1;
  * Material Symbols Rounded (Filled) icon component.
  * Uses the official Google Material Symbols font with FILL=1 for filled icons.
  *
+ * NOTE: The font must be loaded in the root layout before using this component.
+ * Use `useFonts` in _layout.tsx to load 'MaterialSymbolsRoundedFilled'.
+ *
  * @see https://fonts.google.com/icons for icon names (use underscore format, e.g., 'add_alarm')
  */
 export function MaterialSymbol({
@@ -41,10 +43,6 @@ export function MaterialSymbol({
   style,
   className,
 }: MaterialSymbolProps) {
-  const [fontsLoaded] = useFonts({
-    MaterialSymbolsRoundedFilled: require('@/assets/fonts/MaterialSymbolsRounded-Filled.ttf'),
-  });
-
   // Calculate baseline offset based on size
   const baselineOffset = Math.round(size * BASELINE_OFFSET_FACTOR);
 
@@ -59,19 +57,6 @@ export function MaterialSymbol({
     }),
     [size, color, baselineOffset, className]
   );
-
-  const placeholderStyle = useMemo(
-    () => ({
-      width: size,
-      height: size,
-    }),
-    [size]
-  );
-
-  if (!fontsLoaded) {
-    // Return empty space with same dimensions while loading
-    return <View style={placeholderStyle} />;
-  }
 
   return (
     <Text

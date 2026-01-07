@@ -109,7 +109,7 @@ export default function NewAlarmScreen() {
           className="flex w-12 items-center justify-end"
           accessibilityRole="button"
         >
-          <Text className="hover:text-primary text-base font-medium text-slate-500 transition-colors dark:text-slate-400">
+          <Text className="text-base font-medium text-slate-500 transition-colors hover:text-brand-primary dark:text-slate-400">
             {t('newAlarm.reset')}
           </Text>
         </Pressable>
@@ -148,13 +148,13 @@ export default function NewAlarmScreen() {
       >
         <Pressable
           onPress={handleCommit}
-          className="bg-primary shadow-primary/40 h-14 w-full flex-row items-center justify-center rounded-xl shadow-lg active:scale-[0.98]"
+          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary shadow-lg shadow-brand-primary/40 active:scale-[0.98]"
           accessibilityRole="button"
         >
           <Text className="mr-2 text-lg font-bold text-white">
             {t('newAlarm.commit', { time: formattedTime })}
           </Text>
-          <MaterialSymbol name="arrow-forward" size={24} className="text-white" />
+          <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
         </Pressable>
       </View>
     </View>

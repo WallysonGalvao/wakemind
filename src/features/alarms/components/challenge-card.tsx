@@ -32,7 +32,7 @@ export function ChallengeCard({
       onPress={onSelect}
       className={`relative w-[80%] min-w-[280px] flex-shrink-0 overflow-hidden rounded-xl ${
         isSelected
-          ? 'border-primary shadow-primary/15 border-2 bg-surface-dark shadow-lg'
+          ? 'border-2 border-brand-primary bg-surface-dark shadow-lg shadow-brand-primary/15'
           : 'border-surface-highlight border bg-surface-dark/50'
       }`}
       accessibilityRole="button"
@@ -40,7 +40,7 @@ export function ChallengeCard({
       {/* Selected checkmark */}
       {isSelected ? (
         <View className="absolute right-0 top-0 z-10 p-3">
-          <View className="bg-primary flex size-6 items-center justify-center rounded-full">
+          <View className="flex size-6 items-center justify-center rounded-full bg-brand-primary">
             <MaterialSymbol name="check" size={14} className="text-white" />
           </View>
         </View>
