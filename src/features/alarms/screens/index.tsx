@@ -47,7 +47,7 @@ export default function AlarmsScreen() {
 
   const handleNewAlarm = useCallback(() => {
     console.log('handleNewAlarm');
-    router.push('/alarm/new-alarm');
+    router.push('/alarm/alarm-form');
   }, [router]);
 
   const handleEditPress = () => {

@@ -49,7 +49,7 @@ export default function RootLayout() {
         <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="alarm/new-alarm" options={{ headerShown: false }} />
+            <Stack.Screen name="alarm/alarm-form" options={{ headerShown: false }} />
             <Stack.Screen
               name="alarm/backup-protocols-info"
               options={{
