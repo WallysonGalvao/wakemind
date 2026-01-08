@@ -18,6 +18,17 @@ export enum DayOfWeek {
   SUNDAY = 'sunday',
 }
 
+// Day order for sorting
+const DAY_ORDER: Record<DayOfWeek, number> = {
+  [DayOfWeek.MONDAY]: 0,
+  [DayOfWeek.TUESDAY]: 1,
+  [DayOfWeek.WEDNESDAY]: 2,
+  [DayOfWeek.THURSDAY]: 3,
+  [DayOfWeek.FRIDAY]: 4,
+  [DayOfWeek.SATURDAY]: 5,
+  [DayOfWeek.SUNDAY]: 6,
+};
+
 interface ScheduleSelectorProps {
   selectedDays: DayOfWeek[];
   onDaysChange: (days: DayOfWeek[]) => void;
@@ -41,12 +52,12 @@ export function ScheduleSelector({ selectedDays, onDaysChange }: ScheduleSelecto
     if (selectedDays.includes(day)) {
       onDaysChange(selectedDays.filter((d) => d !== day));
     } else {
-      onDaysChange([...selectedDays, day].sort((a, b) => a - b));
+      onDaysChange([...selectedDays, day].sort((a, b) => DAY_ORDER[a] - DAY_ORDER[b]));
     }
   };
 
   return (
-    <View>
+    <View className="mb-2 mt-[-12px]">
       {/* Schedule Type Selector */}
       <SegmentedControl
         title={t('newAlarm.schedule.label')}

@@ -14,6 +14,8 @@ import { Pressable, useColorScheme, View } from 'react-native';
 
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { COLORS } from '@/constants/colors';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 import type { Alarm } from '@/types/alarm';
 
 interface AlarmCardProps {
@@ -28,18 +30,19 @@ export function AlarmCard({ alarm, onToggle, index = 0 }: AlarmCardProps) {
   const isActive = alarm.isEnabled;
   const colorScheme = useColorScheme();
   const scale = useSharedValue(1);
+  const shadowStyle = useShadowStyle('sm');
 
   // Get icon color based on theme and active state
   const getIconColor = () => {
     if (colorScheme === 'dark') {
-      return isActive ? '#64748b' : '#475569';
+      return isActive ? COLORS.slate[500] : COLORS.slate[600];
     }
-    return isActive ? '#64748b' : '#94a3b8';
+    return isActive ? COLORS.slate[500] : COLORS.slate[400];
   };
 
   const trackColor = {
-    false: colorScheme === 'dark' ? '#475569' : '#cbd5e1',
-    true: '#135bec',
+    false: colorScheme === 'dark' ? COLORS.slate[600] : COLORS.slate[300],
+    true: COLORS.brandPrimary,
   };
 
   const handlePressIn = () => {
@@ -69,16 +72,7 @@ export function AlarmCard({ alarm, onToggle, index = 0 }: AlarmCardProps) {
     <Pressable accessibilityRole="button" onPressIn={handlePressIn} onPressOut={handlePressOut}>
       <Animated.View
         entering={enteringAnimation}
-        style={[
-          animatedStyle,
-          {
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          },
-        ]}
+        style={[animatedStyle, shadowStyle]}
         className={`rounded-2xl border p-5 ${
           isActive
             ? 'border-slate-200 bg-white dark:border-slate-700 dark:bg-[#1a2230]'
@@ -143,7 +137,7 @@ export function AlarmCard({ alarm, onToggle, index = 0 }: AlarmCardProps) {
               value={alarm.isEnabled}
               onValueChange={handleToggle}
               trackColor={trackColor}
-              thumbColor="#ffffff"
+              thumbColor={COLORS.white}
               size="lg"
             />
           </View>
