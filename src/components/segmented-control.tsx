@@ -1,0 +1,180 @@
+import React, { useCallback, useEffect, useMemo } from 'react';
+
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+
+import type { LayoutChangeEvent } from 'react-native';
+import { Pressable, View } from 'react-native';
+
+import { MaterialSymbol } from '@/components/material-symbol';
+import { Text } from '@/components/ui/text';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
+
+export interface SegmentedControlItem<T extends string> {
+  value: T;
+  label: string;
+  icon?: string;
+  showIconWhenSelected?: boolean;
+}
+
+interface SegmentedControlProps<T extends string> {
+  title?: string;
+  description?: string;
+  items: SegmentedControlItem<T>[];
+  selectedValue: T;
+  onValueChange: (value: T) => void;
+}
+
+const ANIMATION_CONFIG = {
+  duration: 150,
+  easing: Easing.out(Easing.cubic),
+};
+
+export function SegmentedControl<T extends string>({
+  title,
+  description,
+  items,
+  selectedValue,
+  onValueChange,
+}: SegmentedControlProps<T>) {
+  const shadowStyle = useShadowStyle('sm');
+
+  const selectedIndex = items.findIndex((item) => item.value === selectedValue);
+  const translateX = useSharedValue(0);
+  const buttonWidth = useSharedValue(0);
+  const slotWidth = useSharedValue(0);
+  const startX = useSharedValue(0);
+
+  const sliderStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+    width: buttonWidth.value,
+  }));
+
+  const onLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const containerWidth = event.nativeEvent.layout.width;
+      const padding = 4; // p-1 = 4px
+      const innerWidth = containerWidth - padding * 2;
+      const calculatedSlotWidth = innerWidth / items.length;
+
+      slotWidth.value = calculatedSlotWidth;
+      buttonWidth.value = calculatedSlotWidth;
+      translateX.value = selectedIndex * calculatedSlotWidth;
+      startX.value = selectedIndex * calculatedSlotWidth;
+    },
+    [items.length, selectedIndex, buttonWidth, slotWidth, translateX, startX]
+  );
+
+  const handleSelect = useCallback(
+    (value: T) => {
+      if (value === selectedValue) return;
+      onValueChange(value);
+    },
+    [selectedValue, onValueChange]
+  );
+
+  const panGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .onBegin(() => {
+          'worklet';
+          startX.value = translateX.value;
+        })
+        .onUpdate((event) => {
+          'worklet';
+          const newX = startX.value + event.translationX;
+          const maxX = (items.length - 1) * slotWidth.value;
+
+          if (newX >= 0 && newX <= maxX) {
+            translateX.value = newX;
+          }
+        })
+        .onEnd((event) => {
+          'worklet';
+          const newX = startX.value + event.translationX;
+          const closestIndex = Math.round(newX / slotWidth.value);
+          const validatedIndex = Math.min(Math.max(closestIndex, 0), items.length - 1);
+
+          translateX.value = withTiming(validatedIndex * slotWidth.value, ANIMATION_CONFIG);
+
+          const selectedItem = items[validatedIndex];
+          if (selectedItem) {
+            runOnJS(handleSelect)(selectedItem.value);
+          }
+        }),
+    [items, slotWidth, translateX, startX, handleSelect]
+  );
+
+  useEffect(() => {
+    if (slotWidth.value > 0) {
+      translateX.value = withTiming(selectedIndex * slotWidth.value, ANIMATION_CONFIG);
+      startX.value = selectedIndex * slotWidth.value;
+    }
+  }, [selectedIndex, translateX, slotWidth, startX]);
+
+  return (
+    <View className="flex flex-col gap-2 px-4 py-3">
+      {title ? (
+        <Text className="pl-1 text-sm font-medium text-slate-500 dark:text-slate-400">{title}</Text>
+      ) : null}
+
+      <GestureDetector gesture={panGesture}>
+        <View
+          className="relative flex h-12 w-full flex-row items-center justify-center rounded-xl bg-slate-200 p-1 dark:bg-surface-highlight"
+          onLayout={onLayout}
+          accessible
+          accessibilityRole="tablist"
+        >
+          {/* Animated slider background */}
+          <Animated.View
+            style={[sliderStyle, shadowStyle]}
+            className="absolute left-1 z-10 h-10 rounded-lg border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary"
+          />
+
+          {items.map((item) => {
+            const isSelected = selectedValue === item.value;
+            const showIcon = item.icon && item.showIconWhenSelected && isSelected;
+
+            return (
+              <Pressable
+                key={item.value}
+                onPress={() => handleSelect(item.value)}
+                disabled={isSelected}
+                className="z-20 h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg"
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isSelected }}
+              >
+                {showIcon && item.icon ? (
+                  <MaterialSymbol
+                    name={item.icon}
+                    size={16}
+                    className="text-brand-primary dark:text-white"
+                  />
+                ) : null}
+                <Text
+                  className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'} ${
+                    isSelected
+                      ? 'text-brand-primary dark:text-white'
+                      : 'text-slate-500 dark:text-slate-400'
+                  }`}
+                >
+                  {item.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </GestureDetector>
+
+      {description ? (
+        <Text className="pl-1 pt-1 text-xs text-slate-500 dark:text-slate-400">{description}</Text>
+      ) : null}
+    </View>
+  );
+}
