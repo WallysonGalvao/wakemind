@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { ProtocolToggle } from './protocol-toggle';
 
+import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { BackupProtocolId } from '@/types/alarm-enums';
 
@@ -24,6 +26,7 @@ export function BackupProtocolsSection({
   onProtocolToggle,
 }: BackupProtocolsSectionProps) {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const getProtocolConfig = (id: BackupProtocolId) => {
     const configs: Record<
@@ -49,12 +52,27 @@ export function BackupProtocolsSection({
     return configs[id];
   };
 
+  const handleInfoPress = () => {
+    router.push('/alarm/backup-protocols-info');
+  };
+
   return (
     <View>
       {/* Section header */}
-      <Text className="px-4 pb-4 pt-2 text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
-        {t('newAlarm.backupProtocols.title')}
-      </Text>
+      <View className="flex-row items-center gap-2 px-4 pb-4 pt-2">
+        <Text className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
+          {t('newAlarm.backupProtocols.title')}
+        </Text>
+        <Pressable
+          onPress={handleInfoPress}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.info')}
+          accessibilityHint={t('common.infoModal.accessibilityHint')}
+        >
+          <MaterialSymbol name="info" size={20} className="text-slate-400 dark:text-slate-500" />
+        </Pressable>
+      </View>
 
       {/* Protocol toggles */}
       <View className="flex flex-col gap-3 px-4">

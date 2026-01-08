@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
@@ -24,6 +25,7 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const isDark = theme === 'dark';
 
@@ -48,7 +50,13 @@ export default function RootLayout() {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="alarm/new-alarm" options={{ headerShown: false }} />
-            {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
+            <Stack.Screen
+              name="alarm/backup-protocols-info"
+              options={{
+                title: t('newAlarm.backupProtocols.infoModal.title'),
+                presentation: 'modal',
+              }}
+            />
           </Stack>
           <StatusBar style={isDark ? 'light' : 'dark'} />
         </ThemeProvider>
