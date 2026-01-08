@@ -143,7 +143,7 @@ export default function NewAlarmScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView contentContainerClassName="pb-32">
+      <ScrollView contentContainerClassName="pb-32" showsVerticalScrollIndicator={false}>
         {/* Time Picker Section */}
         <TimePickerWheel
           hour={hour}
@@ -162,7 +162,7 @@ export default function NewAlarmScreen() {
         <DifficultySelector selectedDifficulty={difficulty} onDifficultyChange={setDifficulty} />
 
         {/* Divider */}
-        <View className="bg-surface-highlight mx-4 my-4 h-px" />
+        <View className="mx-4 my-4 h-px bg-surface-highlight" />
 
         {/* Backup Protocols Section */}
         <BackupProtocolsSection protocols={protocols} onProtocolToggle={handleProtocolToggle} />
@@ -175,7 +175,7 @@ export default function NewAlarmScreen() {
       >
         <Pressable
           onPress={handleCommit}
-          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary active:scale-[0.98]"
+          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary shadow-[0_4px_14px_rgba(19,91,236,0.3)] active:scale-[0.98]"
           accessibilityRole="button"
         >
           <Text className="mr-2 text-lg font-bold text-white">

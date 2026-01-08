@@ -115,7 +115,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
     <View className="relative overflow-hidden" style={{ height: PICKER_HEIGHT }}>
       {/* Selection indicator background */}
       <View
-        className="bg-surface-highlight/50 dark:bg-surface-highlight pointer-events-none absolute inset-x-0 z-0 rounded-lg border border-brand-primary/20"
+        className="pointer-events-none absolute inset-x-0 z-0 rounded-lg border border-slate-300/50 bg-slate-200/80 dark:border-brand-primary/20 dark:bg-surface-highlight"
         style={{
           top: ITEM_HEIGHT * 2,
           height: ITEM_HEIGHT,

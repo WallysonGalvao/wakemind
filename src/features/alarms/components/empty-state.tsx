@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -25,6 +25,7 @@ interface EmptyStateProps {
 export function EmptyState({ title, description, image, children }: EmptyStateProps) {
   const screenHeight = Dimensions.get('window').height;
   const glowSize = 280; // Size of the glow circle
+  const imageSize = 192; // h-48 w-48 = 12rem = 192px
 
   // Pulse animation values
   const scale = useSharedValue(1);
@@ -56,7 +57,20 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
       {/* Abstract Visual Representation */}
       <View className="relative mb-14">
         {/* Decorative Glow - Radial gradient with pulse animation */}
-        <Animated.View style={[styles.glowContainer, animatedGlowStyle]}>
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              top: (imageSize - 280) / 2,
+              left: (imageSize - 280) / 2,
+              width: 280,
+              height: 280,
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            animatedGlowStyle,
+          ]}
+        >
           <Svg width={glowSize} height={glowSize} viewBox={`0 0 ${glowSize} ${glowSize}`}>
             <Defs>
               <RadialGradient
@@ -84,7 +98,16 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
         </Animated.View>
 
         {/* Icon Container */}
-        <View className="relative h-48 w-48 items-center justify-center overflow-hidden rounded-full shadow-2xl">
+        <View
+          className="relative h-48 w-48 items-center justify-center overflow-hidden rounded-full"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 25 },
+            shadowOpacity: 0.25,
+            shadowRadius: 50,
+            elevation: 24,
+          }}
+        >
           {image ? (
             <>
               <Image
@@ -93,7 +116,7 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
                 contentFit="cover"
                 transition={200}
                 accessibilityIgnoresInvertColors
-                style={styles.image}
+                style={{ width: '100%', height: '100%' }}
               />
               {/* Overlay for mood effect */}
               <View className="absolute inset-0 bg-primary-500/10" />
@@ -102,7 +125,16 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
         </View>
 
         {/* Floating Icon Badge */}
-        <View className="absolute bottom-2 right-2 items-center justify-center rounded-full border border-slate-100 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-surface-dark">
+        <View
+          className="absolute bottom-2 right-2 items-center justify-center rounded-full border border-slate-100 bg-white p-3 dark:border-slate-800 dark:bg-surface-dark"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 10 },
+            shadowOpacity: 0.15,
+            shadowRadius: 15,
+            elevation: 10,
+          }}
+        >
           <MaterialSymbol name="schedule" size={28} className="text-brand-primary" />
         </View>
       </View>
@@ -124,21 +156,3 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
     </View>
   );
 }
-
-const IMAGE_SIZE = 192; // h-48 w-48 = 12rem = 192px
-
-const styles = StyleSheet.create({
-  glowContainer: {
-    position: 'absolute',
-    top: (IMAGE_SIZE - 280) / 2,
-    left: (IMAGE_SIZE - 280) / 2,
-    width: 280,
-    height: 280,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-});
