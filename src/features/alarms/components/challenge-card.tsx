@@ -40,7 +40,7 @@ export function ChallengeCard({
   return (
     <Pressable
       onPress={onSelect}
-      className={`relative w-[80%] min-w-[280px] flex-shrink-0 overflow-hidden rounded-xl ${
+      className={`relative w-full flex-shrink-0 overflow-hidden rounded-xl ${
         isSelected
           ? 'border-2 border-brand-primary bg-white dark:bg-surface-dark'
           : 'border border-slate-200 bg-white dark:border-surface-highlight dark:bg-surface-dark/50'
