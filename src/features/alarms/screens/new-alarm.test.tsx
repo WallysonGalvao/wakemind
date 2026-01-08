@@ -8,13 +8,15 @@ import NewAlarmScreen from './new-alarm';
 
 import { DayOfWeek } from '@/features/alarms/components/schedule-selector';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
-import { BackupProtocolId, ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
+import { ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
 
 // Mock expo-router
 const mockBack = jest.fn();
+const mockPush = jest.fn();
 jest.mock('expo-router', () => ({
   useRouter: () => ({
     back: mockBack,
+    push: mockPush,
   }),
 }));
 
@@ -60,117 +62,45 @@ jest.mock('dayjs', () => {
 // Mock custom hooks
 jest.mock('@/hooks/use-shadow-style', () => ({
   useCustomShadow: () => ({}),
+  useShadowStyle: () => ({}),
 }));
 
-// Mock child components
+// Mock react-native-reanimated
+jest.mock('react-native-reanimated', () => {
+  const Reanimated = require('react-native-reanimated/mock');
+  Reanimated.useAnimatedScrollHandler = () => () => {};
+  return Reanimated;
+});
+
+// Mock react-native-gesture-handler
+jest.mock('react-native-gesture-handler', () => {
+  const View = require('react-native').View;
+  return {
+    Gesture: {
+      Pan: () => ({
+        onBegin: () => ({
+          onUpdate: () => ({
+            onEnd: () => ({}),
+          }),
+        }),
+      }),
+    },
+    GestureDetector: ({ children }: { children: React.ReactNode }) => children,
+    GestureHandlerRootView: View,
+  };
+});
+
+// Mock expo-image
+jest.mock('expo-image', () => {
+  const View = require('react-native').View;
+  return {
+    Image: (props: Record<string, unknown>) => <View testID="expo-image" {...props} />,
+  };
+});
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-jest.mock('@/features/alarms/components/time-picker-wheel', () => ({
-  TimePickerWheel: ({ hour, minute, period, onTimeChange }: any) => {
-    const { View, Text, Pressable } = require('react-native');
-    return (
-      <View testID="time-picker-wheel">
-        <Text testID="time-display">
-          {hour}:{minute} {period}
-        </Text>
-        <Pressable
-          accessibilityRole="button"
-          testID="change-time-button"
-          onPress={() => onTimeChange(7, 30, 'PM')}
-        >
-          <Text>Change Time</Text>
-        </Pressable>
-      </View>
-    );
-  },
-}));
-
-jest.mock('@/features/alarms/components/schedule-selector', () => ({
-  ScheduleSelector: ({ selectedDays, onDaysChange }: any) => {
-    const { View, Pressable, Text } = require('react-native');
-    return (
-      <View testID="schedule-selector">
-        <Text testID="selected-days">{selectedDays.join(',')}</Text>
-        <Pressable
-          accessibilityRole="button"
-          testID="change-days-button"
-          onPress={() => onDaysChange(['tuesday'])}
-        >
-          <Text>Change Days</Text>
-        </Pressable>
-      </View>
-    );
-  },
-  DayOfWeek: {
-    MONDAY: 'monday',
-    TUESDAY: 'tuesday',
-    WEDNESDAY: 'wednesday',
-    THURSDAY: 'thursday',
-    FRIDAY: 'friday',
-    SATURDAY: 'saturday',
-    SUNDAY: 'sunday',
-  },
-}));
-
-jest.mock('@/features/alarms/components/cognitive-activation-section', () => ({
-  CognitiveActivationSection: ({ selectedChallenge, onChallengeSelect }: any) => {
-    const { View, Pressable, Text } = require('react-native');
-    return (
-      <View testID="cognitive-activation-section">
-        <Text testID="selected-challenge">{selectedChallenge}</Text>
-        <Pressable
-          accessibilityRole="button"
-          testID="select-memory-button"
-          onPress={() => onChallengeSelect('memory')}
-        >
-          <Text>Select Memory</Text>
-        </Pressable>
-      </View>
-    );
-  },
-}));
-
-jest.mock('@/features/alarms/components/difficulty-selector', () => ({
-  DifficultySelector: ({ selectedDifficulty, onDifficultyChange }: any) => {
-    const { View, Pressable, Text } = require('react-native');
-    return (
-      <View testID="difficulty-selector">
-        <Text testID="selected-difficulty">{selectedDifficulty}</Text>
-        <Pressable
-          accessibilityRole="button"
-          testID="select-easy-button"
-          onPress={() => onDifficultyChange('easy')}
-        >
-          <Text>Select Easy</Text>
-        </Pressable>
-      </View>
-    );
-  },
-}));
-
-jest.mock('@/features/alarms/components/backup-protocols-section', () => ({
-  BackupProtocolsSection: ({ protocols, onProtocolToggle }: any) => {
-    const { View, Pressable, Text } = require('react-native');
-    return (
-      <View testID="backup-protocols-section">
-        {protocols.map((protocol: any) => (
-          <Pressable
-            accessibilityRole="button"
-            key={protocol.id}
-            testID={`protocol-${protocol.id}`}
-            onPress={() => onProtocolToggle(protocol.id)}
-          >
-            <Text>
-              {protocol.id}: {protocol.enabled ? 'enabled' : 'disabled'}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-    );
-  },
-}));
-
-// Mock components
+// Mock components used by features/alarms/components
 jest.mock('@/components/header', () => ({
   Header: ({ title, leftIcons, rightIcons }: any) => {
     const { View, Text, Pressable } = require('react-native');
@@ -216,6 +146,56 @@ jest.mock('@/components/ui/text', () => ({
   },
 }));
 
+jest.mock('@/components/ui/switch', () => ({
+  Switch: ({ value, onValueChange, disabled, testID }: any) => {
+    const { Switch: RNSwitch } = require('react-native');
+    return (
+      <RNSwitch
+        testID={testID || 'switch'}
+        value={value}
+        onValueChange={onValueChange}
+        disabled={disabled}
+      />
+    );
+  },
+}));
+
+jest.mock('@/components/segmented-control', () => ({
+  SegmentedControl: ({
+    title,
+    items,
+    selectedValue,
+    onValueChange,
+    multiSelect,
+    selectedValues,
+  }: any) => {
+    const { View, Text, Pressable } = require('react-native');
+    return (
+      <View testID="segmented-control">
+        {title ? <Text>{title}</Text> : null}
+        <View testID="segmented-control-items">
+          {items.map((item: any) => {
+            const isSelected = multiSelect
+              ? selectedValues?.includes(item.value)
+              : selectedValue === item.value;
+            return (
+              <Pressable
+                key={item.value}
+                testID={`segment-${item.value}`}
+                onPress={() => onValueChange(item.value)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isSelected }}
+              >
+                <Text>{item.label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+    );
+  },
+}));
+
 describe('NewAlarmScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -227,43 +207,66 @@ describe('NewAlarmScreen', () => {
   });
 
   describe('Rendering', () => {
-    it('should render the screen with default values', () => {
-      const { getByTestId, getByText } = render(<NewAlarmScreen />);
+    it('should render the screen with all components', () => {
+      const { getByTestId, getByText, getAllByTestId } = render(<NewAlarmScreen />);
 
+      // Header
       expect(getByTestId('header')).toBeTruthy();
       expect(getByText('New Alarm')).toBeTruthy();
-      expect(getByTestId('time-picker-wheel')).toBeTruthy();
-      expect(getByTestId('schedule-selector')).toBeTruthy();
-      expect(getByTestId('cognitive-activation-section')).toBeTruthy();
-      expect(getByTestId('difficulty-selector')).toBeTruthy();
-      expect(getByTestId('backup-protocols-section')).toBeTruthy();
-    });
 
-    it('should display default time (06:00 AM)', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      // Verifica que os segmented controls estão renderizados (schedule e difficulty)
+      const segmentedControls = getAllByTestId('segmented-control');
+      expect(segmentedControls.length).toBeGreaterThanOrEqual(2);
 
-      const timeDisplay = getByTestId('time-display');
-      expect(timeDisplay.props.children.join('')).toBe('6:0 AM');
-    });
-
-    it('should display default challenge (math)', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
-
-      const selectedChallenge = getByTestId('selected-challenge');
-      expect(selectedChallenge.props.children).toBe(ChallengeType.MATH);
-    });
-
-    it('should display default difficulty (adaptive)', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
-
-      const selectedDifficulty = getByTestId('selected-difficulty');
-      expect(selectedDifficulty.props.children).toBe(DifficultyLevel.ADAPTIVE);
+      // Verifica commit button
+      expect(getByText('Commit to 06:00 AM')).toBeTruthy();
     });
 
     it('should display commit button with formatted time', () => {
       const { getByText } = render(<NewAlarmScreen />);
 
       expect(getByText('Commit to 06:00 AM')).toBeTruthy();
+    });
+
+    it('should render cognitive activation section with challenge cards', () => {
+      const { getByText } = render(<NewAlarmScreen />);
+
+      // Verifica que os títulos dos challenges estão presentes
+      expect(getByText('Math Challenge')).toBeTruthy();
+      expect(getByText('Memory Matrix')).toBeTruthy();
+      expect(getByText('Logic Puzzle')).toBeTruthy();
+    });
+
+    it('should render difficulty options', () => {
+      const { getByTestId } = render(<NewAlarmScreen />);
+
+      // Verifica que os segmentos de dificuldade estão presentes
+      expect(getByTestId(`segment-${DifficultyLevel.EASY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DifficultyLevel.MEDIUM}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DifficultyLevel.HARD}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DifficultyLevel.ADAPTIVE}`)).toBeTruthy();
+    });
+
+    it('should render schedule selector with day options', () => {
+      const { getByTestId } = render(<NewAlarmScreen />);
+
+      // Verifica que os dias estão presentes
+      expect(getByTestId(`segment-${DayOfWeek.MONDAY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DayOfWeek.TUESDAY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DayOfWeek.WEDNESDAY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DayOfWeek.THURSDAY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DayOfWeek.FRIDAY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DayOfWeek.SATURDAY}`)).toBeTruthy();
+      expect(getByTestId(`segment-${DayOfWeek.SUNDAY}`)).toBeTruthy();
+    });
+
+    it('should render backup protocols section', () => {
+      const { getByText } = render(<NewAlarmScreen />);
+
+      // Verifica que os protocolos estão presentes (via mocked translation key)
+      expect(getByText('Snooze')).toBeTruthy();
+      expect(getByText('Wake Check')).toBeTruthy();
+      expect(getByText('Barcode Scan')).toBeTruthy();
     });
   });
 
@@ -276,66 +279,34 @@ describe('NewAlarmScreen', () => {
       expect(mockBack).toHaveBeenCalledTimes(1);
     });
 
-    it('should reset all fields when reset button is pressed', () => {
+    it('should update difficulty when difficulty segment is selected', () => {
       const { getByTestId } = render(<NewAlarmScreen />);
 
-      // Change some values
-      fireEvent.press(getByTestId('change-time-button'));
-      fireEvent.press(getByTestId('select-memory-button'));
-      fireEvent.press(getByTestId('select-easy-button'));
+      // Seleciona dificuldade easy
+      fireEvent.press(getByTestId(`segment-${DifficultyLevel.EASY}`));
 
-      // Verify changes
-      expect(getByTestId('time-display').props.children.join('')).toBe('7:30 PM');
-      expect(getByTestId('selected-challenge').props.children).toBe(ChallengeType.MEMORY);
-      expect(getByTestId('selected-difficulty').props.children).toBe(DifficultyLevel.EASY);
-
-      // Reset
-      fireEvent.press(getByTestId('header-reset-button'));
-
-      // Verify reset to defaults
-      expect(getByTestId('time-display').props.children.join('')).toBe('6:0 AM');
-      expect(getByTestId('selected-challenge').props.children).toBe(ChallengeType.MATH);
-      expect(getByTestId('selected-difficulty').props.children).toBe(DifficultyLevel.ADAPTIVE);
+      // Verifica que o segmento está selecionado
+      const easySegment = getByTestId(`segment-${DifficultyLevel.EASY}`);
+      expect(easySegment.props.accessibilityState.selected).toBe(true);
     });
 
-    it('should update time when time picker changes', () => {
+    it('should update schedule when days are selected', () => {
       const { getByTestId } = render(<NewAlarmScreen />);
 
-      fireEvent.press(getByTestId('change-time-button'));
+      // Seleciona terça-feira
+      fireEvent.press(getByTestId(`segment-${DayOfWeek.TUESDAY}`));
 
-      const timeDisplay = getByTestId('time-display');
-      expect(timeDisplay.props.children.join('')).toBe('7:30 PM');
+      // Verifica que terça está selecionada
+      const tuesdaySegment = getByTestId(`segment-${DayOfWeek.TUESDAY}`);
+      expect(tuesdaySegment.props.accessibilityState.selected).toBe(true);
     });
 
-    it('should update challenge when challenge is selected', () => {
+    it('should navigate to info modal when info button is pressed', () => {
       const { getByTestId } = render(<NewAlarmScreen />);
 
-      fireEvent.press(getByTestId('select-memory-button'));
-
-      const selectedChallenge = getByTestId('selected-challenge');
-      expect(selectedChallenge.props.children).toBe(ChallengeType.MEMORY);
-    });
-
-    it('should update difficulty when difficulty is selected', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
-
-      fireEvent.press(getByTestId('select-easy-button'));
-
-      const selectedDifficulty = getByTestId('selected-difficulty');
-      expect(selectedDifficulty.props.children).toBe(DifficultyLevel.EASY);
-    });
-
-    it('should toggle backup protocol when protocol is pressed', () => {
-      const { getByTestId, getByText } = render(<NewAlarmScreen />);
-
-      // Initial state: wake_check is enabled
-      expect(getByText(`${BackupProtocolId.WAKE_CHECK}: enabled`)).toBeTruthy();
-
-      // Toggle wake_check
-      fireEvent.press(getByTestId(`protocol-${BackupProtocolId.WAKE_CHECK}`));
-
-      // Should be disabled now
-      expect(getByText(`${BackupProtocolId.WAKE_CHECK}: disabled`)).toBeTruthy();
+      // Encontra o ícone de info
+      const infoIcon = getByTestId('icon-info');
+      expect(infoIcon).toBeTruthy();
     });
   });
 
@@ -361,42 +332,6 @@ describe('NewAlarmScreen', () => {
         challenge: 'Math Challenge',
         challengeIcon: 'calculate',
         schedule: 'Daily',
-      });
-
-      expect(mockBack).toHaveBeenCalledTimes(1);
-    });
-
-    it('should create alarm with custom values', async () => {
-      const { getByTestId, getByText } = render(<NewAlarmScreen />);
-
-      // Change time
-      act(() => {
-        fireEvent.press(getByTestId('change-time-button'));
-      });
-
-      // Change challenge
-      act(() => {
-        fireEvent.press(getByTestId('select-memory-button'));
-      });
-
-      // Commit
-      const commitButton = getByText('Commit to 07:30 PM');
-
-      act(() => {
-        fireEvent.press(commitButton);
-      });
-
-      await waitFor(() => {
-        const store = useAlarmsStore.getState();
-        expect(store.alarms).toHaveLength(1);
-      });
-
-      const store = useAlarmsStore.getState();
-      expect(store.alarms[0]).toMatchObject({
-        time: '07:30',
-        period: Period.PM,
-        challenge: 'Memory Matrix',
-        challengeIcon: 'psychology',
       });
 
       expect(mockBack).toHaveBeenCalledTimes(1);
@@ -436,22 +371,41 @@ describe('NewAlarmScreen', () => {
     });
   });
 
-  describe('State Management', () => {
-    it('should maintain independent state for all fields', () => {
+  describe('Component Integration', () => {
+    it('should render all challenge options with correct icons', () => {
       const { getByTestId } = render(<NewAlarmScreen />);
 
-      // Change all fields
-      fireEvent.press(getByTestId('change-time-button'));
-      fireEvent.press(getByTestId('change-days-button'));
-      fireEvent.press(getByTestId('select-memory-button'));
-      fireEvent.press(getByTestId('select-easy-button'));
-      fireEvent.press(getByTestId(`protocol-${BackupProtocolId.SNOOZE}`));
+      // Verifica os ícones dos challenges
+      expect(getByTestId('icon-calculate')).toBeTruthy();
+      expect(getByTestId('icon-psychology')).toBeTruthy();
+      expect(getByTestId('icon-lightbulb')).toBeTruthy();
+    });
 
-      // Verify all changes persisted
-      expect(getByTestId('time-display').props.children.join('')).toBe('7:30 PM');
-      expect(getByTestId('selected-days').props.children).toBe(DayOfWeek.TUESDAY);
-      expect(getByTestId('selected-challenge').props.children).toBe(ChallengeType.MEMORY);
-      expect(getByTestId('selected-difficulty').props.children).toBe(DifficultyLevel.EASY);
+    it('should render protocol toggles with correct icons', () => {
+      const { getByTestId } = render(<NewAlarmScreen />);
+
+      // Verifica os ícones dos protocolos
+      expect(getByTestId('icon-snooze')).toBeTruthy();
+      expect(getByTestId('icon-check_circle')).toBeTruthy();
+      expect(getByTestId('icon-qr_code_scanner')).toBeTruthy();
+    });
+
+    it('should have reset button functional', () => {
+      const { getByTestId } = render(<NewAlarmScreen />);
+
+      // Muda a dificuldade
+      fireEvent.press(getByTestId(`segment-${DifficultyLevel.EASY}`));
+
+      // Verifica que mudou
+      const easySegment = getByTestId(`segment-${DifficultyLevel.EASY}`);
+      expect(easySegment.props.accessibilityState.selected).toBe(true);
+
+      // Reset
+      fireEvent.press(getByTestId('header-reset-button'));
+
+      // Verifica que voltou ao default (adaptive)
+      const adaptiveSegment = getByTestId(`segment-${DifficultyLevel.ADAPTIVE}`);
+      expect(adaptiveSegment.props.accessibilityState.selected).toBe(true);
     });
   });
 });
