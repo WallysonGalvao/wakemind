@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -177,16 +177,16 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const difficulty = watch('difficulty');
   const protocols = watch('protocols');
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     router.back();
-  };
+  }, [router]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     reset({
       ...DEFAULT_ALARM_FORM_VALUES,
       selectedDays: [getCurrentDayOfWeek()],
     });
-  };
+  }, [reset]);
 
   const handleTimeChange = (newHour: number, newMinute: number, newPeriod: Period) => {
     setValue('hour', newHour);
@@ -261,43 +261,60 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const leftIcon = isEditMode ? 'arrow_back' : 'close';
   const leftIconLabel = isEditMode ? t('common.back') : t('common.close');
 
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    if (isEditMode) {
+      navigation.setOptions({
+        headerTitle: screenTitle,
+        headerLeft: () => (
+          <Pressable accessibilityRole="button" onPress={handleClose} className="p-2">
+            <MaterialSymbol
+              name="arrow_back"
+              size={24}
+              className="text-slate-900 dark:text-white"
+            />
+          </Pressable>
+        ),
+      });
+    }
+  }, [isEditMode, navigation, screenTitle, handleClose, handleReset, t]);
+
   return (
     <View
       className="flex-1 bg-background-light dark:bg-background-dark"
-      style={{ paddingTop: insets.top }}
+      style={{ paddingTop: isEditMode ? 0 : insets.top }}
     >
       {/* Header */}
-      <Header
-        title={screenTitle}
-        leftIcons={[
-          {
-            icon: (
-              <MaterialSymbol
-                name={leftIcon}
-                size={24}
-                className="text-slate-900 dark:text-white"
-              />
-            ),
-            onPress: handleClose,
-            accessibilityLabel: leftIconLabel,
-          },
-        ]}
-        rightIcons={
-          isEditMode
-            ? []
-            : [
-                {
-                  label: (
-                    <Text className="text-base font-medium text-slate-500 dark:text-slate-400">
-                      {t('newAlarm.reset')}
-                    </Text>
-                  ),
-                  onPress: handleReset,
-                  accessibilityLabel: t('newAlarm.reset'),
-                },
-              ]
-        }
-      />
+      {!isEditMode && (
+        <Header
+          title={screenTitle}
+          leftIcons={[
+            {
+              icon: (
+                <MaterialSymbol
+                  name={leftIcon}
+                  size={24}
+                  className="text-slate-900 dark:text-white"
+                />
+              ),
+              onPress: handleClose,
+              accessibilityLabel: leftIconLabel,
+            },
+          ]}
+          rightIcons={[
+            {
+              label: (
+                <Text className="text-base font-medium text-slate-500 dark:text-slate-400">
+                  {t('newAlarm.reset')}
+                </Text>
+              ),
+              onPress: handleReset,
+              accessibilityLabel: t('newAlarm.reset'),
+            },
+          ]}
+        />
+      )}
 
       {/* Content */}
       <ScrollView contentContainerClassName="pb-32" showsVerticalScrollIndicator={false}>
