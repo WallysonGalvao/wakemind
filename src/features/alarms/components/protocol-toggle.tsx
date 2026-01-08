@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Pressable, View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
+import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
 
@@ -28,16 +29,20 @@ export function ProtocolToggle({
   disabled = false,
 }: ProtocolToggleProps) {
   const shadowStyle = useShadowStyle('sm');
+  const colorScheme = useColorScheme();
+
+  const trackColor = {
+    false: colorScheme === 'dark' ? '#475569' : '#cbd5e1',
+    true: '#135bec',
+  };
 
   return (
-    <Pressable
-      onPress={disabled ? undefined : onToggle}
+    <View
       className={`flex-row items-center justify-between rounded-lg border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark ${
         disabled ? 'opacity-60' : ''
       }`}
       style={shadowStyle}
-      accessibilityRole="switch"
-      accessibilityState={{ checked: isEnabled, disabled }}
+      accessibilityRole="none"
     >
       <View className="flex-row items-center gap-3">
         <View className={`flex size-10 items-center justify-center rounded-full ${iconBgColor}`}>
@@ -50,18 +55,14 @@ export function ProtocolToggle({
       </View>
 
       {/* Toggle switch */}
-      <View
-        className={`relative h-6 w-11 rounded-full ${
-          isEnabled ? 'bg-brand-primary/30' : 'bg-slate-200 dark:bg-surface-highlight'
-        }`}
-      >
-        <View
-          className={`absolute top-1 h-4 w-4 rounded-full ${
-            isEnabled ? 'right-1 bg-brand-primary' : 'left-1 bg-slate-400 dark:bg-slate-500'
-          }`}
-          style={shadowStyle}
-        />
-      </View>
-    </Pressable>
+      <Switch
+        value={isEnabled}
+        onValueChange={disabled ? undefined : onToggle}
+        trackColor={trackColor}
+        thumbColor="#ffffff"
+        disabled={disabled}
+        size="sm"
+      />
+    </View>
   );
 }
