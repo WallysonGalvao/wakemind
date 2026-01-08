@@ -11,6 +11,7 @@ import Animated, {
 
 import { Pressable, useColorScheme, View } from 'react-native';
 
+import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
@@ -21,12 +22,21 @@ interface AlarmCardProps {
   alarm: Alarm;
   onToggle: (id: string) => void;
   onPress?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  isEditMode?: boolean;
   index?: number;
 }
 
 const STAGGER_DELAY = 100;
 
-export function AlarmCard({ alarm, onToggle, onPress, index = 0 }: AlarmCardProps) {
+export function AlarmCard({
+  alarm,
+  onToggle,
+  onPress,
+  onDelete,
+  isEditMode = false,
+  index = 0,
+}: AlarmCardProps) {
   const isActive = alarm.isEnabled;
   const colorScheme = useColorScheme();
   const scale = useSharedValue(1);
@@ -58,6 +68,13 @@ export function AlarmCard({ alarm, onToggle, onPress, index = 0 }: AlarmCardProp
     }
   };
 
+  const handleDelete = () => {
+    if (onDelete) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      onDelete(alarm.id);
+    }
+  };
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
@@ -79,6 +96,19 @@ export function AlarmCard({ alarm, onToggle, onPress, index = 0 }: AlarmCardProp
         }`}
       >
         <View className="flex-row items-center justify-between">
+          {/* Delete Button (Edit Mode Only) */}
+          {isEditMode ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Delete alarm"
+              accessibilityHint="Removes this alarm from your list"
+              onPress={handleDelete}
+              className="-ml-1 mr-3 items-center justify-center rounded-full active:opacity-70"
+            >
+              <MaterialSymbol name="do_not_disturb_on" size={28} className="text-red-500" />
+            </Pressable>
+          ) : null}
+
           {/* Left Side: Time and Info */}
           <View className="flex-1 gap-1">
             {/* Time Display */}
@@ -130,15 +160,23 @@ export function AlarmCard({ alarm, onToggle, onPress, index = 0 }: AlarmCardProp
             </View>
           </View>
 
-          {/* Right Side: Toggle Switch */}
+          {/* Right Side: Toggle Switch OR Chevron */}
           <View className="pl-4">
-            <Switch
-              value={alarm.isEnabled}
-              onValueChange={handleToggle}
-              trackColor={trackColor}
-              thumbColor={COLORS.white}
-              size="lg"
-            />
+            {isEditMode ? (
+              <MaterialSymbol
+                name="chevron_right"
+                size={28}
+                className="text-slate-400 dark:text-slate-500"
+              />
+            ) : (
+              <Switch
+                value={alarm.isEnabled}
+                onValueChange={handleToggle}
+                trackColor={trackColor}
+                thumbColor={COLORS.white}
+                size="lg"
+              />
+            )}
           </View>
         </View>
       </Animated.View>

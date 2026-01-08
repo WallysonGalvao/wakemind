@@ -9,6 +9,8 @@ import { Text } from '@/components/ui/text';
 interface AlarmsHeaderProps {
   title: string;
   editLabel: string;
+  doneLabel: string;
+  isEditMode: boolean;
   onEditPress?: () => void;
   showEdit?: boolean;
 }
@@ -16,6 +18,8 @@ interface AlarmsHeaderProps {
 export function AlarmsHeader({
   title,
   editLabel,
+  doneLabel,
+  isEditMode,
   onEditPress,
   showEdit = true,
 }: AlarmsHeaderProps) {
@@ -39,7 +43,9 @@ export function AlarmsHeader({
             className="rounded-lg px-2 py-1 active:bg-primary-500/10"
             onPress={onEditPress}
           >
-            <Text className="text-lg font-semibold text-primary-500">{editLabel}</Text>
+            <Text className="text-lg font-semibold text-primary-500">
+              {isEditMode ? doneLabel : editLabel}
+            </Text>
           </Pressable>
         ) : null}
       </View>
