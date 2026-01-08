@@ -17,6 +17,15 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] UUID único para alarmes (expo-crypto)
 - [x] Validação de alarmes duplicados
 - [x] Error handling com i18n
+- [x] Componente genérico `SegmentedControl` com animações
+- [x] Descrições dinâmicas por nível de dificuldade
+- [x] Animações no `TimePickerWheel` (scale, opacity, 3D rotation)
+- [x] Animações no carousel de challenges (scale, opacity durante scroll)
+- [x] Componente `ProtocolToggle` usando `Switch` padrão
+- [x] Refatoração do `Header` para dark mode
+- [x] Cores corretamente aplicadas em dark/light mode
+- [x] GestureHandlerRootView configurado no root layout
+- [x] Documentação de regras expo-image em CLAUDE.md
 
 ## 🎯 Fase 1 - Funcionalidades Core (Prioritário)
 
@@ -289,11 +298,14 @@ src/utils/stats-calculator.ts (novo)
 
 ### 5.1 Animações e Transições
 
-**Status:** 🟡 Em Progresso (Parcial)
+**Status:** ✅ Concluído (Base)
 **Prioridade:** Média
 
 #### Objetivos:
 
+- [x] Animações no TimePickerWheel (scale, opacity, 3D rotation)
+- [x] Animações no carousel de challenges (scale, opacity)
+- [x] Animações no SegmentedControl (sliding, gestures)
 - [ ] Animação de criação de alarme (confetti?)
 - [ ] Transição suave entre telas
 - [ ] Loading states
@@ -319,12 +331,12 @@ src/utils/stats-calculator.ts (novo)
 
 ### 5.3 Dark Mode Otimizado
 
-**Status:** ✅ Implementado (Necessita Refinamento)
+**Status:** ✅ Implementado
 
 #### Objetivos:
 
-- [ ] Revisar cores em dark mode
-- [ ] Ajustar contrastes
+- [x] Revisar cores em dark mode
+- [x] Ajustar contrastes
 - [ ] Otimizar gradientes
 - [ ] Testar em diferentes dispositivos
 
@@ -573,6 +585,6 @@ Para contribuir com este roadmap:
 
 ---
 
-**Última atualização:** 2026-01-07
-**Versão do Roadmap:** 1.0
+**Última atualização:** 2026-01-08
+**Versão do Roadmap:** 1.1
 **Mantido por:** Time WakeMind

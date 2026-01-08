@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 
-import { Pressable, useColorScheme, View } from 'react-native';
+import { Pressable, RefreshControl, useColorScheme, View } from 'react-native';
 
 import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
@@ -26,6 +28,7 @@ export default function AlarmsScreen() {
   const colorScheme = useColorScheme();
   const alarms = useAlarmsStore((state) => state.alarms);
   const toggleAlarm = useAlarmsStore((state) => state.toggleAlarm);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Use grayscale image in dark mode, colored in light mode
   const sunriseImage =
@@ -52,6 +55,20 @@ export default function AlarmsScreen() {
     console.log('Edit pressed');
   };
 
+  // Pull to refresh handler
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    // Haptic feedback on refresh
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    // Simulate refresh delay (in real app, would sync with backend)
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    setIsRefreshing(false);
+    // Success haptic
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  }, []);
+
   const keyExtractor = useCallback((item: Alarm) => item.id, []);
 
   const renderHeader = useCallback(() => {
@@ -65,41 +82,56 @@ export default function AlarmsScreen() {
   }, [t]);
 
   const renderItem = useCallback(
-    ({ item }: { item: Alarm }) => <AlarmCard alarm={item} onToggle={handleToggleAlarm} />,
+    ({ item, index }: { item: Alarm; index: number }) => (
+      <AlarmCard alarm={item} onToggle={handleToggleAlarm} index={index} />
+    ),
     [handleToggleAlarm]
   );
 
   const renderEmpty = useCallback(() => {
     return (
-      <EmptyState
-        title={t('alarms.emptyTitle')}
-        description={t('alarms.emptyDescription')}
-        image={sunriseImage}
-      >
-        <Pressable
-          onPress={handleNewAlarm}
-          className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 active:scale-[0.98]"
-          accessibilityRole="button"
+      <Animated.View entering={FadeIn.duration(500)} exiting={FadeOut.duration(300)}>
+        <EmptyState
+          title={t('alarms.emptyTitle')}
+          description={t('alarms.emptyDescription')}
+          image={sunriseImage}
         >
-          <MaterialSymbol name="add_alarm" size={24} className="text-white" />
-          <Text className="text-lg font-bold text-white">{t('alarms.setFirstAlarm')}</Text>
-        </Pressable>
-      </EmptyState>
+          <Pressable
+            onPress={handleNewAlarm}
+            className="h-14 w-full flex-row items-center justify-center gap-2 rounded-2xl bg-primary-500 active:scale-[0.98]"
+            accessibilityRole="button"
+          >
+            <MaterialSymbol name="add_alarm" size={24} className="text-white" />
+            <Text className="text-lg font-bold text-white">{t('alarms.setFirstAlarm')}</Text>
+          </Pressable>
+        </EmptyState>
+      </Animated.View>
     );
   }, [t, sunriseImage, handleNewAlarm]);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
-      <FlashList
-        data={alarms}
-        keyExtractor={keyExtractor}
-        ListHeaderComponent={hasAlarms ? renderHeader : null}
-        renderItem={renderItem}
-        ListEmptyComponent={renderEmpty}
-        contentContainerClassName="px-4 pb-36"
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={ItemSeparator}
-      />
+      <Animated.View className="flex-1" layout={Layout.duration(300)}>
+        <FlashList
+          data={alarms}
+          keyExtractor={keyExtractor}
+          ListHeaderComponent={hasAlarms ? renderHeader : null}
+          renderItem={renderItem}
+          ListEmptyComponent={renderEmpty}
+          contentContainerClassName="px-4 pb-36"
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={ItemSeparator}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+              tintColor={colorScheme === 'dark' ? '#64748b' : '#94a3b8'}
+              colors={['#135bec']}
+              progressBackgroundColor={colorScheme === 'dark' ? '#1a2230' : '#ffffff'}
+            />
+          }
+        />
+      </Animated.View>
 
       {/* Floating Action Button */}
       {hasAlarms ? (
