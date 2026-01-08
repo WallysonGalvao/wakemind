@@ -43,8 +43,13 @@ export const appES = {
     'Completa la secuencia para demostrar que estás despierto.',
   'newAlarm.difficulty.label': 'Nivel de Dificultad',
   'newAlarm.difficulty.easy': 'Fácil',
+  'newAlarm.difficulty.easyDescription':
+    'Desafíos básicos. Perfecto para quienes tienen el sueño ligero.',
   'newAlarm.difficulty.medium': 'Medio',
+  'newAlarm.difficulty.mediumDescription': 'Desafíos moderados. Rutina estándar de despertar.',
   'newAlarm.difficulty.hard': 'Difícil',
+  'newAlarm.difficulty.hardDescription':
+    'Desafíos complejos. Para quienes tienen el sueño profundo.',
   'newAlarm.difficulty.adaptive': 'Adaptativo',
   'newAlarm.difficulty.adaptiveDescription':
     'IA ajusta la dificultad según tu historial de despertar.',
