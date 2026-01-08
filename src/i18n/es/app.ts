@@ -102,6 +102,10 @@ export const appES = {
   'validation.alarm.scheduleRequired': 'El horario es requerido',
   'validation.alarm.notFound': 'Alarma no encontrada',
 
+  // Edit Alarm Screen
+  'editAlarm.title': 'Editar Alarma',
+  'editAlarm.save': 'Guardar Cambios',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',
@@ -112,4 +116,5 @@ export const appES = {
   'common.ok': 'OK',
   'common.info': 'Más información',
   'common.close': 'Cerrar',
+  'common.back': 'Atrás',
 };

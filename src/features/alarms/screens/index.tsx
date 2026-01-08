@@ -46,9 +46,15 @@ export default function AlarmsScreen() {
   );
 
   const handleNewAlarm = useCallback(() => {
-    console.log('handleNewAlarm');
     router.push('/alarm/alarm-form');
   }, [router]);
+
+  const handleEditAlarm = useCallback(
+    (id: string) => {
+      router.push(`/alarm/alarm-form?alarmId=${id}`);
+    },
+    [router]
+  );
 
   const handleEditPress = () => {
     // TODO: Handle edit mode
@@ -83,9 +89,14 @@ export default function AlarmsScreen() {
 
   const renderItem = useCallback(
     ({ item, index }: { item: Alarm; index: number }) => (
-      <AlarmCard alarm={item} onToggle={handleToggleAlarm} index={index} />
+      <AlarmCard
+        alarm={item}
+        onToggle={handleToggleAlarm}
+        onPress={handleEditAlarm}
+        index={index}
+      />
     ),
-    [handleToggleAlarm]
+    [handleToggleAlarm, handleEditAlarm]
   );
 
   const renderEmpty = useCallback(() => {
