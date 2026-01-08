@@ -29,10 +29,26 @@ export function DifficultySelector({
     },
   ];
 
+  // Get description based on selected difficulty
+  const getDescription = () => {
+    switch (selectedDifficulty) {
+      case DifficultyLevel.EASY:
+        return t('newAlarm.difficulty.easyDescription');
+      case DifficultyLevel.MEDIUM:
+        return t('newAlarm.difficulty.mediumDescription');
+      case DifficultyLevel.HARD:
+        return t('newAlarm.difficulty.hardDescription');
+      case DifficultyLevel.ADAPTIVE:
+        return t('newAlarm.difficulty.adaptiveDescription');
+      default:
+        return t('newAlarm.difficulty.adaptiveDescription');
+    }
+  };
+
   return (
     <SegmentedControl
       title={t('newAlarm.difficulty.label')}
-      description={t('newAlarm.difficulty.adaptiveDescription')}
+      description={getDescription()}
       items={items}
       selectedValue={selectedDifficulty}
       onValueChange={onDifficultyChange}

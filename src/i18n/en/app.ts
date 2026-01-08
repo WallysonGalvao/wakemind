@@ -41,8 +41,12 @@ export const appEN = {
   'newAlarm.challenges.logic.description': 'Complete the sequence to prove wakefulness.',
   'newAlarm.difficulty.label': 'Difficulty Level',
   'newAlarm.difficulty.easy': 'Easy',
+  'newAlarm.difficulty.easyDescription': 'Basic challenges. Perfect for light sleepers.',
   'newAlarm.difficulty.medium': 'Medium',
+  'newAlarm.difficulty.mediumDescription': 'Moderate challenges. Standard wake-up routine.',
   'newAlarm.difficulty.hard': 'Hard',
+  'newAlarm.difficulty.hardDescription':
+    'Complex challenges. For deep sleepers who need extra help.',
   'newAlarm.difficulty.adaptive': 'Adaptive',
   'newAlarm.difficulty.adaptiveDescription': 'AI adjusts difficulty based on your wake-up history.',
   'newAlarm.backupProtocols.title': 'Backup Protocols',

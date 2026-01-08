@@ -135,7 +135,9 @@ export default function NewAlarmScreen() {
         title={t('newAlarm.title')}
         leftIcons={[
           {
-            icon: <MaterialSymbol name="close" size={24} />,
+            icon: (
+              <MaterialSymbol name="close" size={24} className="text-slate-900 dark:text-white" />
+            ),
             onPress: handleClose,
             accessibilityLabel: t('common.close'),
           },

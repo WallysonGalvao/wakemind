@@ -65,7 +65,7 @@ export const Header = ({
         {customTitle ? (
           customTitle
         ) : (
-          <Text className="text-primary dark:text-lighter text-base font-bold">{title}</Text>
+          <Text className="text-base font-bold text-slate-900 dark:text-white">{title}</Text>
         )}
       </View>
 

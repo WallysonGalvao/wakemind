@@ -41,8 +41,12 @@ export const appPT = {
   'newAlarm.challenges.logic.description': 'Complete a sequência para provar que está acordado.',
   'newAlarm.difficulty.label': 'Nível de Dificuldade',
   'newAlarm.difficulty.easy': 'Fácil',
+  'newAlarm.difficulty.easyDescription': 'Desafios básicos. Perfeito para quem tem sono leve.',
   'newAlarm.difficulty.medium': 'Médio',
+  'newAlarm.difficulty.mediumDescription': 'Desafios moderados. Rotina padrão de despertar.',
   'newAlarm.difficulty.hard': 'Difícil',
+  'newAlarm.difficulty.hardDescription':
+    'Desafios complexos. Para quem tem sono pesado e precisa de mais ajuda.',
   'newAlarm.difficulty.adaptive': 'Adaptativo',
   'newAlarm.difficulty.adaptiveDescription':
     'IA ajusta a dificuldade com base no seu histórico de despertar.',
