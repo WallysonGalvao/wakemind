@@ -6,7 +6,10 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useCustomShadow } from '@/hooks/use-shadow-style';
 import type { ChallengeType } from '@/types/alarm-enums';
+
+const BRAND_PRIMARY_SHADOW = 'rgba(19, 91, 236, 0.12)';
 
 interface ChallengeCardProps {
   type: ChallengeType;
@@ -26,6 +29,14 @@ export function ChallengeCard({
   isSelected,
   onSelect,
 }: ChallengeCardProps) {
+  const selectedShadow = useCustomShadow({
+    offset: { width: 0, height: 8 },
+    opacity: 1,
+    radius: 30,
+    elevation: 8,
+    color: BRAND_PRIMARY_SHADOW,
+  });
+
   return (
     <Pressable
       onPress={onSelect}
@@ -34,17 +45,7 @@ export function ChallengeCard({
           ? 'border-2 border-brand-primary bg-white dark:bg-surface-dark'
           : 'border border-slate-200 bg-white dark:border-surface-highlight dark:bg-surface-dark/50'
       }`}
-      style={
-        isSelected
-          ? {
-              shadowColor: 'rgba(19, 91, 236, 0.12)',
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 1,
-              shadowRadius: 30,
-              elevation: 8,
-            }
-          : undefined
-      }
+      style={isSelected ? selectedShadow : undefined}
       accessibilityRole="button"
     >
       {/* Selected checkmark */}
@@ -93,7 +94,6 @@ export function ChallengeCard({
               contentFit="cover"
               transition={200}
               accessibilityIgnoresInvertColors
-              style={{ width: '100%', height: '100%' }}
             />
           </View>
         ) : null}

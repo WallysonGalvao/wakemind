@@ -11,10 +11,14 @@ import { CognitiveActivationSection } from '../components/cognitive-activation-s
 import { DifficultySelector } from '../components/difficulty-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
 
+import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
+
+const BRAND_PRIMARY_SHADOW = 'rgba(19, 91, 236, 0.3)';
 
 const DEFAULT_HOUR = 6;
 const DEFAULT_MINUTE = 0;
@@ -31,6 +35,15 @@ export default function NewAlarmScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const addAlarm = useAlarmsStore((state) => state.addAlarm);
+
+  // CTA shadow style
+  const ctaShadow = useCustomShadow({
+    offset: { width: 0, height: 4 },
+    opacity: 1,
+    radius: 14,
+    elevation: 4,
+    color: BRAND_PRIMARY_SHADOW,
+  });
 
   // Time state
   const [hour, setHour] = useState(DEFAULT_HOUR);
@@ -113,34 +126,32 @@ export default function NewAlarmScreen() {
   const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
 
   return (
-    <View className="flex-1 bg-background-light dark:bg-background-dark">
+    <View
+      className="flex-1 bg-background-light dark:bg-background-dark"
+      style={{ paddingTop: insets.top }}
+    >
       {/* Header */}
-      <View
-        className="flex-row items-center justify-between border-b border-transparent bg-background-light/95 px-4 pb-2 dark:bg-background-dark/95"
-        style={{ paddingTop: insets.top + 16 }}
-      >
-        <Pressable
-          onPress={handleClose}
-          className="flex size-12 shrink-0 items-center justify-start"
-          accessibilityRole="button"
-        >
-          <MaterialSymbol name="close" size={24} />
-        </Pressable>
-
-        <Text className="flex-1 text-center text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
-          {t('newAlarm.title')}
-        </Text>
-
-        <Pressable
-          onPress={handleReset}
-          className="flex w-12 items-center justify-end"
-          accessibilityRole="button"
-        >
-          <Text className="text-base font-medium text-slate-500 transition-colors hover:text-brand-primary dark:text-slate-400">
-            {t('newAlarm.reset')}
-          </Text>
-        </Pressable>
-      </View>
+      <Header
+        title={t('newAlarm.title')}
+        leftIcons={[
+          {
+            icon: <MaterialSymbol name="close" size={24} />,
+            onPress: handleClose,
+            accessibilityLabel: t('common.close'),
+          },
+        ]}
+        rightIcons={[
+          {
+            label: (
+              <Text className="text-base font-medium text-slate-500 dark:text-slate-400">
+                {t('newAlarm.reset')}
+              </Text>
+            ),
+            onPress: handleReset,
+            accessibilityLabel: t('newAlarm.reset'),
+          },
+        ]}
+      />
 
       {/* Content */}
       <ScrollView contentContainerClassName="pb-32" showsVerticalScrollIndicator={false}>
@@ -162,7 +173,7 @@ export default function NewAlarmScreen() {
         <DifficultySelector selectedDifficulty={difficulty} onDifficultyChange={setDifficulty} />
 
         {/* Divider */}
-        <View className="mx-4 my-4 h-px bg-surface-highlight" />
+        <View className="mx-4 my-4 h-px bg-slate-200 dark:bg-surface-highlight" />
 
         {/* Backup Protocols Section */}
         <BackupProtocolsSection protocols={protocols} onProtocolToggle={handleProtocolToggle} />
@@ -175,7 +186,8 @@ export default function NewAlarmScreen() {
       >
         <Pressable
           onPress={handleCommit}
-          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary shadow-[0_4px_14px_rgba(19,91,236,0.3)] active:scale-[0.98]"
+          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary active:scale-[0.98]"
+          style={ctaShadow}
           accessibilityRole="button"
         >
           <Text className="mr-2 text-lg font-bold text-white">

@@ -6,6 +6,7 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 import { DifficultyLevel } from '@/types/alarm-enums';
 
 interface DifficultySelectorProps {
@@ -18,6 +19,7 @@ export function DifficultySelector({
   onDifficultyChange,
 }: DifficultySelectorProps) {
   const { t } = useTranslation();
+  const shadowStyle = useShadowStyle('sm');
 
   const difficulties: DifficultyLevel[] = [
     DifficultyLevel.EASY,
@@ -46,17 +48,7 @@ export function DifficultySelector({
                   ? 'border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary'
                   : ''
               }`}
-              style={
-                isSelected
-                  ? {
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.05,
-                      shadowRadius: 2,
-                      elevation: 1,
-                    }
-                  : undefined
-              }
+              style={isSelected ? shadowStyle : undefined}
               accessibilityRole="button"
             >
               {isAdaptive && isSelected ? (

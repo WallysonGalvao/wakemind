@@ -28,21 +28,21 @@ export function BackupProtocolsSection({
   const getProtocolConfig = (id: BackupProtocolId) => {
     const configs: Record<
       BackupProtocolId,
-      { icon: string; iconColor: string; iconBgColor: string }
+      { icon: string; iconClassName: string; iconBgColor: string }
     > = {
       [BackupProtocolId.SNOOZE]: {
         icon: 'snooze',
-        iconColor: '#ef4444',
+        iconClassName: 'text-red-500',
         iconBgColor: 'bg-red-500/10',
       },
       [BackupProtocolId.WAKE_CHECK]: {
         icon: 'check_circle',
-        iconColor: '#22c55e',
+        iconClassName: 'text-green-500',
         iconBgColor: 'bg-green-500/10',
       },
       [BackupProtocolId.BARCODE_SCAN]: {
         icon: 'qr_code_scanner',
-        iconColor: '#a855f7',
+        iconClassName: 'text-purple-500',
         iconBgColor: 'bg-purple-500/10',
       },
     };
@@ -66,7 +66,7 @@ export function BackupProtocolsSection({
             <ProtocolToggle
               key={protocol.id}
               icon={config.icon}
-              iconColor={config.iconColor}
+              iconClassName={config.iconClassName}
               iconBgColor={config.iconBgColor}
               title={t(`newAlarm.backupProtocols.${protocol.id}.title`)}
               description={t(`newAlarm.backupProtocols.${protocol.id}.description`)}
