@@ -82,10 +82,16 @@ export function SegmentedControl<T extends string>({
 
   const handleSelect = useCallback(
     (value: T) => {
+      // In multi-select mode, always call onValueChange to allow toggle
+      if (multiSelect) {
+        onValueChange(value);
+        return;
+      }
+      // In single-select mode, prevent selecting the same value
       if (value === selectedValue) return;
       onValueChange(value);
     },
-    [selectedValue, onValueChange]
+    [selectedValue, onValueChange, multiSelect]
   );
 
   const panGesture = Gesture.Pan()

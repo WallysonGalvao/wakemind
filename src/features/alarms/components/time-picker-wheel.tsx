@@ -9,6 +9,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
@@ -141,7 +142,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
   });
 
   const handleMomentumScrollEnd = useCallback(
-    (event: any) => {
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const offsetY = event.nativeEvent.contentOffset.y;
       const index = Math.round(offsetY / ITEM_HEIGHT);
       const clampedIndex = Math.max(0, Math.min(index, items.length - 1));
