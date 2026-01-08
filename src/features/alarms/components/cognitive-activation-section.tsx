@@ -1,8 +1,15 @@
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import type { SharedValue } from 'react-native-reanimated';
+import Animated, {
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
-import { ScrollView, View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 
 import { ChallengeCard } from './challenge-card';
 
@@ -36,6 +43,64 @@ const challenges: Challenge[] = [
   },
 ];
 
+// Layout constants
+const CARD_GAP = 16;
+const HORIZONTAL_PADDING = 16;
+
+interface AnimatedCardProps {
+  challenge: Challenge;
+  index: number;
+  scrollX: SharedValue<number>;
+  snapInterval: number;
+  cardWidth: number;
+  isSelected: boolean;
+  onSelect: () => void;
+  title: string;
+  description: string;
+}
+
+function AnimatedCard({
+  challenge,
+  index,
+  scrollX,
+  snapInterval,
+  cardWidth,
+  isSelected,
+  onSelect,
+  title,
+  description,
+}: AnimatedCardProps) {
+  const animatedStyle = useAnimatedStyle(() => {
+    const inputRange = [
+      (index - 1) * snapInterval,
+      index * snapInterval,
+      (index + 1) * snapInterval,
+    ];
+
+    const scale = interpolate(scrollX.value, inputRange, [0.92, 1, 0.92], 'clamp');
+    const opacity = interpolate(scrollX.value, inputRange, [0.7, 1, 0.7], 'clamp');
+
+    return {
+      transform: [{ scale }],
+      opacity,
+    };
+  });
+
+  return (
+    <Animated.View style={[{ width: cardWidth }, animatedStyle]}>
+      <ChallengeCard
+        type={challenge.type}
+        title={title}
+        description={description}
+        icon={challenge.icon}
+        imageUrl={challenge.imageUrl}
+        isSelected={isSelected}
+        onSelect={onSelect}
+      />
+    </Animated.View>
+  );
+}
+
 interface CognitiveActivationSectionProps {
   selectedChallenge: ChallengeType;
   onChallengeSelect: (type: ChallengeType) => void;
@@ -46,6 +111,18 @@ export function CognitiveActivationSection({
   onChallengeSelect,
 }: CognitiveActivationSectionProps) {
   const { t } = useTranslation();
+  const { width: screenWidth } = useWindowDimensions();
+  const scrollX = useSharedValue(0);
+
+  // Calculate card width based on screen width (80% of screen - padding)
+  const cardWidth = Math.min(screenWidth * 0.8, 320);
+  const snapInterval = cardWidth + CARD_GAP;
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollX.value = event.contentOffset.x;
+    },
+  });
 
   return (
     <View>
@@ -61,29 +138,35 @@ export function CognitiveActivationSection({
         </View>
       </View>
 
-      {/* Challenge cards horizontal scroll */}
-      <ScrollView
+      {/* Challenge cards horizontal scroll with animations */}
+      <Animated.ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={296}
+        snapToInterval={snapInterval}
         decelerationRate="fast"
-        contentContainerClassName="gap-4 px-4 pb-4"
-        className="snap-x"
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        contentContainerClassName="pb-4"
+        contentContainerStyle={{
+          paddingHorizontal: HORIZONTAL_PADDING,
+          gap: CARD_GAP,
+        }}
       >
-        {challenges.map((challenge) => (
-          <View key={challenge.type} className="snap-center">
-            <ChallengeCard
-              type={challenge.type}
-              title={t(`newAlarm.challenges.${challenge.type}.title`)}
-              description={t(`newAlarm.challenges.${challenge.type}.description`)}
-              icon={challenge.icon}
-              imageUrl={challenge.imageUrl}
-              isSelected={selectedChallenge === challenge.type}
-              onSelect={() => onChallengeSelect(challenge.type)}
-            />
-          </View>
+        {challenges.map((challenge, index) => (
+          <AnimatedCard
+            key={challenge.type}
+            challenge={challenge}
+            index={index}
+            scrollX={scrollX}
+            snapInterval={snapInterval}
+            cardWidth={cardWidth}
+            isSelected={selectedChallenge === challenge.type}
+            onSelect={() => onChallengeSelect(challenge.type)}
+            title={t(`newAlarm.challenges.${challenge.type}.title`)}
+            description={t(`newAlarm.challenges.${challenge.type}.description`)}
+          />
         ))}
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }
