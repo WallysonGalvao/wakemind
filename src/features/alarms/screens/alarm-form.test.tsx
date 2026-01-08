@@ -4,7 +4,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 
 import { Alert } from 'react-native';
 
-import NewAlarmScreen from './new-alarm';
+import AlarmFormScreen from './alarm-form';
 
 import { DayOfWeek } from '@/features/alarms/components/schedule-selector';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
@@ -196,7 +196,7 @@ jest.mock('@/components/segmented-control', () => ({
   },
 }));
 
-describe('NewAlarmScreen', () => {
+describe('AlarmFormScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset store
@@ -208,7 +208,7 @@ describe('NewAlarmScreen', () => {
 
   describe('Rendering', () => {
     it('should render the screen with all components', () => {
-      const { getByTestId, getByText, getAllByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId, getByText, getAllByTestId } = render(<AlarmFormScreen />);
 
       // Header
       expect(getByTestId('header')).toBeTruthy();
@@ -223,13 +223,13 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should display commit button with formatted time', () => {
-      const { getByText } = render(<NewAlarmScreen />);
+      const { getByText } = render(<AlarmFormScreen />);
 
       expect(getByText('Commit to 06:00 AM')).toBeTruthy();
     });
 
     it('should render cognitive activation section with challenge cards', () => {
-      const { getByText } = render(<NewAlarmScreen />);
+      const { getByText } = render(<AlarmFormScreen />);
 
       // Verifica que os títulos dos challenges estão presentes
       expect(getByText('Math Challenge')).toBeTruthy();
@@ -238,7 +238,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should render difficulty options', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Verifica que os segmentos de dificuldade estão presentes
       expect(getByTestId(`segment-${DifficultyLevel.EASY}`)).toBeTruthy();
@@ -248,7 +248,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should render schedule selector with day options', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Verifica que os dias estão presentes
       expect(getByTestId(`segment-${DayOfWeek.MONDAY}`)).toBeTruthy();
@@ -261,7 +261,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should render backup protocols section', () => {
-      const { getByText } = render(<NewAlarmScreen />);
+      const { getByText } = render(<AlarmFormScreen />);
 
       // Verifica que os protocolos estão presentes (via mocked translation key)
       expect(getByText('Snooze')).toBeTruthy();
@@ -272,7 +272,7 @@ describe('NewAlarmScreen', () => {
 
   describe('User Interactions', () => {
     it('should close screen when close button is pressed', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       fireEvent.press(getByTestId('header-close-button'));
 
@@ -280,7 +280,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should update difficulty when difficulty segment is selected', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Seleciona dificuldade easy
       fireEvent.press(getByTestId(`segment-${DifficultyLevel.EASY}`));
@@ -291,7 +291,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should update schedule when days are selected', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Seleciona terça-feira
       fireEvent.press(getByTestId(`segment-${DayOfWeek.TUESDAY}`));
@@ -302,7 +302,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should navigate to info modal when info button is pressed', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Encontra o ícone de info
       const infoIcon = getByTestId('icon-info');
@@ -312,7 +312,7 @@ describe('NewAlarmScreen', () => {
 
   describe('Alarm Creation', () => {
     it('should create alarm with default values when commit button is pressed', async () => {
-      const { getByText } = render(<NewAlarmScreen />);
+      const { getByText } = render(<AlarmFormScreen />);
 
       const commitButton = getByText('Commit to 06:00 AM');
 
@@ -350,7 +350,7 @@ describe('NewAlarmScreen', () => {
         schedule: 'Daily',
       });
 
-      const { getByText } = render(<NewAlarmScreen />);
+      const { getByText } = render(<AlarmFormScreen />);
 
       // Try to add duplicate alarm
       const commitButton = getByText('Commit to 06:00 AM');
@@ -373,7 +373,7 @@ describe('NewAlarmScreen', () => {
 
   describe('Component Integration', () => {
     it('should render all challenge options with correct icons', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Verifica os ícones dos challenges
       expect(getByTestId('icon-calculate')).toBeTruthy();
@@ -382,7 +382,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should render protocol toggles with correct icons', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Verifica os ícones dos protocolos
       expect(getByTestId('icon-snooze')).toBeTruthy();
@@ -391,7 +391,7 @@ describe('NewAlarmScreen', () => {
     });
 
     it('should have reset button functional', () => {
-      const { getByTestId } = render(<NewAlarmScreen />);
+      const { getByTestId } = render(<AlarmFormScreen />);
 
       // Muda a dificuldade
       fireEvent.press(getByTestId(`segment-${DifficultyLevel.EASY}`));
@@ -406,6 +406,109 @@ describe('NewAlarmScreen', () => {
       // Verifica que voltou ao default (adaptive)
       const adaptiveSegment = getByTestId(`segment-${DifficultyLevel.ADAPTIVE}`);
       expect(adaptiveSegment.props.accessibilityState.selected).toBe(true);
+    });
+  });
+
+  describe('Edit Mode', () => {
+    it('should render with "Edit Alarm" title when alarmId is provided', () => {
+      // Add an alarm first
+      const store = useAlarmsStore.getState();
+      store.addAlarm({
+        time: '07:30',
+        period: Period.PM,
+        challenge: 'Memory Matrix',
+        challengeIcon: 'psychology',
+        schedule: 'Daily',
+      });
+
+      // Get updated store state to access the newly added alarm
+      const updatedStore = useAlarmsStore.getState();
+      const alarmId = updatedStore.alarms[0].id;
+
+      const { getByText } = render(<AlarmFormScreen alarmId={alarmId} />);
+
+      // Edit mode should show different title (via translation key)
+      expect(getByText('editAlarm.title')).toBeTruthy();
+    });
+
+    it('should load existing alarm time when in edit mode', () => {
+      // Add an alarm first
+      const store = useAlarmsStore.getState();
+      store.addAlarm({
+        time: '09:45',
+        period: Period.AM,
+        challenge: 'Logic Puzzle',
+        challengeIcon: 'lightbulb',
+        schedule: 'Daily',
+      });
+
+      // Get updated store state
+      const updatedStore = useAlarmsStore.getState();
+      const alarmId = updatedStore.alarms[0].id;
+
+      // Render in edit mode - the form should be pre-filled with existing values
+      const { getByText } = render(<AlarmFormScreen alarmId={alarmId} />);
+
+      // Should have the edit save button (via translation key)
+      expect(getByText('editAlarm.save')).toBeTruthy();
+    });
+
+    it('should update alarm when submitting in edit mode', async () => {
+      // Add an alarm first
+      const store = useAlarmsStore.getState();
+      store.addAlarm({
+        time: '11:00',
+        period: Period.PM,
+        challenge: 'Math Challenge',
+        challengeIcon: 'calculate',
+        schedule: 'Daily',
+      });
+
+      // Get updated store state
+      const storeAfterAdd = useAlarmsStore.getState();
+      const alarmId = storeAfterAdd.alarms[0].id;
+
+      const { getByText } = render(<AlarmFormScreen alarmId={alarmId} />);
+
+      // Submit the form (should update, not create new alarm)
+      const saveButton = getByText('editAlarm.save');
+
+      act(() => {
+        fireEvent.press(saveButton);
+      });
+
+      await waitFor(() => {
+        // Should still have only 1 alarm (updated, not added)
+        const finalStore = useAlarmsStore.getState();
+        expect(finalStore.alarms).toHaveLength(1);
+      });
+
+      expect(mockBack).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show different CTA text in create vs edit mode', () => {
+      // Create mode
+      const { getByText: getByTextCreate, unmount } = render(<AlarmFormScreen />);
+      expect(getByTextCreate('Commit to 06:00 AM')).toBeTruthy();
+      unmount();
+
+      // Add an alarm for edit mode
+      const store = useAlarmsStore.getState();
+      store.addAlarm({
+        time: '08:15',
+        period: Period.AM,
+        challenge: 'Math Challenge',
+        challengeIcon: 'calculate',
+        schedule: 'Daily',
+      });
+
+      // Get updated store state
+      const updatedStore = useAlarmsStore.getState();
+      const alarmId = updatedStore.alarms[0].id;
+
+      // Edit mode
+      const { getByText: getByTextEdit } = render(<AlarmFormScreen alarmId={alarmId} />);
+      expect(getByTextEdit('editAlarm.save')).toBeTruthy();
     });
   });
 });

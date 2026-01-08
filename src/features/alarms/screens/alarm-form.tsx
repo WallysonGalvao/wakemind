@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,19 +14,18 @@ import { CognitiveActivationSection } from '../components/cognitive-activation-s
 import { DifficultySelector } from '../components/difficulty-selector';
 import { DayOfWeek, ScheduleSelector } from '../components/schedule-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
+import type { AlarmFormData } from '../schemas/alarm-form.schema';
+import { alarmFormSchema, DEFAULT_ALARM_FORM_VALUES } from '../schemas/alarm-form.schema';
 
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
-import { BackupProtocolId, ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
+import type { BackupProtocolId, Period } from '@/types/alarm-enums';
+import { ChallengeType } from '@/types/alarm-enums';
 
 const BRAND_PRIMARY_SHADOW = 'rgba(19, 91, 236, 0.3)';
-
-const DEFAULT_HOUR = 6;
-const DEFAULT_MINUTE = 0;
-const DEFAULT_PERIOD = Period.AM;
 
 const CHALLENGE_ICONS: Record<ChallengeType, string> = {
   [ChallengeType.MATH]: 'calculate',
@@ -47,11 +48,22 @@ const getCurrentDayOfWeek = (): DayOfWeek => {
   return dayMap[dayIndex];
 };
 
-export default function NewAlarmScreen() {
+interface AlarmFormScreenProps {
+  alarmId?: string; // Optional: if provided, we're in edit mode
+}
+
+export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
+  // Store actions
   const addAlarm = useAlarmsStore((state) => state.addAlarm);
+  const updateAlarm = useAlarmsStore((state) => state.updateAlarm);
+  const alarms = useAlarmsStore((state) => state.alarms);
+
+  // Determine mode
+  const isEditMode = Boolean(alarmId);
 
   // CTA shadow style
   const ctaShadow = useCustomShadow({
@@ -62,72 +74,97 @@ export default function NewAlarmScreen() {
     color: BRAND_PRIMARY_SHADOW,
   });
 
-  // Time state
-  const [hour, setHour] = useState(DEFAULT_HOUR);
-  const [minute, setMinute] = useState(DEFAULT_MINUTE);
-  const [period, setPeriod] = useState<Period>(DEFAULT_PERIOD);
+  // Get default values based on mode
+  const defaultValues = useMemo((): AlarmFormData => {
+    if (isEditMode && alarmId) {
+      const existingAlarm = alarms.find((a) => a.id === alarmId);
+      if (existingAlarm) {
+        // Parse time string "HH:MM" to hour and minute
+        const [hourStr, minuteStr] = existingAlarm.time.split(':');
+        return {
+          hour: parseInt(hourStr, 10),
+          minute: parseInt(minuteStr, 10),
+          period: existingAlarm.period,
+          selectedDays: [getCurrentDayOfWeek()], // TODO: Parse from alarm schedule once available
+          challenge:
+            (Object.keys(CHALLENGE_ICONS).find(
+              (key) => CHALLENGE_ICONS[key as ChallengeType] === existingAlarm.challengeIcon
+            ) as ChallengeType) || ChallengeType.MATH,
+          difficulty: DEFAULT_ALARM_FORM_VALUES.difficulty,
+          protocols: DEFAULT_ALARM_FORM_VALUES.protocols,
+        };
+      }
+    }
+    return {
+      ...DEFAULT_ALARM_FORM_VALUES,
+      selectedDays: [getCurrentDayOfWeek()],
+    };
+  }, [alarmId, isEditMode, alarms]);
 
-  // Schedule state
-  const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>([getCurrentDayOfWeek()]);
+  // React Hook Form setup
+  const { setValue, watch, reset, handleSubmit } = useForm<AlarmFormData>({
+    resolver: zodResolver(alarmFormSchema),
+    defaultValues,
+  });
 
-  // Challenge state
-  const [selectedChallenge, setSelectedChallenge] = useState<ChallengeType>(ChallengeType.MATH);
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>(DifficultyLevel.ADAPTIVE);
-
-  // Backup protocols state
-  const [protocols, setProtocols] = useState([
-    { id: BackupProtocolId.SNOOZE, enabled: false },
-    { id: BackupProtocolId.WAKE_CHECK, enabled: true },
-    { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
-  ]);
+  // Watch all form values
+  const hour = watch('hour');
+  const minute = watch('minute');
+  const period = watch('period');
+  const selectedDays = watch('selectedDays');
+  const challenge = watch('challenge');
+  const difficulty = watch('difficulty');
+  const protocols = watch('protocols');
 
   const handleClose = () => {
     router.back();
   };
 
   const handleReset = () => {
-    setHour(DEFAULT_HOUR);
-    setMinute(DEFAULT_MINUTE);
-    setPeriod(DEFAULT_PERIOD);
-    setSelectedDays([getCurrentDayOfWeek()]);
-    setSelectedChallenge(ChallengeType.MATH);
-    setDifficulty(DifficultyLevel.ADAPTIVE);
-    setProtocols([
-      { id: BackupProtocolId.SNOOZE, enabled: false },
-      { id: BackupProtocolId.WAKE_CHECK, enabled: true },
-      { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
-    ]);
+    reset({
+      ...DEFAULT_ALARM_FORM_VALUES,
+      selectedDays: [getCurrentDayOfWeek()],
+    });
   };
 
   const handleTimeChange = (newHour: number, newMinute: number, newPeriod: Period) => {
-    setHour(newHour);
-    setMinute(newMinute);
-    setPeriod(newPeriod);
+    setValue('hour', newHour);
+    setValue('minute', newMinute);
+    setValue('period', newPeriod);
   };
 
   const handleProtocolToggle = (id: BackupProtocolId) => {
-    setProtocols((prev) =>
-      prev.map((protocol) =>
-        protocol.id === id ? { ...protocol, enabled: !protocol.enabled } : protocol
-      )
+    const updatedProtocols = protocols.map((protocol) =>
+      protocol.id === id ? { ...protocol, enabled: !protocol.enabled } : protocol
     );
+    setValue('protocols', updatedProtocols);
   };
 
-  const handleCommit = () => {
-    const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-    const challengeIcon = CHALLENGE_ICONS[selectedChallenge];
-    const challengeLabel = t(`newAlarm.challenges.${selectedChallenge}.title`);
+  const onSubmit = (data: AlarmFormData) => {
+    const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
+    const challengeIcon = CHALLENGE_ICONS[data.challenge];
+    const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
 
     try {
-      addAlarm({
-        time: timeString,
-        period,
-        challenge: challengeLabel,
-        challengeIcon,
-        schedule: 'Daily',
-        difficulty,
-        protocols,
-      });
+      if (isEditMode && alarmId) {
+        updateAlarm(alarmId, {
+          time: timeString,
+          period: data.period,
+          challenge: challengeLabel,
+          challengeIcon,
+          schedule: 'Daily',
+        });
+      } else {
+        addAlarm({
+          time: timeString,
+          period: data.period,
+          challenge: challengeLabel,
+          challengeIcon,
+          schedule: 'Daily',
+          difficulty: data.difficulty,
+          protocols: data.protocols,
+        });
+      }
 
       router.back();
     } catch (error) {
@@ -136,7 +173,6 @@ export default function NewAlarmScreen() {
           { text: t('common.ok'), style: 'default' },
         ]);
       } else {
-        // Handle unexpected errors
         Alert.alert(t('newAlarm.error.title'), t('newAlarm.error.message'), [
           { text: t('common.ok'), style: 'default' },
         ]);
@@ -146,6 +182,12 @@ export default function NewAlarmScreen() {
 
   const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
 
+  // Dynamic texts based on mode
+  const screenTitle = isEditMode ? t('editAlarm.title') : t('newAlarm.title');
+  const commitButtonText = isEditMode
+    ? t('editAlarm.save')
+    : t('newAlarm.commit', { time: formattedTime });
+
   return (
     <View
       className="flex-1 bg-background-light dark:bg-background-dark"
@@ -153,7 +195,7 @@ export default function NewAlarmScreen() {
     >
       {/* Header */}
       <Header
-        title={t('newAlarm.title')}
+        title={screenTitle}
         leftIcons={[
           {
             icon: (
@@ -187,16 +229,22 @@ export default function NewAlarmScreen() {
         />
 
         {/* Schedule Selector */}
-        <ScheduleSelector selectedDays={selectedDays} onDaysChange={setSelectedDays} />
+        <ScheduleSelector
+          selectedDays={selectedDays}
+          onDaysChange={(days) => setValue('selectedDays', days)}
+        />
 
         {/* Cognitive Activation Section */}
         <CognitiveActivationSection
-          selectedChallenge={selectedChallenge}
-          onChallengeSelect={setSelectedChallenge}
+          selectedChallenge={challenge}
+          onChallengeSelect={(type) => setValue('challenge', type)}
         />
 
         {/* Difficulty Selector */}
-        <DifficultySelector selectedDifficulty={difficulty} onDifficultyChange={setDifficulty} />
+        <DifficultySelector
+          selectedDifficulty={difficulty}
+          onDifficultyChange={(level) => setValue('difficulty', level)}
+        />
 
         {/* Divider */}
         <View className="mx-4 my-4 h-px bg-slate-200 dark:bg-surface-highlight" />
@@ -211,14 +259,12 @@ export default function NewAlarmScreen() {
         style={{ paddingBottom: insets.bottom + 16 }}
       >
         <Pressable
-          onPress={handleCommit}
+          onPress={handleSubmit(onSubmit)}
           className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary active:scale-[0.98]"
           style={ctaShadow}
           accessibilityRole="button"
         >
-          <Text className="mr-2 text-lg font-bold text-white">
-            {t('newAlarm.commit', { time: formattedTime })}
-          </Text>
+          <Text className="mr-2 text-lg font-bold text-white">{commitButtonText}</Text>
           <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
         </Pressable>
       </View>
