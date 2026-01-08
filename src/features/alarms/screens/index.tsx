@@ -28,7 +28,9 @@ export default function AlarmsScreen() {
   const colorScheme = useColorScheme();
   const alarms = useAlarmsStore((state) => state.alarms);
   const toggleAlarm = useAlarmsStore((state) => state.toggleAlarm);
+  const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Use grayscale image in dark mode, colored in light mode
   const sunriseImage =
@@ -45,6 +47,17 @@ export default function AlarmsScreen() {
     [toggleAlarm]
   );
 
+  const handleDeleteAlarm = useCallback(
+    (id: string) => {
+      deleteAlarm(id);
+      // If no more alarms, exit edit mode
+      if (alarms.length <= 1) {
+        setIsEditMode(false);
+      }
+    },
+    [deleteAlarm, alarms.length]
+  );
+
   const handleNewAlarm = useCallback(() => {
     router.push('/alarm/create-alarm');
   }, [router]);
@@ -56,10 +69,10 @@ export default function AlarmsScreen() {
     [router]
   );
 
-  const handleEditPress = () => {
-    // TODO: Handle edit mode
-    console.log('Edit pressed');
-  };
+  const handleEditPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsEditMode((prev) => !prev);
+  }, []);
 
   // Pull to refresh handler
   const handleRefresh = useCallback(async () => {
@@ -82,10 +95,12 @@ export default function AlarmsScreen() {
       <AlarmsHeader
         title={t('alarms.title')}
         editLabel={t('alarms.edit')}
+        doneLabel={t('alarms.done')}
+        isEditMode={isEditMode}
         onEditPress={handleEditPress}
       />
     );
-  }, [t]);
+  }, [t, isEditMode, handleEditPress]);
 
   const renderItem = useCallback(
     ({ item, index }: { item: Alarm; index: number }) => (
@@ -93,10 +108,12 @@ export default function AlarmsScreen() {
         alarm={item}
         onToggle={handleToggleAlarm}
         onPress={handleEditAlarm}
+        onDelete={handleDeleteAlarm}
+        isEditMode={isEditMode}
         index={index}
       />
     ),
-    [handleToggleAlarm, handleEditAlarm]
+    [handleToggleAlarm, handleEditAlarm, handleDeleteAlarm, isEditMode]
   );
 
   const renderEmpty = useCallback(() => {
@@ -132,6 +149,7 @@ export default function AlarmsScreen() {
           contentContainerClassName="px-4 pb-36"
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={ItemSeparator}
+          extraData={isEditMode}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
@@ -144,8 +162,8 @@ export default function AlarmsScreen() {
         />
       </Animated.View>
 
-      {/* Floating Action Button */}
-      {hasAlarms ? (
+      {/* Floating Action Button - hidden in edit mode */}
+      {hasAlarms && !isEditMode ? (
         <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
       ) : null}
     </View>

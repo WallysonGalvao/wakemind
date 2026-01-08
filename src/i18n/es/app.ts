@@ -2,6 +2,7 @@ export const appES = {
   // Alarms Screen
   'alarms.title': 'Tus Alarmas',
   'alarms.edit': 'Editar',
+  'alarms.done': 'Listo',
   'alarms.newAlarm': 'Nueva Alarma',
   'alarms.emptyTitle': 'Sin Alarmas Configuradas',
   'alarms.emptyDescription':
