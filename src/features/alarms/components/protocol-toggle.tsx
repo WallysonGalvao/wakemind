@@ -4,10 +4,11 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 
 interface ProtocolToggleProps {
   icon: string;
-  iconColor: string;
+  iconClassName: string;
   iconBgColor: string;
   title: string;
   description: string;
@@ -18,7 +19,7 @@ interface ProtocolToggleProps {
 
 export function ProtocolToggle({
   icon,
-  iconColor,
+  iconClassName,
   iconBgColor,
   title,
   description,
@@ -26,25 +27,21 @@ export function ProtocolToggle({
   onToggle,
   disabled = false,
 }: ProtocolToggleProps) {
+  const shadowStyle = useShadowStyle('sm');
+
   return (
     <Pressable
       onPress={disabled ? undefined : onToggle}
       className={`flex-row items-center justify-between rounded-lg border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark ${
         disabled ? 'opacity-60' : ''
       }`}
-      style={{
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
-      }}
+      style={shadowStyle}
       accessibilityRole="switch"
       accessibilityState={{ checked: isEnabled, disabled }}
     >
       <View className="flex-row items-center gap-3">
         <View className={`flex size-10 items-center justify-center rounded-full ${iconBgColor}`}>
-          <MaterialSymbol name={icon} size={24} color={iconColor} />
+          <MaterialSymbol name={icon} size={24} className={iconClassName} />
         </View>
         <View>
           <Text className="font-semibold text-slate-900 dark:text-white">{title}</Text>
@@ -62,13 +59,7 @@ export function ProtocolToggle({
           className={`absolute top-1 h-4 w-4 rounded-full ${
             isEnabled ? 'right-1 bg-brand-primary' : 'left-1 bg-slate-400 dark:bg-slate-500'
           }`}
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={shadowStyle}
         />
       </View>
     </Pressable>
