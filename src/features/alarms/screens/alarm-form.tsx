@@ -121,6 +121,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   // Store actions
   const addAlarm = useAlarmsStore((state) => state.addAlarm);
   const updateAlarm = useAlarmsStore((state) => state.updateAlarm);
+  const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
   const alarms = useAlarmsStore((state) => state.alarms);
 
   // Determine mode
@@ -187,6 +188,13 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
       selectedDays: [getCurrentDayOfWeek()],
     });
   }, [reset]);
+
+  const handleDelete = useCallback(() => {
+    if (alarmId) {
+      deleteAlarm(alarmId);
+      router.back();
+    }
+  }, [alarmId, deleteAlarm, router]);
 
   const handleTimeChange = (newHour: number, newMinute: number, newPeriod: Period) => {
     setValue('hour', newHour);
@@ -349,6 +357,18 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
         {/* Backup Protocols Section */}
         <BackupProtocolsSection protocols={protocols} onProtocolToggle={handleProtocolToggle} />
+
+        {/* Delete Button - Only in Edit Mode */}
+        {isEditMode ? <Pressable
+          onPress={handleDelete}
+          className="mt-3 h-14  flex-row items-center justify-center rounded-xl bg-red-500 active:scale-[0.98] mx-4"
+          accessibilityRole="button"
+        >
+          <MaterialSymbol name="delete" size={20} className="mr-2 text-white" />
+          <Text className="text-base font-semibold text-white">
+            {t('common.delete')}
+          </Text>
+        </Pressable> : null}
       </ScrollView>
 
       {/* Bottom CTA */}
@@ -365,6 +385,8 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           <Text className="mr-2 text-lg font-bold text-white">{commitButtonText}</Text>
           <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
         </Pressable>
+
+
       </View>
     </View>
   );
