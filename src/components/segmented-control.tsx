@@ -29,6 +29,8 @@ interface SegmentedControlProps<T extends string> {
   items: SegmentedControlItem<T>[];
   selectedValue: T;
   onValueChange: (value: T) => void;
+  multiSelect?: boolean;
+  selectedValues?: T[];
 }
 
 const ANIMATION_CONFIG = {
@@ -42,6 +44,8 @@ export function SegmentedControl<T extends string>({
   items,
   selectedValue,
   onValueChange,
+  multiSelect = false,
+  selectedValues = [],
 }: SegmentedControlProps<T>) {
   const shadowStyle = useShadowStyle('sm');
 
@@ -124,29 +128,27 @@ export function SegmentedControl<T extends string>({
         <Text className="pl-1 text-sm font-medium text-slate-500 dark:text-slate-400">{title}</Text>
       ) : null}
 
-      <GestureDetector gesture={panGesture}>
+      {multiSelect ? (
+        // Multi-select mode: static buttons with individual highlights
         <View
-          className="relative flex h-12 w-full flex-row items-center justify-center rounded-xl bg-slate-200 p-1 dark:bg-surface-highlight"
-          onLayout={onLayout}
+          className="relative flex h-12 w-full flex-row items-center justify-center gap-1 rounded-xl bg-slate-200 p-1 dark:bg-surface-highlight"
           accessible
           accessibilityRole="tablist"
         >
-          {/* Animated slider background */}
-          <Animated.View
-            style={[sliderStyle, shadowStyle]}
-            className="absolute left-1 z-10 h-10 rounded-lg border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary"
-          />
-
           {items.map((item) => {
-            const isSelected = selectedValue === item.value;
+            const isSelected = selectedValues.includes(item.value);
             const showIcon = item.icon && item.showIconWhenSelected && isSelected;
 
             return (
               <Pressable
                 key={item.value}
                 onPress={() => handleSelect(item.value)}
-                disabled={isSelected}
-                className="z-20 h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg"
+                style={isSelected ? shadowStyle : undefined}
+                className={`z-20 h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg ${
+                  isSelected
+                    ? 'border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary'
+                    : ''
+                }`}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isSelected }}
               >
@@ -170,7 +172,56 @@ export function SegmentedControl<T extends string>({
             );
           })}
         </View>
-      </GestureDetector>
+      ) : (
+        // Single-select mode: animated slider
+        <GestureDetector gesture={panGesture}>
+          <View
+            className="relative flex h-12 w-full flex-row items-center justify-center rounded-xl bg-slate-200 p-1 dark:bg-surface-highlight"
+            onLayout={onLayout}
+            accessible
+            accessibilityRole="tablist"
+          >
+            {/* Animated slider background */}
+            <Animated.View
+              style={[sliderStyle, shadowStyle]}
+              className="absolute left-1 z-10 h-10 rounded-lg border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary"
+            />
+
+            {items.map((item) => {
+              const isSelected = selectedValue === item.value;
+              const showIcon = item.icon && item.showIconWhenSelected && isSelected;
+
+              return (
+                <Pressable
+                  key={item.value}
+                  onPress={() => handleSelect(item.value)}
+                  disabled={isSelected}
+                  className="z-20 h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg"
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: isSelected }}
+                >
+                  {showIcon && item.icon ? (
+                    <MaterialSymbol
+                      name={item.icon}
+                      size={16}
+                      className="text-brand-primary dark:text-white"
+                    />
+                  ) : null}
+                  <Text
+                    className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'} ${
+                      isSelected
+                        ? 'text-brand-primary dark:text-white'
+                        : 'text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {item.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </GestureDetector>
+      )}
 
       {description ? (
         <Text className="pl-1 pt-1 text-xs text-slate-500 dark:text-slate-400">{description}</Text>

@@ -9,6 +9,8 @@ import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
 import { DifficultySelector } from '../components/difficulty-selector';
+import type { DayOfWeek } from '../components/schedule-selector';
+import { ScheduleSelector } from '../components/schedule-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
 
 import { Header } from '@/components/header';
@@ -50,6 +52,9 @@ export default function NewAlarmScreen() {
   const [minute, setMinute] = useState(DEFAULT_MINUTE);
   const [period, setPeriod] = useState<Period>(DEFAULT_PERIOD);
 
+  // Schedule state
+  const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>([]);
+
   // Challenge state
   const [selectedChallenge, setSelectedChallenge] = useState<ChallengeType>(ChallengeType.MATH);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(DifficultyLevel.ADAPTIVE);
@@ -69,6 +74,7 @@ export default function NewAlarmScreen() {
     setHour(DEFAULT_HOUR);
     setMinute(DEFAULT_MINUTE);
     setPeriod(DEFAULT_PERIOD);
+    setSelectedDays([]);
     setSelectedChallenge(ChallengeType.MATH);
     setDifficulty(DifficultyLevel.ADAPTIVE);
     setProtocols([
@@ -164,6 +170,9 @@ export default function NewAlarmScreen() {
           period={period}
           onTimeChange={handleTimeChange}
         />
+
+        {/* Schedule Selector */}
+        <ScheduleSelector selectedDays={selectedDays} onDaysChange={setSelectedDays} />
 
         {/* Cognitive Activation Section */}
         <CognitiveActivationSection
