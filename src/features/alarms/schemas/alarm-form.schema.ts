@@ -55,7 +55,7 @@ export const DEFAULT_ALARM_FORM_VALUES: AlarmFormData = {
   period: Period.AM,
   selectedDays: [DayOfWeek.MONDAY], // Will be overridden with current day
   challenge: ChallengeType.MATH,
-  difficulty: DifficultyLevel.ADAPTIVE,
+  difficulty: DifficultyLevel.EASY,
   protocols: [
     { id: BackupProtocolId.SNOOZE, enabled: false },
     { id: BackupProtocolId.WAKE_CHECK, enabled: true },

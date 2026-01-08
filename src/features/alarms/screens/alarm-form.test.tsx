@@ -393,19 +393,19 @@ describe('AlarmFormScreen', () => {
     it('should have reset button functional', () => {
       const { getByTestId } = render(<AlarmFormScreen />);
 
-      // Muda a dificuldade
-      fireEvent.press(getByTestId(`segment-${DifficultyLevel.EASY}`));
+      // Muda a dificuldade para hard (default é easy)
+      fireEvent.press(getByTestId(`segment-${DifficultyLevel.HARD}`));
 
       // Verifica que mudou
-      const easySegment = getByTestId(`segment-${DifficultyLevel.EASY}`);
-      expect(easySegment.props.accessibilityState.selected).toBe(true);
+      const hardSegment = getByTestId(`segment-${DifficultyLevel.HARD}`);
+      expect(hardSegment.props.accessibilityState.selected).toBe(true);
 
       // Reset
       fireEvent.press(getByTestId('header-reset-button'));
 
-      // Verifica que voltou ao default (adaptive)
-      const adaptiveSegment = getByTestId(`segment-${DifficultyLevel.ADAPTIVE}`);
-      expect(adaptiveSegment.props.accessibilityState.selected).toBe(true);
+      // Verifica que voltou ao default (easy)
+      const easySegment = getByTestId(`segment-${DifficultyLevel.EASY}`);
+      expect(easySegment.props.accessibilityState.selected).toBe(true);
     });
   });
 
@@ -427,8 +427,8 @@ describe('AlarmFormScreen', () => {
 
       const { getByText } = render(<AlarmFormScreen alarmId={alarmId} />);
 
-      // Edit mode should show different title (via translation key)
-      expect(getByText('editAlarm.title')).toBeTruthy();
+      // Edit mode should show different title (translated value)
+      expect(getByText('Edit Alarm')).toBeTruthy();
     });
 
     it('should load existing alarm time when in edit mode', () => {
@@ -449,8 +449,8 @@ describe('AlarmFormScreen', () => {
       // Render in edit mode - the form should be pre-filled with existing values
       const { getByText } = render(<AlarmFormScreen alarmId={alarmId} />);
 
-      // Should have the edit save button (via translation key)
-      expect(getByText('editAlarm.save')).toBeTruthy();
+      // Should have the edit save button (translated value)
+      expect(getByText('Save Changes')).toBeTruthy();
     });
 
     it('should update alarm when submitting in edit mode', async () => {
@@ -471,7 +471,7 @@ describe('AlarmFormScreen', () => {
       const { getByText } = render(<AlarmFormScreen alarmId={alarmId} />);
 
       // Submit the form (should update, not create new alarm)
-      const saveButton = getByText('editAlarm.save');
+      const saveButton = getByText('Save Changes');
 
       act(() => {
         fireEvent.press(saveButton);
@@ -508,7 +508,7 @@ describe('AlarmFormScreen', () => {
 
       // Edit mode
       const { getByText: getByTextEdit } = render(<AlarmFormScreen alarmId={alarmId} />);
-      expect(getByTextEdit('editAlarm.save')).toBeTruthy();
+      expect(getByTextEdit('Save Changes')).toBeTruthy();
     });
   });
 });

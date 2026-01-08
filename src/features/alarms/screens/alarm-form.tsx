@@ -48,6 +48,65 @@ const getCurrentDayOfWeek = (): DayOfWeek => {
   return dayMap[dayIndex];
 };
 
+// Day abbreviations for schedule label
+const DAY_ABBREV: Record<DayOfWeek, string> = {
+  [DayOfWeek.MONDAY]: 'Mon',
+  [DayOfWeek.TUESDAY]: 'Tue',
+  [DayOfWeek.WEDNESDAY]: 'Wed',
+  [DayOfWeek.THURSDAY]: 'Thu',
+  [DayOfWeek.FRIDAY]: 'Fri',
+  [DayOfWeek.SATURDAY]: 'Sat',
+  [DayOfWeek.SUNDAY]: 'Sun',
+};
+
+// Helper function to generate schedule label from selected days
+const getScheduleLabel = (days: DayOfWeek[]): string => {
+  const allDays = Object.values(DayOfWeek);
+  const weekdays = [
+    DayOfWeek.MONDAY,
+    DayOfWeek.TUESDAY,
+    DayOfWeek.WEDNESDAY,
+    DayOfWeek.THURSDAY,
+    DayOfWeek.FRIDAY,
+  ];
+  const weekends = [DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
+
+  // Check if all days selected
+  if (days.length === 7) {
+    return 'Daily';
+  }
+
+  // Check if weekdays only
+  if (
+    days.length === 5 &&
+    weekdays.every((d) => days.includes(d)) &&
+    !weekends.some((d) => days.includes(d))
+  ) {
+    return 'Weekdays';
+  }
+
+  // Check if weekends only
+  if (
+    days.length === 2 &&
+    weekends.every((d) => days.includes(d)) &&
+    !weekdays.some((d) => days.includes(d))
+  ) {
+    return 'Weekends';
+  }
+
+  // Single day
+  if (days.length === 1) {
+    return DAY_ABBREV[days[0]];
+  }
+
+  // Custom: list of day abbreviations
+  const sortedDays = [...days].sort((a, b) => {
+    const order = allDays;
+    return order.indexOf(a) - order.indexOf(b);
+  });
+  return sortedDays.map((d) => DAY_ABBREV[d]).join(', ');
+};
+
 interface AlarmFormScreenProps {
   alarmId?: string; // Optional: if provided, we're in edit mode
 }
@@ -90,8 +149,8 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
             (Object.keys(CHALLENGE_ICONS).find(
               (key) => CHALLENGE_ICONS[key as ChallengeType] === existingAlarm.challengeIcon
             ) as ChallengeType) || ChallengeType.MATH,
-          difficulty: DEFAULT_ALARM_FORM_VALUES.difficulty,
-          protocols: DEFAULT_ALARM_FORM_VALUES.protocols,
+          difficulty: existingAlarm.difficulty ?? DEFAULT_ALARM_FORM_VALUES.difficulty,
+          protocols: existingAlarm.protocols ?? DEFAULT_ALARM_FORM_VALUES.protocols,
         };
       }
     }
@@ -144,6 +203,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
     const challengeIcon = CHALLENGE_ICONS[data.challenge];
     const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
+    const scheduleLabel = getScheduleLabel(data.selectedDays);
 
     try {
       if (isEditMode && alarmId) {
@@ -152,7 +212,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           period: data.period,
           challenge: challengeLabel,
           challengeIcon,
-          schedule: 'Daily',
+          schedule: scheduleLabel,
+          difficulty: data.difficulty,
+          protocols: data.protocols,
         });
       } else {
         addAlarm({
@@ -160,7 +222,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           period: data.period,
           challenge: challengeLabel,
           challengeIcon,
-          schedule: 'Daily',
+          schedule: scheduleLabel,
           difficulty: data.difficulty,
           protocols: data.protocols,
         });
@@ -188,6 +250,10 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     ? t('editAlarm.save')
     : t('newAlarm.commit', { time: formattedTime });
 
+  // Header icons based on mode
+  const leftIcon = isEditMode ? 'arrow_back' : 'close';
+  const leftIconLabel = isEditMode ? t('common.back') : t('common.close');
+
   return (
     <View
       className="flex-1 bg-background-light dark:bg-background-dark"
@@ -199,23 +265,31 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
         leftIcons={[
           {
             icon: (
-              <MaterialSymbol name="close" size={24} className="text-slate-900 dark:text-white" />
+              <MaterialSymbol
+                name={leftIcon}
+                size={24}
+                className="text-slate-900 dark:text-white"
+              />
             ),
             onPress: handleClose,
-            accessibilityLabel: t('common.close'),
+            accessibilityLabel: leftIconLabel,
           },
         ]}
-        rightIcons={[
-          {
-            label: (
-              <Text className="text-base font-medium text-slate-500 dark:text-slate-400">
-                {t('newAlarm.reset')}
-              </Text>
-            ),
-            onPress: handleReset,
-            accessibilityLabel: t('newAlarm.reset'),
-          },
-        ]}
+        rightIcons={
+          isEditMode
+            ? []
+            : [
+                {
+                  label: (
+                    <Text className="text-base font-medium text-slate-500 dark:text-slate-400">
+                      {t('newAlarm.reset')}
+                    </Text>
+                  ),
+                  onPress: handleReset,
+                  accessibilityLabel: t('newAlarm.reset'),
+                },
+              ]
+        }
       />
 
       {/* Content */}
