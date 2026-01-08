@@ -1,6 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { ScrollView, View } from 'react-native';
+import type { SharedValue } from 'react-native-reanimated';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+
+import { View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
 import { Period, TimePickerType } from '@/types/alarm-enums';
@@ -8,6 +17,83 @@ import { Period, TimePickerType } from '@/types/alarm-enums';
 const ITEM_HEIGHT = 48;
 const VISIBLE_ITEMS = 5;
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
+
+interface AnimatedItemProps {
+  item: string;
+  index: number;
+  scrollY: SharedValue<number>;
+  type: TimePickerType;
+  selectedIndex: number;
+}
+
+function AnimatedItem({ item, index, scrollY, type, selectedIndex }: AnimatedItemProps) {
+  const inputRange = useMemo(
+    () => [
+      (index - 2) * ITEM_HEIGHT,
+      (index - 1) * ITEM_HEIGHT,
+      index * ITEM_HEIGHT,
+      (index + 1) * ITEM_HEIGHT,
+      (index + 2) * ITEM_HEIGHT,
+    ],
+    [index]
+  );
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const scale = interpolate(
+      scrollY.value,
+      inputRange,
+      [0.7, 0.85, 1.1, 0.85, 0.7],
+      Extrapolation.CLAMP
+    );
+
+    const opacity = interpolate(
+      scrollY.value,
+      inputRange,
+      [0.4, 0.6, 1, 0.6, 0.4],
+      Extrapolation.CLAMP
+    );
+
+    const rotateX = interpolate(
+      scrollY.value,
+      inputRange,
+      [45, 20, 0, -20, -45],
+      Extrapolation.CLAMP
+    );
+
+    return {
+      transform: [{ scale }, { perspective: 500 }, { rotateX: `${rotateX}deg` }],
+      opacity,
+    };
+  });
+
+  // Determine text class based on distance from selected index
+  const distance = Math.abs(selectedIndex - index);
+
+  const getTextClass = useMemo(() => {
+    // Base size based on type
+    const sizeClass = type === TimePickerType.PERIOD ? 'text-2xl' : 'text-5xl';
+
+    if (distance === 0) {
+      // Selected item - brand primary
+      return `${sizeClass} font-black text-brand-primary`;
+    } else if (distance === 1) {
+      // Adjacent items - slate-500
+      return `${type === TimePickerType.PERIOD ? 'text-xl' : 'text-3xl'} font-bold text-slate-500 dark:text-slate-400`;
+    } else {
+      // Distant items - slate-400
+      return `${type === TimePickerType.PERIOD ? 'text-lg' : 'text-2xl'} font-bold text-slate-400 dark:text-slate-500`;
+    }
+  }, [type, distance]);
+
+  return (
+    <Animated.View
+      className="items-center justify-center"
+      style={[{ height: ITEM_HEIGHT }, animatedStyle]}
+    >
+      <Text className={`text-center ${getTextClass}`}>{item}</Text>
+    </Animated.View>
+  );
+}
 
 interface TimePickerColumnProps {
   value: number;
@@ -17,99 +103,52 @@ interface TimePickerColumnProps {
 }
 
 function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProps) {
-  const scrollViewRef = useRef<ScrollView>(null);
-  const [selectedIndex, setSelectedIndex] = useState(value);
+  const scrollViewRef = useRef<Animated.ScrollView>(null);
+  const scrollY = useSharedValue(0);
   const isInitialized = useRef(false);
 
   // Scroll to initial position on mount
   useEffect(() => {
     if (!isInitialized.current && scrollViewRef.current) {
-      // Delay to ensure layout is ready
       setTimeout(() => {
         scrollViewRef.current?.scrollTo({
           y: value * ITEM_HEIGHT,
           animated: false,
         });
+        scrollY.value = value * ITEM_HEIGHT;
         isInitialized.current = true;
       }, 50);
     }
-  }, [value]);
+  }, [value, scrollY]);
 
   // Update scroll when value changes from parent
   useEffect(() => {
-    if (isInitialized.current && value !== selectedIndex) {
-      setSelectedIndex(value);
-      scrollViewRef.current?.scrollTo({
-        y: value * ITEM_HEIGHT,
-        animated: true,
-      });
+    if (isInitialized.current) {
+      const currentIndex = Math.round(scrollY.value / ITEM_HEIGHT);
+      if (value !== currentIndex) {
+        scrollViewRef.current?.scrollTo({
+          y: value * ITEM_HEIGHT,
+          animated: true,
+        });
+      }
     }
-  }, [value, selectedIndex]);
+  }, [value, scrollY]);
 
-  const handleScroll = useCallback(
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  const handleMomentumScrollEnd = useCallback(
     (event: any) => {
       const offsetY = event.nativeEvent.contentOffset.y;
       const index = Math.round(offsetY / ITEM_HEIGHT);
       const clampedIndex = Math.max(0, Math.min(index, items.length - 1));
-
-      if (clampedIndex !== selectedIndex) {
-        setSelectedIndex(clampedIndex);
-        onChange(clampedIndex);
-      }
+      onChange(clampedIndex);
     },
-    [selectedIndex, items.length, onChange]
+    [items.length, onChange]
   );
-
-  const getItemStyle = (index: number) => {
-    const distance = Math.abs(index - selectedIndex);
-
-    if (distance === 0) {
-      return {
-        textClassName:
-          type === TimePickerType.PERIOD
-            ? 'text-2xl font-black text-brand-primary'
-            : 'text-5xl font-black text-brand-primary',
-        opacity: 1,
-      };
-    } else if (distance === 1) {
-      return {
-        textClassName:
-          type === TimePickerType.PERIOD
-            ? 'text-xl font-bold text-slate-400 dark:text-[#455d8c]'
-            : 'text-3xl font-bold text-slate-400 dark:text-[#455d8c]',
-        opacity: 0.8,
-      };
-    } else if (distance === 2) {
-      return {
-        textClassName:
-          type === TimePickerType.PERIOD
-            ? 'text-lg font-bold text-slate-400 dark:text-[#455d8c]'
-            : 'text-2xl font-bold text-slate-400 dark:text-[#455d8c]',
-        opacity: 0.5,
-      };
-    } else {
-      return {
-        textClassName: 'text-xl font-bold text-slate-400 dark:text-[#455d8c]',
-        opacity: 0.3,
-      };
-    }
-  };
-
-  const renderItem = (item: string, index: number) => {
-    const { textClassName, opacity } = getItemStyle(index);
-
-    return (
-      <View
-        key={`${type}-${item}-${index}`}
-        className="items-center justify-center"
-        style={{ height: ITEM_HEIGHT }}
-      >
-        <Text className={`text-center ${textClassName}`} style={{ opacity }}>
-          {item}
-        </Text>
-      </View>
-    );
-  };
 
   return (
     <View className="relative overflow-hidden" style={{ height: PICKER_HEIGHT }}>
@@ -123,20 +162,30 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
       />
 
       {/* Scrollable items */}
-      <ScrollView
+      <Animated.ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         snapToInterval={ITEM_HEIGHT}
         decelerationRate="fast"
-        onScroll={handleScroll}
+        onScroll={scrollHandler}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
         scrollEventThrottle={16}
         contentContainerStyle={{
           paddingTop: ITEM_HEIGHT * 2,
           paddingBottom: ITEM_HEIGHT * 2,
         }}
       >
-        {items.map(renderItem)}
-      </ScrollView>
+        {items.map((item, index) => (
+          <AnimatedItem
+            key={`${type}-${item}-${index}`}
+            item={item}
+            index={index}
+            scrollY={scrollY}
+            type={type}
+            selectedIndex={value}
+          />
+        ))}
+      </Animated.ScrollView>
     </View>
   );
 }
@@ -149,9 +198,15 @@ interface TimePickerProps {
 }
 
 export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePickerProps) {
-  const hours = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
-  const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
-  const periods = [Period.AM, Period.PM];
+  const hours = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')),
+    []
+  );
+  const minutes = useMemo(
+    () => Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')),
+    []
+  );
+  const periods = useMemo(() => [Period.AM, Period.PM], []);
 
   const handleHourChange = useCallback(
     (index: number) => {
