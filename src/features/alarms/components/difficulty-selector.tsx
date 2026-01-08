@@ -2,11 +2,8 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Pressable, View } from 'react-native';
-
-import { MaterialSymbol } from '@/components/material-symbol';
-import { Text } from '@/components/ui/text';
-import { useShadowStyle } from '@/hooks/use-shadow-style';
+import type { SegmentedControlItem } from '@/components/segmented-control';
+import { SegmentedControl } from '@/components/segmented-control';
 import { DifficultyLevel } from '@/types/alarm-enums';
 
 interface DifficultySelectorProps {
@@ -19,62 +16,26 @@ export function DifficultySelector({
   onDifficultyChange,
 }: DifficultySelectorProps) {
   const { t } = useTranslation();
-  const shadowStyle = useShadowStyle('sm');
 
-  const difficulties: DifficultyLevel[] = [
-    DifficultyLevel.EASY,
-    DifficultyLevel.MEDIUM,
-    DifficultyLevel.HARD,
-    DifficultyLevel.ADAPTIVE,
+  const items: SegmentedControlItem<DifficultyLevel>[] = [
+    { value: DifficultyLevel.EASY, label: t('newAlarm.difficulty.easy') },
+    { value: DifficultyLevel.MEDIUM, label: t('newAlarm.difficulty.medium') },
+    { value: DifficultyLevel.HARD, label: t('newAlarm.difficulty.hard') },
+    {
+      value: DifficultyLevel.ADAPTIVE,
+      label: t('newAlarm.difficulty.adaptive'),
+      icon: 'auto_awesome',
+      showIconWhenSelected: true,
+    },
   ];
 
   return (
-    <View className="flex flex-col gap-2 px-4 py-3">
-      <Text className="pl-1 text-sm font-medium text-slate-500 dark:text-slate-400">
-        {t('newAlarm.difficulty.label')}
-      </Text>
-
-      <View className="flex h-12 w-full flex-row items-center justify-center rounded-xl bg-slate-200 p-1 dark:bg-surface-highlight">
-        {difficulties.map((difficulty) => {
-          const isSelected = selectedDifficulty === difficulty;
-          const isAdaptive = difficulty === DifficultyLevel.ADAPTIVE;
-
-          return (
-            <Pressable
-              key={difficulty}
-              onPress={() => onDifficultyChange(difficulty)}
-              className={`h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg ${
-                isSelected
-                  ? 'border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary'
-                  : ''
-              }`}
-              style={isSelected ? shadowStyle : undefined}
-              accessibilityRole="button"
-            >
-              {isAdaptive && isSelected ? (
-                <MaterialSymbol
-                  name="auto_awesome"
-                  size={16}
-                  className="text-brand-primary dark:text-white"
-                />
-              ) : null}
-              <Text
-                className={`text-sm font-${isSelected ? 'bold' : 'medium'} ${
-                  isSelected
-                    ? 'text-brand-primary dark:text-white'
-                    : 'text-slate-500 dark:text-slate-400'
-                }`}
-              >
-                {t(`newAlarm.difficulty.${difficulty}`)}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      <Text className="pl-1 pt-1 text-xs text-slate-500 dark:text-slate-400">
-        {t('newAlarm.difficulty.adaptiveDescription')}
-      </Text>
-    </View>
+    <SegmentedControl
+      title={t('newAlarm.difficulty.label')}
+      description={t('newAlarm.difficulty.adaptiveDescription')}
+      items={items}
+      selectedValue={selectedDifficulty}
+      onValueChange={onDifficultyChange}
+    />
   );
 }

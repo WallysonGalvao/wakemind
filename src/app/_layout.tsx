@@ -7,7 +7,10 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
+
+import { StyleSheet } from 'react-native';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useTheme } from '@/hooks/use-theme';
@@ -39,15 +42,23 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode={theme}>
-      <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="alarm/new-alarm" options={{ headerShown: false }} />
-          {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
-        </Stack>
-        <StatusBar style={isDark ? 'light' : 'dark'} />
-      </ThemeProvider>
-    </GluestackUIProvider>
+    <GestureHandlerRootView style={styles.gestureHandlerRootView}>
+      <GluestackUIProvider mode={theme}>
+        <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="alarm/new-alarm" options={{ headerShown: false }} />
+            {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
+          </Stack>
+          <StatusBar style={isDark ? 'light' : 'dark'} />
+        </ThemeProvider>
+      </GluestackUIProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  gestureHandlerRootView: {
+    flex: 1,
+  },
+});
