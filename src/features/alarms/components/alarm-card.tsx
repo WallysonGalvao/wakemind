@@ -7,7 +7,6 @@ import Animated, {
   FadeInDown,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from 'react-native-reanimated';
 
 import { Pressable, useColorScheme, View } from 'react-native';
@@ -21,12 +20,13 @@ import type { Alarm } from '@/types/alarm';
 interface AlarmCardProps {
   alarm: Alarm;
   onToggle: (id: string) => void;
+  onPress?: (id: string) => void;
   index?: number;
 }
 
 const STAGGER_DELAY = 100;
 
-export function AlarmCard({ alarm, onToggle, index = 0 }: AlarmCardProps) {
+export function AlarmCard({ alarm, onToggle, onPress, index = 0 }: AlarmCardProps) {
   const isActive = alarm.isEnabled;
   const colorScheme = useColorScheme();
   const scale = useSharedValue(1);
@@ -45,18 +45,17 @@ export function AlarmCard({ alarm, onToggle, index = 0 }: AlarmCardProps) {
     true: COLORS.brandPrimary,
   };
 
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15, stiffness: 400 });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15, stiffness: 400 });
-  };
-
   const handleToggle = () => {
     // Haptic feedback on toggle
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onToggle(alarm.id);
+  };
+
+  const handlePress = () => {
+    if (onPress) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      onPress(alarm.id);
+    }
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -69,7 +68,7 @@ export function AlarmCard({ alarm, onToggle, index = 0 }: AlarmCardProps) {
     .easing(Easing.out(Easing.cubic));
 
   return (
-    <Pressable accessibilityRole="button" onPressIn={handlePressIn} onPressOut={handlePressOut}>
+    <Pressable accessibilityRole="button" onPress={handlePress}>
       <Animated.View
         entering={enteringAnimation}
         style={[animatedStyle, shadowStyle]}
