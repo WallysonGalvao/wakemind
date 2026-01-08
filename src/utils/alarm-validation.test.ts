@@ -1,8 +1,6 @@
 // Example test file for alarm validation
 // To use this, you need to set up a testing framework like Jest
 
-import { Period } from '@/types/alarm-enums';
-import type { Alarm } from '@/types/alarm';
 import {
   isDuplicateTime,
   normalizeTime,
@@ -10,7 +8,17 @@ import {
   validateAlarmInput,
   validatePeriod,
   validateTimeFormat,
-} from '../alarm-validation';
+} from './alarm-validation';
+
+import enTranslations from '@/i18n/en';
+import type { Alarm } from '@/types/alarm';
+import { Period, Schedule } from '@/types/alarm-enums';
+
+// Helper to verify translation keys exist
+const verifyTranslationKey = (key: string) => {
+  const translations = enTranslations as Record<string, string>;
+  return key in translations;
+};
 
 describe('alarm-validation', () => {
   describe('validateTimeFormat', () => {
@@ -114,7 +122,7 @@ describe('alarm-validation', () => {
         period: Period.AM,
         challenge: '  Math Challenge  ',
         challengeIcon: '  calculate  ',
-        schedule: '  Daily  ',
+        schedule: `  ${Schedule.DAILY}  `,
       };
 
       const sanitized = sanitizeAlarmInput(input);
@@ -122,7 +130,7 @@ describe('alarm-validation', () => {
       expect(sanitized.time).toBe('06:30');
       expect(sanitized.challenge).toBe('Math Challenge');
       expect(sanitized.challengeIcon).toBe('calculate');
-      expect(sanitized.schedule).toBe('Daily');
+      expect(sanitized.schedule).toBe(Schedule.DAILY);
     });
   });
 
@@ -132,7 +140,7 @@ describe('alarm-validation', () => {
       period: Period.AM,
       challenge: 'Math Challenge',
       challengeIcon: 'calculate',
-      schedule: 'Daily',
+      schedule: Schedule.DAILY,
     };
 
     const existingAlarms: Alarm[] = [
@@ -142,7 +150,7 @@ describe('alarm-validation', () => {
         period: Period.AM,
         challenge: 'Math',
         challengeIcon: 'calculate',
-        schedule: 'Daily',
+        schedule: Schedule.DAILY,
         isEnabled: true,
       },
     ];
@@ -154,12 +162,10 @@ describe('alarm-validation', () => {
     });
 
     it('should reject invalid time format', () => {
-      const result = validateAlarmInput(
-        { ...validInput, time: '25:00' },
-        existingAlarms
-      );
+      const result = validateAlarmInput({ ...validInput, time: '25:00' }, existingAlarms);
       expect(result.isValid).toBe(false);
       expect(result.errorKey).toBe('validation.alarm.timeFormat');
+      expect(verifyTranslationKey(result.errorKey!)).toBe(true);
     });
 
     it('should reject invalid period', () => {
@@ -169,6 +175,7 @@ describe('alarm-validation', () => {
       );
       expect(result.isValid).toBe(false);
       expect(result.errorKey).toBe('validation.alarm.periodInvalid');
+      expect(verifyTranslationKey(result.errorKey!)).toBe(true);
     });
 
     it('should reject duplicate times', () => {
@@ -178,34 +185,29 @@ describe('alarm-validation', () => {
       );
       expect(result.isValid).toBe(false);
       expect(result.errorKey).toBe('validation.alarm.duplicate');
+      expect(verifyTranslationKey(result.errorKey!)).toBe(true);
       expect(result.errorParams).toEqual({ time: '07:00', period: 'AM' });
     });
 
     it('should reject empty challenge', () => {
-      const result = validateAlarmInput(
-        { ...validInput, challenge: '' },
-        existingAlarms
-      );
+      const result = validateAlarmInput({ ...validInput, challenge: '' }, existingAlarms);
       expect(result.isValid).toBe(false);
       expect(result.errorKey).toBe('validation.alarm.challengeRequired');
+      expect(verifyTranslationKey(result.errorKey!)).toBe(true);
     });
 
     it('should reject empty challenge icon', () => {
-      const result = validateAlarmInput(
-        { ...validInput, challengeIcon: '' },
-        existingAlarms
-      );
+      const result = validateAlarmInput({ ...validInput, challengeIcon: '' }, existingAlarms);
       expect(result.isValid).toBe(false);
       expect(result.errorKey).toBe('validation.alarm.challengeIconRequired');
+      expect(verifyTranslationKey(result.errorKey!)).toBe(true);
     });
 
     it('should reject empty schedule', () => {
-      const result = validateAlarmInput(
-        { ...validInput, schedule: '' },
-        existingAlarms
-      );
+      const result = validateAlarmInput({ ...validInput, schedule: '' }, existingAlarms);
       expect(result.isValid).toBe(false);
       expect(result.errorKey).toBe('validation.alarm.scheduleRequired');
+      expect(verifyTranslationKey(result.errorKey!)).toBe(true);
     });
 
     it('should allow updating same alarm with excludeId', () => {

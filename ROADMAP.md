@@ -26,106 +26,129 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Cores corretamente aplicadas em dark/light mode
 - [x] GestureHandlerRootView configurado no root layout
 - [x] Documentação de regras expo-image em CLAUDE.md
+- [x] Componente `ScheduleSelector` implementado
+- [x] Suporte a seleção customizada de dias da semana
+- [x] Modo de edição de alarmes completo
+- [x] Navegação edit-alarm com query params
+- [x] Botão de exclusão no formulário de edição
+- [x] Suite de testes unitários (store, validations, components)
+- [x] Validação de alarmes duplicados com excludeId
 
 ## 🎯 Fase 1 - Funcionalidades Core (Prioritário)
 
 ### 1.1 Sistema de Agendamento Completo
 
-**Status:** 🔴 Não Iniciado
+**Status:** ✅ Concluído
 **Prioridade:** Alta
 **Tempo Estimado:** 2-3 dias
 
 #### Objetivos:
 
-- [ ] Implementar seletor de schedule na tela de criação
-- [ ] Criar componente `ScheduleSelector`
-- [ ] Suportar todos os tipos do enum `Schedule`:
-  - [ ] `DAILY` - Todos os dias
-  - [ ] `WEEKDAYS` - Segunda a Sexta
-  - [ ] `WEEKENDS` - Sábado e Domingo
-  - [ ] `ONCE` - Apenas uma vez
-  - [ ] `CUSTOM` - Seleção customizada de dias (novo)
-- [ ] Atualizar `Alarm` interface para incluir `selectedDays?: number[]`
-- [ ] Lógica para determinar próximo disparo do alarme
+- [x] Implementar seletor de schedule na tela de criação
+- [x] Criar componente `ScheduleSelector`
+- [x] Suportar seleção customizada de dias da semana
+- [x] Implementar multi-select com `SegmentedControl`
+- [x] Lógica para formatação de labels (Daily, Weekdays, Weekends, Custom)
+- [x] Integração com `alarm-form.tsx` e `AlarmFormData`
+- [ ] Lógica para determinar próximo disparo do alarme (pendente)
 
-#### Arquivos a serem criados/modificados:
+#### Arquivos criados/modificados:
 
 ```
-src/features/alarms/components/schedule-selector.tsx (novo)
-src/types/alarm.ts (modificar)
-src/features/alarms/screens/new-alarm.tsx (modificar)
+✅ src/features/alarms/components/schedule-selector.tsx (criado)
+✅ src/features/alarms/schemas/alarm-form.schema.ts (atualizado)
+✅ src/features/alarms/screens/alarm-form.tsx (integrado)
+✅ src/types/alarm.ts (suporta schedule string)
 ```
 
 ---
 
 ### 1.2 Edição de Alarmes
 
-**Status:** 🔴 Não Iniciado
+**Status:** ✅ Concluído
 **Prioridade:** Alta
 **Tempo Estimado:** 1-2 dias
 
 #### Objetivos:
 
-- [ ] Criar tela `edit-alarm.tsx`
-- [ ] Implementar navegação com parâmetro `alarmId`
-- [ ] Pré-popular formulário com dados existentes
-- [ ] Usar `updateAlarm` do store
-- [ ] Adicionar botão "Save Changes"
-- [ ] Manter validação de duplicatas
+- [x] Criar tela `edit-alarm.tsx` com roteamento
+- [x] Implementar navegação com parâmetro `alarmId`
+- [x] Pré-popular formulário com dados existentes
+- [x] Usar `updateAlarm` do store
+- [x] Adicionar botão "Save Changes" dinâmico
+- [x] Manter validação de duplicatas com `excludeId`
+- [x] Implementar botão de exclusão no modo edição
+- [x] Navegação via `AlarmCard` ao pressionar
 
-#### Arquivos a serem criados/modificados:
+#### Arquivos criados/modificados:
 
 ```
-src/features/alarms/screens/edit-alarm.tsx (novo)
-src/app/(tabs)/alarm/edit-alarm/[id].tsx (novo)
-src/features/alarms/components/alarm-card.tsx (adicionar botão edit)
+✅ src/app/alarm/edit-alarm.tsx (criado)
+✅ src/features/alarms/screens/alarm-form.tsx (modo dual: create/edit)
+✅ src/features/alarms/components/alarm-card.tsx (onPress handler)
+✅ src/features/alarms/screens/index.tsx (handleEditAlarm)
+✅ src/stores/use-alarms-store.ts (updateAlarm com validação)
 ```
 
----
-
-### 1.3 Exclusão de Alarmes
-
-**Status:** 🔴 Não Iniciado
+---✅ Concluído (Parcial)
 **Prioridade:** Média
 **Tempo Estimado:** 0.5-1 dia
 
 #### Objetivos:
 
-- [ ] Adicionar swipe action no `AlarmCard`
-- [ ] Implementar confirmação de exclusão
-- [ ] Usar `deleteAlarm` do store
+- [x] Usar `deleteAlarm` do store
+- [x] Botão de exclusão no modo edição do formulário
+- [x] Navegação automática após exclusão
+- [ ] Adicionar swipe action no `AlarmCard` (melhor UX)
+- [ ] Implementar confirmação de exclusão (dialog/modal)
 - [ ] Adicionar animação de remoção
-- [ ] Feedback visual de sucesso
+- [ ] Feedback visual de sucesso (toast)
 
-#### Arquivos a serem modificados:
+#### Arquivos modificados:
 
 ```
-src/features/alarms/components/alarm-card.tsx
-src/features/alarms/screens/index.tsx
+✅ src/stores/use-alarms-store.ts (deleteAlarm implementado)
+✅ src/features/alarms/screens/alarm-form.tsx (botão delete no edit mode)
+⚠️ src/features/alarms/components/alarm-card.tsx (swipe action pendente)
+⚠️ src/features/alarms/screens/index.tsx (confirmação pendente)
+
 ```
 
----
-
-### 1.4 Ordenação e Visualização
-
-**Status:** 🔴 Não Iniciado
+src/features/� Parcial
 **Prioridade:** Média
 **Tempo Estimado:** 1 dia
 
 #### Objetivos:
 
+- [x] Lista de alarmes com `FlashList` (otimizado)
+- [x] Toggle de ativação individual por alarme
+- [x] Pull-to-refresh implementado
+- [x] Animações de entrada (FadeIn/FadeOut)
+- [x] Empty state com ilustração
 - [ ] Ordenar alarmes por horário (AM primeiro, depois PM)
 - [ ] Agrupar alarmes ativos/inativos
 - [ ] Adicionar filtros (Todos, Ativos, Inativos)
 - [ ] Indicador visual de próximo alarme
 - [ ] Badge com contagem de alarmes ativos
 
+#### Arquivos implementados/pendentes:
+
+```
+✅ src/features/alarms/screens/index.tsx (lista básica)
+✅ src/features/alarms/components/alarm-card.tsx (card component)
+⚠️ src/utils/alarm-sorting.ts (sorting logic pendente)
+⚠️ src/features/alarms/components/alarms-header.tsx (filtros pendentesAtivos, Inativos)
+- [ ] Indicador visual de próximo alarme
+- [ ] Badge com contagem de alarmes ativos
+
 #### Arquivos a serem modificados:
 
 ```
+
 src/features/alarms/screens/index.tsx
 src/utils/alarm-sorting.ts (novo)
-```
+
+````
 
 ---
 
@@ -152,7 +175,7 @@ src/utils/alarm-sorting.ts (novo)
 
 ```bash
 npx expo install expo-notifications
-```
+````
 
 #### Arquivos a serem criados:
 
@@ -331,23 +354,28 @@ src/utils/stats-calculator.ts (novo)
 
 ### 5.3 Dark Mode Otimizado
 
-**Status:** ✅ Implementado
+**Status:** ✅ Concluído (Base)
+**Prioridade:** Alta
 
 #### Objetivos:
 
-- [x] Revisar cores em dark mode
-- [x] Ajustar contrastes
-- [ ] Otimizar gradientes
-- [ ] Testar em diferentes dispositivos
+- [x] Setup Jest + React Native Testing Library
+- [x] Testes para stores (Zustand) - `use-alarms-store.test.ts`
+- [x] Testes para utils/validators - `alarm-validation.test.ts`
+- [x] Testes para componentes principais - `alarm-form.test.tsx`
+- [x] Cobertura de casos principais (add, update, delete, toggle, validation)
+- [ ] Coverage mínimo de 70% (pendente medição)
+- [ ] Testes para novos componentes (ScheduleSelector, DifficultySelector, etc.)
 
----
+#### Arquivos implementados:
 
-## 🧪 Fase 6 - Qualidade e Testes (Contínua)
-
-### 6.1 Testes Unitários
-
-**Status:** 🔴 Não Iniciado
-**Prioridade:** Alta
+```
+✅ src/stores/use-alarms-store.test.ts (criado - 10+ test cases)
+✅ src/utils/alarm-validation.test.ts (criado - validações completas)
+✅ src/features/alarms/screens/alarm-form.test.tsx (criado - rendering + edit mode)
+✅ jest.config.js (configurado)
+✅ jest.setup.js (configurado)
+✅ jest.polyfills.js (configurada
 
 #### Objetivos:
 
@@ -360,10 +388,12 @@ src/utils/stats-calculator.ts (novo)
 #### Arquivos:
 
 ```
-src/stores/__tests__/use-alarms-store.test.ts (novo)
-src/utils/__tests__/alarm-validation.test.ts (novo)
+
+src/stores/**tests**/use-alarms-store.test.ts (novo)
+src/utils/**tests**/alarm-validation.test.ts (novo)
 jest.config.js (novo)
-```
+
+````
 
 ---
 
@@ -474,7 +504,7 @@ jest.config.js (novo)
 src / hooks / use - alarm - form.ts;
 src / hooks / use - time - formatting.ts;
 src / hooks / use - alarm - schedule.ts;
-```
+````
 
 #### Utils e Helpers
 
@@ -513,11 +543,12 @@ Nenhum bug crítico reportado no momento.
 
 ---
 
-## 💡 Ideias Futuras (Backlog)
+- ✅ CONCLUÍDO
 
-### Features Experimentais
-
-- [ ] Integração com wearables (smartwatch)
+- ✅ Sistema de agendamento completo
+- ✅ Edição de alarmes
+- 🟡 Exclusão de alarmes (parcial - falta swipe action e confirmação)
+- 🟡 Ordenação e filtros (parcial - falta sorting e filtros)arables (smartwatch)
 - [ ] Análise de qualidade do sono
 - [ ] Integração com calendário
 - [ ] Alarmes compartilhados (família/amigos)
@@ -565,8 +596,47 @@ Nenhum bug crítico reportado no momento.
 
 ---
 
-## 🤝 Contribuindo
+## 📝 Notas da Última Atualização
 
+### ✅ Features Implementadas desde Última Atualização
+
+1. **Sistema de Agendamento Completo** (Fase 1.1)
+   - Componente `ScheduleSelector` com multi-select de dias
+   - Suporte a Daily, Weekdays, Weekends e Custom schedules
+   - Integração completa com formulário de alarmes
+
+2. **Edição de Alarmes** (Fase 1.2)
+   - Tela de edição funcionando com roteamento dinâmico
+   - Pré-população de dados do alarme
+   - Validação de duplicatas com `excludeId`
+   - Botão de exclusão no modo edição
+
+3. **Base de Testes** (Fase 6.1)
+   - Suite completa de testes unitários
+   - Testes para store (Zustand)
+   - Testes para validações
+   - Testes para componentes principais
+
+### 🔄 Próximos Passos Prioritários
+
+1. **Notificações Locais** (Fase 2.1) - Alta Prioridade
+   - Integração com `expo-notifications`
+   - Agendamento real de alarmes
+
+2. **Melhorias em Exclusão** (Fase 1.3)
+   - Swipe action no `AlarmCard`
+   - Dialog de confirmação
+   - Animações e feedback visual
+
+3. **Ordenação e Filtros** (Fase 1.4)
+   - Implementar sorting por horário
+   - Filtros de alarmes ativos/inativos
+   - Badge com contagem
+
+---
+
+**Última atualização:** 2026-01-08 (18:00)
+**Versão do Roadmap:** 1.2
 Para contribuir com este roadmap:
 
 1. Crie uma issue descrevendo a feature/melhoria

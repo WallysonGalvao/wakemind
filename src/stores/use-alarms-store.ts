@@ -57,6 +57,8 @@ export const useAlarmsStore = create<AlarmsState>()(
               challengeIcon: sanitizedInput.challengeIcon,
               schedule: sanitizedInput.schedule,
               isEnabled: true,
+              difficulty: sanitizedInput.difficulty,
+              protocols: sanitizedInput.protocols,
             },
           ],
         });
