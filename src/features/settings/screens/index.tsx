@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { SectionHeader } from '@/components/settings/section-header';
-import { SettingItem } from '@/components/settings/setting-item';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
+
+import { SectionHeader } from '../components/section-header';
+import { SettingItem } from '../components/setting-item';
+
 import { Text } from '@/components/ui/text';
 import { useSettingsStore } from '@/stores/use-settings-store';
-
-type ThemeMode = 'light' | 'dark' | 'system';
-type SupportedLanguage = 'en' | 'pt' | 'pt-BR' | 'es';
+import { Language, ThemeMode } from '@/types/settings-enums';
 
 interface OptionSelectorProps {
   visible: boolean;
@@ -96,25 +96,27 @@ export default function SettingsScreen() {
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
   const themeOptions = [
-    { value: 'light', label: t('theme.light') },
-    { value: 'dark', label: t('theme.dark') },
-    { value: 'system', label: t('theme.system') },
+    { value: ThemeMode.LIGHT, label: t('theme.light') },
+    { value: ThemeMode.DARK, label: t('theme.dark') },
+    { value: ThemeMode.SYSTEM, label: t('theme.system') },
   ];
 
   const languageOptions = [
-    { value: 'en', label: t('language.english') },
-    { value: 'pt', label: t('language.portuguese') },
-    { value: 'es', label: t('language.spanish') },
+    { value: Language.EN, label: t('language.english') },
+    { value: Language.PT, label: t('language.portuguese') },
+    { value: Language.ES, label: t('language.spanish') },
   ];
 
   const getThemeLabel = (mode: ThemeMode) => {
     return themeOptions.find((opt) => opt.value === mode)?.label || t('theme.system');
   };
 
-  const getLanguageLabel = (lang: SupportedLanguage) => {
+  const getLanguageLabel = (lang: Language) => {
     // Normalize pt-BR to pt for display
-    const normalizedLang = lang === 'pt-BR' ? 'pt' : lang;
-    return languageOptions.find((opt) => opt.value === normalizedLang)?.label || t('language.english');
+    const normalizedLang = lang === Language.PT_BR ? Language.PT : lang;
+    return (
+      languageOptions.find((opt) => opt.value === normalizedLang)?.label || t('language.english')
+    );
   };
 
   return (
@@ -173,8 +175,8 @@ export default function SettingsScreen() {
         visible={showLanguageSelector}
         title={t('language.title')}
         options={languageOptions}
-        selectedValue={language === 'pt-BR' ? 'pt' : language}
-        onSelect={(value) => setLanguage(value as SupportedLanguage)}
+        selectedValue={language === Language.PT_BR ? Language.PT : language}
+        onSelect={(value) => setLanguage(value as Language)}
         onClose={() => setShowLanguageSelector(false)}
       />
 

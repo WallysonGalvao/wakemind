@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import type { StateStorage } from 'zustand/middleware';
 
 import { Platform } from 'react-native';
@@ -67,10 +67,9 @@ export const createMMKVStorage = (storageName: string): StateStorage => {
 
   const encryptionKey = Constants.expoConfig?.slug;
 
-  const storage = new MMKV({
+  const storage = createMMKV({
     id: storageName,
-    // encryptionKey is not supported on web platform
-    ...(Platform.OS !== 'web' && { encryptionKey }),
+    encryptionKey,
   });
 
   return {
@@ -82,7 +81,7 @@ export const createMMKVStorage = (storageName: string): StateStorage => {
       return value ?? null;
     },
     removeItem: (name) => {
-      storage.delete(name);
+      storage.remove(name);
     },
   };
 };

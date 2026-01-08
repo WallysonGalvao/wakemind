@@ -1,56 +1,78 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import Animated, {
+  Easing,
+  FadeInDown,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
-import { Animated, Pressable, useColorScheme, View } from 'react-native';
+import { Pressable, useColorScheme, View } from 'react-native';
 
-import { Switch } from '../ui/switch';
-import { Text } from '../ui/text';
-
+import { Switch } from '@/components/ui/switch';
+import { Text } from '@/components/ui/text';
+import { COLORS } from '@/constants/colors';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 import type { Alarm } from '@/types/alarm';
 
 interface AlarmCardProps {
   alarm: Alarm;
-  onToggle: (id: string, value: boolean) => void;
+  onToggle: (id: string) => void;
+  onPress?: (id: string) => void;
+  index?: number;
 }
 
-export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
+const STAGGER_DELAY = 100;
+
+export function AlarmCard({ alarm, onToggle, onPress, index = 0 }: AlarmCardProps) {
   const isActive = alarm.isEnabled;
   const colorScheme = useColorScheme();
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const scale = useSharedValue(1);
+  const shadowStyle = useShadowStyle('sm');
 
   // Get icon color based on theme and active state
   const getIconColor = () => {
     if (colorScheme === 'dark') {
-      return isActive ? '#64748b' : '#475569';
+      return isActive ? COLORS.slate[500] : COLORS.slate[600];
     }
-    return isActive ? '#64748b' : '#94a3b8';
+    return isActive ? COLORS.slate[500] : COLORS.slate[400];
   };
 
   const trackColor = {
-    false: colorScheme === 'dark' ? '#475569' : '#cbd5e1',
-    true: '#135bec',
+    false: colorScheme === 'dark' ? COLORS.slate[600] : COLORS.slate[300],
+    true: COLORS.brandPrimary,
   };
 
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.99,
-      useNativeDriver: true,
-    }).start();
+  const handleToggle = () => {
+    // Haptic feedback on toggle
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onToggle(alarm.id);
   };
 
-  const handlePressOut = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
+  const handlePress = () => {
+    if (onPress) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      onPress(alarm.id);
+    }
   };
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  // Staggered entry animation
+  const enteringAnimation = FadeInDown.delay(index * STAGGER_DELAY)
+    .duration(400)
+    .easing(Easing.out(Easing.cubic));
 
   return (
-    <Pressable accessibilityRole="button" onPressIn={handlePressIn} onPressOut={handlePressOut}>
+    <Pressable accessibilityRole="button" onPress={handlePress}>
       <Animated.View
-        style={{ transform: [{ scale: scaleAnim }] }}
-        className={`rounded-2xl border p-5 shadow-sm ${
+        entering={enteringAnimation}
+        style={[animatedStyle, shadowStyle]}
+        className={`rounded-2xl border p-5 ${
           isActive
             ? 'border-slate-200 bg-white dark:border-slate-700 dark:bg-[#1a2230]'
             : 'border-slate-100 bg-white/50 dark:border-slate-800/50 dark:bg-[#1a2230]/50'
@@ -112,9 +134,9 @@ export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
           <View className="pl-4">
             <Switch
               value={alarm.isEnabled}
-              onValueChange={(value) => onToggle(alarm.id, value)}
+              onValueChange={handleToggle}
               trackColor={trackColor}
-              thumbColor="#ffffff"
+              thumbColor={COLORS.white}
               size="lg"
             />
           </View>
