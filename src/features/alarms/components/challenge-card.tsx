@@ -31,9 +31,20 @@ export function ChallengeCard({
       onPress={onSelect}
       className={`relative w-[80%] min-w-[280px] flex-shrink-0 overflow-hidden rounded-xl ${
         isSelected
-          ? 'border-2 border-brand-primary bg-surface-dark'
-          : 'border-surface-highlight border bg-surface-dark/50'
+          ? 'border-2 border-brand-primary bg-white dark:bg-surface-dark'
+          : 'border border-slate-200 bg-white dark:border-surface-highlight dark:bg-surface-dark/50'
       }`}
+      style={
+        isSelected
+          ? {
+              shadowColor: 'rgba(19, 91, 236, 0.12)',
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 1,
+              shadowRadius: 30,
+              elevation: 8,
+            }
+          : undefined
+      }
       accessibilityRole="button"
     >
       {/* Selected checkmark */}
@@ -49,7 +60,7 @@ export function ChallengeCard({
         {/* Icon */}
         <View
           className={`flex size-12 items-center justify-center rounded-lg ${
-            isSelected ? 'bg-primary/20' : 'bg-surface-highlight'
+            isSelected ? 'bg-brand-primary/10' : 'bg-slate-100 dark:bg-surface-highlight'
           }`}
         >
           <MaterialSymbol
@@ -61,7 +72,9 @@ export function ChallengeCard({
 
         {/* Title and description */}
         <View>
-          <Text className={`text-lg font-bold ${isSelected ? 'text-white' : 'text-slate-200'}`}>
+          <Text
+            className={`text-lg font-bold ${isSelected ? 'text-slate-900 dark:text-white' : 'text-slate-900 dark:text-slate-200'}`}
+          >
             {title}
           </Text>
           <Text className="mt-1 text-sm text-slate-400">{description}</Text>

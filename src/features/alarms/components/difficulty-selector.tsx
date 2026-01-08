@@ -32,7 +32,7 @@ export function DifficultySelector({
         {t('newAlarm.difficulty.label')}
       </Text>
 
-      <View className="bg-surface-highlight flex h-12 w-full flex-row items-center justify-center rounded-xl p-1">
+      <View className="flex h-12 w-full flex-row items-center justify-center rounded-xl bg-slate-200 p-1 dark:bg-surface-highlight">
         {difficulties.map((difficulty) => {
           const isSelected = selectedDifficulty === difficulty;
           const isAdaptive = difficulty === DifficultyLevel.ADAPTIVE;
@@ -42,16 +42,35 @@ export function DifficultySelector({
               key={difficulty}
               onPress={() => onDifficultyChange(difficulty)}
               className={`h-full flex-1 flex-row items-center justify-center gap-1 rounded-lg ${
-                isSelected ? 'bg-brand-primary' : ''
+                isSelected
+                  ? 'border border-slate-100 bg-white dark:border-transparent dark:bg-brand-primary'
+                  : ''
               }`}
+              style={
+                isSelected
+                  ? {
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: 0.05,
+                      shadowRadius: 2,
+                      elevation: 1,
+                    }
+                  : undefined
+              }
               accessibilityRole="button"
             >
               {isAdaptive && isSelected ? (
-                <MaterialSymbol name="auto_awesome" size={16} className="text-white" />
+                <MaterialSymbol
+                  name="auto_awesome"
+                  size={16}
+                  className="text-brand-primary dark:text-white"
+                />
               ) : null}
               <Text
                 className={`text-sm font-${isSelected ? 'bold' : 'medium'} ${
-                  isSelected ? 'text-white' : 'text-slate-400 dark:text-slate-500'
+                  isSelected
+                    ? 'text-brand-primary dark:text-white'
+                    : 'text-slate-500 dark:text-slate-400'
                 }`}
               >
                 {t(`newAlarm.difficulty.${difficulty}`)}

@@ -29,9 +29,16 @@ export function ProtocolToggle({
   return (
     <Pressable
       onPress={disabled ? undefined : onToggle}
-      className={`flex-row items-center justify-between rounded-lg border bg-white p-4 shadow-sm dark:border-transparent dark:bg-surface-dark ${
+      className={`flex-row items-center justify-between rounded-lg border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark ${
         disabled ? 'opacity-60' : ''
       }`}
+      style={{
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+      }}
       accessibilityRole="switch"
       accessibilityState={{ checked: isEnabled, disabled }}
     >
@@ -48,13 +55,20 @@ export function ProtocolToggle({
       {/* Toggle switch */}
       <View
         className={`relative h-6 w-11 rounded-full ${
-          isEnabled ? 'bg-brand-primary/30' : 'dark:bg-surface-highlight bg-slate-200'
+          isEnabled ? 'bg-brand-primary/30' : 'bg-slate-200 dark:bg-surface-highlight'
         }`}
       >
         <View
-          className={`absolute top-1 h-4 w-4 rounded-full shadow-sm ${
+          className={`absolute top-1 h-4 w-4 rounded-full ${
             isEnabled ? 'right-1 bg-brand-primary' : 'left-1 bg-slate-400 dark:bg-slate-500'
           }`}
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
         />
       </View>
     </Pressable>

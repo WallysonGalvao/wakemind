@@ -48,8 +48,15 @@ export function AlarmCard({ alarm, onToggle }: AlarmCardProps) {
   return (
     <Pressable accessibilityRole="button" onPressIn={handlePressIn} onPressOut={handlePressOut}>
       <Animated.View
-        style={{ transform: [{ scale: scaleAnim }] }}
-        className={`rounded-2xl border p-5 shadow-sm ${
+        style={{
+          transform: [{ scale: scaleAnim }],
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.05,
+          shadowRadius: 2,
+          elevation: 1,
+        }}
+        className={`rounded-2xl border p-5 ${
           isActive
             ? 'border-slate-200 bg-white dark:border-slate-700 dark:bg-[#1a2230]'
             : 'border-slate-100 bg-white/50 dark:border-slate-800/50 dark:bg-[#1a2230]/50'
