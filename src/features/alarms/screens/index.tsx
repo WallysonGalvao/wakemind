@@ -46,12 +46,12 @@ export default function AlarmsScreen() {
   );
 
   const handleNewAlarm = useCallback(() => {
-    router.push('/alarm/alarm-form');
+    router.push('/alarm/create-alarm');
   }, [router]);
 
   const handleEditAlarm = useCallback(
     (id: string) => {
-      router.push(`/alarm/alarm-form?alarmId=${id}`);
+      router.push(`/alarm/edit-alarm?alarmId=${id}`);
     },
     [router]
   );

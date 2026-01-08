@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 
+import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -60,6 +61,23 @@ function BenefitItem({ text }: BenefitItemProps) {
 
 export default function BackupProtocolsInfoScreen() {
   const { t } = useTranslation();
+  const navigation = useNavigation();
+  const router = useRouter();
+
+  const handleClose = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('newAlarm.backupProtocols.infoModal.title'),
+      headerLeft: () => (
+        <Pressable accessibilityRole="button" onPress={handleClose} className="p-2">
+          <MaterialSymbol name="close" size={24} className="text-slate-900 dark:text-white" />
+        </Pressable>
+      ),
+    });
+  }, [navigation, t, handleClose]);
 
   return (
     <View className="flex-1 bg-background-light pt-4 dark:bg-background-dark">

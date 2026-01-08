@@ -231,7 +231,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
   );
 
   return (
-    <View className="relative flex-col items-center justify-center py-6">
+    <View className="relative flex-col items-center justify-center pb-6">
       {/* Decorative gradient */}
       <View className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-brand-primary/5 to-transparent" />
 
