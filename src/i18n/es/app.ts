@@ -28,7 +28,7 @@ export const appES = {
   'challenge.barcode': 'Escanear Código',
 
   // New Alarm Screen
-  'newAlarm.title': 'Nuevo Protocolo',
+  'newAlarm.title': 'Nuevo Alarme',
   'newAlarm.reset': 'Restablecer',
   'newAlarm.commit': 'Confirmar para {{time}}',
   'newAlarm.cognitiveActivation.title': 'Activación Cognitiva',

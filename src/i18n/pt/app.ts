@@ -28,7 +28,7 @@ export const appPT = {
   'challenge.barcode': 'Escanear Código',
 
   // New Alarm Screen
-  'newAlarm.title': 'Novo Protocolo',
+  'newAlarm.title': 'Novo Alarme',
   'newAlarm.reset': 'Resetar',
   'newAlarm.commit': 'Confirmar para {{time}}',
   'newAlarm.cognitiveActivation.title': 'Ativação Cognitiva',
