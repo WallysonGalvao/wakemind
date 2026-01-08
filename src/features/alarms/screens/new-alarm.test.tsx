@@ -4,7 +4,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 
 import { Alert } from 'react-native';
 
-import NewAlarmScreen from '../new-alarm';
+import NewAlarmScreen from './new-alarm';
 
 import { DayOfWeek } from '@/features/alarms/components/schedule-selector';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
@@ -18,27 +18,26 @@ jest.mock('expo-router', () => ({
   }),
 }));
 
-// Mock react-i18next
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, params?: Record<string, unknown>) => {
-      const translations: Record<string, string> = {
-        'newAlarm.title': 'New Alarm',
-        'newAlarm.reset': 'Reset',
-        'newAlarm.commit': `Set alarm for ${params?.time || '06:00 AM'}`,
-        'common.close': 'Close',
-        'common.ok': 'OK',
-        'newAlarm.validationError.title': 'Validation Error',
-        'newAlarm.error.title': 'Error',
-        'newAlarm.error.message': 'An error occurred',
-        'newAlarm.challenges.math.title': 'Math Challenge',
-        'newAlarm.challenges.memory.title': 'Memory Challenge',
-        'newAlarm.challenges.logic.title': 'Logic Challenge',
-      };
-      return translations[key] || key;
-    },
-  }),
-}));
+// Mock react-i18next with actual translations
+jest.mock('react-i18next', () => {
+  // Import translations inside the mock factory
+  const mockEnTranslations = jest.requireActual('@/i18n/en').default;
+
+  return {
+    useTranslation: () => ({
+      t: (key: string, params?: Record<string, unknown>) => {
+        const translations = mockEnTranslations as Record<string, string>;
+
+        // Handle interpolation for keys with params
+        if (key === 'newAlarm.commit' && params?.time) {
+          return `Commit to ${params.time}`;
+        }
+
+        return translations[key] || key;
+      },
+    }),
+  };
+});
 
 // Mock safe area insets
 jest.mock('react-native-safe-area-context', () => ({
@@ -264,7 +263,7 @@ describe('NewAlarmScreen', () => {
     it('should display commit button with formatted time', () => {
       const { getByText } = render(<NewAlarmScreen />);
 
-      expect(getByText('Set alarm for 06:00 AM')).toBeTruthy();
+      expect(getByText('Commit to 06:00 AM')).toBeTruthy();
     });
   });
 
@@ -344,7 +343,7 @@ describe('NewAlarmScreen', () => {
     it('should create alarm with default values when commit button is pressed', async () => {
       const { getByText } = render(<NewAlarmScreen />);
 
-      const commitButton = getByText('Set alarm for 06:00 AM');
+      const commitButton = getByText('Commit to 06:00 AM');
 
       act(() => {
         fireEvent.press(commitButton);
@@ -381,7 +380,7 @@ describe('NewAlarmScreen', () => {
       });
 
       // Commit
-      const commitButton = getByText('Set alarm for 07:30 PM');
+      const commitButton = getByText('Commit to 07:30 PM');
 
       act(() => {
         fireEvent.press(commitButton);
@@ -396,7 +395,7 @@ describe('NewAlarmScreen', () => {
       expect(store.alarms[0]).toMatchObject({
         time: '07:30',
         period: Period.PM,
-        challenge: 'Memory Challenge',
+        challenge: 'Memory Matrix',
         challengeIcon: 'psychology',
       });
 
@@ -419,12 +418,12 @@ describe('NewAlarmScreen', () => {
       const { getByText } = render(<NewAlarmScreen />);
 
       // Try to add duplicate alarm
-      const commitButton = getByText('Set alarm for 06:00 AM');
+      const commitButton = getByText('Commit to 06:00 AM');
       fireEvent.press(commitButton);
 
       await waitFor(() => {
         expect(alertSpy).toHaveBeenCalledWith(
-          'Validation Error',
+          'Invalid Alarm',
           expect.any(String),
           expect.any(Array)
         );

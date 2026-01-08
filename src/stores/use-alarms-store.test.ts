@@ -3,23 +3,27 @@ import { act, renderHook } from '@testing-library/react-native';
 import type { AlarmInput } from './use-alarms-store';
 import { useAlarmsStore } from './use-alarms-store';
 
+import enTranslations from '@/i18n/en';
 import { ChallengeType, Period, Schedule } from '@/types/alarm-enums';
 
-// Mock i18n
-jest.mock('i18next', () => ({
-  t: (key: string, params?: Record<string, string>) => {
-    const translations: Record<string, string> = {
-      'validation.alarm.timeFormat': 'Invalid time format',
-      'validation.alarm.periodInvalid': 'Invalid period',
-      'validation.alarm.duplicate': `Alarm already exists at ${params?.time} ${params?.period}`,
-      'validation.alarm.challengeRequired': 'Challenge is required',
-      'validation.alarm.challengeIconRequired': 'Challenge icon is required',
-      'validation.alarm.scheduleRequired': 'Schedule is required',
-      'validation.alarm.notFound': 'Alarm not found',
-    };
-    return translations[key] || key;
-  },
-}));
+// Mock i18n with actual translations
+jest.mock('i18next', () => {
+  // Import translations inside the mock factory
+  const mockEnTranslations = jest.requireActual('@/i18n/en').default;
+
+  return {
+    t: (key: string, params?: Record<string, string>) => {
+      const translations = mockEnTranslations as Record<string, string>;
+
+      // Handle interpolation for keys with params
+      if (key === 'validation.alarm.duplicate' && params?.time && params?.period) {
+        return `An alarm already exists for ${params.time} ${params.period}`;
+      }
+
+      return translations[key] || key;
+    },
+  };
+});
 
 // Mock expo-crypto
 jest.mock('expo-crypto', () => ({
@@ -90,9 +94,11 @@ describe('useAlarmsStore', () => {
       });
 
       expect(result.current.alarms[0].time).toBe('06:30');
-      expect(result.current.alarms[0].challenge).toBe('Math Challenge');
+      expect(result.current.alarms[0].challenge).toBe(
+        enTranslations['newAlarm.challenges.math.title']
+      );
       expect(result.current.alarms[0].challengeIcon).toBe('calculate');
-      expect(result.current.alarms[0].schedule).toBe('Daily');
+      expect(result.current.alarms[0].schedule).toBe(enTranslations['newAlarm.schedule.daily']);
     });
 
     it('should throw error for invalid time format', () => {
@@ -110,7 +116,7 @@ describe('useAlarmsStore', () => {
         act(() => {
           result.current.addAlarm(invalidAlarm);
         });
-      }).toThrow('Invalid time format');
+      }).toThrow('Invalid time format. Expected format: HH:MM (e.g., "05:30")');
     });
 
     it('should throw error for duplicate alarm time', () => {
@@ -132,7 +138,7 @@ describe('useAlarmsStore', () => {
         act(() => {
           result.current.addAlarm(alarm);
         });
-      }).toThrow('Alarm already exists at 06:30 AM');
+      }).toThrow('An alarm already exists for 06:30 AM');
     });
 
     it('should throw error for empty challenge', () => {
@@ -150,7 +156,7 @@ describe('useAlarmsStore', () => {
         act(() => {
           result.current.addAlarm(invalidAlarm);
         });
-      }).toThrow('Challenge is required');
+      }).toThrow('Challenge type is required');
     });
 
     it('should allow same time with different period', () => {
@@ -299,7 +305,7 @@ describe('useAlarmsStore', () => {
             period: Period.AM,
           });
         });
-      }).toThrow('Alarm already exists at 06:30 AM');
+      }).toThrow('An alarm already exists for 06:30 AM');
     });
 
     it('should throw error for non-existent alarm when updating time/period', () => {

@@ -52,6 +52,14 @@ jest.mock('expo-asset', () => ({
   },
 }));
 
+// Mock expo-image
+jest.mock('expo-image', () => {
+  const { Image: RNImage } = require('react-native');
+  return {
+    Image: RNImage,
+  };
+});
+
 // Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
@@ -90,6 +98,19 @@ jest.mock('react-native-gesture-handler', () => {
     gestureHandlerRootHOC: jest.fn(),
     Directions: {},
     GestureHandlerRootView: View,
+    Gesture: {
+      Pan: () => ({
+        onBegin: jest.fn().mockReturnThis(),
+        onUpdate: jest.fn().mockReturnThis(),
+        onEnd: jest.fn().mockReturnThis(),
+        onFinalize: jest.fn().mockReturnThis(),
+      }),
+      Tap: () => ({
+        onBegin: jest.fn().mockReturnThis(),
+        onEnd: jest.fn().mockReturnThis(),
+      }),
+    },
+    GestureDetector: ({ children }) => children,
   };
 });
 
