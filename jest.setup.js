@@ -1,6 +1,11 @@
 // Disable expo winter runtime
 global.__DEV__ = true;
 
+// Mock expo-crypto
+jest.mock('expo-crypto', () => ({
+  randomUUID: jest.fn(() => 'test-uuid-' + Math.random().toString(36).substring(7)),
+}));
+
 // Mock expo modules
 jest.mock('expo', () => ({
   registerRootComponent: jest.fn(),
