@@ -57,6 +57,20 @@ export const appPT = {
   'newAlarm.backupProtocols.wakeCheck.description': 'Confirmar 5m após alarme',
   'newAlarm.backupProtocols.barcodeScan.title': 'Escanear Código',
   'newAlarm.backupProtocols.barcodeScan.description': 'Escaneie pasta de dente para desligar',
+  'newAlarm.backupProtocols.infoModal.title': 'O que são Protocolos de Backup?',
+  'newAlarm.backupProtocols.infoModal.description':
+    'Protocolos de Backup são mecanismos de segurança que garantem que você realmente vai acordar, mesmo que não consiga desativar o alarme principal com o desafio cognitivo.',
+  'newAlarm.backupProtocols.infoModal.whyTitle': 'Por que são importantes?',
+  'newAlarm.backupProtocols.infoModal.benefit1': 'Garantia zero-falha - você vai acordar',
+  'newAlarm.backupProtocols.infoModal.benefit2': 'Previne voltar a dormir',
+  'newAlarm.backupProtocols.infoModal.benefit3': 'Força engajamento físico e cognitivo',
+  'newAlarm.backupProtocols.infoModal.protocolsTitle': 'Protocolos Disponíveis',
+  'newAlarm.backupProtocols.infoModal.snoozeDescription':
+    'A soneca é rigidamente controlada ou desabilitada por padrão. Soneca fácil seria contraproducente para um alarme focado em performance.',
+  'newAlarm.backupProtocols.infoModal.wakeCheckDescription':
+    'Após desativar o alarme, o app solicita uma confirmação 5 minutos depois para garantir que você não voltou a dormir.',
+  'newAlarm.backupProtocols.infoModal.barcodeScanDescription':
+    'Força você a escanear um código de barras (como pasta de dente) para desativar completamente o alarme, exigindo que você saia da cama.',
   'newAlarm.validationError.title': 'Alarme Inválido',
   'newAlarm.error.title': 'Erro',
   'newAlarm.error.message': 'Ocorreu um erro inesperado. Por favor, tente novamente.',
@@ -80,4 +94,6 @@ export const appPT = {
   'common.delete': 'Excluir',
   'common.confirm': 'Confirmar',
   'common.ok': 'OK',
+  'common.info': 'Mais informações',
+  'common.close': 'Fechar',
 };

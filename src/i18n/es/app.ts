@@ -60,6 +60,20 @@ export const appES = {
   'newAlarm.backupProtocols.wakeCheck.description': 'Confirmar 5m después de alarma',
   'newAlarm.backupProtocols.barcodeScan.title': 'Escanear Código',
   'newAlarm.backupProtocols.barcodeScan.description': 'Escanea pasta de dientes para desactivar',
+  'newAlarm.backupProtocols.infoModal.title': '¿Qué son los Protocolos de Respaldo?',
+  'newAlarm.backupProtocols.infoModal.description':
+    'Los Protocolos de Respaldo son mecanismos de seguridad que garantizan que realmente te despiertes, incluso si no puedes desactivar la alarma principal con el desafío cognitivo.',
+  'newAlarm.backupProtocols.infoModal.whyTitle': '¿Por qué son importantes?',
+  'newAlarm.backupProtocols.infoModal.benefit1': 'Garantía cero-fallas - vas a despertar',
+  'newAlarm.backupProtocols.infoModal.benefit2': 'Previene volver a dormir',
+  'newAlarm.backupProtocols.infoModal.benefit3': 'Fuerza el compromiso físico y cognitivo',
+  'newAlarm.backupProtocols.infoModal.protocolsTitle': 'Protocolos Disponibles',
+  'newAlarm.backupProtocols.infoModal.snoozeDescription':
+    'La función de posponer está estrictamente controlada o deshabilitada por defecto. Posponer fácilmente sería contraproducente para una alarma enfocada en rendimiento.',
+  'newAlarm.backupProtocols.infoModal.wakeCheckDescription':
+    'Después de desactivar la alarma, la app solicita una confirmación 5 minutos después para asegurar que no has vuelto a dormir.',
+  'newAlarm.backupProtocols.infoModal.barcodeScanDescription':
+    'Te obliga a escanear un código de barras (como pasta de dientes) para desactivar completamente la alarma, requiriendo que te levantes de la cama.',
   'newAlarm.validationError.title': 'Alarma Inválida',
   'newAlarm.error.title': 'Error',
   'newAlarm.error.message': 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
@@ -83,4 +97,6 @@ export const appES = {
   'common.delete': 'Eliminar',
   'common.confirm': 'Confirmar',
   'common.ok': 'OK',
+  'common.info': 'Más información',
+  'common.close': 'Cerrar',
 };

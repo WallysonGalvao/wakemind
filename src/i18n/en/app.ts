@@ -56,6 +56,20 @@ export const appEN = {
   'newAlarm.backupProtocols.wakeCheck.description': 'Confirm 5m after alarm',
   'newAlarm.backupProtocols.barcodeScan.title': 'Barcode Scan',
   'newAlarm.backupProtocols.barcodeScan.description': 'Scan toothpaste to dismiss',
+  'newAlarm.backupProtocols.infoModal.title': 'What are Backup Protocols?',
+  'newAlarm.backupProtocols.infoModal.description':
+    "Backup Protocols are safety mechanisms that ensure you actually wake up, even if you can't dismiss the main alarm with the cognitive challenge.",
+  'newAlarm.backupProtocols.infoModal.whyTitle': 'Why are they important?',
+  'newAlarm.backupProtocols.infoModal.benefit1': 'Zero-fail guarantee - you will wake up',
+  'newAlarm.backupProtocols.infoModal.benefit2': 'Prevents falling back asleep',
+  'newAlarm.backupProtocols.infoModal.benefit3': 'Forces physical and cognitive engagement',
+  'newAlarm.backupProtocols.infoModal.protocolsTitle': 'Available Protocols',
+  'newAlarm.backupProtocols.infoModal.snoozeDescription':
+    'Snooze is strictly controlled or disabled by default. Easy snoozing would be counterproductive for a performance-focused alarm.',
+  'newAlarm.backupProtocols.infoModal.wakeCheckDescription':
+    "After dismissing the alarm, the app requests a confirmation 5 minutes later to ensure you haven't fallen back asleep.",
+  'newAlarm.backupProtocols.infoModal.barcodeScanDescription':
+    'Forces you to scan a barcode (like toothpaste) to fully dismiss the alarm, requiring you to physically get out of bed.',
   'newAlarm.validationError.title': 'Invalid Alarm',
   'newAlarm.error.title': 'Error',
   'newAlarm.error.message': 'An unexpected error occurred. Please try again.',
@@ -79,4 +93,6 @@ export const appEN = {
   'common.delete': 'Delete',
   'common.confirm': 'Confirm',
   'common.ok': 'OK',
+  'common.info': 'More information',
+  'common.close': 'Close',
 };
