@@ -91,6 +91,8 @@ export function ChallengeCard({
             <Image
               source={{ uri: imageUrl }}
               className="h-full w-full"
+              // eslint-disable-next-line react-native/no-inline-styles -- expo-image requires style for dimensions
+              style={{ width: '100%', height: '100%' }}
               contentFit="cover"
               transition={200}
               accessibilityIgnoresInvertColors
