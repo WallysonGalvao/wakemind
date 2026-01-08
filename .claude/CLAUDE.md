@@ -73,6 +73,21 @@ const styles = StyleSheet.create({ container: { flex: 1 } });
 >
 ```
 
+### expo-image Dimensions
+
+The `expo-image` package does NOT properly interpret TailwindCSS classes for width/height. You must use inline `style` prop:
+
+```tsx
+// ✅ Required for expo-image
+<Image
+  source={{ uri: imageUrl }}
+  className="h-full w-full"
+  // eslint-disable-next-line react-native/no-inline-styles -- expo-image requires style for dimensions
+  style={{ width: '100%', height: '100%' }}
+  contentFit="cover"
+/>
+```
+
 ## Accessibility
 
 Always add `accessibilityRole` to interactive elements:
