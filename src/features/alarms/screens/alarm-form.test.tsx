@@ -2,8 +2,6 @@ import React from 'react';
 
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 
-import { Alert } from 'react-native';
-
 import AlarmFormScreen from './alarm-form';
 
 import { DayOfWeek } from '@/features/alarms/components/schedule-selector';
@@ -160,6 +158,26 @@ jest.mock('@/components/ui/switch', () => ({
   },
 }));
 
+// Mock toast
+const mockToastShow = jest.fn();
+jest.mock('@/components/ui/toast', () => ({
+  useToast: () => ({
+    show: mockToastShow,
+  }),
+  Toast: ({ children }: any) => {
+    const { View } = require('react-native');
+    return <View testID="toast">{children}</View>;
+  },
+  ToastTitle: ({ children }: any) => {
+    const { Text } = require('react-native');
+    return <Text testID="toast-title">{children}</Text>;
+  },
+  ToastDescription: ({ children }: any) => {
+    const { Text } = require('react-native');
+    return <Text testID="toast-description">{children}</Text>;
+  },
+}));
+
 jest.mock('@/components/segmented-control', () => ({
   SegmentedControl: ({
     title,
@@ -199,6 +217,7 @@ jest.mock('@/components/segmented-control', () => ({
 describe('AlarmFormScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockToastShow.mockClear();
     // Reset store
     const store = useAlarmsStore.getState();
     store.alarms.forEach((alarm) => {
@@ -337,9 +356,7 @@ describe('AlarmFormScreen', () => {
       expect(mockBack).toHaveBeenCalledTimes(1);
     });
 
-    it('should show alert when validation fails', async () => {
-      const alertSpy = jest.spyOn(Alert, 'alert');
-
+    it('should show toast when validation fails', async () => {
       // Add an alarm first to create a duplicate
       const store = useAlarmsStore.getState();
       store.addAlarm({
@@ -357,17 +374,16 @@ describe('AlarmFormScreen', () => {
       fireEvent.press(commitButton);
 
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalledWith(
-          'Invalid Alarm',
-          expect.any(String),
-          expect.any(Array)
+        expect(mockToastShow).toHaveBeenCalledWith(
+          expect.objectContaining({
+            placement: 'top',
+            duration: 3000,
+          })
         );
       });
 
       // Should not navigate back
       expect(mockBack).not.toHaveBeenCalled();
-
-      alertSpy.mockRestore();
     });
   });
 

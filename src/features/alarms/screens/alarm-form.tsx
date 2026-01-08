@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
@@ -20,6 +20,7 @@ import { alarmFormSchema, DEFAULT_ALARM_FORM_VALUES } from '../schemas/alarm-for
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { BackupProtocolId, Period } from '@/types/alarm-enums';
@@ -114,6 +115,7 @@ interface AlarmFormScreenProps {
 export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const { t } = useTranslation();
   const router = useRouter();
+  const toast = useToast();
   const insets = useSafeAreaInsets();
 
   // Store actions
@@ -230,15 +232,20 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
       router.back();
     } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(t('newAlarm.validationError.title'), error.message, [
-          { text: t('common.ok'), style: 'default' },
-        ]);
-      } else {
-        Alert.alert(t('newAlarm.error.title'), t('newAlarm.error.message'), [
-          { text: t('common.ok'), style: 'default' },
-        ]);
-      }
+      const title =
+        error instanceof Error ? t('newAlarm.validationError.title') : t('newAlarm.error.title');
+      const description = error instanceof Error ? error.message : t('newAlarm.error.message');
+
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
+            <ToastTitle>{title}</ToastTitle>
+            <ToastDescription>{description}</ToastDescription>
+          </Toast>
+        ),
+      });
     }
   };
 
