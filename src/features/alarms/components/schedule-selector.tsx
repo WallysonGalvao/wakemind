@@ -50,6 +50,10 @@ export function ScheduleSelector({ selectedDays, onDaysChange }: ScheduleSelecto
   // Handle day toggle for multi-select
   const handleDayToggle = (day: DayOfWeek) => {
     if (selectedDays.includes(day)) {
+      // Prevent deselecting if it's the last selected day
+      if (selectedDays.length === 1) {
+        return;
+      }
       onDaysChange(selectedDays.filter((d) => d !== day));
     } else {
       onDaysChange([...selectedDays, day].sort((a, b) => DAY_ORDER[a] - DAY_ORDER[b]));
