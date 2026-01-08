@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { Image, type ImageSource } from 'expo-image';
 import Animated, {
@@ -14,6 +14,8 @@ import { Dimensions, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { COLORS } from '@/constants/colors';
+import { useCustomShadow } from '@/hooks/use-shadow-style';
 
 interface EmptyStateProps {
   title: string;
@@ -30,6 +32,37 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
   // Pulse animation values
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0.75);
+
+  // Shadow styles using the hook
+  const iconContainerShadow = useCustomShadow({
+    offset: { width: 0, height: 25 },
+    opacity: 0.25,
+    radius: 50,
+    elevation: 24,
+  });
+
+  const badgeShadow = useCustomShadow({
+    offset: { width: 0, height: 10 },
+    opacity: 0.15,
+    radius: 15,
+    elevation: 10,
+  });
+
+  // Memoized styles to avoid inline styles
+  const containerStyle = useMemo(() => ({ minHeight: screenHeight * 0.8 }), [screenHeight]);
+
+  const glowPositionStyle = useMemo(
+    () => ({
+      position: 'absolute' as const,
+      top: (imageSize - glowSize) / 2,
+      left: (imageSize - glowSize) / 2,
+      width: glowSize,
+      height: glowSize,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+    }),
+    [imageSize, glowSize]
+  );
 
   useEffect(() => {
     // Pulse scale animation: 1 -> 1.15 -> 1
@@ -53,24 +86,11 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
   }));
 
   return (
-    <View className="items-center justify-center px-6" style={{ minHeight: screenHeight * 0.8 }}>
+    <View className="items-center justify-center px-6" style={containerStyle}>
       {/* Abstract Visual Representation */}
       <View className="relative mb-14">
         {/* Decorative Glow - Radial gradient with pulse animation */}
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              top: (imageSize - 280) / 2,
-              left: (imageSize - 280) / 2,
-              width: 280,
-              height: 280,
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
-            animatedGlowStyle,
-          ]}
-        >
+        <Animated.View style={[glowPositionStyle, animatedGlowStyle]}>
           <Svg width={glowSize} height={glowSize} viewBox={`0 0 ${glowSize} ${glowSize}`}>
             <Defs>
               <RadialGradient
@@ -82,10 +102,10 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
                 fx="50%"
                 fy="50%"
               >
-                <Stop offset="0%" stopColor="#135bec" stopOpacity="0.35" />
-                <Stop offset="40%" stopColor="#135bec" stopOpacity="0.2" />
-                <Stop offset="70%" stopColor="#135bec" stopOpacity="0.08" />
-                <Stop offset="100%" stopColor="#135bec" stopOpacity="0" />
+                <Stop offset="0%" stopColor={COLORS.brandPrimary} stopOpacity="0.35" />
+                <Stop offset="40%" stopColor={COLORS.brandPrimary} stopOpacity="0.2" />
+                <Stop offset="70%" stopColor={COLORS.brandPrimary} stopOpacity="0.08" />
+                <Stop offset="100%" stopColor={COLORS.brandPrimary} stopOpacity="0" />
               </RadialGradient>
             </Defs>
             <Circle
@@ -100,13 +120,7 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
         {/* Icon Container */}
         <View
           className="relative h-48 w-48 items-center justify-center overflow-hidden rounded-full"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 25 },
-            shadowOpacity: 0.25,
-            shadowRadius: 50,
-            elevation: 24,
-          }}
+          style={iconContainerShadow}
         >
           {image ? (
             <>
@@ -116,6 +130,7 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
                 contentFit="cover"
                 transition={200}
                 accessibilityIgnoresInvertColors
+                // eslint-disable-next-line react-native/no-inline-styles -- expo-image requires style for dimensions
                 style={{ width: '100%', height: '100%' }}
               />
               {/* Overlay for mood effect */}
@@ -127,13 +142,7 @@ export function EmptyState({ title, description, image, children }: EmptyStatePr
         {/* Floating Icon Badge */}
         <View
           className="absolute bottom-2 right-2 items-center justify-center rounded-full border border-slate-100 bg-white p-3 dark:border-slate-800 dark:bg-surface-dark"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.15,
-            shadowRadius: 15,
-            elevation: 10,
-          }}
+          style={badgeShadow}
         >
           <MaterialSymbol name="schedule" size={28} className="text-brand-primary" />
         </View>

@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+// @react-compiler-ignore-file
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -55,25 +56,29 @@ export function SegmentedControl<T extends string>({
   const slotWidth = useSharedValue(0);
   const startX = useSharedValue(0);
 
+  // Use refs to track values without triggering React Compiler warnings
+  const itemsLengthRef = useRef(items.length);
+  const selectedIndexRef = useRef(selectedIndex);
+
+  itemsLengthRef.current = items.length;
+  selectedIndexRef.current = selectedIndex;
+
   const sliderStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
     width: buttonWidth.value,
   }));
 
-  const onLayout = useCallback(
-    (event: LayoutChangeEvent) => {
-      const containerWidth = event.nativeEvent.layout.width;
-      const padding = 4; // p-1 = 4px
-      const innerWidth = containerWidth - padding * 2;
-      const calculatedSlotWidth = innerWidth / items.length;
+  const onLayout = (event: LayoutChangeEvent) => {
+    const containerWidth = event.nativeEvent.layout.width;
+    const padding = 4; // p-1 = 4px
+    const innerWidth = containerWidth - padding * 2;
+    const calculatedSlotWidth = innerWidth / itemsLengthRef.current;
 
-      slotWidth.value = calculatedSlotWidth;
-      buttonWidth.value = calculatedSlotWidth;
-      translateX.value = selectedIndex * calculatedSlotWidth;
-      startX.value = selectedIndex * calculatedSlotWidth;
-    },
-    [items.length, selectedIndex, buttonWidth, slotWidth, translateX, startX]
-  );
+    slotWidth.value = calculatedSlotWidth;
+    buttonWidth.value = calculatedSlotWidth;
+    translateX.value = selectedIndexRef.current * calculatedSlotWidth;
+    startX.value = selectedIndexRef.current * calculatedSlotWidth;
+  };
 
   const handleSelect = useCallback(
     (value: T) => {
@@ -83,44 +88,41 @@ export function SegmentedControl<T extends string>({
     [selectedValue, onValueChange]
   );
 
-  const panGesture = useMemo(
-    () =>
-      Gesture.Pan()
-        .onBegin(() => {
-          'worklet';
-          startX.value = translateX.value;
-        })
-        .onUpdate((event) => {
-          'worklet';
-          const newX = startX.value + event.translationX;
-          const maxX = (items.length - 1) * slotWidth.value;
+  const panGesture = Gesture.Pan()
+    .onBegin(() => {
+      'worklet';
+      startX.value = translateX.value;
+    })
+    .onUpdate((event) => {
+      'worklet';
+      const newX = startX.value + event.translationX;
+      const maxX = (itemsLengthRef.current - 1) * slotWidth.value;
 
-          if (newX >= 0 && newX <= maxX) {
-            translateX.value = newX;
-          }
-        })
-        .onEnd((event) => {
-          'worklet';
-          const newX = startX.value + event.translationX;
-          const closestIndex = Math.round(newX / slotWidth.value);
-          const validatedIndex = Math.min(Math.max(closestIndex, 0), items.length - 1);
+      if (newX >= 0 && newX <= maxX) {
+        translateX.value = newX;
+      }
+    })
+    .onEnd((event) => {
+      'worklet';
+      const newX = startX.value + event.translationX;
+      const closestIndex = Math.round(newX / slotWidth.value);
+      const validatedIndex = Math.min(Math.max(closestIndex, 0), itemsLengthRef.current - 1);
 
-          translateX.value = withTiming(validatedIndex * slotWidth.value, ANIMATION_CONFIG);
+      translateX.value = withTiming(validatedIndex * slotWidth.value, ANIMATION_CONFIG);
 
-          const selectedItem = items[validatedIndex];
-          if (selectedItem) {
-            runOnJS(handleSelect)(selectedItem.value);
-          }
-        }),
-    [items, slotWidth, translateX, startX, handleSelect]
-  );
+      const selectedItem = items[validatedIndex];
+      if (selectedItem) {
+        runOnJS(handleSelect)(selectedItem.value);
+      }
+    });
 
   useEffect(() => {
-    if (slotWidth.value > 0) {
-      translateX.value = withTiming(selectedIndex * slotWidth.value, ANIMATION_CONFIG);
-      startX.value = selectedIndex * slotWidth.value;
+    const targetPosition = selectedIndex * slotWidth.value;
+    if (slotWidth.value > 0 && translateX.value !== targetPosition) {
+      translateX.value = withTiming(targetPosition, ANIMATION_CONFIG);
+      startX.value = targetPosition;
     }
-  }, [selectedIndex, translateX, slotWidth, startX]);
+  }, [selectedIndex]);
 
   return (
     <View className="flex flex-col gap-2 px-4 py-3">

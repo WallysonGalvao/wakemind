@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,8 +10,7 @@ import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
 import { DifficultySelector } from '../components/difficulty-selector';
-import type { DayOfWeek } from '../components/schedule-selector';
-import { ScheduleSelector } from '../components/schedule-selector';
+import { DayOfWeek, ScheduleSelector } from '../components/schedule-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
 
 import { Header } from '@/components/header';
@@ -30,6 +30,21 @@ const CHALLENGE_ICONS: Record<ChallengeType, string> = {
   [ChallengeType.MATH]: 'calculate',
   [ChallengeType.MEMORY]: 'psychology',
   [ChallengeType.LOGIC]: 'lightbulb',
+};
+
+// Helper function to get current day of week
+const getCurrentDayOfWeek = (): DayOfWeek => {
+  const dayIndex = dayjs().day(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const dayMap: Record<number, DayOfWeek> = {
+    0: DayOfWeek.SUNDAY,
+    1: DayOfWeek.MONDAY,
+    2: DayOfWeek.TUESDAY,
+    3: DayOfWeek.WEDNESDAY,
+    4: DayOfWeek.THURSDAY,
+    5: DayOfWeek.FRIDAY,
+    6: DayOfWeek.SATURDAY,
+  };
+  return dayMap[dayIndex];
 };
 
 export default function NewAlarmScreen() {
@@ -53,7 +68,7 @@ export default function NewAlarmScreen() {
   const [period, setPeriod] = useState<Period>(DEFAULT_PERIOD);
 
   // Schedule state
-  const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>([]);
+  const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>([getCurrentDayOfWeek()]);
 
   // Challenge state
   const [selectedChallenge, setSelectedChallenge] = useState<ChallengeType>(ChallengeType.MATH);
@@ -74,7 +89,7 @@ export default function NewAlarmScreen() {
     setHour(DEFAULT_HOUR);
     setMinute(DEFAULT_MINUTE);
     setPeriod(DEFAULT_PERIOD);
-    setSelectedDays([]);
+    setSelectedDays([getCurrentDayOfWeek()]);
     setSelectedChallenge(ChallengeType.MATH);
     setDifficulty(DifficultyLevel.ADAPTIVE);
     setProtocols([
