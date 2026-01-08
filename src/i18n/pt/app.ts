@@ -99,6 +99,10 @@ export const appPT = {
   'validation.alarm.scheduleRequired': 'O horário é obrigatório',
   'validation.alarm.notFound': 'Alarme não encontrado',
 
+  // Edit Alarm Screen
+  'editAlarm.title': 'Editar Alarme',
+  'editAlarm.save': 'Salvar Alterações',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',
@@ -109,4 +113,5 @@ export const appPT = {
   'common.ok': 'OK',
   'common.info': 'Mais informações',
   'common.close': 'Fechar',
+  'common.back': 'Voltar',
 };

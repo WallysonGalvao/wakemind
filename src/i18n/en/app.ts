@@ -98,6 +98,10 @@ export const appEN = {
   'validation.alarm.scheduleRequired': 'Schedule is required',
   'validation.alarm.notFound': 'Alarm not found',
 
+  // Edit Alarm Screen
+  'editAlarm.title': 'Edit Alarm',
+  'editAlarm.save': 'Save Changes',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',
@@ -108,4 +112,5 @@ export const appEN = {
   'common.ok': 'OK',
   'common.info': 'More information',
   'common.close': 'Close',
+  'common.back': 'Back',
 };

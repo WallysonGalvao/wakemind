@@ -1,4 +1,6 @@
-import type { Period } from './alarm-enums';
+import type { DifficultyLevel, Period } from './alarm-enums';
+
+import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
 
 export interface Alarm {
   id: string;
@@ -8,4 +10,6 @@ export interface Alarm {
   challengeIcon: string; // Material icon name
   schedule: string; // "Daily", "Mon, Wed, Fri", etc.
   isEnabled: boolean;
+  difficulty?: DifficultyLevel;
+  protocols?: BackupProtocol[];
 }
