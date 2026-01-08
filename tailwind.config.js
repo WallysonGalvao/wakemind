@@ -24,6 +24,8 @@ module.exports = {
         'background-dark': '#0F1621',
         'surface-dark': '#192233',
         'surface-light': '#ffffff',
+        'surface-subtle': '#eef2f6',
+        'surface-highlight': '#243147',
         primary: {
           0: 'rgb(var(--color-primary-0)/<alpha-value>)',
           50: 'rgb(var(--color-primary-50)/<alpha-value>)',
