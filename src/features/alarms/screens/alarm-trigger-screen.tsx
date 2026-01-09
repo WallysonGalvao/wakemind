@@ -20,49 +20,143 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
+import { DifficultyLevel } from '@/types/alarm-enums';
 
-// Generate a simple math challenge
-const generateMathChallenge = () => {
-  const operations = ['+', '-', 'x'];
+interface MathChallenge {
+  expression: string;
+  answer: number;
+}
+
+// Generate a math challenge based on difficulty level
+const generateMathChallenge = (
+  difficulty: DifficultyLevel = DifficultyLevel.MEDIUM
+): MathChallenge => {
+  switch (difficulty) {
+    case DifficultyLevel.EASY:
+      return generateEasyChallenge();
+    case DifficultyLevel.MEDIUM:
+      return generateMediumChallenge();
+    case DifficultyLevel.HARD:
+      return generateHardChallenge();
+    case DifficultyLevel.ADAPTIVE:
+    default:
+      // Adaptive starts with medium and could adjust based on user performance
+      return generateMediumChallenge();
+  }
+};
+
+// Easy: Simple addition/subtraction with two small numbers (e.g., 5 + 3 = 8)
+const generateEasyChallenge = (): MathChallenge => {
+  const operations = ['+', '-'];
+  const op = operations[Math.floor(Math.random() * operations.length)];
+
+  let a: number, b: number, result: number;
+
+  if (op === '+') {
+    a = Math.floor(Math.random() * 20) + 1;
+    b = Math.floor(Math.random() * 20) + 1;
+    result = a + b;
+  } else {
+    a = Math.floor(Math.random() * 30) + 10;
+    b = Math.floor(Math.random() * a) + 1; // Ensure b <= a for positive result
+    result = a - b;
+  }
+
+  return {
+    expression: `${a} ${op} ${b}`,
+    answer: result,
+  };
+};
+
+// Medium: Two operations with moderate numbers (e.g., 12 + 5 - 3 = 14)
+const generateMediumChallenge = (): MathChallenge => {
+  const operations = ['+', '-'];
   const op1 = operations[Math.floor(Math.random() * operations.length)];
   const op2 = operations[Math.floor(Math.random() * operations.length)];
 
-  let a: number, b: number, c: number;
+  const a = Math.floor(Math.random() * 30) + 10;
+  const b = Math.floor(Math.random() * 20) + 5;
+  const c = Math.floor(Math.random() * 15) + 1;
 
-  // Generate numbers based on operations to keep results positive and reasonable
-  if (op1 === 'x') {
-    a = Math.floor(Math.random() * 12) + 2;
-    b = Math.floor(Math.random() * 9) + 2;
-  } else {
-    a = Math.floor(Math.random() * 50) + 10;
-    b = Math.floor(Math.random() * 30) + 5;
-  }
-
-  if (op2 === 'x') {
-    c = Math.floor(Math.random() * 5) + 2;
-  } else {
-    c = Math.floor(Math.random() * 20) + 1;
-  }
-
-  // Calculate intermediate result
   let intermediate: number;
   if (op1 === '+') intermediate = a + b;
-  else if (op1 === '-') intermediate = a - b;
-  else intermediate = a * b;
+  else intermediate = a - b;
 
-  // Calculate final result
   let result: number;
   if (op2 === '+') result = intermediate + c;
-  else if (op2 === '-') result = intermediate - c;
-  else result = intermediate * c;
+  else result = intermediate - c;
 
   // Ensure positive result
   if (result < 0) {
-    return generateMathChallenge();
+    return generateMediumChallenge();
   }
 
   return {
     expression: `${a} ${op1} ${b} ${op2} ${c}`,
+    answer: result,
+  };
+};
+
+// Hard: Multiplication included with larger numbers (e.g., 12 x 4 + 7 = 55)
+// Respects mathematical operator precedence (multiplication before addition/subtraction)
+const generateHardChallenge = (): MathChallenge => {
+  // Generate a random challenge type to ensure variety
+  const challengeType = Math.floor(Math.random() * 3);
+
+  switch (challengeType) {
+    case 0:
+      // Type: a x b + c (e.g., 12 x 4 + 7 = 55)
+      return generateMultiplyThenAdd();
+    case 1:
+      // Type: a x b - c (e.g., 8 x 5 - 3 = 37)
+      return generateMultiplyThenSubtract();
+    case 2:
+    default:
+      // Type: a + b x c (e.g., 10 + 3 x 4 = 22)
+      return generateAddThenMultiply();
+  }
+};
+
+// a x b + c
+const generateMultiplyThenAdd = (): MathChallenge => {
+  const a = Math.floor(Math.random() * 10) + 2; // 2-11
+  const b = Math.floor(Math.random() * 8) + 2; // 2-9
+  const c = Math.floor(Math.random() * 20) + 1; // 1-20
+
+  const result = a * b + c;
+
+  return {
+    expression: `${a} x ${b} + ${c}`,
+    answer: result,
+  };
+};
+
+// a x b - c (ensures positive result)
+const generateMultiplyThenSubtract = (): MathChallenge => {
+  const a = Math.floor(Math.random() * 10) + 2; // 2-11
+  const b = Math.floor(Math.random() * 8) + 2; // 2-9
+  const product = a * b;
+  const c = Math.floor(Math.random() * Math.min(product - 1, 20)) + 1; // 1 to min(product-1, 20)
+
+  const result = product - c;
+
+  return {
+    expression: `${a} x ${b} - ${c}`,
+    answer: result,
+  };
+};
+
+// a + b x c (respects precedence: b x c is calculated first)
+const generateAddThenMultiply = (): MathChallenge => {
+  const a = Math.floor(Math.random() * 30) + 10; // 10-39
+  const b = Math.floor(Math.random() * 5) + 2; // 2-6
+  const c = Math.floor(Math.random() * 5) + 2; // 2-6
+
+  // Mathematical precedence: a + (b x c)
+  const result = a + b * c;
+
+  return {
+    expression: `${a} + ${b} x ${c}`,
     answer: result,
   };
 };
@@ -80,8 +174,18 @@ export default function AlarmTriggerScreen() {
   const soundRef = useRef<Audio.Sound | null>(null);
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
 
-  // Challenge state
-  const [mathChallenge] = useState(() => generateMathChallenge());
+  // Get alarm data first to use its difficulty
+  const alarm = useMemo(() => {
+    if (params.alarmId) {
+      return getAlarmById(params.alarmId);
+    }
+    return undefined;
+  }, [params.alarmId, getAlarmById]);
+
+  // Challenge state - generate based on alarm difficulty
+  const [mathChallenge] = useState(() =>
+    generateMathChallenge(alarm?.difficulty ?? DifficultyLevel.MEDIUM)
+  );
   const [userInput, setUserInput] = useState('');
   const [attempt, setAttempt] = useState(1);
   const [showError, setShowError] = useState(false);
@@ -92,13 +196,6 @@ export default function AlarmTriggerScreen() {
     () => mathChallenge.answer.toString().length,
     [mathChallenge.answer]
   );
-
-  const alarm = useMemo(() => {
-    if (params.alarmId) {
-      return getAlarmById(params.alarmId);
-    }
-    return undefined;
-  }, [params.alarmId, getAlarmById]);
 
   // Animation values
   const pulseScale = useSharedValue(1);
