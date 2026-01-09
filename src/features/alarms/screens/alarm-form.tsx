@@ -204,20 +204,12 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     if (isEditMode && alarmId) {
       const existingAlarm = alarms.find((a) => a.id === alarmId);
       if (existingAlarm) {
-        // Parse time string "HH:MM" to hour (24h format) and minute
+        // Parse time string "HH:MM" - already in 24h format
         const [hourStr, minuteStr] = existingAlarm.time.split(':');
-        let hour24 = parseInt(hourStr, 10);
-
-        // Convert from 12h + period to 24h format
-        if (existingAlarm.period === Period.PM && hour24 !== 12) {
-          hour24 += 12;
-        } else if (existingAlarm.period === Period.AM && hour24 === 12) {
-          hour24 = 0;
-        }
 
         const defaultVals = getDefaultAlarmFormValues();
         return {
-          hour: hour24,
+          hour: parseInt(hourStr, 10),
           minute: parseInt(minuteStr, 10),
           selectedDays: parseScheduleToDays(existingAlarm.schedule),
           challenge:
@@ -283,10 +275,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   };
 
   const onSubmit = async (data: AlarmFormData) => {
-    // Convert 24h format to 12h format for display
-    const hour12 = data.hour === 0 ? 12 : data.hour > 12 ? data.hour - 12 : data.hour;
+    // Store time in 24h format
+    const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
     const displayPeriod = data.hour < 12 ? Period.AM : Period.PM;
-    const timeString = `${String(hour12).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
     const challengeIcon = CHALLENGE_ICONS[data.challenge];
     const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
     const scheduleLabel = getScheduleLabel(data.selectedDays);
@@ -380,9 +371,8 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     }
   };
 
-  // Format time for display (12h format)
-  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-  const formattedTime = `${String(displayHour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
+  // Format time for display (24h format with period indicator)
+  const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
 
   // Dynamic texts based on mode
   const screenTitle = isEditMode ? t('editAlarm.title') : t('newAlarm.title');
