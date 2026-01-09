@@ -1,0 +1,25 @@
+# Create Alarm Flow
+# Tests the alarm creation workflow
+
+appId: com.wallyson.wakemind
+
+---
+- launchApp
+
+# Wait for alarms screen to load
+- extendedWaitUntil:
+    visible:
+      id: 'fab'
+    timeout: 15000
+
+# Tap the FAB to create a new alarm
+- tapOn:
+    id: 'fab'
+
+# Wait for the create alarm screen
+- extendedWaitUntil:
+    visible: 'New Alarm'
+    timeout: 5000
+
+# Take screenshot of form
+- takeScreenshot: create_alarm_form
