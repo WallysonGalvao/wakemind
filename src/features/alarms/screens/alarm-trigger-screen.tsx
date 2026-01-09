@@ -48,19 +48,13 @@ export function AlarmTriggerScreen() {
   // Start animations
   useEffect(() => {
     pulseScale.value = withRepeat(
-      withSequence(
-        withTiming(1.05, { duration: 1000 }),
-        withTiming(1, { duration: 1000 })
-      ),
+      withSequence(withTiming(1.05, { duration: 1000 }), withTiming(1, { duration: 1000 })),
       -1,
       true
     );
 
     glowOpacity.value = withRepeat(
-      withSequence(
-        withTiming(0.6, { duration: 1500 }),
-        withTiming(0.3, { duration: 1500 })
-      ),
+      withSequence(withTiming(0.6, { duration: 1500 }), withTiming(0.3, { duration: 1500 })),
       -1,
       true
     );
@@ -102,8 +96,7 @@ export function AlarmTriggerScreen() {
         });
 
         const { sound } = await Audio.Sound.createAsync(
-          // Use a default system sound or custom sound
-          require('@/assets/sounds/alarm_sound.wav'),
+          require('../../../../assets/sounds/alarm_sound.wav'),
           { isLooping: true, volume: 1.0 }
         );
 
@@ -191,11 +184,7 @@ export function AlarmTriggerScreen() {
         {/* Challenge info */}
         <View className="mt-12 items-center">
           <View className="mb-4 rounded-full bg-slate-800 p-4">
-            <MaterialSymbol
-              name={params.challengeIcon || 'alarm'}
-              size={32}
-              color="#94a3b8"
-            />
+            <MaterialSymbol name={params.challengeIcon || 'alarm'} size={32} color="#94a3b8" />
           </View>
           <Text className="text-lg text-slate-400">{challengeName}</Text>
         </View>
@@ -209,9 +198,7 @@ export function AlarmTriggerScreen() {
           onPress={handleDismiss}
           className="items-center justify-center rounded-2xl bg-primary-500 py-5"
         >
-          <Text className="text-lg font-semibold text-white">
-            {t('alarmTrigger.dismiss')}
-          </Text>
+          <Text className="text-lg font-semibold text-white">{t('alarmTrigger.dismiss')}</Text>
         </Pressable>
 
         {/* Snooze button - secondary action */}
@@ -222,9 +209,7 @@ export function AlarmTriggerScreen() {
         >
           <View className="flex-row items-center gap-2">
             <MaterialSymbol name="snooze" size={20} color="#94a3b8" />
-            <Text className="text-base font-medium text-slate-400">
-              {t('alarmTrigger.snooze')}
-            </Text>
+            <Text className="text-base font-medium text-slate-400">{t('alarmTrigger.snooze')}</Text>
           </View>
         </Pressable>
       </View>

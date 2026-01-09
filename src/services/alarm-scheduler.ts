@@ -1,5 +1,4 @@
-import type {
-  TimestampTrigger} from '@notifee/react-native';
+import type { TimestampTrigger } from '@notifee/react-native';
 import notifee, {
   AndroidCategory,
   AndroidImportance,
@@ -121,6 +120,17 @@ export async function openAlarmPermissionSettings(): Promise<void> {
  * Schedule an alarm notification
  */
 export async function scheduleAlarm(alarm: Alarm): Promise<string> {
+  // Check and request permissions first
+  const settings = await notifee.getNotificationSettings();
+
+  if (settings.authorizationStatus < AuthorizationStatus.AUTHORIZED) {
+    const newSettings = await notifee.requestPermission();
+
+    if (newSettings.authorizationStatus < AuthorizationStatus.AUTHORIZED) {
+      throw new Error('Notification permissions not granted');
+    }
+  }
+
   // Ensure channel exists
   await createAlarmChannel();
 
@@ -184,7 +194,9 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     trigger
   );
 
-  console.log(`[AlarmScheduler] Scheduled alarm ${alarm.id} for ${new Date(triggerTimestamp).toISOString()}`);
+  console.log(
+    `[AlarmScheduler] Scheduled alarm ${alarm.id} for ${new Date(triggerTimestamp).toLocaleString()}`
+  );
 
   return notificationId;
 }
