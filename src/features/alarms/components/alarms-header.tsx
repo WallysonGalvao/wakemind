@@ -61,10 +61,7 @@ export function AlarmsHeader({
   const headerStyle = useMemo(() => ({ paddingTop: insets.top + 12 }), [insets.top]);
 
   return (
-    <View
-      className="bg-background-light/95 px-6 pb-10 backdrop-blur-sm dark:bg-background-dark/95"
-      style={headerStyle}
-    >
+    <View className="px-6 pb-10" style={headerStyle}>
       <View className="flex-row items-center justify-between">
         <Text className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
           {title}
