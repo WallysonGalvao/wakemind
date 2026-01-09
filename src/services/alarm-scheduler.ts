@@ -331,6 +331,62 @@ export async function dismissAlarm(alarm: Alarm): Promise<void> {
 }
 
 /**
+ * Schedule a wake check notification 5 minutes after alarm dismissal
+ */
+export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
+  const notificationId = `${alarm.id}-wake-check`;
+  const triggerTimestamp = Date.now() + 5 * 60 * 1000; // 5 minutes from now
+
+  const trigger: TimestampTrigger = {
+    type: TriggerType.TIMESTAMP,
+    timestamp: triggerTimestamp,
+    alarmManager: {
+      allowWhileIdle: true,
+    },
+  };
+
+  await notifee.createTriggerNotification(
+    {
+      id: notificationId,
+      title: 'Wake Check',
+      body: 'Are you still awake? Tap to confirm.',
+      data: {
+        alarmId: alarm.id,
+        type: 'wake-check',
+      },
+      android: {
+        channelId: ALARM_CHANNEL_ID,
+        importance: AndroidImportance.HIGH,
+        visibility: AndroidVisibility.PUBLIC,
+        sound: 'alarm_sound',
+        vibrationPattern: [300, 500],
+        pressAction: {
+          id: 'wake-check-confirm',
+          launchActivity: 'default',
+        },
+        actions: [
+          {
+            title: "I'm awake!",
+            pressAction: { id: 'wake-check-confirm' },
+          },
+        ],
+      },
+      ios: {
+        sound: 'alarm_sound.wav',
+        interruptionLevel: 'timeSensitive',
+      },
+    },
+    trigger
+  );
+
+  console.log(
+    `[AlarmScheduler] Scheduled wake check for alarm ${alarm.id} at ${new Date(triggerTimestamp).toLocaleString()}`
+  );
+
+  return notificationId;
+}
+
+/**
  * Initialize alarm scheduler
  */
 export async function initializeAlarmScheduler(): Promise<void> {
@@ -351,4 +407,5 @@ export const AlarmScheduler = {
   getScheduledAlarms,
   snoozeAlarm,
   dismissAlarm,
+  scheduleWakeCheck,
 };
