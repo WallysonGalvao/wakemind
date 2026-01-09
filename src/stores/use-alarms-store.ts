@@ -3,7 +3,10 @@ import i18n from 'i18next';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { Platform } from 'react-native';
+
 import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
+import { AlarmScheduler } from '@/services/alarm-scheduler';
 import type { Alarm } from '@/types/alarm';
 import type { DifficultyLevel, Period } from '@/types/alarm-enums';
 import { sortAlarmsByTime } from '@/utils/alarm-sorting';
@@ -22,19 +25,25 @@ export interface AlarmInput {
 
 interface AlarmsState {
   alarms: Alarm[];
-  addAlarm: (alarm: AlarmInput) => void;
-  updateAlarm: (id: string, alarm: Partial<Alarm>) => void;
-  deleteAlarm: (id: string) => void;
-  toggleAlarm: (id: string) => void;
+  addAlarm: (alarm: AlarmInput) => Promise<void>;
+  updateAlarm: (id: string, alarm: Partial<Alarm>) => Promise<void>;
+  deleteAlarm: (id: string) => Promise<void>;
+  toggleAlarm: (id: string) => Promise<void>;
   getSortedAlarms: () => Alarm[];
+  getAlarmById: (id: string) => Alarm | undefined;
+  syncAlarmsWithScheduler: () => Promise<void>;
 }
+
+const isNativePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
 export const useAlarmsStore = create<AlarmsState>()(
   persist(
     (set, get) => ({
       alarms: [],
       getSortedAlarms: () => sortAlarmsByTime(get().alarms),
-      addAlarm: (alarmInput) => {
+      getAlarmById: (id) => get().alarms.find((alarm) => alarm.id === id),
+
+      addAlarm: async (alarmInput) => {
         const state = get();
 
         // Sanitize input
@@ -48,34 +57,43 @@ export const useAlarmsStore = create<AlarmsState>()(
           throw new Error(errorMessage);
         }
 
-        // Add alarm if validation passes (sorting disabled temporarily)
+        const newAlarm: Alarm = {
+          id: Crypto.randomUUID(),
+          time: sanitizedInput.time,
+          period: sanitizedInput.period,
+          challenge: sanitizedInput.challenge,
+          challengeIcon: sanitizedInput.challengeIcon,
+          schedule: sanitizedInput.schedule,
+          isEnabled: true,
+          difficulty: sanitizedInput.difficulty,
+          protocols: sanitizedInput.protocols,
+        };
+
+        // Schedule notification on native platforms
+        if (isNativePlatform) {
+          try {
+            await AlarmScheduler.scheduleAlarm(newAlarm);
+          } catch (error) {
+            console.error('[AlarmsStore] Failed to schedule alarm:', error);
+          }
+        }
+
+        // Add alarm to state
         set({
-          alarms: [
-            ...state.alarms,
-            {
-              id: Crypto.randomUUID(),
-              time: sanitizedInput.time,
-              period: sanitizedInput.period,
-              challenge: sanitizedInput.challenge,
-              challengeIcon: sanitizedInput.challengeIcon,
-              schedule: sanitizedInput.schedule,
-              isEnabled: true,
-              difficulty: sanitizedInput.difficulty,
-              protocols: sanitizedInput.protocols,
-            },
-          ],
+          alarms: [...state.alarms, newAlarm],
         });
       },
-      updateAlarm: (id, updatedAlarm) => {
+
+      updateAlarm: async (id, updatedAlarm) => {
         const state = get();
+        const existingAlarm = state.alarms.find((alarm) => alarm.id === id);
+
+        if (!existingAlarm) {
+          throw new Error(i18n.t('validation.alarm.notFound'));
+        }
 
         // If updating time or period, validate for duplicates
         if (updatedAlarm.time || updatedAlarm.period) {
-          const existingAlarm = state.alarms.find((alarm) => alarm.id === id);
-          if (!existingAlarm) {
-            throw new Error(i18n.t('validation.alarm.notFound'));
-          }
-
           const timeToValidate = updatedAlarm.time || existingAlarm.time;
           const periodToValidate = updatedAlarm.period || existingAlarm.period;
 
@@ -97,23 +115,95 @@ export const useAlarmsStore = create<AlarmsState>()(
           }
         }
 
-        // Update alarm if validation passes (sorting disabled temporarily)
+        const mergedAlarm: Alarm = { ...existingAlarm, ...updatedAlarm };
+
+        // Reschedule notification if alarm is enabled and time/schedule changed
+        if (isNativePlatform && mergedAlarm.isEnabled) {
+          const needsReschedule =
+            updatedAlarm.time !== undefined ||
+            updatedAlarm.period !== undefined ||
+            updatedAlarm.schedule !== undefined;
+
+          if (needsReschedule) {
+            try {
+              await AlarmScheduler.rescheduleAlarm(mergedAlarm);
+            } catch (error) {
+              console.error('[AlarmsStore] Failed to reschedule alarm:', error);
+            }
+          }
+        }
+
+        // Update alarm in state
         set({
           alarms: state.alarms.map((alarm) =>
-            alarm.id === id ? { ...alarm, ...updatedAlarm } : alarm
+            alarm.id === id ? mergedAlarm : alarm
           ),
         });
       },
-      deleteAlarm: (id) =>
+
+      deleteAlarm: async (id) => {
+        // Cancel notification on native platforms
+        if (isNativePlatform) {
+          try {
+            await AlarmScheduler.cancelAlarm(id);
+          } catch (error) {
+            console.error('[AlarmsStore] Failed to cancel alarm:', error);
+          }
+        }
+
         set((state) => ({
           alarms: state.alarms.filter((alarm) => alarm.id !== id),
-        })),
-      toggleAlarm: (id) =>
-        set((state) => ({
-          alarms: state.alarms.map((alarm) =>
-            alarm.id === id ? { ...alarm, isEnabled: !alarm.isEnabled } : alarm
+        }));
+      },
+
+      toggleAlarm: async (id) => {
+        const state = get();
+        const alarm = state.alarms.find((a) => a.id === id);
+
+        if (!alarm) return;
+
+        const newEnabledState = !alarm.isEnabled;
+
+        // Schedule or cancel based on new state
+        if (isNativePlatform) {
+          try {
+            if (newEnabledState) {
+              await AlarmScheduler.scheduleAlarm({ ...alarm, isEnabled: true });
+            } else {
+              await AlarmScheduler.cancelAlarm(id);
+            }
+          } catch (error) {
+            console.error('[AlarmsStore] Failed to toggle alarm schedule:', error);
+          }
+        }
+
+        set({
+          alarms: state.alarms.map((a) =>
+            a.id === id ? { ...a, isEnabled: newEnabledState } : a
           ),
-        })),
+        });
+      },
+
+      syncAlarmsWithScheduler: async () => {
+        if (!isNativePlatform) return;
+
+        const state = get();
+        const enabledAlarms = state.alarms.filter((alarm) => alarm.isEnabled);
+
+        // Cancel all existing scheduled alarms
+        await AlarmScheduler.cancelAllAlarms();
+
+        // Reschedule all enabled alarms
+        for (const alarm of enabledAlarms) {
+          try {
+            await AlarmScheduler.scheduleAlarm(alarm);
+          } catch (error) {
+            console.error(`[AlarmsStore] Failed to sync alarm ${alarm.id}:`, error);
+          }
+        }
+
+        console.log(`[AlarmsStore] Synced ${enabledAlarms.length} alarms with scheduler`);
+      },
     }),
     {
       name: 'alarms-storage',

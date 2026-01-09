@@ -104,6 +104,19 @@ export const appPT = {
   'editAlarm.title': 'Editar Alarme',
   'editAlarm.save': 'Salvar Alterações',
 
+  // Alarm Trigger Screen
+  'alarmTrigger.dismiss': 'Desligar - Iniciar Desafio',
+  'alarmTrigger.snooze': 'Soneca 5 min',
+
+  // Notifications & Permissions
+  'notifications.alarmTitle': 'Alarme WakeMind',
+  'notifications.snoozedTitle': 'WakeMind - Soneca',
+  'notifications.snoozedBody': 'Acorde! Soneca de {{time}} {{period}}',
+  'permissions.notificationsRequired': 'Permissão de notificação é necessária para alarmes',
+  'permissions.exactAlarmsRequired': 'Permissão de alarme exato é necessária para despertar confiável',
+  'permissions.batteryOptimization': 'Desative a otimização de bateria para alarmes confiáveis',
+  'permissions.openSettings': 'Abrir Configurações',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',
