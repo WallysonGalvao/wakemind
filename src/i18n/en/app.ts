@@ -118,6 +118,8 @@ export const appEN = {
   'alarmTrigger.attempt': 'Attempt {{current}} of {{max}}',
   'alarmTrigger.watchPattern': 'Watch the pattern',
   'alarmTrigger.repeatPattern': 'Repeat the pattern',
+  'alarmTrigger.getReady': 'Get ready...',
+  'alarmTrigger.reviewPattern': 'Review',
   'alarmTrigger.whichDoesntBelong': "Which one doesn't belong?",
   'alarmTrigger.showHint': 'Show hint',
   'alarmTrigger.sequencePuzzle': 'Sequence puzzle',
