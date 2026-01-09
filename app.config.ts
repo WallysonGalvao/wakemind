@@ -15,6 +15,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: false,
     bundleIdentifier: 'com.wallyson.wakemind',
+    infoPlist: {
+      UIBackgroundModes: ['audio', 'fetch', 'remote-notification'],
+    },
   },
   android: {
     adaptiveIcon: {
@@ -24,6 +27,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: './assets/images/android-icon-monochrome.png',
     },
     edgeToEdgeEnabled: true,
+    package: 'com.wallyson.wakemind',
+    permissions: [
+      'SCHEDULE_EXACT_ALARM',
+      'USE_EXACT_ALARM',
+      'USE_FULL_SCREEN_INTENT',
+      'VIBRATE',
+      'RECEIVE_BOOT_COMPLETED',
+      'FOREGROUND_SERVICE',
+      'WAKE_LOCK',
+      'POST_NOTIFICATIONS',
+    ],
   },
   web: {
     bundler: 'metro',
@@ -43,6 +57,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         dark: {
           backgroundColor: '#000000',
         },
+      },
+    ],
+    [
+      'expo-notifications',
+      {
+        sounds: ['./assets/sounds/alarm_sound.wav'],
       },
     ],
   ],

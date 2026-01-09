@@ -1,0 +1,240 @@
+import type { Event } from '@notifee/react-native';
+import notifee, { EventType } from '@notifee/react-native';
+import * as Notifications from 'expo-notifications';
+import type { Href } from 'expo-router';
+import { router } from 'expo-router';
+
+import { Platform } from 'react-native';
+
+import { AlarmScheduler } from './alarm-scheduler';
+
+import type { Alarm } from '@/types/alarm';
+import type { Period } from '@/types/alarm-enums';
+
+
+export interface AlarmNotificationData {
+  alarmId: string;
+  time: string;
+  period: Period;
+  challenge: string;
+  challengeIcon: string;
+  isRepeating?: string;
+  isSnooze?: string;
+}
+
+type AlarmEventCallback = (alarmId: string, data: AlarmNotificationData) => void;
+type SnoozeCallback = (alarmId: string, data: AlarmNotificationData) => void;
+type DismissCallback = (alarmId: string, data: AlarmNotificationData) => void;
+
+interface NotificationHandlerCallbacks {
+  onAlarmTriggered?: AlarmEventCallback;
+  onSnooze?: SnoozeCallback;
+  onDismiss?: DismissCallback;
+  getAlarm?: (alarmId: string) => Alarm | undefined;
+}
+
+let callbacks: NotificationHandlerCallbacks = {};
+
+/**
+ * Set callbacks for notification events
+ */
+export function setNotificationCallbacks(newCallbacks: NotificationHandlerCallbacks): void {
+  callbacks = { ...callbacks, ...newCallbacks };
+}
+
+/**
+ * Handle Notifee foreground events
+ */
+function handleForegroundEvent(event: Event): void {
+  const { type, detail } = event;
+  const data = detail.notification?.data as AlarmNotificationData | undefined;
+
+  if (!data?.alarmId) return;
+
+  switch (type) {
+    case EventType.DELIVERED:
+      console.log('[NotificationHandler] Alarm delivered:', data.alarmId);
+      // Navigate to alarm trigger screen
+      navigateToAlarmScreen(data);
+      callbacks.onAlarmTriggered?.(data.alarmId, data);
+      break;
+
+    case EventType.PRESS:
+      console.log('[NotificationHandler] Notification pressed:', data.alarmId);
+      navigateToAlarmScreen(data);
+      break;
+
+    case EventType.ACTION_PRESS:
+      const actionId = detail.pressAction?.id;
+      console.log('[NotificationHandler] Action pressed:', actionId, 'for alarm:', data.alarmId);
+
+      if (actionId === 'snooze') {
+        handleSnoozeAction(data);
+      } else if (actionId === 'dismiss') {
+        handleDismissAction(data);
+      }
+      break;
+
+    case EventType.DISMISSED:
+      console.log('[NotificationHandler] Notification dismissed:', data.alarmId);
+      break;
+  }
+}
+
+/**
+ * Handle Notifee background events
+ */
+async function handleBackgroundEvent(event: Event): Promise<void> {
+  const { type, detail } = event;
+  const data = detail.notification?.data as AlarmNotificationData | undefined;
+
+  if (!data?.alarmId) return;
+
+  console.log('[NotificationHandler] Background event:', type, 'for alarm:', data.alarmId);
+
+  switch (type) {
+    case EventType.DELIVERED:
+      // Alarm triggered in background - full screen intent will handle it on Android
+      break;
+
+    case EventType.PRESS:
+      // User tapped notification
+      break;
+
+    case EventType.ACTION_PRESS:
+      const actionId = detail.pressAction?.id;
+
+      if (actionId === 'snooze') {
+        await handleSnoozeAction(data);
+      } else if (actionId === 'dismiss') {
+        await handleDismissAction(data);
+      }
+      break;
+  }
+}
+
+/**
+ * Handle snooze action
+ */
+async function handleSnoozeAction(data: AlarmNotificationData): Promise<void> {
+  console.log('[NotificationHandler] Snoozing alarm:', data.alarmId);
+
+  const alarm = callbacks.getAlarm?.(data.alarmId);
+  if (alarm) {
+    await AlarmScheduler.snoozeAlarm(alarm, 5);
+  } else {
+    // If we don't have the alarm data, create a minimal one for snoozing
+    const minimalAlarm: Alarm = {
+      id: data.alarmId,
+      time: data.time,
+      period: data.period,
+      challenge: data.challenge,
+      challengeIcon: data.challengeIcon,
+      schedule: 'Once',
+      isEnabled: true,
+    };
+    await AlarmScheduler.snoozeAlarm(minimalAlarm, 5);
+  }
+
+  callbacks.onSnooze?.(data.alarmId, data);
+}
+
+/**
+ * Handle dismiss action
+ */
+async function handleDismissAction(data: AlarmNotificationData): Promise<void> {
+  console.log('[NotificationHandler] Dismissing alarm:', data.alarmId);
+
+  const alarm = callbacks.getAlarm?.(data.alarmId);
+  if (alarm) {
+    await AlarmScheduler.dismissAlarm(alarm);
+  } else {
+    // Just cancel the notification if we don't have alarm data
+    await AlarmScheduler.cancelAlarm(data.alarmId);
+    await AlarmScheduler.cancelAlarm(`${data.alarmId}-snooze`);
+  }
+
+  callbacks.onDismiss?.(data.alarmId, data);
+}
+
+/**
+ * Navigate to alarm trigger screen
+ */
+function navigateToAlarmScreen(data: AlarmNotificationData): void {
+  try {
+    const url = `/alarm/trigger?alarmId=${data.alarmId}&time=${data.time}&period=${data.period}&challenge=${encodeURIComponent(data.challenge)}&challengeIcon=${data.challengeIcon}`;
+    router.push(url as Href);
+  } catch (error) {
+    console.error('[NotificationHandler] Error navigating to alarm screen:', error);
+  }
+}
+
+/**
+ * Setup iOS notification categories
+ */
+async function setupIOSCategories(): Promise<void> {
+  if (Platform.OS !== 'ios') return;
+
+  await Notifications.setNotificationCategoryAsync('alarm', [
+    {
+      identifier: 'snooze',
+      buttonTitle: 'Snooze',
+      options: { opensAppToForeground: true },
+    },
+    {
+      identifier: 'dismiss',
+      buttonTitle: 'Dismiss',
+      options: { isDestructive: true, opensAppToForeground: true },
+    },
+  ]);
+}
+
+/**
+ * Configure expo-notifications for iOS
+ */
+function configureExpoNotifications(): void {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+      priority: Notifications.AndroidNotificationPriority.MAX,
+    }),
+  });
+}
+
+/**
+ * Initialize notification handlers
+ */
+export async function initializeNotificationHandler(): Promise<void> {
+  // Configure expo-notifications
+  configureExpoNotifications();
+
+  // Setup iOS categories
+  await setupIOSCategories();
+
+  // Register Notifee foreground event handler
+  notifee.onForegroundEvent(handleForegroundEvent);
+
+  // Register Notifee background event handler
+  notifee.onBackgroundEvent(handleBackgroundEvent);
+
+  console.log('[NotificationHandler] Initialized');
+}
+
+/**
+ * Clean up notification handlers
+ */
+export function cleanupNotificationHandler(): void {
+  // Notifee handlers are automatically cleaned up
+  callbacks = {};
+  console.log('[NotificationHandler] Cleaned up');
+}
+
+export const NotificationHandler = {
+  initialize: initializeNotificationHandler,
+  cleanup: cleanupNotificationHandler,
+  setCallbacks: setNotificationCallbacks,
+};
