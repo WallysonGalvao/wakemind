@@ -112,8 +112,17 @@ export const appPT = {
   'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
   'alarmTrigger.efficiencyTimer': 'Timer de Eficiência',
   'alarmTrigger.cognitiveChallenge': 'Desafio Cognitivo',
+  'alarmTrigger.mathChallenge': 'Desafio de Matemática',
+  'alarmTrigger.memoryChallenge': 'Desafio de Memória',
+  'alarmTrigger.logicChallenge': 'Desafio de Lógica',
   'alarmTrigger.wrongAnswer': 'Resposta errada — tente novamente',
   'alarmTrigger.attempt': 'Tentativa {{current}} de {{max}}',
+  'alarmTrigger.watchPattern': 'Observe o padrão',
+  'alarmTrigger.repeatPattern': 'Repita o padrão',
+  'alarmTrigger.whichDoesntBelong': 'Qual não pertence ao grupo?',
+  'alarmTrigger.showHint': 'Mostrar dica',
+  'alarmTrigger.sequencePuzzle': 'Puzzle de sequência',
+  'alarmTrigger.oddOneOut': 'Elemento diferente',
 
   // Notifications & Permissions
   'notifications.alarmTitle': 'Alarme WakeMind',
