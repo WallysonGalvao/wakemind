@@ -111,8 +111,17 @@ export const appEN = {
   'alarmTrigger.wakeUpProtocol': 'Wake-up Protocol',
   'alarmTrigger.efficiencyTimer': 'Efficiency Timer',
   'alarmTrigger.cognitiveChallenge': 'Cognitive Challenge',
+  'alarmTrigger.mathChallenge': 'Math Challenge',
+  'alarmTrigger.memoryChallenge': 'Memory Challenge',
+  'alarmTrigger.logicChallenge': 'Logic Challenge',
   'alarmTrigger.wrongAnswer': 'Wrong answer — try again',
   'alarmTrigger.attempt': 'Attempt {{current}} of {{max}}',
+  'alarmTrigger.watchPattern': 'Watch the pattern',
+  'alarmTrigger.repeatPattern': 'Repeat the pattern',
+  'alarmTrigger.whichDoesntBelong': "Which one doesn't belong?",
+  'alarmTrigger.showHint': 'Show hint',
+  'alarmTrigger.sequencePuzzle': 'Sequence puzzle',
+  'alarmTrigger.oddOneOut': 'Odd one out',
 
   // Notifications & Permissions
   'notifications.alarmTitle': 'WakeMind Alarm',

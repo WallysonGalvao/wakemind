@@ -8,7 +8,7 @@ import { Platform } from 'react-native';
 import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import type { Alarm } from '@/types/alarm';
-import type { DifficultyLevel, Period } from '@/types/alarm-enums';
+import type { ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
 import { sortAlarmsByTime } from '@/utils/alarm-sorting';
 import { sanitizeAlarmInput, validateAlarmInput } from '@/utils/alarm-validation';
 import { createMMKVStorage } from '@/utils/storage';
@@ -17,6 +17,7 @@ export interface AlarmInput {
   time: string; // "05:30"
   period: Period;
   challenge: string;
+  challengeType: ChallengeType;
   challengeIcon: string;
   schedule: string;
   difficulty?: DifficultyLevel;
@@ -62,6 +63,7 @@ export const useAlarmsStore = create<AlarmsState>()(
           time: sanitizedInput.time,
           period: sanitizedInput.period,
           challenge: sanitizedInput.challenge,
+          challengeType: sanitizedInput.challengeType,
           challengeIcon: sanitizedInput.challengeIcon,
           schedule: sanitizedInput.schedule,
           isEnabled: true,
@@ -103,6 +105,7 @@ export const useAlarmsStore = create<AlarmsState>()(
             period: periodToValidate,
             challenge: updatedAlarm.challenge || existingAlarm.challenge,
             challengeIcon: updatedAlarm.challengeIcon || existingAlarm.challengeIcon,
+            challengeType: updatedAlarm.challengeType || existingAlarm.challengeType,
             schedule: updatedAlarm.schedule || existingAlarm.schedule,
           };
 
@@ -135,9 +138,7 @@ export const useAlarmsStore = create<AlarmsState>()(
 
         // Update alarm in state
         set({
-          alarms: state.alarms.map((alarm) =>
-            alarm.id === id ? mergedAlarm : alarm
-          ),
+          alarms: state.alarms.map((alarm) => (alarm.id === id ? mergedAlarm : alarm)),
         });
       },
 
@@ -178,9 +179,7 @@ export const useAlarmsStore = create<AlarmsState>()(
         }
 
         set({
-          alarms: state.alarms.map((a) =>
-            a.id === id ? { ...a, isEnabled: newEnabledState } : a
-          ),
+          alarms: state.alarms.map((a) => (a.id === id ? { ...a, isEnabled: newEnabledState } : a)),
         });
       },
 

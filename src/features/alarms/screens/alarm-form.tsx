@@ -212,10 +212,13 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           hour: parseInt(hourStr, 10),
           minute: parseInt(minuteStr, 10),
           selectedDays: parseScheduleToDays(existingAlarm.schedule),
+          // Use challengeType directly if available, otherwise fall back to icon-based detection
           challenge:
-            (Object.keys(CHALLENGE_ICONS).find(
+            existingAlarm.challengeType ??
+            ((Object.keys(CHALLENGE_ICONS).find(
               (key) => CHALLENGE_ICONS[key as ChallengeType] === existingAlarm.challengeIcon
-            ) as ChallengeType) || ChallengeType.MATH,
+            ) as ChallengeType) ||
+              ChallengeType.MATH),
           difficulty: existingAlarm.difficulty ?? defaultVals.difficulty,
           protocols: existingAlarm.protocols ?? defaultVals.protocols,
         };
@@ -359,6 +362,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           time: timeString,
           period: displayPeriod,
           challenge: challengeLabel,
+          challengeType: data.challenge,
           challengeIcon,
           schedule: scheduleLabel,
           difficulty: data.difficulty,
@@ -369,6 +373,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           time: timeString,
           period: displayPeriod,
           challenge: challengeLabel,
+          challengeType: data.challenge,
           challengeIcon,
           schedule: scheduleLabel,
           difficulty: data.difficulty,
