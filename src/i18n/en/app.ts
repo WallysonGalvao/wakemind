@@ -106,6 +106,13 @@ export const appEN = {
   // Alarm Trigger Screen
   'alarmTrigger.dismiss': 'Dismiss - Start Challenge',
   'alarmTrigger.snooze': 'Snooze 5 min',
+  'alarmTrigger.reliabilityMode': 'High-Reliability Mode Active',
+  'alarmTrigger.offlineGuaranteed': 'Offline Guaranteed',
+  'alarmTrigger.wakeUpProtocol': 'Wake-up Protocol',
+  'alarmTrigger.efficiencyTimer': 'Efficiency Timer',
+  'alarmTrigger.cognitiveChallenge': 'Cognitive Challenge',
+  'alarmTrigger.wrongAnswer': 'Wrong answer — try again',
+  'alarmTrigger.attempt': 'Attempt {{current}} of {{max}}',
 
   // Notifications & Permissions
   'notifications.alarmTitle': 'WakeMind Alarm',

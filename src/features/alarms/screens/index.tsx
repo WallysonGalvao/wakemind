@@ -101,6 +101,32 @@ export default function AlarmsScreen() {
     setIsEditMode((prev) => !prev);
   }, []);
 
+  // DEBUG: Function to test alarm trigger screen with mock data
+  const handleTestAlarmTrigger = useCallback(() => {
+    // Get first alarm or create mock data
+    const testAlarm = sortedAlarms[0];
+    const mockParams = testAlarm
+      ? {
+          alarmId: testAlarm.id,
+          time: testAlarm.time,
+          period: testAlarm.period,
+          challenge: testAlarm.challenge,
+          challengeIcon: testAlarm.challengeIcon,
+        }
+      : {
+          alarmId: 'mock-alarm-id',
+          time: '07:30',
+          period: 'AM',
+          challenge: 'Math Challenge',
+          challengeIcon: 'calculate',
+        };
+
+    router.push({
+      pathname: '/alarm/trigger',
+      params: mockParams,
+    });
+  }, [router, sortedAlarms]);
+
   // Scroll handler
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -237,6 +263,24 @@ export default function AlarmsScreen() {
       {/* Floating Action Button - hidden in edit mode */}
       {hasAlarms && !isEditMode ? (
         <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
+      ) : null}
+
+      {/* DEBUG: Test Alarm Trigger Button - Remove in production */}
+      {__DEV__ ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={handleTestAlarmTrigger}
+          className="absolute bottom-6 left-6 h-14 w-14 items-center justify-center rounded-full bg-orange-500"
+          style={{
+            shadowColor: '#f97316',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          }}
+        >
+          <MaterialSymbol name="notifications_active" size={24} className="text-white" />
+        </Pressable>
       ) : null}
     </View>
   );

@@ -10,10 +10,11 @@ export interface AlarmValidationResult {
 }
 
 /**
- * Validates time format (HH:MM)
+ * Validates time format (HH:MM in 24-hour format)
  */
 export function validateTimeFormat(time: string): boolean {
-  const timeRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]$/;
+  // Matches 00:00 to 23:59
+  const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
   return timeRegex.test(time);
 }
 
@@ -25,19 +26,12 @@ export function validatePeriod(period: Period): boolean {
 }
 
 /**
- * Normalizes time to 24-hour format for comparison
+ * Normalizes time to minutes for comparison
+ * Time is expected in 24-hour format (HH:MM)
  */
-export function normalizeTime(time: string, period: Period): number {
+export function normalizeTime(time: string, _period?: Period): number {
   const [hours, minutes] = time.split(':').map(Number);
-  let hour24 = hours;
-
-  if (period === PeriodEnum.PM && hours !== 12) {
-    hour24 = hours + 12;
-  } else if (period === PeriodEnum.AM && hours === 12) {
-    hour24 = 0;
-  }
-
-  return hour24 * 60 + minutes; // Return total minutes for easy comparison
+  return hours * 60 + minutes; // Return total minutes for easy comparison
 }
 
 /**

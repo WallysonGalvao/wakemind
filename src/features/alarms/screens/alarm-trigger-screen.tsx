@@ -21,7 +21,7 @@ import { Text } from '@/components/ui/text';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 
-export function AlarmTriggerScreen() {
+export default function AlarmTriggerScreen() {
   const params = useLocalSearchParams<{
     alarmId?: string;
     time?: string;
