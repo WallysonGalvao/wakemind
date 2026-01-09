@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Audio } from 'expo-av';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
@@ -10,13 +18,82 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import type { AlarmTone } from '@/constants/alarm-tones';
-import { ALARM_TONES, DEFAULT_ALARM_TONE_ID } from '@/constants/alarm-tones';
+import { ALARM_TONES, DEFAULT_ALARM_TONE_ID, getToneAudioSource } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // ============================================================================
 // Sub-Components
 // ============================================================================
+
+/**
+ * Animated waveform visualization for audio preview
+ */
+function Waveform({ isPlaying, isActive }: { isPlaying: boolean; isActive: boolean }) {
+  const bars = [0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 0.3, 0.7, 0.5];
+
+  return (
+    <View className="h-8 w-16 flex-row items-center justify-center gap-[2px]">
+      {bars.map((height, index) => (
+        <WaveformBar
+          key={index}
+          baseHeight={height}
+          delay={index * 80}
+          isPlaying={isPlaying}
+          isActive={isActive}
+        />
+      ))}
+    </View>
+  );
+}
+
+function WaveformBar({
+  baseHeight,
+  delay,
+  isPlaying,
+  isActive,
+}: {
+  baseHeight: number;
+  delay: number;
+  isPlaying: boolean;
+  isActive: boolean;
+}) {
+  const animatedHeight = useSharedValue(baseHeight);
+
+  useEffect(() => {
+    if (isPlaying) {
+      // Animate when playing
+      animatedHeight.value = withRepeat(
+        withSequence(
+          withTiming(Math.random() * 0.5 + 0.5, { duration: 200 + delay }),
+          withTiming(Math.random() * 0.5 + 0.3, { duration: 200 + delay })
+        ),
+        -1,
+        true
+      );
+    } else {
+      // Reset to base height when not playing
+      animatedHeight.value = withTiming(baseHeight, { duration: 300 });
+    }
+  }, [isPlaying, baseHeight, delay, animatedHeight]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: animatedHeight.value * 24, // Max 24px height
+  }));
+
+  return (
+    <Animated.View
+      style={animatedStyle}
+      className={`w-1 rounded-full ${
+        isPlaying
+          ? 'bg-brand-primary'
+          : isActive
+            ? 'bg-brand-primary/40'
+            : 'bg-gray-300 dark:bg-gray-600'
+      }`}
+    />
+  );
+}
 
 function ToneItem({
   tone,
@@ -104,6 +181,7 @@ function ToneItem({
             {tone.description}
           </Text>
         </View>
+        <Waveform isPlaying={isPlaying} isActive={isActive} />
       </View>
     </Pressable>
   );
@@ -120,16 +198,71 @@ export default function AlarmToneScreen() {
 
   const [selectedToneId, setSelectedToneId] = useState(DEFAULT_ALARM_TONE_ID);
   const [playingToneId, setPlayingToneId] = useState<string | null>(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
 
-  const handlePlay = (toneId: string) => {
-    if (playingToneId === toneId) {
-      setPlayingToneId(null);
-      // TODO: Stop audio playback
-    } else {
-      setPlayingToneId(toneId);
-      // TODO: Start audio playback
+  // Cleanup sound on unmount
+  useEffect(() => {
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
+    };
+  }, []);
+
+  const stopCurrentSound = useCallback(async () => {
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
     }
-  };
+  }, []);
+
+  const handlePlay = useCallback(
+    async (toneId: string) => {
+      // If same tone is playing, stop it
+      if (playingToneId === toneId) {
+        await stopCurrentSound();
+        setPlayingToneId(null);
+        return;
+      }
+
+      // Stop any currently playing sound
+      await stopCurrentSound();
+
+      try {
+        // Configure audio mode for playback
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: false,
+          shouldDuckAndroid: true,
+        });
+
+        // Get the audio source for this tone
+        const audioSource = getToneAudioSource(toneId);
+
+        // Create and play the sound
+        const { sound } = await Audio.Sound.createAsync(audioSource, {
+          shouldPlay: true,
+          isLooping: true,
+        });
+
+        soundRef.current = sound;
+        setPlayingToneId(toneId);
+
+        // Listen for playback status to handle when sound finishes
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && !status.isPlaying && !status.isLooping) {
+            setPlayingToneId(null);
+          }
+        });
+      } catch (error) {
+        console.error('Error playing alarm tone:', error);
+        setPlayingToneId(null);
+      }
+    },
+    [playingToneId, stopCurrentSound]
+  );
 
   const handleSelect = (toneId: string) => {
     setSelectedToneId(toneId);
