@@ -198,15 +198,8 @@ interface TimePickerProps {
 }
 
 export function TimePickerWheel({ hour, minute, onTimeChange }: TimePickerProps) {
-  // Generate 24 hours (0-23) displayed as 12-hour format
-  const hours = useMemo(
-    () =>
-      Array.from({ length: 24 }, (_, i) => {
-        const displayHour = i === 0 ? 12 : i > 12 ? i - 12 : i;
-        return String(displayHour).padStart(2, '0');
-      }),
-    []
-  );
+  // Generate 24 hours (0-23) displayed in 24-hour format
+  const hours = useMemo(() => Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')), []);
   const minutes = useMemo(
     () => Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')),
     []
