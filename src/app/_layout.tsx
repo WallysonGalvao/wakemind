@@ -111,6 +111,12 @@ export default function RootLayout() {
                 gestureEnabled: false,
               }}
             />
+            <Stack.Screen
+              name="settings/alarm-tone"
+              options={{
+                headerShown: false,
+              }}
+            />
           </Stack>
           <StatusBar style={isDark ? 'light' : 'dark'} />
         </ThemeProvider>

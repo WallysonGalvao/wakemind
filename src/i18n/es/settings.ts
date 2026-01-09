@@ -1,6 +1,6 @@
 export const settingsES = {
   // Settings Screen
-  'settings.title': 'Preferencias',
+  'settings.title': 'Configuración',
   'settings.appearance': 'Apariencia',
   'settings.language': 'Idioma',
   'settings.soundHaptics': 'Sonido y Vibración',
@@ -41,4 +41,18 @@ export const settingsES = {
   // Sections
   'section.general': 'General',
   'section.preferences': 'Preferencias',
+
+  // Alarm Tone Screen
+  'alarmTone.title': 'Tono de Alarma',
+  'alarmTone.filterAll': 'Todos',
+  'alarmTone.filterRecent': 'Recientes',
+  'alarmTone.filterCustom': 'Personalizados',
+  'alarmTone.reliabilityScore': 'Puntuación de Fiabilidad',
+  'alarmTone.currentSelection': 'Selección actual',
+  'alarmTone.suggestionTitle': 'Sugerencia de Rendimiento Máximo',
+  'alarmTone.suggestionText': 'Basado en tu historial,',
+  'alarmTone.suggestionSuffix': 'activa tu respuesta cognitiva más rápida (prom. 4s).',
+  'alarmTone.availableTones': 'Tonos Disponibles',
+  'alarmTone.viewAnalytics': 'Ver Análisis',
+  'alarmTone.footer': 'La Fiabilidad es Misión Crítica',
 };
