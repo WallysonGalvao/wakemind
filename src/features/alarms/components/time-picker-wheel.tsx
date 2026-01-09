@@ -192,42 +192,42 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
 }
 
 interface TimePickerProps {
-  hour: number;
+  hour: number; // 24-hour format (0-23)
   minute: number;
-  period: Period;
-  onTimeChange: (hour: number, minute: number, period: Period) => void;
+  onTimeChange: (hour: number, minute: number) => void;
 }
 
-export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePickerProps) {
+export function TimePickerWheel({ hour, minute, onTimeChange }: TimePickerProps) {
+  // Generate 24 hours (0-23) displayed as 12-hour format
   const hours = useMemo(
-    () => Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')),
+    () =>
+      Array.from({ length: 24 }, (_, i) => {
+        const displayHour = i === 0 ? 12 : i > 12 ? i - 12 : i;
+        return String(displayHour).padStart(2, '0');
+      }),
     []
   );
   const minutes = useMemo(
     () => Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')),
     []
   );
-  const periods = useMemo(() => [Period.AM, Period.PM], []);
+
+  // Auto-determine period based on hour (0-11 = AM, 12-23 = PM)
+  const period = hour < 12 ? Period.AM : Period.PM;
 
   const handleHourChange = useCallback(
     (index: number) => {
-      onTimeChange(index + 1, minute, period);
+      // index is 0-23 (24-hour format)
+      onTimeChange(index, minute);
     },
-    [minute, period, onTimeChange]
+    [minute, onTimeChange]
   );
 
   const handleMinuteChange = useCallback(
     (index: number) => {
-      onTimeChange(hour, index, period);
+      onTimeChange(hour, index);
     },
-    [hour, period, onTimeChange]
-  );
-
-  const handlePeriodChange = useCallback(
-    (index: number) => {
-      onTimeChange(hour, minute, index === 0 ? Period.AM : Period.PM);
-    },
-    [hour, minute, onTimeChange]
+    [hour, onTimeChange]
   );
 
   return (
@@ -240,7 +240,7 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
         {/* Hours */}
         <View className="flex-1">
           <TimePickerColumn
-            value={hour - 1}
+            value={hour}
             onChange={handleHourChange}
             items={hours}
             type={TimePickerType.HOUR}
@@ -260,14 +260,14 @@ export function TimePickerWheel({ hour, minute, period, onTimeChange }: TimePick
           />
         </View>
 
-        {/* AM/PM */}
-        <View className="flex-[0.5]">
-          <TimePickerColumn
-            value={period === Period.AM ? 0 : 1}
-            onChange={handlePeriodChange}
-            items={periods}
-            type={TimePickerType.PERIOD}
-          />
+        {/* AM/PM - Read-only display */}
+        <View className="flex-[0.5] items-center justify-center" style={{ height: PICKER_HEIGHT }}>
+          <View
+            className="w-full items-center justify-center rounded-lg border border-slate-300/50 bg-slate-200/80 dark:border-brand-primary/20 dark:bg-surface-highlight"
+            style={{ height: ITEM_HEIGHT }}
+          >
+            <Text className="text-2xl font-black text-brand-primary">{period}</Text>
+          </View>
         </View>
       </View>
     </View>
