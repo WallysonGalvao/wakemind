@@ -110,6 +110,13 @@ export const appES = {
   // Alarm Trigger Screen
   'alarmTrigger.dismiss': 'Apagar - Iniciar Desafío',
   'alarmTrigger.snooze': 'Posponer 5 min',
+  'alarmTrigger.reliabilityMode': 'Modo Alta Confiabilidad Activo',
+  'alarmTrigger.offlineGuaranteed': 'Garantía Sin Conexión',
+  'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
+  'alarmTrigger.efficiencyTimer': 'Temporizador de Eficiencia',
+  'alarmTrigger.cognitiveChallenge': 'Desafío Cognitivo',
+  'alarmTrigger.wrongAnswer': 'Respuesta incorrecta — intenta de nuevo',
+  'alarmTrigger.attempt': 'Intento {{current}} de {{max}}',
 
   // Notifications & Permissions
   'notifications.alarmTitle': 'Alarma WakeMind',

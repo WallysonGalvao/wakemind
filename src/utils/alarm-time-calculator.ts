@@ -3,8 +3,8 @@ import dayjs from 'dayjs';
 import { alarmTimeToMinutes } from './alarm-sorting';
 
 import type { Alarm } from '@/types/alarm';
-import { Period, Schedule } from '@/types/alarm-enums';
-
+import type { Period } from '@/types/alarm-enums';
+import { Schedule } from '@/types/alarm-enums';
 
 /**
  * Days of the week mapping for schedule parsing
@@ -55,23 +55,15 @@ export function parseScheduleToDays(schedule: string): number[] {
 }
 
 /**
- * Convert 12-hour time to 24-hour format
+ * Parse time string (already in 24-hour format: HH:MM)
+ * Period is stored for display purposes only
  */
 export function convertTo24Hour(time: string, period: Period): { hour: number; minute: number } {
   const [hourStr, minuteStr] = time.split(':');
-  let hour = parseInt(hourStr, 10);
+  const hour = parseInt(hourStr, 10);
   const minute = parseInt(minuteStr, 10);
 
-  if (period === Period.AM) {
-    if (hour === 12) {
-      hour = 0;
-    }
-  } else {
-    if (hour !== 12) {
-      hour += 12;
-    }
-  }
-
+  // Time is already in 24-hour format (0-23), period is just for display
   return { hour, minute };
 }
 
@@ -97,10 +89,7 @@ export function getNextTriggerDate(alarm: Alarm): Date {
   const currentDay = now.day();
 
   // Check if alarm can trigger today
-  if (
-    scheduledDays.includes(currentDay) &&
-    currentMinutesInDay < alarmMinutesInDay
-  ) {
+  if (scheduledDays.includes(currentDay) && currentMinutesInDay < alarmMinutesInDay) {
     return now.hour(hour).minute(minute).second(0).millisecond(0).toDate();
   }
 
@@ -108,13 +97,7 @@ export function getNextTriggerDate(alarm: Alarm): Date {
   for (let daysAhead = 1; daysAhead <= 7; daysAhead++) {
     const futureDay = (currentDay + daysAhead) % 7;
     if (scheduledDays.includes(futureDay)) {
-      return now
-        .add(daysAhead, 'day')
-        .hour(hour)
-        .minute(minute)
-        .second(0)
-        .millisecond(0)
-        .toDate();
+      return now.add(daysAhead, 'day').hour(hour).minute(minute).second(0).millisecond(0).toDate();
     }
   }
 

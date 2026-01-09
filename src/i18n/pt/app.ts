@@ -107,13 +107,21 @@ export const appPT = {
   // Alarm Trigger Screen
   'alarmTrigger.dismiss': 'Desligar - Iniciar Desafio',
   'alarmTrigger.snooze': 'Soneca 5 min',
+  'alarmTrigger.reliabilityMode': 'Modo Alta Confiabilidade Ativo',
+  'alarmTrigger.offlineGuaranteed': 'Garantia Offline',
+  'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
+  'alarmTrigger.efficiencyTimer': 'Timer de Eficiência',
+  'alarmTrigger.cognitiveChallenge': 'Desafio Cognitivo',
+  'alarmTrigger.wrongAnswer': 'Resposta errada — tente novamente',
+  'alarmTrigger.attempt': 'Tentativa {{current}} de {{max}}',
 
   // Notifications & Permissions
   'notifications.alarmTitle': 'Alarme WakeMind',
   'notifications.snoozedTitle': 'WakeMind - Soneca',
   'notifications.snoozedBody': 'Acorde! Soneca de {{time}} {{period}}',
   'permissions.notificationsRequired': 'Permissão de notificação é necessária para alarmes',
-  'permissions.exactAlarmsRequired': 'Permissão de alarme exato é necessária para despertar confiável',
+  'permissions.exactAlarmsRequired':
+    'Permissão de alarme exato é necessária para despertar confiável',
   'permissions.batteryOptimization': 'Desative a otimização de bateria para alarmes confiáveis',
   'permissions.openSettings': 'Abrir Configurações',
 

@@ -275,6 +275,30 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   };
 
   const onSubmit = async (data: AlarmFormData) => {
+    // Validate hour and minute are valid numbers
+    if (
+      typeof data.hour !== 'number' ||
+      typeof data.minute !== 'number' ||
+      isNaN(data.hour) ||
+      isNaN(data.minute) ||
+      data.hour < 0 ||
+      data.hour > 23 ||
+      data.minute < 0 ||
+      data.minute > 59
+    ) {
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
+            <ToastTitle>{t('newAlarm.validationError.title')}</ToastTitle>
+            <ToastDescription>{t('validation.alarm.timeFormat')}</ToastDescription>
+          </Toast>
+        ),
+      });
+      return;
+    }
+
     // Store time in 24h format
     const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
     const displayPeriod = data.hour < 12 ? Period.AM : Period.PM;
