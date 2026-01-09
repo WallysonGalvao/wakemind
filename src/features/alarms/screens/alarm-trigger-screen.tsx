@@ -87,6 +87,12 @@ export default function AlarmTriggerScreen() {
   const [showError, setShowError] = useState(false);
   const maxAttempts = 3;
 
+  // Calculate the number of digits in the answer
+  const answerDigitCount = useMemo(
+    () => mathChallenge.answer.toString().length,
+    [mathChallenge.answer]
+  );
+
   const alarm = useMemo(() => {
     if (params.alarmId) {
       return getAlarmById(params.alarmId);
@@ -216,13 +222,13 @@ export default function AlarmTriggerScreen() {
   // Numpad handlers
   const handleNumberPress = useCallback(
     (num: string) => {
-      if (userInput.length < 4) {
+      if (userInput.length < answerDigitCount) {
         setUserInput((prev) => prev + num);
         setShowError(false);
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
     },
-    [userInput.length]
+    [userInput.length, answerDigitCount]
   );
 
   const handleBackspace = useCallback(() => {
@@ -271,7 +277,7 @@ export default function AlarmTriggerScreen() {
   ];
 
   return (
-    <View className="flex-1 bg-background-dark" style={containerStyle}>
+    <View className="flex-1 bg-background-light dark:bg-background-dark" style={containerStyle}>
       {/* Header with time and progress */}
       <View className="items-center px-6 pb-4 pt-6">
         <View className="mb-1 flex-row items-center gap-2">
@@ -284,7 +290,7 @@ export default function AlarmTriggerScreen() {
         </View>
 
         <View className="flex-row items-baseline">
-          <Text className="text-7xl font-bold tabular-nums tracking-tight text-white">
+          <Text className="text-7xl font-bold tabular-nums tracking-tight text-gray-900 dark:text-white">
             {displayTime}
           </Text>
           <Text className="ml-2 text-xl font-medium text-gray-500">{displayPeriod}</Text>
@@ -292,7 +298,7 @@ export default function AlarmTriggerScreen() {
 
         {/* Efficiency Timer */}
         <View className="mt-4 w-44 items-center gap-1">
-          <View className="h-1.5 w-full overflow-hidden rounded-full bg-gray-800">
+          <View className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
             <Animated.View
               className="h-full rounded-full bg-primary-500"
               style={[progressAnimatedStyle, glowAnimatedStyle]}
@@ -307,28 +313,32 @@ export default function AlarmTriggerScreen() {
       {/* Main Challenge Area */}
       <View className="flex-1 items-center justify-center px-4">
         {/* Challenge Label */}
-        <Text className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
+        <Text className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
           {t('alarmTrigger.cognitiveChallenge')}
         </Text>
 
         {/* Math Expression */}
-        <Text className="mb-8 text-6xl font-black tracking-tight text-white drop-shadow-2xl">
+        <Text className="mb-8 text-6xl font-black tracking-tight text-gray-900 drop-shadow-2xl dark:text-white">
           {mathChallenge.expression}
         </Text>
 
         {/* Answer Input Display */}
         <View className="mb-6 flex-row justify-center gap-4">
-          {Array.from({ length: 3 }).map((_, index) => (
+          {Array.from({ length: answerDigitCount }).map((_, index) => (
             <View
               key={index}
               className={`h-24 w-20 items-center justify-center rounded-2xl border-2 ${
                 userInput[index]
                   ? 'border-primary-500 bg-primary-500/10'
-                  : 'border-surface-highlight bg-surface-dark'
+                  : 'border-gray-300 bg-gray-100 dark:border-surface-highlight dark:bg-surface-dark'
               }`}
             >
               <Text
-                className={`text-5xl font-black ${userInput[index] ? 'text-white' : 'text-white/30'}`}
+                className={`text-5xl font-black ${
+                  userInput[index]
+                    ? 'text-gray-900 dark:text-white'
+                    : 'text-gray-400 dark:text-white/30'
+                }`}
               >
                 {userInput[index] || ''}
               </Text>
@@ -359,9 +369,9 @@ export default function AlarmTriggerScreen() {
                       accessibilityLabel="Backspace"
                       accessibilityHint="Delete the last digit"
                       onPress={handleBackspace}
-                      className="h-16 flex-1 items-center justify-center rounded-2xl border border-transparent bg-surface-dark active:scale-95"
+                      className="h-16 flex-1 items-center justify-center rounded-2xl border border-transparent bg-gray-100 active:scale-95 dark:bg-surface-dark"
                     >
-                      <MaterialSymbol name="backspace" size={24} color="#9CA3AF" />
+                      <MaterialSymbol name="backspace" size={24} color="#6B7280" />
                     </Pressable>
                   );
                 }
@@ -385,9 +395,9 @@ export default function AlarmTriggerScreen() {
                     key={key}
                     accessibilityRole="button"
                     onPress={() => handleNumberPress(key)}
-                    className="h-16 flex-1 items-center justify-center rounded-2xl border border-white/5 bg-surface-dark active:scale-95 active:bg-primary-500"
+                    className="h-16 flex-1 items-center justify-center rounded-2xl border border-gray-200 bg-gray-100 active:scale-95 active:bg-primary-500 dark:border-white/5 dark:bg-surface-dark"
                   >
-                    <Text className="text-2xl font-bold text-white">{key}</Text>
+                    <Text className="text-2xl font-bold text-gray-900 dark:text-white">{key}</Text>
                   </Pressable>
                 );
               })}
@@ -406,10 +416,12 @@ export default function AlarmTriggerScreen() {
         <Pressable
           accessibilityRole="button"
           onPress={handleSnooze}
-          className="flex-row items-center justify-center gap-2 rounded-2xl bg-surface-dark py-4"
+          className="flex-row items-center justify-center gap-2 rounded-2xl bg-gray-100 py-4 dark:bg-surface-dark"
         >
-          <MaterialSymbol name="snooze" size={20} color="#9CA3AF" />
-          <Text className="text-base font-medium text-gray-400">{t('alarmTrigger.snooze')}</Text>
+          <MaterialSymbol name="snooze" size={20} color="#6B7280" />
+          <Text className="text-base font-medium text-gray-600 dark:text-gray-400">
+            {t('alarmTrigger.snooze')}
+          </Text>
         </Pressable>
       </View>
     </View>
