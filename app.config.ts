@@ -16,7 +16,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: false,
     bundleIdentifier: 'com.wallyson.wakemind',
     infoPlist: {
-      UIBackgroundModes: ['audio', 'fetch', 'remote-notification'],
+      UIBackgroundModes: ['audio', 'fetch'],
     },
   },
   android: {
@@ -57,12 +57,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         dark: {
           backgroundColor: '#000000',
         },
-      },
-    ],
-    [
-      'expo-notifications',
-      {
-        sounds: ['./assets/sounds/alarm_sound.wav'],
       },
     ],
   ],
