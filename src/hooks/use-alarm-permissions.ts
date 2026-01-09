@@ -2,17 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Platform } from 'react-native';
 
-import {
-  AlarmScheduler,
-  type PermissionStatus,
-} from '@/services/alarm-scheduler';
+import { AlarmScheduler, type PermissionStatus } from '@/services/alarm-scheduler';
 
 export interface AlarmPermissionsState {
   status: PermissionStatus;
   isLoading: boolean;
   isAllGranted: boolean;
   needsNotificationPermission: boolean;
-  needsBatteryOptimization: boolean;
+  needsExactAlarmPermission: boolean;
 }
 
 export function useAlarmPermissions() {
@@ -68,15 +65,14 @@ export function useAlarmPermissions() {
     status.fullScreen === 'granted';
 
   const needsNotificationPermission = status.notifications !== 'granted';
-  const needsBatteryOptimization =
-    Platform.OS === 'android' && status.exactAlarms !== 'granted';
+  const needsExactAlarmPermission = Platform.OS === 'android' && status.exactAlarms !== 'granted';
 
   return {
     status,
     isLoading,
     isAllGranted,
     needsNotificationPermission,
-    needsBatteryOptimization,
+    needsExactAlarmPermission,
     checkPermissions,
     requestNotificationPermission,
     openBatterySettings,

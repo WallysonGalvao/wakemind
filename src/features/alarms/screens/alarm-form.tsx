@@ -21,6 +21,7 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { BackupProtocolId, Period } from '@/types/alarm-enums';
@@ -170,6 +171,16 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const toast = useToast();
   const insets = useSafeAreaInsets();
 
+  // Permissions hook
+  const {
+    isAllGranted,
+    needsNotificationPermission,
+    needsExactAlarmPermission,
+    requestNotificationPermission,
+    openBatterySettings,
+    openAlarmSettings,
+  } = useAlarmPermissions();
+
   // Store actions
   const addAlarm = useAlarmsStore((state) => state.addAlarm);
   const updateAlarm = useAlarmsStore((state) => state.updateAlarm);
@@ -261,13 +272,60 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     setValue('protocols', updatedProtocols);
   };
 
-  const onSubmit = (data: AlarmFormData) => {
+  const onSubmit = async (data: AlarmFormData) => {
     const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
     const challengeIcon = CHALLENGE_ICONS[data.challenge];
     const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
     const scheduleLabel = getScheduleLabel(data.selectedDays);
 
     try {
+      // Check permissions before creating/updating alarm
+      if (!isAllGranted) {
+        // Request notification permission first
+        if (needsNotificationPermission) {
+          const granted = await requestNotificationPermission();
+
+          if (!granted) {
+            toast.show({
+              placement: 'top',
+              duration: 4000,
+              render: ({ id }) => (
+                <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+                  <ToastTitle>{t('permissions.notificationsRequired')}</ToastTitle>
+                  <ToastDescription>{t('permissions.openSettings')}</ToastDescription>
+                </Toast>
+              ),
+            });
+            return;
+          }
+        }
+
+        // Check for exact alarm permission (Android 12+)
+        if (needsExactAlarmPermission) {
+          toast.show({
+            placement: 'top',
+            duration: 5000,
+            render: ({ id }) => (
+              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
+                <ToastTitle>{t('permissions.exactAlarmsRequired')}</ToastTitle>
+                <ToastDescription>{t('permissions.batteryOptimization')}</ToastDescription>
+              </Toast>
+            ),
+          });
+
+          // Open both battery optimization and alarm settings
+          // Battery optimization affects alarm reliability
+          await openBatterySettings();
+          // Exact alarm permission is required on Android 12+
+          await openAlarmSettings();
+
+          // After settings, user needs to manually create alarm again
+          // We don't auto-continue here as they need to go through system settings
+          return;
+        }
+      }
+
+      // All permissions granted, proceed with alarm creation/update
       if (isEditMode && alarmId) {
         updateAlarm(alarmId, {
           time: timeString,
