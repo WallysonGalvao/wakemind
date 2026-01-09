@@ -13,4 +13,5 @@ export interface Alarm {
   isEnabled: boolean;
   difficulty?: DifficultyLevel;
   protocols?: BackupProtocol[];
+  toneId?: string; // ID of the selected alarm tone from alarm-tones.ts
 }
