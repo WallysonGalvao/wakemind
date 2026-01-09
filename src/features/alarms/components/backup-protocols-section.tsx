@@ -76,24 +76,25 @@ export function BackupProtocolsSection({
 
       {/* Protocol toggles */}
       <View className="flex flex-col gap-3 px-4">
-        {protocols.map((protocol) => {
-          const config = getProtocolConfig(protocol.id);
-          const isBarcodeScan = protocol.id === BackupProtocolId.BARCODE_SCAN;
+        {protocols
+          // TODO: Feature futura - Barcode Scan (requer implementação de câmera)
+          .filter((protocol) => protocol.id !== BackupProtocolId.BARCODE_SCAN)
+          .map((protocol) => {
+            const config = getProtocolConfig(protocol.id);
 
-          return (
-            <ProtocolToggle
-              key={protocol.id}
-              icon={config.icon}
-              iconClassName={config.iconClassName}
-              iconBgColor={config.iconBgColor}
-              title={t(`newAlarm.backupProtocols.${protocol.id}.title`)}
-              description={t(`newAlarm.backupProtocols.${protocol.id}.description`)}
-              isEnabled={protocol.enabled}
-              onToggle={() => onProtocolToggle(protocol.id)}
-              disabled={isBarcodeScan}
-            />
-          );
-        })}
+            return (
+              <ProtocolToggle
+                key={protocol.id}
+                icon={config.icon}
+                iconClassName={config.iconClassName}
+                iconBgColor={config.iconBgColor}
+                title={t(`newAlarm.backupProtocols.${protocol.id}.title`)}
+                description={t(`newAlarm.backupProtocols.${protocol.id}.description`)}
+                isEnabled={protocol.enabled}
+                onToggle={() => onProtocolToggle(protocol.id)}
+              />
+            );
+          })}
       </View>
     </View>
   );
