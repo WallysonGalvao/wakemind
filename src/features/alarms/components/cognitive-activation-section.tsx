@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import type { SharedValue } from 'react-native-reanimated';
@@ -9,6 +9,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { useWindowDimensions, View } from 'react-native';
 
 import { ChallengeCard } from './challenge-card';
@@ -54,7 +55,6 @@ interface AnimatedCardProps {
   snapInterval: number;
   cardWidth: number;
   isSelected: boolean;
-  onSelect: () => void;
   title: string;
   description: string;
 }
@@ -66,7 +66,6 @@ function AnimatedCard({
   snapInterval,
   cardWidth,
   isSelected,
-  onSelect,
   title,
   description,
 }: AnimatedCardProps) {
@@ -95,7 +94,6 @@ function AnimatedCard({
         icon={challenge.icon}
         imageUrl={challenge.imageUrl}
         isSelected={isSelected}
-        onSelect={onSelect}
       />
     </Animated.View>
   );
@@ -113,16 +111,54 @@ export function CognitiveActivationSection({
   const { t } = useTranslation();
   const { width: screenWidth } = useWindowDimensions();
   const scrollX = useSharedValue(0);
+  const scrollViewRef = useRef<Animated.ScrollView | null>(null);
 
   // Calculate card width based on screen width (80% of screen - padding)
   const cardWidth = Math.min(screenWidth * 0.8, 320);
   const snapInterval = cardWidth + CARD_GAP;
+
+  // Scroll to selected challenge on mount (for edit mode)
+  useEffect(() => {
+    const selectedIndex = challenges.findIndex((c) => c.type === selectedChallenge);
+    if (selectedIndex > 0 && scrollViewRef.current) {
+      // Small delay to ensure layout is complete
+      const timeoutId = setTimeout(() => {
+        // Use type assertion for scrollTo method
+        (
+          scrollViewRef.current as unknown as {
+            scrollTo: (opts: { x: number; animated: boolean }) => void;
+          }
+        )?.scrollTo({
+          x: selectedIndex * snapInterval,
+          animated: false,
+        });
+        scrollX.value = selectedIndex * snapInterval;
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only on mount
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollX.value = event.contentOffset.x;
     },
   });
+
+  // Auto-select challenge when scroll ends (momentum or drag)
+  const handleScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const centeredIndex = Math.round(offsetX / snapInterval);
+      const clampedIndex = Math.max(0, Math.min(centeredIndex, challenges.length - 1));
+      const centeredChallenge = challenges[clampedIndex];
+
+      if (centeredChallenge && centeredChallenge.type !== selectedChallenge) {
+        onChallengeSelect(centeredChallenge.type);
+      }
+    },
+    [snapInterval, selectedChallenge, onChallengeSelect]
+  );
 
   return (
     <View>
@@ -140,11 +176,14 @@ export function CognitiveActivationSection({
 
       {/* Challenge cards horizontal scroll with animations */}
       <Animated.ScrollView
+        ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         snapToInterval={snapInterval}
         decelerationRate="fast"
         onScroll={scrollHandler}
+        onMomentumScrollEnd={handleScrollEnd}
+        onScrollEndDrag={handleScrollEnd}
         scrollEventThrottle={16}
         contentContainerClassName="pb-4"
         contentContainerStyle={{
@@ -161,7 +200,6 @@ export function CognitiveActivationSection({
             snapInterval={snapInterval}
             cardWidth={cardWidth}
             isSelected={selectedChallenge === challenge.type}
-            onSelect={() => onChallengeSelect(challenge.type)}
             title={t(`newAlarm.challenges.${challenge.type}.title`)}
             description={t(`newAlarm.challenges.${challenge.type}.description`)}
           />
