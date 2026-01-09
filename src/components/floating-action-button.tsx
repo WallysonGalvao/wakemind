@@ -13,11 +13,17 @@ interface FloatingActionButtonProps {
   label: string;
   icon?: string;
   onPress: () => void;
+  testID?: string;
 }
 
 const ANIMATION_DURATION = 250;
 
-export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingActionButtonProps) {
+export function FloatingActionButton({
+  label,
+  icon = 'add',
+  onPress,
+  testID = 'fab',
+}: FloatingActionButtonProps) {
   const isDark = useIsDarkMode();
 
   // Different shadow styles for light/dark modes matching reference
@@ -37,6 +43,7 @@ export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingA
     >
       <Pressable
         accessibilityRole="button"
+        testID={testID}
         onPress={onPress}
         className="flex-row items-center gap-3 rounded-full border border-white/10 bg-primary-500 py-4 pl-5 pr-7 active:scale-95 active:bg-primary-600"
         style={shadowStyle}
