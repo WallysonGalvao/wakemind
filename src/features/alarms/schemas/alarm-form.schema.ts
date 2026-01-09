@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { DayOfWeek } from '@/features/alarms/components/schedule-selector';
-import { BackupProtocolId, ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
+import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
 
 /**
  * Schema for backup protocol configuration
@@ -13,11 +13,11 @@ const backupProtocolSchema = z.object({
 
 /**
  * Zod schema for the alarm form
+ * Uses 24-hour format for hour (0-23)
  */
 export const alarmFormSchema = z.object({
-  hour: z.number().min(1).max(12),
+  hour: z.number().min(0).max(23), // 24-hour format
   minute: z.number().min(0).max(59),
-  period: z.enum([Period.AM, Period.PM]),
   selectedDays: z
     .array(
       z.enum([
@@ -47,13 +47,34 @@ export const alarmFormSchema = z.object({
 export type AlarmFormData = z.infer<typeof alarmFormSchema>;
 
 /**
- * Default form values for creating a new alarm
+ * Get default alarm form values with dynamic time (current time + 1 hour)
+ */
+export function getDefaultAlarmFormValues(): AlarmFormData {
+  const now = new Date();
+  const nextHour = (now.getHours() + 1) % 24;
+  const currentMinute = now.getMinutes();
+
+  return {
+    hour: nextHour,
+    minute: currentMinute,
+    selectedDays: [], // Will be overridden with current day in form
+    challenge: ChallengeType.MATH,
+    difficulty: DifficultyLevel.EASY,
+    protocols: [
+      { id: BackupProtocolId.SNOOZE, enabled: false },
+      { id: BackupProtocolId.WAKE_CHECK, enabled: true },
+      { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
+    ],
+  };
+}
+
+/**
+ * @deprecated Use getDefaultAlarmFormValues() instead for dynamic time
  */
 export const DEFAULT_ALARM_FORM_VALUES: AlarmFormData = {
-  hour: 6,
+  hour: 7, // Fallback static value
   minute: 0,
-  period: Period.AM,
-  selectedDays: [DayOfWeek.MONDAY], // Will be overridden with current day
+  selectedDays: [],
   challenge: ChallengeType.MATH,
   difficulty: DifficultyLevel.EASY,
   protocols: [
