@@ -162,11 +162,11 @@ export function MemoryChallengeComponent({
         </Animated.View>
       ) : (
         <View className="mb-8 h-32 w-32 items-center justify-center rounded-3xl bg-gray-200 dark:bg-gray-700">
-          {phase === 'showing' ? (
-            <MaterialSymbol name="visibility" size={48} color="#9CA3AF" />
-          ) : (
-            <MaterialSymbol name="touch_app" size={48} color="#9CA3AF" />
-          )}
+          <MaterialSymbol
+            name={phase === 'showing' ? 'visibility' : 'touch_app'}
+            size={48}
+            color="#9CA3AF"
+          />
         </View>
       )}
 
@@ -207,9 +207,7 @@ export function MemoryChallengeComponent({
               accessibilityHint="Tap to select this color"
               disabled={phase !== 'input'}
               onPress={() => handleColorPress(index)}
-              className={`h-20 w-20 items-center justify-center rounded-2xl ${color.bg} ${
-                phase !== 'input' ? 'opacity-50' : 'active:scale-95'
-              }`}
+              className={`h-20 w-20 items-center justify-center rounded-2xl ${color.bg} ${phase !== 'input' ? 'opacity-50' : ''}`}
             >
               <MaterialSymbol name="circle" size={32} color="#fff" />
             </Pressable>

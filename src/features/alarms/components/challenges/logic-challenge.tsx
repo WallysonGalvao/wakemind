@@ -262,9 +262,7 @@ export function LogicChallengeComponent({
               accessibilityHint="Select this option as your answer"
               disabled={selectedIndex !== null}
               onPress={() => handleOptionPress(index)}
-              className={`min-h-[70px] min-w-[70px] items-center justify-center rounded-2xl border-2 px-4 py-3 ${getOptionStyle(index)} ${
-                selectedIndex === null ? 'active:scale-95' : ''
-              }`}
+              className={`min-h-[70px] min-w-[70px] items-center justify-center rounded-2xl border-2 px-4 py-3 ${getOptionStyle(index)}`}
             >
               <Text className="text-2xl font-bold text-gray-800 dark:text-gray-200">{option}</Text>
             </Pressable>

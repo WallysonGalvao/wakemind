@@ -230,7 +230,7 @@ export function MathChallengeComponent({
                     accessibilityLabel="Backspace"
                     accessibilityHint="Delete the last digit"
                     onPress={handleBackspace}
-                    className="h-16 flex-1 items-center justify-center rounded-2xl border border-transparent bg-gray-100 active:scale-95 dark:bg-surface-dark"
+                    className="h-16 flex-1 items-center justify-center rounded-2xl border border-transparent bg-gray-100 dark:bg-surface-dark"
                   >
                     <MaterialSymbol name="backspace" size={24} color="#6B7280" />
                   </Pressable>
@@ -245,7 +245,7 @@ export function MathChallengeComponent({
                     accessibilityHint="Submit your answer"
                     onPress={handleSubmit}
                     disabled={userInput.length === 0}
-                    className="h-16 flex-1 items-center justify-center rounded-2xl border border-primary-500/50 bg-primary-500 active:scale-95"
+                    className="h-16 flex-1 items-center justify-center rounded-2xl border border-primary-500/50 bg-primary-500"
                   >
                     <MaterialSymbol name="check" size={28} color="#fff" />
                   </Pressable>
@@ -256,7 +256,7 @@ export function MathChallengeComponent({
                   key={key}
                   accessibilityRole="button"
                   onPress={() => handleNumberPress(key)}
-                  className="h-16 flex-1 items-center justify-center rounded-2xl border border-gray-200 bg-gray-100 active:scale-95 active:bg-primary-500 dark:border-white/5 dark:bg-surface-dark"
+                  className="h-16 flex-1 items-center justify-center rounded-2xl border border-gray-200 bg-gray-100 dark:border-white/5 dark:bg-surface-dark"
                 >
                   <Text className="text-2xl font-bold text-gray-900 dark:text-white">{key}</Text>
                 </Pressable>
