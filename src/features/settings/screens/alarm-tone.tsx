@@ -9,71 +9,14 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import type { AlarmTone } from '@/constants/alarm-tones';
+import { ALARM_TONES, DEFAULT_ALARM_TONE_ID } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // ============================================================================
-// Types
-// ============================================================================
-
-interface AlarmTone {
-  id: string;
-  name: string;
-  category: string;
-  score: number;
-  trend: number[]; // 5 bars representing trend
-}
-
-// ============================================================================
-// Constants
-// ============================================================================
-
-const ALARM_TONES: AlarmTone[] = [
-  { id: 'orbit', name: 'Orbit', category: 'Synthwave', score: 98, trend: [60, 75, 85, 100, 90] },
-  {
-    id: 'deep-focus',
-    name: 'Deep Focus',
-    category: 'Binaural',
-    score: 96,
-    trend: [80, 70, 90, 95, 85],
-  },
-  { id: 'ascent', name: 'Ascent', category: 'Cinematic', score: 89, trend: [50, 40, 60, 70, 45] },
-  { id: 'radar', name: 'Radar', category: 'Classic', score: 65, trend: [30, 40, 20, 35, 25] },
-  { id: 'sunrise', name: 'Sunrise', category: 'Nature', score: 82, trend: [55, 65, 75, 80, 78] },
-];
-
-// ============================================================================
 // Sub-Components
 // ============================================================================
-
-function TrendBars({ trend, isActive }: { trend: number[]; isActive: boolean }) {
-  return (
-    <View className="min-w-[80px] flex-col items-end gap-1.5">
-      <Text className="text-[9px] font-bold uppercase tracking-wide text-gray-400">
-        Success Trend
-      </Text>
-      <View className="h-6 flex-row items-end gap-[3px]">
-        {trend.map((value, index) => {
-          const isHighlighted = value >= 70;
-          const heightPercent = Math.round(value * 0.24); // Convert to pixels (max ~24px)
-          return (
-            <View
-              key={index}
-              className={`w-1.5 rounded-t-sm ${
-                isActive && isHighlighted
-                  ? 'bg-brand-primary'
-                  : isHighlighted
-                    ? 'bg-brand-primary/50'
-                    : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              style={{ height: heightPercent }}
-            />
-          );
-        })}
-      </View>
-    </View>
-  );
-}
 
 function ToneItem({
   tone,
@@ -103,40 +46,64 @@ function ToneItem({
           : 'border-gray-100 dark:border-white/5'
       } bg-white shadow-sm dark:bg-surface-dark`}
     >
-      <View className="flex-row items-center justify-between gap-4">
-        <View className="flex-row items-center gap-3">
-          <Pressable
-            onPress={onPlay}
-            accessibilityRole="button"
-            accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-            accessibilityHint={`${isPlaying ? 'Pause' : 'Play'} ${tone.name} preview`}
-            className={`h-10 w-10 items-center justify-center rounded-full ${
-              isActive ? 'bg-brand-primary shadow-lg' : 'bg-gray-100 dark:bg-gray-800'
-            }`}
-          >
-            <MaterialSymbol
-              name={isPlaying ? 'pause' : 'play_arrow'}
-              size={24}
-              color={
-                isActive ? COLORS.white : colorScheme === 'dark' ? COLORS.white : COLORS.gray[600]
-              }
-            />
-          </Pressable>
-          <View>
-            <View className="flex-row items-center gap-2">
-              <Text className="font-bold text-gray-900 dark:text-white">{tone.name}</Text>
-              {isActive ? (
-                <View className="rounded bg-brand-primary/20 px-1.5 py-0.5">
-                  <Text className="text-[9px] font-bold text-brand-primary">ACTIVE</Text>
-                </View>
-              ) : null}
-            </View>
-            <Text className="text-xs text-gray-500 dark:text-gray-400">
-              {tone.category} • {tone.score}% Score
-            </Text>
+      <View className="flex-row items-center gap-3">
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation();
+            onPlay();
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+          accessibilityHint={`${isPlaying ? 'Pause' : 'Play'} ${tone.name} preview`}
+          className={`h-12 w-12 items-center justify-center rounded-full ${
+            isPlaying
+              ? 'bg-brand-primary'
+              : isActive
+                ? 'bg-brand-primary/20'
+                : 'bg-gray-100 dark:bg-gray-800'
+          }`}
+          /* eslint-disable react-native/no-inline-styles, react-native/no-color-literals -- shadow-* in conditional className causes navigation context error with NativeWind + Expo Router + React 19 */
+          style={
+            isPlaying
+              ? {
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 4,
+                }
+              : undefined
+          }
+          /* eslint-enable react-native/no-inline-styles, react-native/no-color-literals */
+        >
+          <MaterialSymbol
+            name={isPlaying ? 'pause' : 'play_arrow'}
+            size={24}
+            color={
+              isPlaying
+                ? COLORS.white
+                : isActive
+                  ? COLORS.brandPrimary
+                  : colorScheme === 'dark'
+                    ? COLORS.white
+                    : COLORS.gray[600]
+            }
+          />
+        </Pressable>
+        <View className="flex-1">
+          <View className="flex-row items-center gap-2">
+            <Text className="font-bold text-gray-900 dark:text-white">{tone.name}</Text>
+            {isActive ? (
+              <View className="rounded bg-brand-primary/20 px-1.5 py-0.5">
+                <Text className="text-[9px] font-bold text-brand-primary">ACTIVE</Text>
+              </View>
+            ) : null}
           </View>
+          <Text className="text-xs font-medium text-brand-primary">{tone.category}</Text>
+          <Text className="mt-0.5 text-[11px] leading-tight text-gray-500 dark:text-gray-400">
+            {tone.description}
+          </Text>
         </View>
-        <TrendBars trend={tone.trend} isActive={isActive} />
       </View>
     </Pressable>
   );
@@ -151,7 +118,7 @@ export default function AlarmToneScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [selectedToneId, setSelectedToneId] = useState('orbit');
+  const [selectedToneId, setSelectedToneId] = useState(DEFAULT_ALARM_TONE_ID);
   const [playingToneId, setPlayingToneId] = useState<string | null>(null);
 
   const handlePlay = (toneId: string) => {
@@ -166,11 +133,6 @@ export default function AlarmToneScreen() {
 
   const handleSelect = (toneId: string) => {
     setSelectedToneId(toneId);
-  };
-
-  const handleSave = () => {
-    // TODO: Save selected tone to settings
-    router.back();
   };
 
   return (
