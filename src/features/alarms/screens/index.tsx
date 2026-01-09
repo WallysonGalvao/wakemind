@@ -1,12 +1,21 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { FlashList } from '@shopify/flash-list';
+import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  interpolate,
+  Layout,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, RefreshControl, useColorScheme, View } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, useColorScheme, View } from 'react-native';
 
 import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
@@ -17,6 +26,14 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
+import { sortAlarmsByTime } from '@/utils/alarm-sorting';
+
+const AnimatedFlatList = Animated.FlatList<Alarm>;
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+
+// Threshold for when blur effect starts appearing
+const SCROLL_THRESHOLD = 10;
+const BLUR_TRANSITION_RANGE = 30;
 
 function ItemSeparator() {
   return <View className="h-4" />;
@@ -26,11 +43,18 @@ export default function AlarmsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   const alarms = useAlarmsStore((state) => state.alarms);
   const toggleAlarm = useAlarmsStore((state) => state.toggleAlarm);
   const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+
+  // Sort alarms with useMemo to prevent infinite re-renders
+  const sortedAlarms = useMemo(() => sortAlarmsByTime(alarms), [alarms]);
+
+  // Scroll position tracking
+  const scrollY = useSharedValue(0);
 
   // Use grayscale image in dark mode, colored in light mode
   const sunriseImage =
@@ -38,7 +62,10 @@ export default function AlarmsScreen() {
       ? require('@/assets/images/sunrise-grayscale.png')
       : require('@/assets/images/sunrise.png');
 
-  const hasAlarms = alarms.length > 0;
+  const hasAlarms = sortedAlarms.length > 0;
+
+  // Calculate header height (title + safe area + padding)
+  const headerHeight = useMemo(() => insets.top + 12 + 40 + 30, [insets.top]); // paddingTop + title height + bottom padding
 
   const handleToggleAlarm = useCallback(
     (id: string) => {
@@ -51,11 +78,11 @@ export default function AlarmsScreen() {
     (id: string) => {
       deleteAlarm(id);
       // If no more alarms, exit edit mode
-      if (alarms.length <= 1) {
+      if (sortedAlarms.length <= 1) {
         setIsEditMode(false);
       }
     },
-    [deleteAlarm, alarms.length]
+    [deleteAlarm, sortedAlarms.length]
   );
 
   const handleNewAlarm = useCallback(() => {
@@ -74,6 +101,24 @@ export default function AlarmsScreen() {
     setIsEditMode((prev) => !prev);
   }, []);
 
+  // Scroll handler
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  // Blur opacity animation based on scroll
+  const blurAnimatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      scrollY.value,
+      [SCROLL_THRESHOLD, SCROLL_THRESHOLD + BLUR_TRANSITION_RANGE],
+      [0, 1],
+      'clamp'
+    );
+    return { opacity };
+  });
+
   // Pull to refresh handler
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -90,17 +135,15 @@ export default function AlarmsScreen() {
 
   const keyExtractor = useCallback((item: Alarm) => item.id, []);
 
-  const renderHeader = useCallback(() => {
-    return (
-      <AlarmsHeader
-        title={t('alarms.title')}
-        editLabel={t('alarms.edit')}
-        doneLabel={t('alarms.done')}
-        isEditMode={isEditMode}
-        onEditPress={handleEditPress}
-      />
-    );
-  }, [t, isEditMode, handleEditPress]);
+  // Content padding to account for fixed header
+  const contentContainerStyle = useMemo(
+    () => ({
+      paddingTop: hasAlarms ? headerHeight : 0,
+      paddingHorizontal: 16,
+      paddingBottom: 144,
+    }),
+    [hasAlarms, headerHeight]
+  );
 
   const renderItem = useCallback(
     ({ item, index }: { item: Alarm; index: number }) => (
@@ -140,13 +183,14 @@ export default function AlarmsScreen() {
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       <Animated.View className="flex-1" layout={Layout.duration(300)}>
-        <FlashList
-          data={alarms}
+        <AnimatedFlatList
+          data={sortedAlarms}
           keyExtractor={keyExtractor}
-          ListHeaderComponent={hasAlarms ? renderHeader : null}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
           renderItem={renderItem}
           ListEmptyComponent={renderEmpty}
-          contentContainerClassName="px-4 pb-36"
+          contentContainerStyle={contentContainerStyle}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={ItemSeparator}
           extraData={isEditMode}
@@ -162,6 +206,34 @@ export default function AlarmsScreen() {
         />
       </Animated.View>
 
+      {/* Fixed Header with Blur Effect */}
+      {hasAlarms ? (
+        <View style={[styles.fixedHeader, { height: headerHeight }]} pointerEvents="box-none">
+          {/* Background layer - semi-transparent solid color */}
+          <View
+            className="absolute inset-0 bg-background-light/80 dark:bg-background-dark/80"
+            pointerEvents="none"
+          />
+          {/* Blur layer - appears on scroll */}
+          <AnimatedBlurView
+            intensity={15}
+            tint={colorScheme === 'dark' ? 'dark' : 'light'}
+            style={[styles.blurLayer, blurAnimatedStyle]}
+            pointerEvents="none"
+          />
+          {/* Header content */}
+          <View className="flex-1" pointerEvents="box-none">
+            <AlarmsHeader
+              title={t('alarms.title')}
+              editLabel={t('alarms.edit')}
+              doneLabel={t('alarms.done')}
+              isEditMode={isEditMode}
+              onEditPress={handleEditPress}
+            />
+          </View>
+        </View>
+      ) : null}
+
       {/* Floating Action Button - hidden in edit mode */}
       {hasAlarms && !isEditMode ? (
         <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
@@ -169,3 +241,16 @@ export default function AlarmsScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+  },
+  blurLayer: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
