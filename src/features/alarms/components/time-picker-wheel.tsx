@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
+import * as Haptics from 'expo-haptics';
 import type { SharedValue } from 'react-native-reanimated';
 import Animated, {
   Extrapolation,
@@ -146,9 +147,15 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
       const offsetY = event.nativeEvent.contentOffset.y;
       const index = Math.round(offsetY / ITEM_HEIGHT);
       const clampedIndex = Math.max(0, Math.min(index, items.length - 1));
+
+      // Only trigger haptic if value actually changed
+      if (clampedIndex !== value) {
+        Haptics.selectionAsync();
+      }
+
       onChange(clampedIndex);
     },
-    [items.length, onChange]
+    [items.length, onChange, value]
   );
 
   return (
