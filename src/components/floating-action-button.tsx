@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Pressable, View } from 'react-native';
+import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
+
+import { Pressable } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -12,6 +14,8 @@ interface FloatingActionButtonProps {
   icon?: string;
   onPress: () => void;
 }
+
+const ANIMATION_DURATION = 250;
 
 export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingActionButtonProps) {
   const isDark = useIsDarkMode();
@@ -26,7 +30,11 @@ export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingA
   });
 
   return (
-    <View className="pointer-events-box-none absolute bottom-8 left-0 right-0 z-10 flex items-center">
+    <Animated.View
+      entering={FadeInUp.duration(ANIMATION_DURATION)}
+      exiting={FadeOutDown.duration(ANIMATION_DURATION)}
+      className="pointer-events-box-none absolute bottom-8 left-0 right-0 z-10 flex items-center"
+    >
       <Pressable
         accessibilityRole="button"
         onPress={onPress}
@@ -36,6 +44,6 @@ export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingA
         <MaterialSymbol name={icon} size={28} className="text-white" />
         <Text className="text-lg font-bold tracking-tight text-white">{label}</Text>
       </Pressable>
-    </View>
+    </Animated.View>
   );
 }
