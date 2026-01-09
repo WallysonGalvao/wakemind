@@ -18,6 +18,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       UIBackgroundModes: ['audio', 'fetch'],
     },
+    entitlements: {
+      'com.apple.developer.usernotifications.critical-alerts': true,
+    },
   },
   android: {
     adaptiveIcon: {

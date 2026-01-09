@@ -86,11 +86,16 @@ export async function checkPermissions(): Promise<PermissionStatus> {
 }
 
 /**
- * Request notification permissions
+ * Request notification permissions (including Critical Alerts on iOS)
  */
 export async function requestPermissions(): Promise<boolean> {
   try {
-    const settings = await notifee.requestPermission();
+    const settings = await notifee.requestPermission({
+      criticalAlert: true,
+      sound: true,
+      alert: true,
+      badge: true,
+    });
     return settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED;
   } catch (error) {
     console.error('[AlarmScheduler] Error requesting permissions:', error);
@@ -186,8 +191,9 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
       },
       ios: {
         sound: 'alarm_sound.wav',
-        critical: false,
-        interruptionLevel: 'timeSensitive',
+        critical: true,
+        criticalVolume: 1.0,
+        interruptionLevel: 'critical',
         categoryId: 'alarm',
       },
     },
@@ -302,7 +308,9 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
       },
       ios: {
         sound: 'alarm_sound.wav',
-        interruptionLevel: 'timeSensitive',
+        critical: true,
+        criticalVolume: 1.0,
+        interruptionLevel: 'critical',
         categoryId: 'alarm',
       },
     },
@@ -372,7 +380,7 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
         ],
       },
       ios: {
-        sound: 'alarm_sound.wav',
+        sound: 'default',
         interruptionLevel: 'timeSensitive',
       },
     },
