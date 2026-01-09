@@ -99,10 +99,6 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Usar `deleteAlarm` do store
 - [x] Botão de exclusão no modo edição do formulário
 - [x] Navegação automática após exclusão
-- [ ] Adicionar swipe action no `AlarmCard` (melhor UX)
-- [ ] Implementar confirmação de exclusão (dialog/modal)
-- [ ] Adicionar animação de remoção
-- [ ] Feedback visual de sucesso (toast)
 
 #### Arquivos modificados:
 
@@ -125,7 +121,7 @@ src/features/� Parcial
 - [x] Pull-to-refresh implementado
 - [x] Animações de entrada (FadeIn/FadeOut)
 - [x] Empty state com ilustração
-- [ ] Ordenar alarmes por horário (AM primeiro, depois PM)
+- [x] Ordenar alarmes por horário (AM primeiro, depois PM)
 - [ ] Agrupar alarmes ativos/inativos
 - [ ] Adicionar filtros (Todos, Ativos, Inativos)
 - [ ] Indicador visual de próximo alarme
@@ -134,12 +130,10 @@ src/features/� Parcial
 #### Arquivos implementados/pendentes:
 
 ```
-✅ src/features/alarms/screens/index.tsx (lista básica)
+✅ src/features/alarms/screens/index.tsx (lista com sorting)
 ✅ src/features/alarms/components/alarm-card.tsx (card component)
-⚠️ src/utils/alarm-sorting.ts (sorting logic pendente)
-⚠️ src/features/alarms/components/alarms-header.tsx (filtros pendentesAtivos, Inativos)
-- [ ] Indicador visual de próximo alarme
-- [ ] Badge com contagem de alarmes ativos
+✅ src/utils/alarm-sorting.ts (sorting logic)
+⚠️ src/features/alarms/components/alarms-header.tsx (filtros pendentes)
 
 #### Arquivos a serem modificados:
 

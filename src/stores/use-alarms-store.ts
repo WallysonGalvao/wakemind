@@ -6,6 +6,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
 import type { Alarm } from '@/types/alarm';
 import type { DifficultyLevel, Period } from '@/types/alarm-enums';
+import { sortAlarmsByTime } from '@/utils/alarm-sorting';
 import { sanitizeAlarmInput, validateAlarmInput } from '@/utils/alarm-validation';
 import { createMMKVStorage } from '@/utils/storage';
 
@@ -25,12 +26,14 @@ interface AlarmsState {
   updateAlarm: (id: string, alarm: Partial<Alarm>) => void;
   deleteAlarm: (id: string) => void;
   toggleAlarm: (id: string) => void;
+  getSortedAlarms: () => Alarm[];
 }
 
 export const useAlarmsStore = create<AlarmsState>()(
   persist(
     (set, get) => ({
       alarms: [],
+      getSortedAlarms: () => sortAlarmsByTime(get().alarms),
       addAlarm: (alarmInput) => {
         const state = get();
 
@@ -45,7 +48,7 @@ export const useAlarmsStore = create<AlarmsState>()(
           throw new Error(errorMessage);
         }
 
-        // Add alarm if validation passes
+        // Add alarm if validation passes (sorting disabled temporarily)
         set({
           alarms: [
             ...state.alarms,
@@ -94,7 +97,7 @@ export const useAlarmsStore = create<AlarmsState>()(
           }
         }
 
-        // Update alarm if validation passes
+        // Update alarm if validation passes (sorting disabled temporarily)
         set({
           alarms: state.alarms.map((alarm) =>
             alarm.id === id ? { ...alarm, ...updatedAlarm } : alarm
