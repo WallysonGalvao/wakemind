@@ -1,196 +1,285 @@
-import React, { useState } from 'react';
+import React from 'react';
 
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
-import { SectionHeader } from '../components/section-header';
-import { SettingItem } from '../components/setting-item';
-
+import { Header } from '@/components/header';
+import { MaterialSymbol } from '@/components/material-symbol';
+import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { Language, ThemeMode } from '@/types/settings-enums';
 
-interface OptionSelectorProps {
-  visible: boolean;
+// ============================================================================
+// Types
+// ============================================================================
+
+interface SettingRowProps {
+  icon: string;
+  iconBgColor: string;
+  iconColor: string;
   title: string;
-  options: { value: string; label: string }[];
-  selectedValue: string;
-  onSelect: (value: string) => void;
-  onClose: () => void;
+  value?: string;
+  onPress?: () => void;
+  isFirst?: boolean;
+  isLast?: boolean;
 }
 
-function OptionSelector({
-  visible,
-  title,
-  options,
-  selectedValue,
-  onSelect,
-  onClose,
-}: OptionSelectorProps) {
-  const { t } = useTranslation();
+interface SettingToggleRowProps {
+  icon: string;
+  iconBgColor: string;
+  iconColor: string;
+  title: string;
+  value: boolean;
+  onValueChange: (value: boolean) => void;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
 
+// ============================================================================
+// Sub-Components
+// ============================================================================
+
+function SectionHeader({ title }: { title: string }) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
-        className="flex-1 items-center justify-center bg-black/50"
-        onPress={onClose}
-        accessibilityRole="button"
-      >
-        <View className="mx-6 w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl dark:bg-[#1a2230]">
-          <Text className="mb-6 text-center text-xl font-bold text-slate-900 dark:text-white">
-            {title}
-          </Text>
-
-          {options.map((option) => (
-            <Pressable
-              key={option.value}
-              onPress={() => {
-                onSelect(option.value);
-                onClose();
-              }}
-              className="mb-2 rounded-xl border border-slate-200 bg-white p-4 active:bg-primary-500/10 dark:border-slate-700 dark:bg-[#101622]"
-              accessibilityRole="button"
-            >
-              <View className="flex-row items-center justify-between">
-                <Text
-                  className={`text-base font-semibold ${
-                    selectedValue === option.value
-                      ? 'text-primary-500'
-                      : 'text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  {option.label}
-                </Text>
-                {selectedValue === option.value && (
-                  <View className="h-5 w-5 items-center justify-center rounded-full bg-primary-500">
-                    <Text className="text-xs font-bold text-white">✓</Text>
-                  </View>
-                )}
-              </View>
-            </Pressable>
-          ))}
-
-          <Pressable
-            onPress={onClose}
-            className="mt-4 rounded-xl bg-slate-200 p-4 active:bg-slate-300 dark:bg-slate-700 dark:active:bg-slate-600"
-            accessibilityRole="button"
-          >
-            <Text className="text-center text-base font-semibold text-slate-700 dark:text-slate-300">
-              {t('common.cancel')}
-            </Text>
-          </Pressable>
-        </View>
-      </Pressable>
-    </Modal>
+    <Text className="px-4 pb-2 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+      {title}
+    </Text>
   );
 }
+
+function SectionFooter({ text }: { text: string }) {
+  return <Text className="px-4 pt-2 text-xs text-gray-500">{text}</Text>;
+}
+
+function SettingRow({
+  icon,
+  iconBgColor,
+  iconColor,
+  title,
+  value,
+  onPress,
+  isFirst = false,
+  isLast = false,
+}: SettingRowProps) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
+    >
+      <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
+        <MaterialSymbol name={icon} size={20} color={iconColor} />
+      </View>
+      <Text className="flex-1 text-base font-medium text-gray-900 dark:text-white">{title}</Text>
+      <View className="flex-row items-center gap-2">
+        {value ? <Text className="text-sm text-gray-500">{value}</Text> : null}
+        <MaterialSymbol name="chevron_right" size={18} color="#9ca3af" />
+      </View>
+    </Pressable>
+  );
+}
+
+function SettingToggleRow({
+  icon,
+  iconBgColor,
+  iconColor,
+  title,
+  value,
+  onValueChange,
+  isFirst = false,
+  isLast = false,
+}: SettingToggleRowProps) {
+  return (
+    <View
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
+    >
+      <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
+        <MaterialSymbol name={icon} size={20} color={iconColor} />
+      </View>
+      <Text className="flex-1 text-base font-medium text-gray-900 dark:text-white">{title}</Text>
+      <View className="items-center justify-center">
+        <Switch
+          value={value}
+          onValueChange={onValueChange}
+          trackColor={{ false: '#d1d5db', true: '#135bec' }}
+          thumbColor="#ffffff"
+        />
+      </View>
+    </View>
+  );
+}
+
+function SectionCard({ children }: { children: React.ReactNode }) {
+  return (
+    <View className="overflow-hidden rounded-xl border border-gray-100 shadow-sm dark:border-gray-800">
+      {children}
+    </View>
+  );
+}
+
+// ============================================================================
+// Main Component
+// ============================================================================
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const colorScheme = useColorScheme();
   const { theme, setTheme, language, setLanguage } = useSettingsStore();
 
-  const [showThemeSelector, setShowThemeSelector] = useState(false);
-  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-
-  const themeOptions = [
-    { value: ThemeMode.LIGHT, label: t('theme.light') },
-    { value: ThemeMode.DARK, label: t('theme.dark') },
-    { value: ThemeMode.SYSTEM, label: t('theme.system') },
-  ];
-
-  const languageOptions = [
-    { value: Language.EN, label: t('language.english') },
-    { value: Language.PT, label: t('language.portuguese') },
-    { value: Language.ES, label: t('language.spanish') },
-  ];
-
-  const getThemeLabel = (mode: ThemeMode) => {
-    return themeOptions.find((opt) => opt.value === mode)?.label || t('theme.system');
-  };
+  // Derived state
+  const isDarkMode =
+    theme === ThemeMode.DARK || (theme === ThemeMode.SYSTEM && colorScheme === 'dark');
 
   const getLanguageLabel = (lang: Language) => {
-    // Normalize pt-BR to pt for display
-    const normalizedLang = lang === Language.PT_BR ? Language.PT : lang;
-    return (
-      languageOptions.find((opt) => opt.value === normalizedLang)?.label || t('language.english')
-    );
+    const labels: Record<Language, string> = {
+      [Language.EN]: 'English',
+      [Language.PT]: 'Português',
+      [Language.PT_BR]: 'Português',
+      [Language.ES]: 'Español',
+    };
+    return labels[lang] || 'English';
+  };
+
+  const handleDarkModeToggle = (value: boolean) => {
+    setTheme(value ? ThemeMode.DARK : ThemeMode.LIGHT);
   };
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
-      <View
-        className="bg-background-light/95 px-6 pb-4 dark:bg-background-dark/95"
-        style={{ paddingTop: insets.top + 12 }}
-      >
-        <Text className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          {t('settings.title')}
-        </Text>
+      <View style={{ paddingTop: insets.top }}>
+        <Header title={t('settings.title')} />
       </View>
 
       {/* Content */}
       <ScrollView
         className="flex-1 px-4"
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: 40, paddingTop: 24 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Appearance Section */}
-        <SectionHeader title={t('settings.appearance')} />
-
-        <SettingItem
-          icon="palette"
-          title={t('theme.title')}
-          description={t('theme.description')}
-          value={getThemeLabel(theme)}
-          onPress={() => setShowThemeSelector(true)}
-        />
+        <View className="mb-2">
+          <SectionHeader title={t('settings.appearance')} />
+          <SectionCard>
+            <SettingToggleRow
+              icon="contrast"
+              iconBgColor="bg-gray-100 dark:bg-gray-700/30"
+              iconColor={colorScheme === 'dark' ? '#d1d5db' : '#4b5563'}
+              title={t('theme.darkMode')}
+              value={isDarkMode}
+              onValueChange={handleDarkModeToggle}
+              isFirst
+              isLast
+            />
+          </SectionCard>
+        </View>
 
         {/* Language Section */}
-        <SectionHeader title={t('settings.language')} />
+        <View className="mb-2 mt-8">
+          <SectionHeader title={t('settings.language')} />
+          <SectionCard>
+            <SettingRow
+              icon="language"
+              iconBgColor="bg-blue-100 dark:bg-blue-900/30"
+              iconColor="#3b82f6"
+              title={t('language.title')}
+              value={getLanguageLabel(language)}
+              onPress={() => router.push('/settings/language')}
+              isFirst
+              isLast
+            />
+          </SectionCard>
+        </View>
 
-        <SettingItem
-          icon="language"
-          title={t('language.title')}
-          description={t('language.description')}
-          value={getLanguageLabel(language)}
-          onPress={() => setShowLanguageSelector(true)}
-        />
+        {/* Sound & Haptics Section */}
+        <View className="mb-2 mt-8">
+          <SectionHeader title={t('settings.soundHaptics')} />
+          <SectionCard>
+            <SettingRow
+              icon="notifications_active"
+              iconBgColor="bg-red-100 dark:bg-red-900/30"
+              iconColor="#ef4444"
+              title={t('settings.alarmTone')}
+              value="Default"
+              onPress={() => {}}
+              isFirst
+            />
+            <SettingToggleRow
+              icon="check_circle"
+              iconBgColor="bg-green-100 dark:bg-green-900/30"
+              iconColor="#22c55e"
+              title={t('settings.vibrateOnSuccess')}
+              value
+              onValueChange={() => {}}
+            />
+            <SettingRow
+              icon="vibration"
+              iconBgColor="bg-orange-100 dark:bg-orange-900/30"
+              iconColor="#f97316"
+              title={t('settings.vibrationPattern')}
+              value="Rapid Pulse"
+              onPress={() => {}}
+              isLast
+            />
+          </SectionCard>
+        </View>
+
+        {/* Behavior Section */}
+        <View className="mb-2 mt-8">
+          <SectionHeader title={t('settings.behavior')} />
+          <SectionCard>
+            <SettingToggleRow
+              icon="lock_clock"
+              iconBgColor="bg-indigo-100 dark:bg-indigo-900/30"
+              iconColor="#818cf8"
+              title={t('settings.snoozeProtection')}
+              value
+              onValueChange={() => {}}
+              isFirst
+            />
+            <SettingToggleRow
+              icon="screen_lock_landscape"
+              iconBgColor="bg-teal-100 dark:bg-teal-900/30"
+              iconColor="#14b8a6"
+              title={t('settings.preventAutoLock')}
+              value
+              onValueChange={() => {}}
+              isLast
+            />
+          </SectionCard>
+          <SectionFooter text={t('settings.preventAutoLockDescription')} />
+        </View>
+
+        {/* App Info */}
+        <View className="mb-10 mt-8 items-center justify-center gap-2">
+          <Text className="text-sm font-medium text-gray-500 dark:text-gray-600">
+            WakeMind v1.0.0
+          </Text>
+          <View className="flex-row gap-4">
+            <Pressable accessibilityRole="link">
+              <Text className="text-xs font-semibold text-primary-500">
+                {t('settings.privacyPolicy')}
+              </Text>
+            </Pressable>
+            <Pressable accessibilityRole="link">
+              <Text className="text-xs font-semibold text-primary-500">
+                {t('settings.support')}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       </ScrollView>
-
-      {/* Theme Selector Modal */}
-      <OptionSelector
-        visible={showThemeSelector}
-        title={t('theme.title')}
-        options={themeOptions}
-        selectedValue={theme}
-        onSelect={(value) => setTheme(value as ThemeMode)}
-        onClose={() => setShowThemeSelector(false)}
-      />
-
-      {/* Language Selector Modal */}
-      <OptionSelector
-        visible={showLanguageSelector}
-        title={t('language.title')}
-        options={languageOptions}
-        selectedValue={language === Language.PT_BR ? Language.PT : language}
-        onSelect={(value) => setLanguage(value as Language)}
-        onClose={() => setShowLanguageSelector(false)}
-      />
-
-      {/* Background Gradient Effects */}
-      <View className="pointer-events-none absolute left-0 top-0 -z-10 h-full w-full">
-        <View
-          className="absolute -right-[10%] -top-[10%] h-[500px] w-[500px] rounded-full bg-primary-500/5"
-          style={{ filter: 'blur(120px)' }}
-        />
-        <View
-          className="absolute -left-[10%] top-[40%] h-[300px] w-[300px] rounded-full bg-primary-500/5"
-          style={{ filter: 'blur(80px)' }}
-        />
-      </View>
     </View>
   );
 }
