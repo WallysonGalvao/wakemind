@@ -18,7 +18,7 @@ interface ChallengeCardProps {
   icon: string;
   imageUrl?: string;
   isSelected: boolean;
-  onSelect: () => void;
+  onSelect?: () => void;
 }
 
 export function ChallengeCard({

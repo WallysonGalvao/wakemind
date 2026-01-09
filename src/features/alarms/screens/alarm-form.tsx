@@ -108,6 +108,58 @@ const getScheduleLabel = (days: DayOfWeek[]): string => {
   return sortedDays.map((d) => DAY_ABBREV[d]).join(', ');
 };
 
+// Map of day abbreviations back to DayOfWeek (reverse of DAY_ABBREV)
+const ABBREV_TO_DAY: Record<string, DayOfWeek> = {
+  Mon: DayOfWeek.MONDAY,
+  Tue: DayOfWeek.TUESDAY,
+  Wed: DayOfWeek.WEDNESDAY,
+  Thu: DayOfWeek.THURSDAY,
+  Fri: DayOfWeek.FRIDAY,
+  Sat: DayOfWeek.SATURDAY,
+  Sun: DayOfWeek.SUNDAY,
+};
+
+// Helper function to parse schedule label back to DayOfWeek array
+const parseScheduleToDays = (schedule: string): DayOfWeek[] => {
+  const allDays = Object.values(DayOfWeek);
+  const weekdays = [
+    DayOfWeek.MONDAY,
+    DayOfWeek.TUESDAY,
+    DayOfWeek.WEDNESDAY,
+    DayOfWeek.THURSDAY,
+    DayOfWeek.FRIDAY,
+  ];
+  const weekends = [DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
+
+  // Handle preset values
+  if (schedule === 'Daily') {
+    return allDays;
+  }
+  if (schedule === 'Weekdays') {
+    return weekdays;
+  }
+  if (schedule === 'Weekends') {
+    return weekends;
+  }
+
+  // Handle single day abbreviation
+  if (ABBREV_TO_DAY[schedule]) {
+    return [ABBREV_TO_DAY[schedule]];
+  }
+
+  // Handle custom: comma-separated day abbreviations
+  const abbreviations = schedule.split(',').map((s) => s.trim());
+  const days: DayOfWeek[] = [];
+  for (const abbr of abbreviations) {
+    if (ABBREV_TO_DAY[abbr]) {
+      days.push(ABBREV_TO_DAY[abbr]);
+    }
+  }
+
+  // If parsing failed, return current day as fallback
+  return days.length > 0 ? days : [getCurrentDayOfWeek()];
+};
+
 interface AlarmFormScreenProps {
   alarmId?: string; // Optional: if provided, we're in edit mode
 }
@@ -147,7 +199,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           hour: parseInt(hourStr, 10),
           minute: parseInt(minuteStr, 10),
           period: existingAlarm.period,
-          selectedDays: [getCurrentDayOfWeek()], // TODO: Parse from alarm schedule once available
+          selectedDays: parseScheduleToDays(existingAlarm.schedule),
           challenge:
             (Object.keys(CHALLENGE_ICONS).find(
               (key) => CHALLENGE_ICONS[key as ChallengeType] === existingAlarm.challengeIcon
@@ -359,16 +411,16 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
         <BackupProtocolsSection protocols={protocols} onProtocolToggle={handleProtocolToggle} />
 
         {/* Delete Button - Only in Edit Mode */}
-        {isEditMode ? <Pressable
-          onPress={handleDelete}
-          className="mt-3 h-14  flex-row items-center justify-center rounded-xl bg-red-500 active:scale-[0.98] mx-4"
-          accessibilityRole="button"
-        >
-          <MaterialSymbol name="delete" size={20} className="mr-2 text-white" />
-          <Text className="text-base font-semibold text-white">
-            {t('common.delete')}
-          </Text>
-        </Pressable> : null}
+        {isEditMode ? (
+          <Pressable
+            onPress={handleDelete}
+            className="mx-4 mt-3  h-14 flex-row items-center justify-center rounded-xl bg-red-500 active:scale-[0.98]"
+            accessibilityRole="button"
+          >
+            <MaterialSymbol name="delete" size={20} className="mr-2 text-white" />
+            <Text className="text-base font-semibold text-white">{t('common.delete')}</Text>
+          </Pressable>
+        ) : null}
       </ScrollView>
 
       {/* Bottom CTA */}
@@ -385,8 +437,6 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           <Text className="mr-2 text-lg font-bold text-white">{commitButtonText}</Text>
           <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
         </Pressable>
-
-
       </View>
     </View>
   );
