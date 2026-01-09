@@ -26,7 +26,7 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
-import { ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
+import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
 
 export default function AlarmTriggerScreen() {
   const params = useLocalSearchParams<{
@@ -52,6 +52,24 @@ export default function AlarmTriggerScreen() {
   // Get challenge type and difficulty from alarm
   const challengeType = alarm?.challengeType ?? ChallengeType.MATH;
   const difficulty = alarm?.difficulty ?? DifficultyLevel.MEDIUM;
+
+  // Check if snooze protocol is enabled
+  const isSnoozeEnabled = useMemo(() => {
+    return (
+      alarm?.protocols?.some(
+        (protocol) => protocol.id === BackupProtocolId.SNOOZE && protocol.enabled
+      ) ?? false
+    );
+  }, [alarm?.protocols]);
+
+  // Check if wake check protocol is enabled
+  const isWakeCheckEnabled = useMemo(() => {
+    return (
+      alarm?.protocols?.some(
+        (protocol) => protocol.id === BackupProtocolId.WAKE_CHECK && protocol.enabled
+      ) ?? false
+    );
+  }, [alarm?.protocols]);
 
   // Challenge state
   const [attempt, setAttempt] = useState(1);
@@ -171,10 +189,15 @@ export default function AlarmTriggerScreen() {
 
     if (alarm) {
       await AlarmScheduler.dismissAlarm(alarm);
+
+      // Schedule wake check if protocol is enabled
+      if (isWakeCheckEnabled) {
+        await AlarmScheduler.scheduleWakeCheck(alarm);
+      }
     }
 
     router.back();
-  }, [alarm, stopAlarm]);
+  }, [alarm, stopAlarm, isWakeCheckEnabled]);
 
   // Challenge callbacks
   const handleChallengeSuccess = useCallback(async () => {
@@ -284,19 +307,21 @@ export default function AlarmTriggerScreen() {
         </Text>
       </View>
 
-      {/* Snooze Button */}
-      <View className="px-6 pb-6">
-        <Pressable
-          accessibilityRole="button"
-          onPress={handleSnooze}
-          className="flex-row items-center justify-center gap-2 rounded-2xl bg-gray-100 py-4 dark:bg-surface-dark"
-        >
-          <MaterialSymbol name="snooze" size={20} color="#6B7280" />
-          <Text className="text-base font-medium text-gray-600 dark:text-gray-400">
-            {t('alarmTrigger.snooze')}
-          </Text>
-        </Pressable>
-      </View>
+      {/* Snooze Button - Only shown if snooze protocol is enabled */}
+      {isSnoozeEnabled ? (
+        <View className="px-6 pb-6">
+          <Pressable
+            accessibilityRole="button"
+            onPress={handleSnooze}
+            className="flex-row items-center justify-center gap-2 rounded-2xl bg-gray-100 py-4 dark:bg-surface-dark"
+          >
+            <MaterialSymbol name="snooze" size={20} color="#6B7280" />
+            <Text className="text-base font-medium text-gray-600 dark:text-gray-400">
+              {t('alarmTrigger.snooze')}
+            </Text>
+          </Pressable>
+        </View>
+      ) : null}
     </View>
   );
 }
