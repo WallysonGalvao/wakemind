@@ -119,6 +119,8 @@ export const appPT = {
   'alarmTrigger.attempt': 'Tentativa {{current}} de {{max}}',
   'alarmTrigger.watchPattern': 'Observe o padrão',
   'alarmTrigger.repeatPattern': 'Repita o padrão',
+  'alarmTrigger.getReady': 'Prepare-se...',
+  'alarmTrigger.reviewPattern': 'Rever',
   'alarmTrigger.whichDoesntBelong': 'Qual não pertence ao grupo?',
   'alarmTrigger.showHint': 'Mostrar dica',
   'alarmTrigger.sequencePuzzle': 'Puzzle de sequência',

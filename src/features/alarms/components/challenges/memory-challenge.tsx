@@ -63,9 +63,12 @@ export function MemoryChallengeComponent({
     return newPattern;
   });
   const [userInput, setUserInput] = useState<number[]>([]);
-  const [phase, setPhase] = useState<'showing' | 'input'>('showing');
+  const [phase, setPhase] = useState<'countdown' | 'showing' | 'input'>('countdown');
+  const [countdown, setCountdown] = useState(5);
   const [currentShowIndex, setCurrentShowIndex] = useState(0);
   const [showError, setShowError] = useState(false);
+  const [consecutiveFailures, setConsecutiveFailures] = useState(0);
+  const [canReviewPattern, setCanReviewPattern] = useState(false);
 
   const activeColors = useMemo(() => COLORS.slice(0, config.colors), [config.colors]);
 
@@ -75,6 +78,20 @@ export function MemoryChallengeComponent({
   const highlightAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: highlightScale.value }],
   }));
+
+  // Countdown timer before showing pattern
+  useEffect(() => {
+    if (phase !== 'countdown') return;
+
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setPhase('showing');
+    }
+  }, [phase, countdown]);
 
   // Show pattern sequence using interval
   useEffect(() => {
@@ -119,6 +136,11 @@ export function MemoryChallengeComponent({
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         setShowError(true);
         setUserInput([]);
+        const newFailures = consecutiveFailures + 1;
+        setConsecutiveFailures(newFailures);
+        if (newFailures >= 3) {
+          setCanReviewPattern(true);
+        }
         onAttempt(false);
         return;
       }
@@ -130,8 +152,19 @@ export function MemoryChallengeComponent({
         onSuccess();
       }
     },
-    [phase, userInput, pattern, onSuccess, onAttempt]
+    [phase, userInput, pattern, onSuccess, onAttempt, consecutiveFailures]
   );
+
+  const handleReviewPattern = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setCanReviewPattern(false);
+    setConsecutiveFailures(0);
+    setShowError(false);
+    setUserInput([]);
+    setCurrentShowIndex(0);
+    setCountdown(3);
+    setPhase('countdown');
+  }, []);
 
   const progressDots = useMemo(() => {
     return pattern.map((_, index) => ({
@@ -149,11 +182,20 @@ export function MemoryChallengeComponent({
 
       {/* Phase indicator */}
       <Text className="mb-6 text-lg font-semibold text-gray-700 dark:text-gray-300">
-        {phase === 'showing' ? t('alarmTrigger.watchPattern') : t('alarmTrigger.repeatPattern')}
+        {phase === 'countdown'
+          ? t('alarmTrigger.getReady')
+          : phase === 'showing'
+            ? t('alarmTrigger.watchPattern')
+            : t('alarmTrigger.repeatPattern')}
       </Text>
 
-      {/* Pattern display during showing phase */}
-      {phase === 'showing' && currentShowIndex > 0 && currentShowIndex <= pattern.length ? (
+      {/* Countdown display */}
+      {phase === 'countdown' ? (
+        <View className="mb-8 h-32 w-32 items-center justify-center rounded-3xl bg-primary-500/20">
+          <Text className="text-6xl font-black text-primary-500">{countdown}</Text>
+        </View>
+      ) : /* Pattern display during showing phase */
+      phase === 'showing' && currentShowIndex > 0 && currentShowIndex <= pattern.length ? (
         <Animated.View
           className={`mb-8 h-32 w-32 items-center justify-center rounded-3xl ${activeColors[pattern[currentShowIndex - 1]].bg}`}
           style={highlightAnimatedStyle}
@@ -194,6 +236,22 @@ export function MemoryChallengeComponent({
             {t('alarmTrigger.wrongAnswer')}
           </Text>
         </View>
+      ) : null}
+
+      {/* Review Pattern Button */}
+      {canReviewPattern ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('alarmTrigger.reviewPattern')}
+          accessibilityHint="Tap to see the pattern again"
+          onPress={handleReviewPattern}
+          className="mb-6 h-32 w-32 items-center justify-center rounded-3xl bg-blue-500/20"
+        >
+          <MaterialSymbol name="replay" size={48} color="#3B82F6" />
+          <Text className="mt-2 text-sm font-semibold text-blue-500">
+            {t('alarmTrigger.reviewPattern')}
+          </Text>
+        </Pressable>
       ) : null}
 
       {/* Color buttons grid */}

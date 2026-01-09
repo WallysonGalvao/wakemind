@@ -122,6 +122,8 @@ export const appES = {
   'alarmTrigger.attempt': 'Intento {{current}} de {{max}}',
   'alarmTrigger.watchPattern': 'Observa el patrón',
   'alarmTrigger.repeatPattern': 'Repite el patrón',
+  'alarmTrigger.getReady': 'Prepárate...',
+  'alarmTrigger.reviewPattern': 'Revisar',
   'alarmTrigger.whichDoesntBelong': '¿Cuál no pertenece?',
   'alarmTrigger.showHint': 'Mostrar pista',
   'alarmTrigger.sequencePuzzle': 'Puzzle de secuencia',
