@@ -10,6 +10,7 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { Language, ThemeMode } from '@/types/settings-enums';
@@ -80,7 +81,7 @@ function SettingRow({
       <Text className="flex-1 text-base font-medium text-gray-900 dark:text-white">{title}</Text>
       <View className="flex-row items-center gap-2">
         {value ? <Text className="text-sm text-gray-500">{value}</Text> : null}
-        <MaterialSymbol name="chevron_right" size={18} color="#9ca3af" />
+        <MaterialSymbol name="chevron_right" size={18} color={COLORS.gray[400]} />
       </View>
     </Pressable>
   );
@@ -110,8 +111,8 @@ function SettingToggleRow({
         <Switch
           value={value}
           onValueChange={onValueChange}
-          trackColor={{ false: '#d1d5db', true: '#135bec' }}
-          thumbColor="#ffffff"
+          trackColor={{ false: COLORS.gray[300], true: COLORS.brandPrimary }}
+          thumbColor={COLORS.white}
         />
       </View>
     </View>
@@ -175,7 +176,7 @@ export default function SettingsScreen() {
             <SettingToggleRow
               icon="contrast"
               iconBgColor="bg-gray-100 dark:bg-gray-700/30"
-              iconColor={colorScheme === 'dark' ? '#d1d5db' : '#4b5563'}
+              iconColor={colorScheme === 'dark' ? COLORS.gray[300] : COLORS.gray[600]}
               title={t('theme.darkMode')}
               value={isDarkMode}
               onValueChange={handleDarkModeToggle}
@@ -192,7 +193,7 @@ export default function SettingsScreen() {
             <SettingRow
               icon="language"
               iconBgColor="bg-blue-100 dark:bg-blue-900/30"
-              iconColor="#3b82f6"
+              iconColor={COLORS.blue[500]}
               title={t('language.title')}
               value={getLanguageLabel(language)}
               onPress={() => router.push('/settings/language')}
@@ -209,16 +210,16 @@ export default function SettingsScreen() {
             <SettingRow
               icon="notifications_active"
               iconBgColor="bg-red-100 dark:bg-red-900/30"
-              iconColor="#ef4444"
+              iconColor={COLORS.red[500]}
               title={t('settings.alarmTone')}
-              value="Default"
-              onPress={() => {}}
+              value="Orbit"
+              onPress={() => router.push('/settings/alarm-tone')}
               isFirst
             />
             <SettingToggleRow
               icon="check_circle"
               iconBgColor="bg-green-100 dark:bg-green-900/30"
-              iconColor="#22c55e"
+              iconColor={COLORS.green[500]}
               title={t('settings.vibrateOnSuccess')}
               value
               onValueChange={() => {}}
@@ -226,7 +227,7 @@ export default function SettingsScreen() {
             <SettingRow
               icon="vibration"
               iconBgColor="bg-orange-100 dark:bg-orange-900/30"
-              iconColor="#f97316"
+              iconColor={COLORS.orange[500]}
               title={t('settings.vibrationPattern')}
               value="Rapid Pulse"
               onPress={() => {}}
@@ -242,7 +243,7 @@ export default function SettingsScreen() {
             <SettingToggleRow
               icon="lock_clock"
               iconBgColor="bg-indigo-100 dark:bg-indigo-900/30"
-              iconColor="#818cf8"
+              iconColor={COLORS.indigo[400]}
               title={t('settings.snoozeProtection')}
               value
               onValueChange={() => {}}
@@ -251,7 +252,7 @@ export default function SettingsScreen() {
             <SettingToggleRow
               icon="screen_lock_landscape"
               iconBgColor="bg-teal-100 dark:bg-teal-900/30"
-              iconColor="#14b8a6"
+              iconColor={COLORS.teal[500]}
               title={t('settings.preventAutoLock')}
               value
               onValueChange={() => {}}

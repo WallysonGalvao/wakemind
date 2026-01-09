@@ -1,6 +1,6 @@
 export const settingsEN = {
   // Settings Screen
-  'settings.title': 'Preferences',
+  'settings.title': 'Settings',
   'settings.appearance': 'Appearance',
   'settings.language': 'Language',
   'settings.soundHaptics': 'Sound & Haptics',
@@ -40,4 +40,18 @@ export const settingsEN = {
   // Sections
   'section.general': 'General',
   'section.preferences': 'Preferences',
+
+  // Alarm Tone Screen
+  'alarmTone.title': 'Alarm Tone',
+  'alarmTone.filterAll': 'All',
+  'alarmTone.filterRecent': 'Recent',
+  'alarmTone.filterCustom': 'Custom',
+  'alarmTone.reliabilityScore': 'Reliability Score',
+  'alarmTone.currentSelection': 'Current selection',
+  'alarmTone.suggestionTitle': 'Peak Performance Suggestion',
+  'alarmTone.suggestionText': 'Based on your history,',
+  'alarmTone.suggestionSuffix': 'triggers your fastest cognitive wake-up response (avg 4s).',
+  'alarmTone.availableTones': 'Available Tones',
+  'alarmTone.viewAnalytics': 'View Analytics',
+  'alarmTone.footer': 'Reliability is Mission-Critical',
 };
