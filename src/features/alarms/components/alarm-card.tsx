@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -7,6 +7,7 @@ import Animated, {
   FadeInDown,
   useAnimatedStyle,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 
 import { Pressable, useColorScheme, View } from 'react-native';
@@ -28,6 +29,11 @@ interface AlarmCardProps {
 }
 
 const STAGGER_DELAY = 100;
+const ANIMATION_DURATION = 250;
+const TIMING_CONFIG = {
+  duration: ANIMATION_DURATION,
+  easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+};
 
 export function AlarmCard({
   alarm,
@@ -41,6 +47,42 @@ export function AlarmCard({
   const colorScheme = useColorScheme();
   const scale = useSharedValue(1);
   const shadowStyle = useShadowStyle('sm');
+
+  // Shared values for edit mode animations
+  const deleteButtonProgress = useSharedValue(isEditMode ? 1 : 0);
+  const rightSideProgress = useSharedValue(isEditMode ? 1 : 0);
+
+  // Animate when isEditMode changes
+  useEffect(() => {
+    deleteButtonProgress.value = withTiming(isEditMode ? 1 : 0, TIMING_CONFIG);
+    rightSideProgress.value = withTiming(isEditMode ? 1 : 0, TIMING_CONFIG);
+  }, [isEditMode, deleteButtonProgress, rightSideProgress]);
+
+  // Animated styles for delete button (slide in from left + fade)
+  const deleteButtonAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: deleteButtonProgress.value,
+    transform: [
+      { translateX: (1 - deleteButtonProgress.value) * -12 },
+      { scale: 0.8 + deleteButtonProgress.value * 0.2 },
+    ],
+  }));
+
+  // Animated styles for switch (fade out)
+  const switchAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: 1 - rightSideProgress.value,
+    transform: [{ scale: 1 - rightSideProgress.value * 0.2 }],
+    position: 'absolute' as const,
+    right: 0,
+  }));
+
+  // Animated styles for chevron (fade in)
+  const chevronAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: rightSideProgress.value,
+    transform: [
+      { translateX: (1 - rightSideProgress.value) * 10 },
+      { scale: 0.8 + rightSideProgress.value * 0.2 },
+    ],
+  }));
 
   // Get icon color based on theme and active state
   const getIconColor = () => {
@@ -96,17 +138,19 @@ export function AlarmCard({
         }`}
       >
         <View className="flex-row items-center justify-between">
-          {/* Delete Button (Edit Mode Only) */}
+          {/* Delete Button (Animated - only rendered in edit mode) */}
           {isEditMode ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Delete alarm"
-              accessibilityHint="Removes this alarm from your list"
-              onPress={handleDelete}
-              className="-ml-1 mr-3 items-center justify-center rounded-full active:opacity-70"
-            >
-              <MaterialSymbol name="do_not_disturb_on" size={28} className="text-red-500" />
-            </Pressable>
+            <Animated.View style={deleteButtonAnimatedStyle} className="mr-3">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Delete alarm"
+                accessibilityHint="Removes this alarm from your list"
+                onPress={handleDelete}
+                className="items-center justify-center rounded-full active:opacity-70"
+              >
+                <MaterialSymbol name="do_not_disturb_on" size={28} className="text-red-500" />
+              </Pressable>
+            </Animated.View>
           ) : null}
 
           {/* Left Side: Time and Info */}
@@ -160,15 +204,10 @@ export function AlarmCard({
             </View>
           </View>
 
-          {/* Right Side: Toggle Switch OR Chevron */}
-          <View className="pl-4">
-            {isEditMode ? (
-              <MaterialSymbol
-                name="chevron_right"
-                size={28}
-                className="text-slate-400 dark:text-slate-500"
-              />
-            ) : (
+          {/* Right Side: Toggle Switch OR Chevron (Crossfade) */}
+          <View className="relative min-h-[32px] min-w-[52px] items-center justify-center pl-4">
+            {/* Switch (fades out) */}
+            <Animated.View style={switchAnimatedStyle} pointerEvents={isEditMode ? 'none' : 'auto'}>
               <Switch
                 value={alarm.isEnabled}
                 onValueChange={handleToggle}
@@ -176,7 +215,19 @@ export function AlarmCard({
                 thumbColor={COLORS.white}
                 size="lg"
               />
-            )}
+            </Animated.View>
+
+            {/* Chevron (fades in) */}
+            <Animated.View
+              style={chevronAnimatedStyle}
+              pointerEvents={isEditMode ? 'auto' : 'none'}
+            >
+              <MaterialSymbol
+                name="chevron_right"
+                size={28}
+                className="text-slate-400 dark:text-slate-500"
+              />
+            </Animated.View>
           </View>
         </View>
       </Animated.View>
