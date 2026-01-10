@@ -29,13 +29,20 @@ import { useSettingsStore } from '@/stores/use-settings-store';
 
 /**
  * Animated waveform visualization for audio preview
+ * Uses unique pattern from tone metadata
  */
-function Waveform({ isPlaying, isActive }: { isPlaying: boolean; isActive: boolean }) {
-  const bars = [0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 0.3, 0.7, 0.5];
-
+function Waveform({
+  isPlaying,
+  isActive,
+  pattern,
+}: {
+  isPlaying: boolean;
+  isActive: boolean;
+  pattern: number[];
+}) {
   return (
     <View className="h-8 w-16 flex-row items-center justify-center gap-[2px]">
-      {bars.map((height, index) => (
+      {pattern.map((height, index) => (
         <WaveformBar
           key={index}
           baseHeight={height}
@@ -182,7 +189,7 @@ function ToneItem({
             {tone.description}
           </Text>
         </View>
-        <Waveform isPlaying={isPlaying} isActive={isActive} />
+        <Waveform isPlaying={isPlaying} isActive={isActive} pattern={tone.waveformPattern} />
       </View>
     </Pressable>
   );

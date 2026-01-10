@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +15,7 @@ import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
+import type { VibrationPattern } from '@/types/settings-enums';
 import { Language, ThemeMode } from '@/types/settings-enums';
 
 // ============================================================================
@@ -137,7 +139,9 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const { theme, setTheme, language, setLanguage, alarmToneId } = useSettingsStore();
+  const { theme, setTheme, language, alarmToneId, vibrationPattern } = useSettingsStore();
+
+  const version = Constants.expoConfig?.version || '0.0.0';
 
   // Derived state
   const isDarkMode =
@@ -154,6 +158,10 @@ export default function SettingsScreen() {
       [Language.ES]: 'Español',
     };
     return labels[lang] || 'English';
+  };
+
+  const getVibrationLabel = (pattern: VibrationPattern) => {
+    return t(`vibration.${pattern}`);
   };
 
   const handleDarkModeToggle = (value: boolean) => {
@@ -233,8 +241,8 @@ export default function SettingsScreen() {
               iconBgColor="bg-orange-100 dark:bg-orange-900/30"
               iconColor={COLORS.orange[500]}
               title={t('settings.vibrationPattern')}
-              value="Rapid Pulse"
-              onPress={() => {}}
+              value={getVibrationLabel(vibrationPattern)}
+              onPress={() => router.push('/settings/vibration-pattern')}
               isLast
             />
           </SectionCard>
@@ -269,7 +277,7 @@ export default function SettingsScreen() {
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">
           <Text className="text-sm font-medium text-gray-500 dark:text-gray-600">
-            WakeMind v1.0.0
+            WakeMind v{version}
           </Text>
           <View className="flex-row gap-4">
             <Pressable accessibilityRole="link">

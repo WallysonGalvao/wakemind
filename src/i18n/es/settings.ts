@@ -21,6 +21,28 @@ export const settingsES = {
   'language.portuguese': 'Português',
   'language.spanish': 'Español',
   'language.description': 'Selecciona tu idioma',
+  'language.availableLanguages': 'Idiomas Disponibles',
+  'language.restartNote': 'El idioma de la app cambiará inmediatamente después de la selección.',
+
+  // Vibration Pattern
+  'vibration.title': 'Patrón de Vibración',
+  'vibration.availablePatterns': 'Patrones Disponibles',
+  'vibration.tapToTest': 'Toca el icono de vibración para probar cada patrón antes de seleccionar.',
+  'vibration.test': 'Probar vibración',
+  'vibration.category.impact': 'Feedback de Impacto',
+  'vibration.category.notification': 'Feedback de Notificación',
+  'vibration.light': 'Ligero',
+  'vibration.lightDescription': 'Vibración sutil y suave para feedback mínimo.',
+  'vibration.medium': 'Medio',
+  'vibration.mediumDescription': 'Vibración equilibrada para interacciones estándar.',
+  'vibration.heavy': 'Fuerte',
+  'vibration.heavyDescription': 'Vibración fuerte para feedback notable.',
+  'vibration.success': 'Éxito',
+  'vibration.successDescription': 'Patrón de doble pulso para confirmar acciones exitosas.',
+  'vibration.warning': 'Advertencia',
+  'vibration.warningDescription': 'Patrón que llama la atención para alertas.',
+  'vibration.error': 'Error',
+  'vibration.errorDescription': 'Patrón distintivo para señalar errores o fallas.',
 
   // Sound & Haptics
   'settings.alarmTone': 'Tono de Alarma',

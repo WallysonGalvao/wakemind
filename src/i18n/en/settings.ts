@@ -21,6 +21,28 @@ export const settingsEN = {
   'language.portuguese': 'Português',
   'language.spanish': 'Español',
   'language.description': 'Select your language',
+  'language.availableLanguages': 'Available Languages',
+  'language.restartNote': 'The app language will change immediately after selection.',
+
+  // Vibration Pattern
+  'vibration.title': 'Vibration Pattern',
+  'vibration.availablePatterns': 'Available Patterns',
+  'vibration.tapToTest': 'Tap the vibration icon to test each pattern before selecting.',
+  'vibration.test': 'Test vibration',
+  'vibration.category.impact': 'Impact Feedback',
+  'vibration.category.notification': 'Notification Feedback',
+  'vibration.light': 'Light',
+  'vibration.lightDescription': 'Subtle and gentle vibration for minimal feedback.',
+  'vibration.medium': 'Medium',
+  'vibration.mediumDescription': 'Balanced vibration for standard interactions.',
+  'vibration.heavy': 'Heavy',
+  'vibration.heavyDescription': 'Strong vibration for noticeable feedback.',
+  'vibration.success': 'Success',
+  'vibration.successDescription': 'Double pulse pattern to confirm successful actions.',
+  'vibration.warning': 'Warning',
+  'vibration.warningDescription': 'Attention-grabbing pattern for alerts.',
+  'vibration.error': 'Error',
+  'vibration.errorDescription': 'Distinct pattern to signal errors or failures.',
 
   // Sound & Haptics
   'settings.alarmTone': 'Alarm Tone',
