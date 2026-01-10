@@ -10,3 +10,12 @@ export enum Language {
   PT_BR = 'pt-BR',
   ES = 'es',
 }
+
+export enum VibrationPattern {
+  LIGHT = 'light',
+  MEDIUM = 'medium',
+  HEAVY = 'heavy',
+  SUCCESS = 'success',
+  WARNING = 'warning',
+  ERROR = 'error',
+}
