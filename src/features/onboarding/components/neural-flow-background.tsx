@@ -338,17 +338,17 @@ function WaveLayer({
     return `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.02)`;
   });
 
-  // Wave count increases per screen - only show wave if it should be visible
+  // Wave opacity creates fog effect - dense on screen 0, clear on screen 2
   const waveOpacity = useDerivedValue(() => {
     'worklet';
     const progress = scrollX.value / screenWidth;
 
-    // ALL waves VERY visible on ALL screens
-    // Screen 0: High opacity so animations are clearly visible!
-    const baseOpacity = interpolate(progress, [0, 1, 2], [0.7, 0.8, 0.95]);
+    // INVERTED: Dense waves/fog on screen 0, no waves on screen 2
+    // Screen 0 = 0.85 (dense fog), Screen 1 = 0.4 (clearing), Screen 2 = 0.05 (clear)
+    const baseOpacity = interpolate(progress, [0, 1, 2], [0.85, 0.4, 0.05]);
 
-    // Later waves are slightly less opaque
-    return Math.max(0.5, baseOpacity - waveIndex * 0.06);
+    // All waves contribute to fog effect
+    return Math.max(0.02, baseOpacity - waveIndex * 0.08);
   });
 
   return (
@@ -360,7 +360,7 @@ function WaveLayer({
           colors={[waveColor.value, waveEndColor.value]}
         />
       </Path>
-      <BlurMask blur={8 + waveIndex * 4} style="normal" />
+      <BlurMask blur={20 + waveIndex * 6} style="normal" />
     </Group>
   );
 }
@@ -808,21 +808,6 @@ export function NeuralFlowBackground({
         {/* Pulse ripple effect */}
         <PulseRipple width={width} height={height} pulseIntensity={activePulseIntensity} />
 
-        {/* Dynamic waves (count and intensity increase per screen) */}
-        {Array.from({ length: WAVE_COUNT }).map((_, index) => (
-          <WaveLayer
-            key={`wave-${index}`}
-            width={width}
-            height={height}
-            phase={phase}
-            scrollX={scrollX}
-            screenWidth={width}
-            pulseIntensity={activePulseIntensity}
-            waveIndex={index}
-            colorsRgb={colorsRgb}
-          />
-        ))}
-
         {/* Dynamic connections (visibility increases per screen) */}
         <DynamicConnections
           nodes={nodes}
@@ -851,15 +836,20 @@ export function NeuralFlowBackground({
           />
         ))}
 
-        {/* FOG OVERLAY - renders on TOP of everything, disperses as we progress */}
-        <FogOverlay
-          width={width}
-          height={height}
-          scrollX={scrollX}
-          screenWidth={width}
-          phase={phase}
-          colorsRgb={colorsRgb}
-        />
+        {/* Dynamic waves - render LAST to create fog layer over everything */}
+        {Array.from({ length: WAVE_COUNT }).map((_, index) => (
+          <WaveLayer
+            key={`wave-${index}`}
+            width={width}
+            height={height}
+            phase={phase}
+            scrollX={scrollX}
+            screenWidth={width}
+            pulseIntensity={activePulseIntensity}
+            waveIndex={index}
+            colorsRgb={colorsRgb}
+          />
+        ))}
       </Canvas>
     </View>
   );
