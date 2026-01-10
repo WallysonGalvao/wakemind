@@ -21,6 +21,7 @@ import type { OnboardingItemData } from '@/features/onboarding/components/onboar
 import { OnboardingItem } from '@/features/onboarding/components/onboarding-item';
 import { SplitButton } from '@/features/onboarding/components/split-button';
 import { ONBOARDING_ITEMS } from '@/features/onboarding/constants/onboarding-config';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
 export default function OnboardingScreen() {
@@ -33,7 +34,15 @@ export default function OnboardingScreen() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const completeOnboarding = useSettingsStore((state) => state.completeOnboarding);
+
+  const colors = {
+    background: isDark ? COLORS.gray[900] : COLORS.gray[50],
+    brandIcon: COLORS.brandPrimary,
+    brandText: isDark ? COLORS.white : COLORS.gray[900],
+  };
 
   const scrollHandler = useAnimatedScrollHandler(
     {
@@ -96,14 +105,17 @@ export default function OnboardingScreen() {
   );
 
   return (
-    <View className="flex-1" style={{ backgroundColor: COLORS.brandPrimary }}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.brandPrimary} />
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
+      />
 
       {/* Header with branding */}
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View className="flex-row items-center gap-2">
-          <MaterialSymbol name="bolt" size={24} color={COLORS.white} />
-          <Text style={styles.brandText}>WakeMind</Text>
+          <MaterialSymbol name="bolt" size={24} color={colors.brandIcon} />
+          <Text style={[styles.brandText, { color: colors.brandText }]}>WakeMind</Text>
         </View>
       </View>
 
@@ -118,7 +130,7 @@ export default function OnboardingScreen() {
         bounces={false}
         onScroll={scrollHandler}
         scrollEventThrottle={16}
-        contentContainerStyle={{ backgroundColor: COLORS.brandPrimary }}
+        contentContainerStyle={{ backgroundColor: colors.background }}
       />
 
       <View style={buttonContainerStyle}>
@@ -158,7 +170,6 @@ const styles = StyleSheet.create({
   brandText: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.white,
     letterSpacing: -0.3,
   },
   absoluteContainer: {

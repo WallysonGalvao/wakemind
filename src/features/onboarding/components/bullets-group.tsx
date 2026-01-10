@@ -1,7 +1,10 @@
 import type { SharedValue } from 'react-native-reanimated';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
-import { useWindowDimensions, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+
+import { COLORS } from '@/constants/colors';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // ============================================================================
 // Types
@@ -10,6 +13,7 @@ import { useWindowDimensions, View } from 'react-native';
 type BulletProps = {
   inputRange: number[];
   scrollX: SharedValue<number>;
+  isDark: boolean;
 };
 
 type BulletsGroupProps = {
@@ -21,15 +25,28 @@ type BulletsGroupProps = {
 // Sub-Components
 // ============================================================================
 
-function Bullet({ inputRange, scrollX }: BulletProps) {
+function Bullet({ inputRange, scrollX, isDark }: BulletProps) {
   const rStyle = useAnimatedStyle(() => {
     const width = interpolate(scrollX.value, inputRange, [8, 32, 8], Extrapolation.CLAMP);
 
     return { width };
   });
 
-  return <Animated.View className="h-2 rounded-full bg-white" style={[rStyle]} />;
+  const bulletColor = isDark ? COLORS.white : COLORS.brandPrimary;
+
+  return <Animated.View style={[styles.bullet, { backgroundColor: bulletColor }, rStyle]} />;
 }
+
+// ============================================================================
+// Styles
+// ============================================================================
+
+const styles = StyleSheet.create({
+  bullet: {
+    height: 8,
+    borderRadius: 9999,
+  },
+});
 
 // ============================================================================
 // Main Component
@@ -37,13 +54,15 @@ function Bullet({ inputRange, scrollX }: BulletProps) {
 
 export function BulletsGroup({ length, scrollX }: BulletsGroupProps) {
   const { width } = useWindowDimensions();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   return (
     <View className="flex-row items-center justify-center gap-1">
       {Array.from({ length }).map((_, index) => {
         const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 
-        return <Bullet key={index} inputRange={inputRange} scrollX={scrollX} />;
+        return <Bullet key={index} inputRange={inputRange} scrollX={scrollX} isDark={isDark} />;
       })}
     </View>
   );

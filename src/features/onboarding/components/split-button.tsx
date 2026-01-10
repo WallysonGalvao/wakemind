@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // ============================================================================
 // Types
@@ -35,6 +36,15 @@ const GAP = 12;
 
 export function SplitButton({ splitted, mainAction, leftAction, rightAction }: SplitButtonProps) {
   const { width: windowWidth } = useWindowDimensions();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const colors = {
+    leftBorder: isDark ? COLORS.gray[600] : COLORS.gray[300],
+    leftText: isDark ? COLORS.white : COLORS.gray[600],
+    rightBackground: COLORS.brandPrimary,
+    rightText: COLORS.white,
+  };
 
   const splittedButtonWidth = (windowWidth - PADDING_HORIZONTAL * 2 - GAP) / 2;
 
@@ -80,10 +90,10 @@ export function SplitButton({ splitted, mainAction, leftAction, rightAction }: S
           accessibilityRole="button"
           accessibilityLabel={leftAction.label}
           accessibilityHint="Skip onboarding"
-          style={styles.leftButton}
+          style={[styles.leftButton, { borderColor: colors.leftBorder }]}
         >
           <Animated.View style={rLeftTextStyle}>
-            <Text style={styles.leftLabel}>{leftAction.label}</Text>
+            <Text style={[styles.leftLabel, { color: colors.leftText }]}>{leftAction.label}</Text>
           </Animated.View>
         </Pressable>
       </Animated.View>
@@ -94,13 +104,15 @@ export function SplitButton({ splitted, mainAction, leftAction, rightAction }: S
           accessibilityRole="button"
           accessibilityLabel={splitted ? rightAction.label : mainAction.label}
           accessibilityHint={splitted ? 'Go to next step' : 'Complete onboarding'}
-          style={styles.rightButton}
+          style={[styles.rightButton, { backgroundColor: colors.rightBackground }]}
         >
           <Animated.View style={[styles.textContainer, rMainTextStyle]}>
-            <Text style={styles.rightLabel}>{mainAction.label}</Text>
+            <Text style={[styles.rightLabel, { color: colors.rightText }]}>{mainAction.label}</Text>
           </Animated.View>
           <Animated.View style={[styles.textContainer, rRightTextStyle]}>
-            <Text style={styles.rightLabel}>{rightAction.label}</Text>
+            <Text style={[styles.rightLabel, { color: colors.rightText }]}>
+              {rightAction.label}
+            </Text>
           </Animated.View>
         </Pressable>
       </Animated.View>
@@ -129,12 +141,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: COLORS.white,
   },
   leftLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.white,
   },
   rightButtonWrapper: {
     height: BUTTON_HEIGHT,
@@ -144,7 +154,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 16,
-    backgroundColor: COLORS.white,
   },
   textContainer: {
     position: 'absolute',
@@ -152,6 +161,5 @@ const styles = StyleSheet.create({
   rightLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.brandPrimary,
   },
 });
