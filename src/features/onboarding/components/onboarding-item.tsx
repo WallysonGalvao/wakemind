@@ -2,14 +2,14 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import type { SharedValue } from 'react-native-reanimated';
-import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated from 'react-native-reanimated';
 
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // ============================================================================
 // Types
@@ -37,38 +37,43 @@ type OnboardingItemProps = {
 // Main Component
 // ============================================================================
 
-export function OnboardingItem({ item, scrollX, index: _index, totalItems }: OnboardingItemProps) {
+export function OnboardingItem({
+  item,
+  scrollX: _scrollX,
+  index: _index,
+  totalItems: _totalItems,
+}: OnboardingItemProps) {
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-  const rStyle = useAnimatedStyle(() => {
-    const colors = [COLORS.brandPrimary, '#1E40AF', COLORS.brandPrimary];
-    const inputRange = Array.from({ length: totalItems }, (_, i) => i * width);
-
-    const backgroundColor = interpolateColor(
-      scrollX.value,
-      inputRange,
-      colors.slice(0, totalItems)
-    );
-
-    return { backgroundColor };
-  });
+  const colors = {
+    background: isDark ? '#101622' : '#f6f6f8',
+    iconBackground: isDark ? COLORS.brandPrimary + '33' : COLORS.brandPrimary + '1A',
+    iconColor: COLORS.brandPrimary,
+    titleColor: isDark ? COLORS.white : '#111827',
+    highlightColor: COLORS.brandPrimary,
+    fadedColor: isDark ? COLORS.gray[500] : COLORS.gray[400],
+    bodyPrimaryColor: isDark ? '#d1d5db' : COLORS.gray[600],
+    bodySecondaryColor: isDark ? COLORS.gray[500] : COLORS.gray[500],
+  };
 
   return (
     <Animated.View
       style={[
+        styles.container,
         {
           width,
-          paddingTop: insets.top + 60,
+          height,
+          backgroundColor: colors.background,
         },
-        rStyle,
       ]}
     >
       <View style={styles.content}>
         {/* Abstract Icon */}
-        <View style={styles.iconContainer}>
-          <MaterialSymbol name={item.icon} size={36} color={COLORS.white} />
+        <View style={[styles.iconContainer, { backgroundColor: colors.iconBackground }]}>
+          <MaterialSymbol name={item.icon} size={36} color={colors.iconColor} />
         </View>
 
         {/* Title */}
@@ -78,8 +83,9 @@ export function OnboardingItem({ item, scrollX, index: _index, totalItems }: Onb
               key={lineKey}
               style={[
                 styles.titleText,
-                lineIndex === item.highlightedLineIndex && styles.highlightedText,
-                lineIndex === item.fadedLineIndex && styles.fadedText,
+                { color: colors.titleColor },
+                lineIndex === item.highlightedLineIndex && { color: colors.highlightColor },
+                lineIndex === item.fadedLineIndex && { color: colors.fadedColor },
               ]}
             >
               {t(lineKey)}
@@ -89,9 +95,13 @@ export function OnboardingItem({ item, scrollX, index: _index, totalItems }: Onb
 
         {/* Body */}
         <View style={styles.bodyContainer}>
-          <Text style={styles.bodyPrimary}>{t(item.bodyPrimaryKey)}</Text>
+          <Text style={[styles.bodyPrimary, { color: colors.bodyPrimaryColor }]}>
+            {t(item.bodyPrimaryKey)}
+          </Text>
           {item.bodySecondaryKey ? (
-            <Text style={styles.bodySecondary}>{t(item.bodySecondaryKey)}</Text>
+            <Text style={[styles.bodySecondary, { color: colors.bodySecondaryColor }]}>
+              {t(item.bodySecondaryKey)}
+            </Text>
           ) : null}
         </View>
       </View>
@@ -104,16 +114,19 @@ export function OnboardingItem({ item, scrollX, index: _index, totalItems }: Onb
 // ============================================================================
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   iconContainer: {
     width: 72,
     height: 72,
     borderRadius: 20,
-    backgroundColor: COLORS.white + '26', // 15% opacity
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 32,
@@ -124,14 +137,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 36,
     fontWeight: '800',
-    color: COLORS.white,
     lineHeight: 42,
-  },
-  highlightedText: {
-    color: COLORS.blue[300], // Light blue highlight
-  },
-  fadedText: {
-    opacity: 0.5,
   },
   bodyContainer: {
     gap: 16,
@@ -139,15 +145,11 @@ const styles = StyleSheet.create({
   bodyPrimary: {
     fontSize: 18,
     fontWeight: '500',
-    color: COLORS.white,
-    opacity: 0.9,
     lineHeight: 26,
     maxWidth: 320,
   },
   bodySecondary: {
     fontSize: 16,
-    color: COLORS.white,
-    opacity: 0.7,
     lineHeight: 24,
     maxWidth: 320,
   },
