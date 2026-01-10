@@ -167,6 +167,7 @@ interface AlarmFormScreenProps {
 
 export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const { t } = useTranslation();
+  const navigation = useNavigation();
   const router = useRouter();
   const toast = useToast();
   const insets = useSafeAreaInsets();
@@ -412,8 +413,6 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   // Header icons based on mode
   const leftIcon = isEditMode ? 'arrow_back' : 'close';
   const leftIconLabel = isEditMode ? t('common.back') : t('common.close');
-
-  const navigation = useNavigation();
 
   useLayoutEffect(() => {
     if (isEditMode) {

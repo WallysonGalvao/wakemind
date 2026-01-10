@@ -67,7 +67,6 @@ function SettingRow({
   title,
   value,
   onPress,
-  isFirst = false,
   isLast = false,
 }: SettingRowProps) {
   return (
@@ -97,7 +96,6 @@ function SettingToggleRow({
   title,
   value,
   onValueChange,
-  isFirst = false,
   isLast = false,
 }: SettingToggleRowProps) {
   return (
@@ -288,18 +286,37 @@ export default function SettingsScreen() {
           <SectionFooter text={t('settings.preventAutoLockDescription')} />
         </View>
 
+        {/* General Section */}
+        <View className="mb-2 mt-8">
+          <SectionHeader title={t('settings.general')} />
+          <SectionCard>
+            <SettingRow
+              icon="help_center"
+              iconBgColor="bg-purple-100 dark:bg-purple-900/30"
+              iconColor={COLORS.blue[500]}
+              title={t('settings.reviewOnboarding')}
+              onPress={() => router.push('/onboarding')}
+              isFirst
+              isLast
+            />
+          </SectionCard>
+        </View>
+
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">
           <Text className="text-sm font-medium text-gray-500 dark:text-gray-600">
             WakeMind v{version}
           </Text>
           <View className="flex-row gap-4">
-            <Pressable accessibilityRole="link">
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => router.push('/settings/privacy-policy')}
+            >
               <Text className="text-xs font-semibold text-primary-500">
                 {t('settings.privacyPolicy')}
               </Text>
             </Pressable>
-            <Pressable accessibilityRole="link">
+            <Pressable accessibilityRole="link" onPress={() => router.push('/settings/support')}>
               <Text className="text-xs font-semibold text-primary-500">
                 {t('settings.support')}
               </Text>
