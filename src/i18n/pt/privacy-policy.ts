@@ -1,70 +1,62 @@
 export const privacyPolicyPT = {
-  'privacyPolicy.lastUpdated': 'Última atualização: Janeiro de 2026',
+  'privacyPolicy.lastUpdatedLabel': 'Última Atualização',
+  'privacyPolicy.lastUpdatedDate': 'JAN 2026 // V.1.0',
 
   // Introduction
   'privacyPolicy.introduction.title': 'Introdução',
   'privacyPolicy.introduction.content':
-    'O WakeMind ("nós", "nosso" ou "aplicativo") respeita sua privacidade e está comprometido em proteger seus dados pessoais. Esta política de privacidade explica como coletamos, usamos e protegemos suas informações.',
+    'Sua privacidade é fundamental para a experiência WakeMind. Este documento detalha como protegemos seus dados neuro-adaptativos e garante transparência total sobre nossos protocolos de segurança.',
 
   // Data Collected
   'privacyPolicy.dataCollected.title': 'Dados que Coletamos',
   'privacyPolicy.dataCollected.localData.title': 'Dados Armazenados Localmente',
+  'privacyPolicy.dataCollected.localData.alarmsTitle': 'Configuração de Alarmes',
   'privacyPolicy.dataCollected.localData.alarms':
-    'Alarmes: Horários, configurações de repetição e status dos alarmes',
+    'Horários, configurações de repetição e status para agendamento preciso.',
+  'privacyPolicy.dataCollected.localData.preferencesTitle': 'Preferências do Usuário',
   'privacyPolicy.dataCollected.localData.preferences':
-    'Preferências: Tema, idioma, tom de alarme, padrão de vibração',
+    'Tema, idioma, tom de alarme e padrão de vibração para experiência personalizada.',
+  'privacyPolicy.dataCollected.localData.performanceTitle': 'Métricas de Performance',
   'privacyPolicy.dataCollected.localData.performance':
-    'Histórico de Performance: Dados de desafios cognitivos (tempo de resposta, taxa de acerto)',
+    'Dados de desafios cognitivos (tempo de resposta, taxa de acerto) para calibração do algoritmo.',
+  'privacyPolicy.dataCollected.localData.settingsTitle': 'Configurações de Comportamento',
   'privacyPolicy.dataCollected.localData.settings':
-    'Configurações de Comportamento: Proteção de soneca, prevenção de bloqueio automático',
+    'Proteção de soneca e prevenção de bloqueio automático para despertar otimizado.',
 
-  'privacyPolicy.dataCollected.notCollected.title': 'Dados NÃO Coletados',
-  'privacyPolicy.dataCollected.notCollected.personal':
-    'Não coletamos informações pessoais identificáveis',
-  'privacyPolicy.dataCollected.notCollected.location': 'Não rastreamos sua localização',
-  'privacyPolicy.dataCollected.notCollected.contacts':
-    'Não acessamos seus contatos, fotos ou outros dados pessoais',
+  'privacyPolicy.dataCollected.notCollected.title': 'O que NÃO Coletamos',
+  'privacyPolicy.dataCollected.notCollected.personal': 'Informações Pessoais Identificáveis',
+  'privacyPolicy.dataCollected.notCollected.location': 'Localização GPS Precisa',
+  'privacyPolicy.dataCollected.notCollected.contacts': 'Contatos, Fotos ou Dados Pessoais',
   'privacyPolicy.dataCollected.notCollected.analytics':
-    'Não utilizamos serviços de análise de terceiros',
+    'Analytics de Terceiros ou IDs Publicitários',
+  'privacyPolicy.dataCollected.notCollected.quote':
+    '"Seus pensamentos pertencem apenas a você. Nosso modelo de negócios é baseado em assinatura, não em venda de dados."',
 
   // Data Usage
   'privacyPolicy.dataUsage.title': 'Como Usamos Seus Dados',
   'privacyPolicy.dataUsage.content':
-    'Todos os dados são armazenados exclusivamente no seu dispositivo e são usados apenas para: disparar alarmes nos horários configurados, personalizar sua experiência no aplicativo e melhorar a eficácia dos desafios cognitivos baseados no seu desempenho.',
-
-  // Data Sharing
-  'privacyPolicy.dataSharing.title': 'Compartilhamento de Dados',
-  'privacyPolicy.dataSharing.content':
-    'Não compartilhamos seus dados com terceiros. Todos os dados permanecem no seu dispositivo.',
+    'Todos os dados são armazenados exclusivamente no seu dispositivo e são usados apenas para: disparar alarmes nos horários configurados, personalizar sua experiência e melhorar a eficácia dos desafios cognitivos baseados no seu desempenho.',
 
   // Security
-  'privacyPolicy.security.title': 'Segurança',
+  'privacyPolicy.security.title': 'Segurança Neural',
   'privacyPolicy.security.content':
-    'Seus dados são protegidos pelos mecanismos de segurança nativos do seu sistema operacional (iOS/Android). Nenhum dado é transmitido pela internet.',
+    'Seus dados são protegidos pelos mecanismos de segurança nativos do seu sistema operacional (iOS/Android). Nenhum dado é transmitido pela internet. Todo processamento acontece localmente no seu dispositivo.',
+  'privacyPolicy.security.badge': 'Armazenamento Local',
 
   // Your Rights
   'privacyPolicy.rights.title': 'Seus Direitos',
+  'privacyPolicy.rights.deleteTitle': 'Direito de Exclusão',
   'privacyPolicy.rights.delete':
-    'Excluir todos os dados do aplicativo a qualquer momento desinstalando-o',
+    'Excluir todos os dados do app a qualquer momento desinstalando o aplicativo.',
+  'privacyPolicy.rights.modifyTitle': 'Direito de Modificação',
   'privacyPolicy.rights.modify':
-    'Modificar ou excluir alarmes e configurações dentro do aplicativo',
-  'privacyPolicy.rights.reset': 'Redefinir preferências para os valores padrão',
+    'Modificar ou excluir alarmes e configurações dentro do app a qualquer momento.',
+  'privacyPolicy.rights.resetTitle': 'Direito de Redefinição',
+  'privacyPolicy.rights.reset':
+    'Redefinir todas as preferências para os valores padrão pelas configurações.',
 
-  // Permissions
-  'privacyPolicy.permissions.title': 'Permissões do Aplicativo',
-  'privacyPolicy.permissions.notifications': 'Notificações: Para disparar alarmes',
-  'privacyPolicy.permissions.audio': 'Áudio: Para reproduzir sons de alarme',
-  'privacyPolicy.permissions.vibration': 'Vibração: Para fornecer feedback tátil',
-  'privacyPolicy.permissions.screen':
-    'Tela Ativa (opcional): Para manter a tela ligada durante desafios cognitivos',
-
-  // Changes
-  'privacyPolicy.changes.title': 'Alterações nesta Política',
-  'privacyPolicy.changes.content':
-    'Podemos atualizar esta política ocasionalmente. Notificaremos sobre mudanças significativas através de atualizações do aplicativo.',
-
-  // Contact
-  'privacyPolicy.contact.title': 'Contato',
-  'privacyPolicy.contact.content':
-    'Se tiver dúvidas sobre esta política de privacidade, entre em contato através do suporte do aplicativo.',
+  // Footer
+  'privacyPolicy.footer.description':
+    'Para exercer seus direitos de privacidade (GDPR/LGPD), entre em contato com nosso DPO.',
+  'privacyPolicy.footer.email': 'privacy@wakemind.app',
 };
