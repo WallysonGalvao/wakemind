@@ -44,6 +44,8 @@ export default function AlarmTriggerScreen() {
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
   const alarmToneId = useSettingsStore((state) => state.alarmToneId);
   const vibrationPattern = useSettingsStore((state) => state.vibrationPattern);
+  const preventAutoLock = useSettingsStore((state) => state.preventAutoLock);
+  const snoozeProtection = useSettingsStore((state) => state.snoozeProtection);
 
   // Get alarm data first to use its difficulty and challenge type
   const alarm = useMemo(() => {
@@ -121,7 +123,10 @@ export default function AlarmTriggerScreen() {
 
     const setup = async () => {
       try {
-        await activateKeepAwakeAsync('alarm-trigger');
+        // Keep screen awake if enabled in settings
+        if (preventAutoLock) {
+          await activateKeepAwakeAsync('alarm-trigger');
+        }
 
         // Start vibration pattern from settings
         VibrationService.start(vibrationPattern);
@@ -157,7 +162,9 @@ export default function AlarmTriggerScreen() {
 
     return () => {
       isMounted = false;
-      deactivateKeepAwake('alarm-trigger');
+      if (preventAutoLock) {
+        deactivateKeepAwake('alarm-trigger');
+      }
       VibrationService.stop();
       if (soundRef.current) {
         void soundRef.current.stopAsync().then(() => {
@@ -165,7 +172,7 @@ export default function AlarmTriggerScreen() {
         });
       }
     };
-  }, [alarmToneId, vibrationPattern]);
+  }, [alarmToneId, vibrationPattern, preventAutoLock]);
 
   const stopAlarm = useCallback(async () => {
     VibrationService.stop();
@@ -309,8 +316,8 @@ export default function AlarmTriggerScreen() {
         </Text>
       </View>
 
-      {/* Snooze Button - Only shown if snooze protocol is enabled */}
-      {isSnoozeEnabled ? (
+      {/* Snooze Button - Only shown if snooze protocol is enabled AND snooze protection is OFF */}
+      {isSnoozeEnabled && !snoozeProtection ? (
         <View className="px-6 pb-6">
           <Pressable
             accessibilityRole="button"

@@ -109,6 +109,20 @@ class VibrationServiceClass {
   }
 
   /**
+   * Trigger success feedback vibration
+   * Used when user correctly answers a challenge
+   */
+  async success(): Promise<void> {
+    if (Platform.OS === 'web') return;
+
+    try {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (error) {
+      console.error('[VibrationService] Error triggering success haptic:', error);
+    }
+  }
+
+  /**
    * Run fixed pattern loop (gentle, moderate, intense)
    */
   private async runFixedLoop(pattern: Exclude<VibrationPattern, VibrationPattern.PROGRESSIVE>): Promise<void> {

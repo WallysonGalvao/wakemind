@@ -14,6 +14,8 @@ import { Pressable, View, type ViewStyle } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { VibrationService } from '@/services/vibration-service';
+import { useSettingsStore } from '@/stores/use-settings-store';
 import { DifficultyLevel } from '@/types/alarm-enums';
 
 // ============================================================================
@@ -86,6 +88,7 @@ interface UseMemoryChallengeOptions {
   difficulty: DifficultyLevel;
   onSuccess: () => void;
   onAttempt: (correct: boolean) => void;
+  vibrateOnSuccess: boolean;
 }
 
 interface UseMemoryChallengeReturn {
@@ -114,6 +117,7 @@ function useMemoryChallenge({
   difficulty,
   onSuccess,
   onAttempt,
+  vibrateOnSuccess,
 }: UseMemoryChallengeOptions): UseMemoryChallengeReturn {
   const config = useMemo(() => getDifficultyConfig(difficulty), [difficulty]);
   const activeColors = useMemo(() => getActiveColors(config.colorCount), [config.colorCount]);
@@ -241,12 +245,14 @@ function useMemoryChallenge({
       }
 
       if (newInput.length === pattern.length) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        if (vibrateOnSuccess) {
+          VibrationService.success();
+        }
         onAttempt(true);
         onSuccess();
       }
     },
-    [phase, userInput, pattern, onSuccess, onAttempt, consecutiveFailures]
+    [phase, userInput, pattern, onSuccess, onAttempt, consecutiveFailures, vibrateOnSuccess]
   );
 
   const handleReviewPattern = useCallback(() => {
@@ -439,6 +445,7 @@ export function MemoryChallengeComponent({
   onAttempt,
 }: MemoryChallengeComponentProps) {
   const { t } = useTranslation();
+  const vibrateOnSuccess = useSettingsStore((state) => state.vibrateOnSuccess);
 
   const {
     phase,
@@ -452,7 +459,7 @@ export function MemoryChallengeComponent({
     highlightScale,
     handleColorPress,
     handleReviewPattern,
-  } = useMemoryChallenge({ difficulty, onSuccess, onAttempt });
+  } = useMemoryChallenge({ difficulty, onSuccess, onAttempt, vibrateOnSuccess });
 
   const phaseText = useMemo(() => {
     switch (phase) {
