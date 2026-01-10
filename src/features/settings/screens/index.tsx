@@ -147,8 +147,8 @@ export default function SettingsScreen() {
   const isDarkMode =
     theme === ThemeMode.DARK || (theme === ThemeMode.SYSTEM && colorScheme === 'dark');
 
-  const selectedToneName =
-    ALARM_TONES.find((tone) => tone.id === alarmToneId)?.name ?? 'Classic Alert';
+  const selectedTone = ALARM_TONES.find((tone) => tone.id === alarmToneId);
+  const selectedToneName = selectedTone ? t(selectedTone.nameKey) : t('alarmTone.tone.neuro-strike-classic.name');
 
   const getLanguageLabel = (lang: Language) => {
     const labels: Record<Language, string> = {

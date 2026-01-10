@@ -12,10 +12,8 @@ export enum Language {
 }
 
 export enum VibrationPattern {
-  LIGHT = 'light',
-  MEDIUM = 'medium',
-  HEAVY = 'heavy',
-  SUCCESS = 'success',
-  WARNING = 'warning',
-  ERROR = 'error',
+  GENTLE = 'gentle',
+  MODERATE = 'moderate',
+  INTENSE = 'intense',
+  PROGRESSIVE = 'progressive',
 }

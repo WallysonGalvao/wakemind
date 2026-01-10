@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 
-import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +11,7 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { VibrationService } from '@/services/vibration-service';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { VibrationPattern } from '@/types/settings-enums';
 
@@ -24,7 +24,7 @@ interface VibrationOption {
   nameKey: string;
   descriptionKey: string;
   icon: string;
-  category: 'impact' | 'notification';
+  intensityBars: number; // 1-4 bars to show intensity visually
 }
 
 // ============================================================================
@@ -33,79 +33,58 @@ interface VibrationOption {
 
 const VIBRATION_PATTERNS: VibrationOption[] = [
   {
-    id: VibrationPattern.LIGHT,
-    nameKey: 'vibration.light',
-    descriptionKey: 'vibration.lightDescription',
-    icon: 'brightness_low',
-    category: 'impact',
+    id: VibrationPattern.GENTLE,
+    nameKey: 'vibration.gentle',
+    descriptionKey: 'vibration.gentleDescription',
+    icon: 'bedtime',
+    intensityBars: 1,
   },
   {
-    id: VibrationPattern.MEDIUM,
-    nameKey: 'vibration.medium',
-    descriptionKey: 'vibration.mediumDescription',
-    icon: 'brightness_medium',
-    category: 'impact',
+    id: VibrationPattern.MODERATE,
+    nameKey: 'vibration.moderate',
+    descriptionKey: 'vibration.moderateDescription',
+    icon: 'vibration',
+    intensityBars: 2,
   },
   {
-    id: VibrationPattern.HEAVY,
-    nameKey: 'vibration.heavy',
-    descriptionKey: 'vibration.heavyDescription',
-    icon: 'brightness_high',
-    category: 'impact',
+    id: VibrationPattern.INTENSE,
+    nameKey: 'vibration.intense',
+    descriptionKey: 'vibration.intenseDescription',
+    icon: 'bolt',
+    intensityBars: 3,
   },
   {
-    id: VibrationPattern.SUCCESS,
-    nameKey: 'vibration.success',
-    descriptionKey: 'vibration.successDescription',
-    icon: 'check_circle',
-    category: 'notification',
-  },
-  {
-    id: VibrationPattern.WARNING,
-    nameKey: 'vibration.warning',
-    descriptionKey: 'vibration.warningDescription',
-    icon: 'warning',
-    category: 'notification',
-  },
-  {
-    id: VibrationPattern.ERROR,
-    nameKey: 'vibration.error',
-    descriptionKey: 'vibration.errorDescription',
-    icon: 'error',
-    category: 'notification',
+    id: VibrationPattern.PROGRESSIVE,
+    nameKey: 'vibration.progressive',
+    descriptionKey: 'vibration.progressiveDescription',
+    icon: 'trending_up',
+    intensityBars: 4,
   },
 ];
 
 // ============================================================================
-// Helpers
-// ============================================================================
-
-const triggerHaptic = async (pattern: VibrationPattern) => {
-  switch (pattern) {
-    case VibrationPattern.LIGHT:
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      break;
-    case VibrationPattern.MEDIUM:
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      break;
-    case VibrationPattern.HEAVY:
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      break;
-    case VibrationPattern.SUCCESS:
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      break;
-    case VibrationPattern.WARNING:
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      break;
-    case VibrationPattern.ERROR:
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      break;
-  }
-};
-
-// ============================================================================
 // Sub-Components
 // ============================================================================
+
+function IntensityIndicator({ bars, isActive }: { bars: number; isActive: boolean }) {
+  return (
+    <View className="flex-row items-end gap-0.5">
+      {[1, 2, 3, 4].map((level) => (
+        <View
+          key={level}
+          className={`w-1.5 rounded-sm ${
+            level <= bars
+              ? isActive
+                ? 'bg-brand-primary'
+                : 'bg-gray-400 dark:bg-gray-500'
+              : 'bg-gray-200 dark:bg-gray-700'
+          }`}
+          style={{ height: 4 + level * 3 }}
+        />
+      ))}
+    </View>
+  );
+}
 
 function VibrationItem({
   option,
@@ -120,10 +99,6 @@ function VibrationItem({
 }) {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
-
-  const getCategoryColor = () => {
-    return option.category === 'impact' ? COLORS.blue[500] : COLORS.indigo[400];
-  };
 
   return (
     <Pressable
@@ -168,21 +143,20 @@ function VibrationItem({
             <Text className="font-bold text-gray-900 dark:text-white">{t(option.nameKey)}</Text>
             {isActive ? (
               <View className="rounded bg-brand-primary/20 px-1.5 py-0.5">
-                <Text className="text-[9px] font-bold text-brand-primary">ACTIVE</Text>
+                <Text className="text-[9px] font-bold text-brand-primary">
+                  {t('common.active')}
+                </Text>
               </View>
             ) : null}
           </View>
-          <Text style={{ color: getCategoryColor() }} className="text-xs font-medium">
-            {t(`vibration.category.${option.category}`)}
-          </Text>
           <Text className="mt-0.5 text-[11px] leading-tight text-gray-500 dark:text-gray-400">
             {t(option.descriptionKey)}
           </Text>
         </View>
-        <View className="h-8 w-8 items-center justify-center">
+        <View className="items-center gap-1">
           <MaterialSymbol
             name={option.icon}
-            size={24}
+            size={20}
             color={
               isActive
                 ? COLORS.brandPrimary
@@ -191,6 +165,7 @@ function VibrationItem({
                   : COLORS.gray[400]
             }
           />
+          <IntensityIndicator bars={option.intensityBars} isActive={isActive} />
         </View>
       </View>
     </Pressable>
@@ -209,13 +184,13 @@ export default function VibrationPatternScreen() {
   const { vibrationPattern, setVibrationPattern } = useSettingsStore();
 
   const handleTest = useCallback(async (pattern: VibrationPattern) => {
-    await triggerHaptic(pattern);
+    await VibrationService.test(pattern);
   }, []);
 
   const handleSelect = useCallback(
     async (pattern: VibrationPattern) => {
       setVibrationPattern(pattern);
-      await triggerHaptic(pattern);
+      await VibrationService.test(pattern);
     },
     [setVibrationPattern]
   );
