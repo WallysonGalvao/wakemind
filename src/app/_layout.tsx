@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { HapticsProvider } from 'react-native-custom-haptics';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Platform, StyleSheet } from 'react-native';
@@ -85,54 +86,56 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.gestureHandlerRootView}>
-      <GluestackUIProvider mode={theme}>
-        <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="alarm/create-alarm" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="alarm/edit-alarm"
-              options={{
-                presentation: 'modal',
-              }}
-            />
-            <Stack.Screen
-              name="alarm/backup-protocols-info"
-              options={{
-                presentation: 'modal',
-              }}
-            />
-            <Stack.Screen
-              name="alarm/trigger"
-              options={{
-                headerShown: false,
-                presentation: 'fullScreenModal',
-                animation: 'fade',
-                gestureEnabled: false,
-              }}
-            />
-            <Stack.Screen
-              name="settings/alarm-tone"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="settings/language"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="settings/vibration-pattern"
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Stack>
-          <StatusBar style={isDark ? 'light' : 'dark'} />
-        </ThemeProvider>
-      </GluestackUIProvider>
+      <HapticsProvider>
+        <GluestackUIProvider mode={theme}>
+          <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="alarm/create-alarm" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="alarm/edit-alarm"
+                options={{
+                  presentation: 'modal',
+                }}
+              />
+              <Stack.Screen
+                name="alarm/backup-protocols-info"
+                options={{
+                  presentation: 'modal',
+                }}
+              />
+              <Stack.Screen
+                name="alarm/trigger"
+                options={{
+                  headerShown: false,
+                  presentation: 'fullScreenModal',
+                  animation: 'fade',
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="settings/alarm-tone"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="settings/language"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="settings/vibration-pattern"
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </Stack>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
+          </ThemeProvider>
+        </GluestackUIProvider>
+      </HapticsProvider>
     </GestureHandlerRootView>
   );
 }

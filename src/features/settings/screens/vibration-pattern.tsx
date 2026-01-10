@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useHaptics } from 'react-native-custom-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
@@ -10,8 +11,8 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { HAPTIC_TEST_PATTERNS } from '@/constants/haptic-patterns';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { VibrationService } from '@/services/vibration-service';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { VibrationPattern } from '@/types/settings-enums';
 
@@ -180,19 +181,32 @@ export default function VibrationPatternScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { trigger, stop } = useHaptics();
 
   const { vibrationPattern, setVibrationPattern } = useSettingsStore();
 
-  const handleTest = useCallback(async (pattern: VibrationPattern) => {
-    await VibrationService.test(pattern);
-  }, []);
+  // Cleanup haptics on unmount
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [stop]);
+
+  const handleTest = useCallback(
+    (pattern: VibrationPattern) => {
+      const testPattern = HAPTIC_TEST_PATTERNS[pattern];
+      trigger(testPattern);
+    },
+    [trigger]
+  );
 
   const handleSelect = useCallback(
-    async (pattern: VibrationPattern) => {
+    (pattern: VibrationPattern) => {
       setVibrationPattern(pattern);
-      await VibrationService.test(pattern);
+      const testPattern = HAPTIC_TEST_PATTERNS[pattern];
+      trigger(testPattern);
     },
-    [setVibrationPattern]
+    [setVibrationPattern, trigger]
   );
 
   return (
