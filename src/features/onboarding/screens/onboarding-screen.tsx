@@ -17,6 +17,10 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
 import { BulletsGroup } from '@/features/onboarding/components/bullets-group';
+import {
+  NeuralFlowBackground,
+  usePulseTrigger,
+} from '@/features/onboarding/components/neural-flow-background';
 import type { OnboardingItemData } from '@/features/onboarding/components/onboarding-item';
 import { OnboardingItem } from '@/features/onboarding/components/onboarding-item';
 import { SplitButton } from '@/features/onboarding/components/split-button';
@@ -37,6 +41,7 @@ export default function OnboardingScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const completeOnboarding = useSettingsStore((state) => state.completeOnboarding);
+  const { pulseIntensity, triggerPulse } = usePulseTrigger();
 
   const colors = {
     background: isDark ? COLORS.gray[900] : COLORS.gray[50],
@@ -64,12 +69,13 @@ export default function OnboardingScreen() {
   }, [completeOnboarding]);
 
   const handleNext = useCallback(() => {
+    triggerPulse();
     const nextIndex = activeIndex + 1;
     if (nextIndex < ONBOARDING_ITEMS.length) {
       setActiveIndex(nextIndex);
       flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
     }
-  }, [activeIndex]);
+  }, [activeIndex, triggerPulse]);
 
   const keyExtractor = useCallback((item: OnboardingItemData) => item.id, []);
 
@@ -105,11 +111,15 @@ export default function OnboardingScreen() {
   );
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1">
       <StatusBar
         barStyle={isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={colors.background}
+        backgroundColor="transparent"
+        translucent
       />
+
+      {/* Animated Neural Flow Background */}
+      <NeuralFlowBackground pulseIntensity={pulseIntensity} />
 
       {/* Header with branding */}
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
@@ -130,7 +140,6 @@ export default function OnboardingScreen() {
         bounces={false}
         onScroll={scrollHandler}
         scrollEventThrottle={16}
-        contentContainerStyle={{ backgroundColor: colors.background }}
       />
 
       <View style={buttonContainerStyle}>
