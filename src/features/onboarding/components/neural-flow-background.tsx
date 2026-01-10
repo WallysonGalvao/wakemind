@@ -37,34 +37,40 @@ const PULSE_DURATION = 400;
 // Pre-computed RGB colors for worklet compatibility (no parsing needed)
 type RGBA = { r: number; g: number; b: number; a: number };
 
-// Screen 0: Foggy purple/gray - scattered, unfocused (but still visible!)
-// Screen 1: Teal/cyan - awakening, connecting
-// Screen 2: Bright blue/white - clear, peak performance
+// Screen 0: Foggy purple/gray - HEAVY FOG, elements fighting through
+// Screen 1: Teal/cyan - awakening, fog clearing
+// Screen 2: Bright blue/white - clear, no fog, peak performance
 const COLORS_RGB_DARK = {
   background: [
-    { r: 15, g: 12, b: 25, a: 1 }, // Dark purple-gray (foggy)
-    { r: 10, g: 22, b: 35, a: 1 }, // Dark teal (awakening)
-    { r: 8, g: 20, b: 40, a: 1 }, // Deep blue (clarity)
+    { r: 18, g: 15, b: 28, a: 1 }, // Dark purple-gray (foggy)
+    { r: 12, g: 24, b: 38, a: 1 }, // Dark teal (awakening)
+    { r: 8, g: 20, b: 42, a: 1 }, // Deep blue (clarity)
   ] as RGBA[],
   wave: [
-    { r: 120, g: 100, b: 160, a: 0.35 }, // Muted purple (fog) - MORE VISIBLE
-    { r: 34, g: 180, b: 200, a: 0.45 }, // Teal (activation)
-    { r: 80, g: 200, b: 255, a: 0.55 }, // Bright cyan (clarity)
+    { r: 140, g: 120, b: 180, a: 0.5 }, // Purple waves visible through fog
+    { r: 40, g: 180, b: 210, a: 0.55 }, // Teal waves
+    { r: 90, g: 210, b: 255, a: 0.65 }, // Bright cyan waves
   ] as RGBA[],
   node: [
-    { r: 140, g: 120, b: 180, a: 0.55 }, // Purple dots - MORE VISIBLE
-    { r: 56, g: 189, b: 220, a: 0.7 }, // Teal nodes
-    { r: 130, g: 220, b: 255, a: 0.9 }, // Bright cyan nodes
+    { r: 160, g: 140, b: 200, a: 0.75 }, // Bright purple nodes to cut through fog
+    { r: 70, g: 200, b: 230, a: 0.85 }, // Teal nodes
+    { r: 150, g: 230, b: 255, a: 0.95 }, // Bright cyan nodes
   ] as RGBA[],
   glow: [
-    { r: 100, g: 80, b: 150, a: 0.25 }, // Soft purple glow - MORE VISIBLE
-    { r: 34, g: 180, b: 220, a: 0.5 }, // Medium glow
-    { r: 100, g: 200, b: 255, a: 0.75 }, // Strong glow
+    { r: 130, g: 110, b: 180, a: 0.4 }, // Purple glow visible through fog
+    { r: 50, g: 190, b: 230, a: 0.6 }, // Teal glow
+    { r: 120, g: 220, b: 255, a: 0.8 }, // Bright cyan glow
   ] as RGBA[],
   connection: [
-    { r: 120, g: 100, b: 170, a: 0.15 }, // Visible connections on screen 0
-    { r: 56, g: 189, b: 220, a: 0.3 }, // Visible connections
-    { r: 130, g: 220, b: 255, a: 0.5 }, // Strong connections
+    { r: 150, g: 130, b: 190, a: 0.3 }, // Visible connections through fog
+    { r: 70, g: 200, b: 230, a: 0.45 }, // Teal connections
+    { r: 150, g: 235, b: 255, a: 0.6 }, // Strong bright connections
+  ] as RGBA[],
+  // Fog colors - dense purple-gray fog on screen 0
+  fog: [
+    { r: 25, g: 20, b: 35, a: 0.85 }, // Dense fog on screen 0
+    { r: 20, g: 28, b: 45, a: 0.4 }, // Medium fog on screen 1
+    { r: 15, g: 25, b: 50, a: 0 }, // No fog on screen 2
   ] as RGBA[],
 };
 
@@ -75,24 +81,29 @@ const COLORS_RGB_LIGHT = {
     { r: 235, g: 245, b: 255, a: 1 }, // Light blue
   ] as RGBA[],
   wave: [
-    { r: 140, g: 120, b: 180, a: 0.12 },
-    { r: 34, g: 160, b: 200, a: 0.2 },
-    { r: 19, g: 120, b: 220, a: 0.3 },
+    { r: 140, g: 120, b: 180, a: 0.2 },
+    { r: 34, g: 160, b: 200, a: 0.28 },
+    { r: 19, g: 120, b: 220, a: 0.35 },
   ] as RGBA[],
   node: [
-    { r: 140, g: 120, b: 180, a: 0.25 },
-    { r: 34, g: 160, b: 200, a: 0.5 },
-    { r: 19, g: 100, b: 200, a: 0.7 },
+    { r: 140, g: 120, b: 180, a: 0.5 },
+    { r: 34, g: 160, b: 200, a: 0.65 },
+    { r: 19, g: 100, b: 200, a: 0.8 },
   ] as RGBA[],
   glow: [
-    { r: 140, g: 120, b: 180, a: 0.08 },
-    { r: 34, g: 160, b: 200, a: 0.25 },
-    { r: 19, g: 100, b: 200, a: 0.45 },
+    { r: 140, g: 120, b: 180, a: 0.2 },
+    { r: 34, g: 160, b: 200, a: 0.35 },
+    { r: 19, g: 100, b: 200, a: 0.5 },
   ] as RGBA[],
   connection: [
-    { r: 140, g: 120, b: 180, a: 0.04 },
-    { r: 34, g: 160, b: 200, a: 0.12 },
-    { r: 19, g: 100, b: 200, a: 0.25 },
+    { r: 140, g: 120, b: 180, a: 0.15 },
+    { r: 34, g: 160, b: 200, a: 0.25 },
+    { r: 19, g: 100, b: 200, a: 0.35 },
+  ] as RGBA[],
+  fog: [
+    { r: 230, g: 225, b: 240, a: 0.7 }, // Light fog on screen 0
+    { r: 235, g: 240, b: 248, a: 0.35 }, // Light fog on screen 1
+    { r: 240, g: 248, b: 255, a: 0 }, // No fog on screen 2
   ] as RGBA[],
 };
 
@@ -265,12 +276,12 @@ function getNodePosition(
   const breatheStrength = interpolate(progress, [0, 1, 2], [0.5, 0.8, 1.2]);
   const breathe = Math.sin(phase + node.phase) * breatheStrength;
 
-  // Radius grows with progress - but visible on all screens
-  const baseRadius = interpolate(progress, [0, 1, 2], [2.5, 3.5, 5]);
+  // Radius grows with progress - LARGE on all screens
+  const baseRadius = interpolate(progress, [0, 1, 2], [4, 5, 6.5]);
   const radius = node.baseRadius * (baseRadius / 3) + breathe;
 
-  // Opacity - visible on all screens, brighter as we progress
-  const opacity = interpolate(progress, [0, 1, 2], [0.5, 0.7, 0.95]);
+  // Opacity - EXTREMELY visible on all screens
+  const opacity = interpolate(progress, [0, 1, 2], [0.95, 0.95, 1.0]);
 
   return { x, y, radius, opacity };
 }
@@ -332,18 +343,12 @@ function WaveLayer({
     'worklet';
     const progress = scrollX.value / screenWidth;
 
-    // Screen 0: 2 waves, Screen 1: 3 waves, Screen 2: 4 waves
-    const maxWavesForProgress = interpolate(progress, [0, 1, 2], [2, 3, 4]);
+    // ALL waves VERY visible on ALL screens
+    // Screen 0: High opacity so animations are clearly visible!
+    const baseOpacity = interpolate(progress, [0, 1, 2], [0.7, 0.8, 0.95]);
 
-    if (waveIndex >= maxWavesForProgress) {
-      // Fade in as we approach the screen where this wave appears
-      const fadeStart = waveIndex === 2 ? 0.5 : waveIndex === 3 ? 1.5 : 0;
-      const fadeEnd = fadeStart + 0.5;
-      return interpolate(progress, [fadeStart, fadeEnd], [0, 1], 'clamp');
-    }
-
-    // Base opacity increases with screen
-    return interpolate(progress, [0, 1, 2], [0.4, 0.6, 0.8]) - waveIndex * 0.1;
+    // Later waves are slightly less opaque
+    return Math.max(0.5, baseOpacity - waveIndex * 0.06);
   });
 
   return (
@@ -415,7 +420,8 @@ function DynamicNode({
   const glowRadius = useDerivedValue(() => {
     'worklet';
     const progress = scrollX.value / screenWidth;
-    const glowMultiplier = interpolate(progress, [0, 1, 2], [1.5, 2.5, 4]);
+    // VERY large glow on screen 0 for strong visual impact
+    const glowMultiplier = interpolate(progress, [0, 1, 2], [4, 4.5, 5]);
     return nodeRadius.value * glowMultiplier;
   });
 
@@ -536,17 +542,18 @@ function ConnectionLine({
     return interpolateColor(colorsRgb.connection, progress);
   });
 
-  // Connections become more visible as we progress
+  // Connections VERY visible on ALL screens
   const opacity = useDerivedValue(() => {
     'worklet';
     const progress = scrollX.value / screenWidth;
-    return interpolate(progress, [0, 1, 2], [0.15, 0.5, 0.85]);
+    return interpolate(progress, [0, 1, 2], [0.65, 0.75, 0.9]);
   });
 
   const strokeWidth = useDerivedValue(() => {
     'worklet';
     const progress = scrollX.value / screenWidth;
-    return interpolate(progress, [0, 1, 2], [0.5, 1, 1.5]);
+    // Thicker lines on screen 0 for visibility
+    return interpolate(progress, [0, 1, 2], [1.2, 1.5, 2]);
   });
 
   return (
@@ -573,14 +580,15 @@ function CentralGlow({ width, height, scrollX, screenWidth, colorsRgb }: Central
   const glowOpacity = useDerivedValue(() => {
     'worklet';
     const progress = scrollX.value / screenWidth;
-    // Glow visible on all screens, grows dramatically
-    return interpolate(progress, [0, 1, 2], [0.15, 0.35, 0.55]);
+    // VERY bright glow on all screens
+    return interpolate(progress, [0, 1, 2], [0.65, 0.7, 0.8]);
   });
 
   const glowRadius = useDerivedValue(() => {
     'worklet';
     const progress = scrollX.value / screenWidth;
-    return interpolate(progress, [0, 1, 2], [120, 200, 320]);
+    // Large glow visible on all screens
+    return interpolate(progress, [0, 1, 2], [200, 280, 400]);
   });
 
   const glowColor = useDerivedValue(() => {
@@ -631,6 +639,88 @@ function PulseRipple({ width, height, pulseIntensity }: PulseRippleProps) {
           r={rippleRadius.value || 1}
           colors={['rgba(100, 200, 255, 0.5)', 'rgba(100, 200, 255, 0)']}
         />
+      </Circle>
+    </Group>
+  );
+}
+
+// Fog overlay that disperses as user progresses through screens
+type FogOverlayProps = {
+  width: number;
+  height: number;
+  scrollX: SharedValue<number>;
+  screenWidth: number;
+  phase: SharedValue<number>;
+  colorsRgb: typeof COLORS_RGB_DARK;
+};
+
+function FogOverlay({
+  width,
+  height,
+  scrollX,
+  screenWidth,
+  phase,
+  colorsRgb: _colorsRgb,
+}: FogOverlayProps) {
+  // Main fog opacity - HEAVY on screen 0, NONE on screen 2
+  // The fog CLEARS as we progress (not increases)
+  const fogOpacity = useDerivedValue(() => {
+    'worklet';
+    const progress = scrollX.value / screenWidth;
+    // Clamp progress to 0-2 range
+    const clampedProgress = Math.max(0, Math.min(2, progress));
+    // Much lighter fog - more like a subtle haze
+    // Screen 0 = 0.35 (light haze), Screen 1 = 0.15, Screen 2 = 0
+    return interpolate(clampedProgress, [0, 0.8, 1.5, 2], [0.35, 0.2, 0.08, 0]);
+  });
+
+  // Fog color - use a static purple-gray color that's visible
+  const fogColorString = useDerivedValue(() => {
+    'worklet';
+    // Fixed fog color - purple-gray that works for all screens
+    return 'rgba(35, 28, 50, 1)';
+  });
+
+  // Animated fog tendrils - multiple layers with different movements
+  const fogTendril1Y = useDerivedValue(() => {
+    'worklet';
+    return height * 0.25 + Math.sin(phase.value * 0.25) * height * 0.08;
+  });
+
+  const fogTendril2Y = useDerivedValue(() => {
+    'worklet';
+    return height * 0.5 + Math.sin(phase.value * 0.3 + 1.5) * height * 0.1;
+  });
+
+  const fogTendril3Y = useDerivedValue(() => {
+    'worklet';
+    return height * 0.75 + Math.sin(phase.value * 0.2 + 3) * height * 0.06;
+  });
+
+  // Fog blur amount - lighter blur for subtle haze effect
+  const fogBlur = useDerivedValue(() => {
+    'worklet';
+    const progress = scrollX.value / screenWidth;
+    const clampedProgress = Math.max(0, Math.min(2, progress));
+    // Much less blur - 40px instead of 80px on screen 0
+    return interpolate(clampedProgress, [0, 1, 2], [40, 25, 10]);
+  });
+
+  return (
+    <Group opacity={fogOpacity}>
+      {/* Top fog layer - animates up/down */}
+      <Circle cx={width * 0.3} cy={fogTendril1Y} r={width * 0.7} color={fogColorString}>
+        <BlurMask blur={fogBlur.value || 80} style="normal" />
+      </Circle>
+
+      {/* Middle fog layer - larger, slower */}
+      <Circle cx={width * 0.7} cy={fogTendril2Y} r={width * 0.8} color={fogColorString}>
+        <BlurMask blur={(fogBlur.value || 80) * 0.85} style="normal" />
+      </Circle>
+
+      {/* Bottom fog layer */}
+      <Circle cx={width * 0.5} cy={fogTendril3Y} r={width * 0.9} color={fogColorString}>
+        <BlurMask blur={(fogBlur.value || 80) * 0.75} style="normal" />
       </Circle>
     </Group>
   );
@@ -760,6 +850,16 @@ export function NeuralFlowBackground({
             colorsRgb={colorsRgb}
           />
         ))}
+
+        {/* FOG OVERLAY - renders on TOP of everything, disperses as we progress */}
+        <FogOverlay
+          width={width}
+          height={height}
+          scrollX={scrollX}
+          screenWidth={width}
+          phase={phase}
+          colorsRgb={colorsRgb}
+        />
       </Canvas>
     </View>
   );
