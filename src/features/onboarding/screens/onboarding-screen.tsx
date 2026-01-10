@@ -119,7 +119,11 @@ export default function OnboardingScreen() {
       />
 
       {/* Animated Neural Flow Background */}
-      <NeuralFlowBackground pulseIntensity={pulseIntensity} />
+      <NeuralFlowBackground
+        scrollX={scrollX}
+        totalScreens={ONBOARDING_ITEMS.length}
+        pulseIntensity={pulseIntensity}
+      />
 
       {/* Header with branding */}
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
