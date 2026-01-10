@@ -107,6 +107,38 @@ export const appES = {
   'editAlarm.title': 'Editar Alarma',
   'editAlarm.save': 'Guardar Cambios',
 
+  // Alarm Trigger Screen
+  'alarmTrigger.dismiss': 'Apagar - Iniciar Desafío',
+  'alarmTrigger.snooze': 'Posponer 5 min',
+  'alarmTrigger.reliabilityMode': 'Modo Alta Confiabilidad Activo',
+  'alarmTrigger.offlineGuaranteed': 'Garantía Sin Conexión',
+  'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
+  'alarmTrigger.efficiencyTimer': 'Temporizador de Eficiencia',
+  'alarmTrigger.cognitiveChallenge': 'Desafío Cognitivo',
+  'alarmTrigger.mathChallenge': 'Desafío de Matemáticas',
+  'alarmTrigger.memoryChallenge': 'Desafío de Memoria',
+  'alarmTrigger.logicChallenge': 'Desafío de Lógica',
+  'alarmTrigger.wrongAnswer': 'Respuesta incorrecta — intenta de nuevo',
+  'alarmTrigger.attempt': 'Intento {{current}} de {{max}}',
+  'alarmTrigger.watchPattern': 'Observa el patrón',
+  'alarmTrigger.repeatPattern': 'Repite el patrón',
+  'alarmTrigger.getReady': 'Prepárate...',
+  'alarmTrigger.reviewPattern': 'Revisar',
+  'alarmTrigger.whichDoesntBelong': '¿Cuál no pertenece?',
+  'alarmTrigger.showHint': 'Mostrar pista',
+  'alarmTrigger.sequencePuzzle': 'Puzzle de secuencia',
+  'alarmTrigger.oddOneOut': 'El diferente',
+
+  // Notifications & Permissions
+  'notifications.alarmTitle': 'Alarma WakeMind',
+  'notifications.snoozedTitle': 'WakeMind - Pospuesto',
+  'notifications.snoozedBody': '¡Despierta! Pospuesto desde {{time}} {{period}}',
+  'permissions.notificationsRequired': 'El permiso de notificación es necesario para las alarmas',
+  'permissions.exactAlarmsRequired':
+    'El permiso de alarma exacta es necesario para despertares confiables',
+  'permissions.batteryOptimization': 'Desactive la optimización de batería para alarmas confiables',
+  'permissions.openSettings': 'Abrir Configuración',
+
   // Common
   'common.am': 'AM',
   'common.pm': 'PM',

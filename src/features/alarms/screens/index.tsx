@@ -15,7 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, RefreshControl, StyleSheet, useColorScheme, View } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
@@ -24,6 +24,7 @@ import { EmptyState } from '../components/empty-state';
 import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
 import { sortAlarmsByTime } from '@/utils/alarm-sorting';
@@ -100,6 +101,32 @@ export default function AlarmsScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setIsEditMode((prev) => !prev);
   }, []);
+
+  // DEBUG: Function to test alarm trigger screen with mock data
+  const handleTestAlarmTrigger = useCallback(() => {
+    // Get first alarm or create mock data
+    const testAlarm = sortedAlarms[0];
+    const mockParams = testAlarm
+      ? {
+          alarmId: testAlarm.id,
+          time: testAlarm.time,
+          period: testAlarm.period,
+          challenge: testAlarm.challenge,
+          challengeIcon: testAlarm.challengeIcon,
+        }
+      : {
+          alarmId: 'mock-alarm-id',
+          time: '07:30',
+          period: 'AM',
+          challenge: 'Math Challenge',
+          challengeIcon: 'calculate',
+        };
+
+    router.push({
+      pathname: '/alarm/trigger',
+      params: mockParams,
+    });
+  }, [router, sortedAlarms]);
 
   // Scroll handler
   const scrollHandler = useAnimatedScrollHandler({
@@ -237,6 +264,24 @@ export default function AlarmsScreen() {
       {/* Floating Action Button - hidden in edit mode */}
       {hasAlarms && !isEditMode ? (
         <FloatingActionButton label={t('alarms.newAlarm')} icon="add" onPress={handleNewAlarm} />
+      ) : null}
+
+      {/* DEBUG: Test Alarm Trigger Button - Remove in production */}
+      {__DEV__ ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={handleTestAlarmTrigger}
+          className="absolute bottom-6 left-6 h-14 w-14 items-center justify-center rounded-full bg-orange-500"
+          style={{
+            shadowColor: '#f97316',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          }}
+        >
+          <MaterialSymbol name="notifications_active" size={24} className="text-white" />
+        </Pressable>
       ) : null}
     </View>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { useColorScheme, View } from 'react-native';
+import { View } from 'react-native';
+
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
