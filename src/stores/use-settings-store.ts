@@ -13,6 +13,7 @@ interface SettingsState {
   vibrateOnSuccess: boolean;
   preventAutoLock: boolean;
   snoozeProtection: boolean;
+  hasCompletedOnboarding: boolean;
   setLanguage: (language: Language) => void;
   setTheme: (theme: ThemeMode) => void;
   setAlarmToneId: (toneId: string) => void;
@@ -20,6 +21,7 @@ interface SettingsState {
   setVibrateOnSuccess: (value: boolean) => void;
   setPreventAutoLock: (value: boolean) => void;
   setSnoozeProtection: (value: boolean) => void;
+  completeOnboarding: () => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -32,6 +34,7 @@ export const useSettingsStore = create<SettingsState>()(
       vibrateOnSuccess: true,
       preventAutoLock: true,
       snoozeProtection: true,
+      hasCompletedOnboarding: false,
       setLanguage: (language) => set({ language }),
       setTheme: (theme) => set({ theme }),
       setAlarmToneId: (alarmToneId) => set({ alarmToneId }),
@@ -39,6 +42,7 @@ export const useSettingsStore = create<SettingsState>()(
       setVibrateOnSuccess: (vibrateOnSuccess) => set({ vibrateOnSuccess }),
       setPreventAutoLock: (preventAutoLock) => set({ preventAutoLock }),
       setSnoozeProtection: (snoozeProtection) => set({ snoozeProtection }),
+      completeOnboarding: () => set({ hasCompletedOnboarding: true }),
     }),
     {
       name: 'settings-storage',

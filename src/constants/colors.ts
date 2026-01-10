@@ -21,6 +21,8 @@ export const COLORS = {
     400: '#9ca3af',
     500: '#6b7280',
     600: '#4b5563',
+    800: '#1f2937',
+    900: '#111827',
   },
 
   // Semantic colors (matching Tailwind palette)
@@ -38,6 +40,7 @@ export const COLORS = {
   },
   indigo: {
     400: '#818cf8',
+    900: '#312e81',
   },
   teal: {
     500: '#14b8a6',
