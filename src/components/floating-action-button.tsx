@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Pressable, View } from 'react-native';
+import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
+
+import { Pressable } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -11,9 +13,17 @@ interface FloatingActionButtonProps {
   label: string;
   icon?: string;
   onPress: () => void;
+  testID?: string;
 }
 
-export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingActionButtonProps) {
+const ANIMATION_DURATION = 250;
+
+export function FloatingActionButton({
+  label,
+  icon = 'add',
+  onPress,
+  testID = 'fab',
+}: FloatingActionButtonProps) {
   const isDark = useIsDarkMode();
 
   // Different shadow styles for light/dark modes matching reference
@@ -26,9 +36,14 @@ export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingA
   });
 
   return (
-    <View className="pointer-events-box-none absolute bottom-8 left-0 right-0 z-10 flex items-center">
+    <Animated.View
+      entering={FadeInUp.duration(ANIMATION_DURATION)}
+      exiting={FadeOutDown.duration(ANIMATION_DURATION)}
+      className="pointer-events-box-none absolute bottom-8 left-0 right-0 z-10 flex items-center"
+    >
       <Pressable
         accessibilityRole="button"
+        testID={testID}
         onPress={onPress}
         className="flex-row items-center gap-3 rounded-full border border-white/10 bg-primary-500 py-4 pl-5 pr-7 active:scale-95 active:bg-primary-600"
         style={shadowStyle}
@@ -36,6 +51,6 @@ export function FloatingActionButton({ label, icon = 'add', onPress }: FloatingA
         <MaterialSymbol name={icon} size={28} className="text-white" />
         <Text className="text-lg font-bold tracking-tight text-white">{label}</Text>
       </Pressable>
-    </View>
+    </Animated.View>
   );
 }

@@ -2,6 +2,7 @@ export const appEN = {
   // Alarms Screen
   'alarms.title': 'Your Alarms',
   'alarms.edit': 'Edit',
+  'alarms.done': 'Done',
   'alarms.newAlarm': 'New Alarm',
   'alarms.emptyTitle': 'No Alarms Set',
   'alarms.emptyDescription':
@@ -101,6 +102,37 @@ export const appEN = {
   // Edit Alarm Screen
   'editAlarm.title': 'Edit Alarm',
   'editAlarm.save': 'Save Changes',
+
+  // Alarm Trigger Screen
+  'alarmTrigger.dismiss': 'Dismiss - Start Challenge',
+  'alarmTrigger.snooze': 'Snooze 5 min',
+  'alarmTrigger.reliabilityMode': 'High-Reliability Mode Active',
+  'alarmTrigger.offlineGuaranteed': 'Offline Guaranteed',
+  'alarmTrigger.wakeUpProtocol': 'Wake-up Protocol',
+  'alarmTrigger.efficiencyTimer': 'Efficiency Timer',
+  'alarmTrigger.cognitiveChallenge': 'Cognitive Challenge',
+  'alarmTrigger.mathChallenge': 'Math Challenge',
+  'alarmTrigger.memoryChallenge': 'Memory Challenge',
+  'alarmTrigger.logicChallenge': 'Logic Challenge',
+  'alarmTrigger.wrongAnswer': 'Wrong answer — try again',
+  'alarmTrigger.attempt': 'Attempt {{current}} of {{max}}',
+  'alarmTrigger.watchPattern': 'Watch the pattern',
+  'alarmTrigger.repeatPattern': 'Repeat the pattern',
+  'alarmTrigger.getReady': 'Get ready...',
+  'alarmTrigger.reviewPattern': 'Review',
+  'alarmTrigger.whichDoesntBelong': "Which one doesn't belong?",
+  'alarmTrigger.showHint': 'Show hint',
+  'alarmTrigger.sequencePuzzle': 'Sequence puzzle',
+  'alarmTrigger.oddOneOut': 'Odd one out',
+
+  // Notifications & Permissions
+  'notifications.alarmTitle': 'WakeMind Alarm',
+  'notifications.snoozedTitle': 'WakeMind - Snoozed',
+  'notifications.snoozedBody': 'Wake up! Snoozed from {{time}} {{period}}',
+  'permissions.notificationsRequired': 'Notification permission is required for alarms',
+  'permissions.exactAlarmsRequired': 'Exact alarm permission is required for reliable wake-ups',
+  'permissions.batteryOptimization': 'Please disable battery optimization for reliable alarms',
+  'permissions.openSettings': 'Open Settings',
 
   // Common
   'common.am': 'AM',

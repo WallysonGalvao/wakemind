@@ -2,6 +2,7 @@ export const appPT = {
   // Alarms Screen
   'alarms.title': 'Seus Alarmes',
   'alarms.edit': 'Editar',
+  'alarms.done': 'Concluído',
   'alarms.newAlarm': 'Novo Alarme',
   'alarms.emptyTitle': 'Nenhum Alarme Configurado',
   'alarms.emptyDescription':
@@ -102,6 +103,38 @@ export const appPT = {
   // Edit Alarm Screen
   'editAlarm.title': 'Editar Alarme',
   'editAlarm.save': 'Salvar Alterações',
+
+  // Alarm Trigger Screen
+  'alarmTrigger.dismiss': 'Desligar - Iniciar Desafio',
+  'alarmTrigger.snooze': 'Soneca 5 min',
+  'alarmTrigger.reliabilityMode': 'Modo Alta Confiabilidade Ativo',
+  'alarmTrigger.offlineGuaranteed': 'Garantia Offline',
+  'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
+  'alarmTrigger.efficiencyTimer': 'Timer de Eficiência',
+  'alarmTrigger.cognitiveChallenge': 'Desafio Cognitivo',
+  'alarmTrigger.mathChallenge': 'Desafio de Matemática',
+  'alarmTrigger.memoryChallenge': 'Desafio de Memória',
+  'alarmTrigger.logicChallenge': 'Desafio de Lógica',
+  'alarmTrigger.wrongAnswer': 'Resposta errada — tente novamente',
+  'alarmTrigger.attempt': 'Tentativa {{current}} de {{max}}',
+  'alarmTrigger.watchPattern': 'Observe o padrão',
+  'alarmTrigger.repeatPattern': 'Repita o padrão',
+  'alarmTrigger.getReady': 'Prepare-se...',
+  'alarmTrigger.reviewPattern': 'Rever',
+  'alarmTrigger.whichDoesntBelong': 'Qual não pertence ao grupo?',
+  'alarmTrigger.showHint': 'Mostrar dica',
+  'alarmTrigger.sequencePuzzle': 'Puzzle de sequência',
+  'alarmTrigger.oddOneOut': 'Elemento diferente',
+
+  // Notifications & Permissions
+  'notifications.alarmTitle': 'Alarme WakeMind',
+  'notifications.snoozedTitle': 'WakeMind - Soneca',
+  'notifications.snoozedBody': 'Acorde! Soneca de {{time}} {{period}}',
+  'permissions.notificationsRequired': 'Permissão de notificação é necessária para alarmes',
+  'permissions.exactAlarmsRequired':
+    'Permissão de alarme exato é necessária para despertar confiável',
+  'permissions.batteryOptimization': 'Desative a otimização de bateria para alarmes confiáveis',
+  'permissions.openSettings': 'Abrir Configurações',
 
   // Common
   'common.am': 'AM',
