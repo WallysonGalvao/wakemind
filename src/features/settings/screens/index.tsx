@@ -10,6 +10,7 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -136,11 +137,14 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const { theme, setTheme, language, setLanguage } = useSettingsStore();
+  const { theme, setTheme, language, setLanguage, alarmToneId } = useSettingsStore();
 
   // Derived state
   const isDarkMode =
     theme === ThemeMode.DARK || (theme === ThemeMode.SYSTEM && colorScheme === 'dark');
+
+  const selectedToneName =
+    ALARM_TONES.find((tone) => tone.id === alarmToneId)?.name ?? 'Classic Alert';
 
   const getLanguageLabel = (lang: Language) => {
     const labels: Record<Language, string> = {
@@ -212,7 +216,7 @@ export default function SettingsScreen() {
               iconBgColor="bg-red-100 dark:bg-red-900/30"
               iconColor={COLORS.red[500]}
               title={t('settings.alarmTone')}
-              value="Orbit"
+              value={selectedToneName}
               onPress={() => router.push('/settings/alarm-tone')}
               isFirst
             />

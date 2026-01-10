@@ -24,9 +24,10 @@ import {
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
-import { DEFAULT_ALARM_TONE_ID, getToneAudioSource } from '@/constants/alarm-tones';
+import { getToneAudioSource } from '@/constants/alarm-tones';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
+import { useSettingsStore } from '@/stores/use-settings-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
 
 export default function AlarmTriggerScreen() {
@@ -41,6 +42,7 @@ export default function AlarmTriggerScreen() {
   const insets = useSafeAreaInsets();
   const soundRef = useRef<Audio.Sound | null>(null);
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
+  const alarmToneId = useSettingsStore((state) => state.alarmToneId);
 
   // Get alarm data first to use its difficulty and challenge type
   const alarm = useMemo(() => {
@@ -138,9 +140,8 @@ export default function AlarmTriggerScreen() {
           shouldDuckAndroid: false,
         });
 
-        // Get the selected tone or use default
-        const toneId = alarm?.toneId ?? DEFAULT_ALARM_TONE_ID;
-        const audioSource = getToneAudioSource(toneId);
+        // Get the selected tone from settings
+        const audioSource = getToneAudioSource(alarmToneId);
 
         const { sound } = await Audio.Sound.createAsync(audioSource, {
           isLooping: true,
@@ -169,7 +170,7 @@ export default function AlarmTriggerScreen() {
         });
       }
     };
-  }, [alarm?.toneId]);
+  }, [alarmToneId]);
 
   const stopAlarm = useCallback(async () => {
     if (soundRef.current) {

@@ -18,9 +18,10 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import type { AlarmTone } from '@/constants/alarm-tones';
-import { ALARM_TONES, DEFAULT_ALARM_TONE_ID, getToneAudioSource } from '@/constants/alarm-tones';
+import { ALARM_TONES, getToneAudioSource } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useSettingsStore } from '@/stores/use-settings-store';
 
 // ============================================================================
 // Sub-Components
@@ -196,7 +197,7 @@ export default function AlarmToneScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [selectedToneId, setSelectedToneId] = useState(DEFAULT_ALARM_TONE_ID);
+  const { alarmToneId, setAlarmToneId } = useSettingsStore();
   const [playingToneId, setPlayingToneId] = useState<string | null>(null);
   const soundRef = useRef<Audio.Sound | null>(null);
 
@@ -265,7 +266,7 @@ export default function AlarmToneScreen() {
   );
 
   const handleSelect = (toneId: string) => {
-    setSelectedToneId(toneId);
+    setAlarmToneId(toneId);
   };
 
   return (
@@ -305,7 +306,7 @@ export default function AlarmToneScreen() {
             <ToneItem
               key={tone.id}
               tone={tone}
-              isActive={tone.id === selectedToneId}
+              isActive={tone.id === alarmToneId}
               isPlaying={tone.id === playingToneId}
               onPlay={() => handlePlay(tone.id)}
               onSelect={() => handleSelect(tone.id)}
