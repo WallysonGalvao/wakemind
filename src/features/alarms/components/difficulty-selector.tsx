@@ -21,12 +21,13 @@ export function DifficultySelector({
     { value: DifficultyLevel.EASY, label: t('newAlarm.difficulty.easy') },
     { value: DifficultyLevel.MEDIUM, label: t('newAlarm.difficulty.medium') },
     { value: DifficultyLevel.HARD, label: t('newAlarm.difficulty.hard') },
-    {
-      value: DifficultyLevel.ADAPTIVE,
-      label: t('newAlarm.difficulty.adaptive'),
-      icon: 'auto_awesome',
-      showIconWhenSelected: true,
-    },
+    // TODO: Feature futura - Difficulty Adaptive (requer ML/histórico de performance)
+    // {
+    //   value: DifficultyLevel.ADAPTIVE,
+    //   label: t('newAlarm.difficulty.adaptive'),
+    //   icon: 'auto_awesome',
+    //   showIconWhenSelected: true,
+    // },
   ];
 
   // Get description based on selected difficulty
@@ -38,10 +39,11 @@ export function DifficultySelector({
         return t('newAlarm.difficulty.mediumDescription');
       case DifficultyLevel.HARD:
         return t('newAlarm.difficulty.hardDescription');
-      case DifficultyLevel.ADAPTIVE:
-        return t('newAlarm.difficulty.adaptiveDescription');
+      // TODO: Feature futura - Difficulty Adaptive
+      // case DifficultyLevel.ADAPTIVE:
+      //   return t('newAlarm.difficulty.adaptiveDescription');
       default:
-        return t('newAlarm.difficulty.adaptiveDescription');
+        return t('newAlarm.difficulty.mediumDescription');
     }
   };
 
