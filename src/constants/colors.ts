@@ -48,6 +48,9 @@ export const COLORS = {
   teal: {
     500: '#14b8a6',
   },
+  purple: {
+    500: '#a855f7',
+  },
 
   // Base colors
   white: '#ffffff',

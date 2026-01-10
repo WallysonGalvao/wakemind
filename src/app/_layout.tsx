@@ -140,6 +140,20 @@ export default function RootLayout() {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen
+                name="settings/privacy-policy"
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="settings/support"
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+              />
             </Stack>
             <StatusBar style={isDark ? 'light' : 'dark'} />
           </ThemeProvider>
