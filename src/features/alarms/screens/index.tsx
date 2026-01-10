@@ -15,7 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, RefreshControl, StyleSheet, useColorScheme, View } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
@@ -24,6 +24,7 @@ import { EmptyState } from '../components/empty-state';
 import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
 import { sortAlarmsByTime } from '@/utils/alarm-sorting';

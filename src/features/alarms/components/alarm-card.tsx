@@ -10,12 +10,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { Pressable, useColorScheme, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
 import type { Alarm } from '@/types/alarm';
 

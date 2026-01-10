@@ -14,6 +14,8 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { VibrationService } from '@/services/vibration-service';
+import { useSettingsStore } from '@/stores/use-settings-store';
 import { DifficultyLevel } from '@/types/alarm-enums';
 
 // Logic puzzle types
@@ -132,6 +134,7 @@ export function LogicChallengeComponent({
   onAttempt,
 }: LogicChallengeComponentProps) {
   const { t } = useTranslation();
+  const vibrateOnSuccess = useSettingsStore((state) => state.vibrateOnSuccess);
 
   const [puzzle, setPuzzle] = useState<LogicPuzzle>(() => generatePuzzle(difficulty));
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -164,7 +167,9 @@ export function LogicChallengeComponent({
           withSpring(1.2, { damping: 8 }),
           withSpring(1, { damping: 12 })
         );
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        if (vibrateOnSuccess) {
+          VibrationService.success();
+        }
         onAttempt(true);
         setTimeout(() => {
           onSuccess();
@@ -189,7 +194,7 @@ export function LogicChallengeComponent({
         }, 1500);
       }
     },
-    [selectedIndex, puzzle.correctIndex, onSuccess, onAttempt, shakeX, successScale, difficulty]
+    [selectedIndex, puzzle.correctIndex, onSuccess, onAttempt, shakeX, successScale, difficulty, vibrateOnSuccess]
   );
 
   const toggleHint = useCallback(() => {

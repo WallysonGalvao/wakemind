@@ -10,10 +10,16 @@ interface SettingsState {
   theme: ThemeMode;
   alarmToneId: string;
   vibrationPattern: VibrationPattern;
+  vibrateOnSuccess: boolean;
+  preventAutoLock: boolean;
+  snoozeProtection: boolean;
   setLanguage: (language: Language) => void;
   setTheme: (theme: ThemeMode) => void;
   setAlarmToneId: (toneId: string) => void;
   setVibrationPattern: (pattern: VibrationPattern) => void;
+  setVibrateOnSuccess: (value: boolean) => void;
+  setPreventAutoLock: (value: boolean) => void;
+  setSnoozeProtection: (value: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -23,10 +29,16 @@ export const useSettingsStore = create<SettingsState>()(
       theme: ThemeMode.SYSTEM,
       alarmToneId: DEFAULT_ALARM_TONE_ID,
       vibrationPattern: VibrationPattern.MODERATE,
+      vibrateOnSuccess: true,
+      preventAutoLock: true,
+      snoozeProtection: true,
       setLanguage: (language) => set({ language }),
       setTheme: (theme) => set({ theme }),
       setAlarmToneId: (alarmToneId) => set({ alarmToneId }),
       setVibrationPattern: (vibrationPattern) => set({ vibrationPattern }),
+      setVibrateOnSuccess: (vibrateOnSuccess) => set({ vibrateOnSuccess }),
+      setPreventAutoLock: (preventAutoLock) => set({ preventAutoLock }),
+      setSnoozeProtection: (snoozeProtection) => set({ snoozeProtection }),
     }),
     {
       name: 'settings-storage',

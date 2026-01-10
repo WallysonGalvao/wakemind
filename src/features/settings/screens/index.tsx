@@ -139,7 +139,19 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const { theme, setTheme, language, alarmToneId, vibrationPattern } = useSettingsStore();
+  const {
+    theme,
+    setTheme,
+    language,
+    alarmToneId,
+    vibrationPattern,
+    vibrateOnSuccess,
+    setVibrateOnSuccess,
+    preventAutoLock,
+    setPreventAutoLock,
+    snoozeProtection,
+    setSnoozeProtection,
+  } = useSettingsStore();
 
   const version = Constants.expoConfig?.version || '0.0.0';
 
@@ -148,7 +160,9 @@ export default function SettingsScreen() {
     theme === ThemeMode.DARK || (theme === ThemeMode.SYSTEM && colorScheme === 'dark');
 
   const selectedTone = ALARM_TONES.find((tone) => tone.id === alarmToneId);
-  const selectedToneName = selectedTone ? t(selectedTone.nameKey) : t('alarmTone.tone.neuro-strike-classic.name');
+  const selectedToneName = selectedTone
+    ? t(selectedTone.nameKey)
+    : t('alarmTone.tone.neuro-strike-classic.name');
 
   const getLanguageLabel = (lang: Language) => {
     const labels: Record<Language, string> = {
@@ -233,8 +247,8 @@ export default function SettingsScreen() {
               iconBgColor="bg-green-100 dark:bg-green-900/30"
               iconColor={COLORS.green[500]}
               title={t('settings.vibrateOnSuccess')}
-              value
-              onValueChange={() => {}}
+              value={vibrateOnSuccess}
+              onValueChange={setVibrateOnSuccess}
             />
             <SettingRow
               icon="vibration"
@@ -257,8 +271,8 @@ export default function SettingsScreen() {
               iconBgColor="bg-indigo-100 dark:bg-indigo-900/30"
               iconColor={COLORS.indigo[400]}
               title={t('settings.snoozeProtection')}
-              value
-              onValueChange={() => {}}
+              value={snoozeProtection}
+              onValueChange={setSnoozeProtection}
               isFirst
             />
             <SettingToggleRow
@@ -266,8 +280,8 @@ export default function SettingsScreen() {
               iconBgColor="bg-teal-100 dark:bg-teal-900/30"
               iconColor={COLORS.teal[500]}
               title={t('settings.preventAutoLock')}
-              value
-              onValueChange={() => {}}
+              value={preventAutoLock}
+              onValueChange={setPreventAutoLock}
               isLast
             />
           </SectionCard>

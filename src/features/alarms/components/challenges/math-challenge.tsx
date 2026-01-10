@@ -7,6 +7,8 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { VibrationService } from '@/services/vibration-service';
+import { useSettingsStore } from '@/stores/use-settings-store';
 import { DifficultyLevel } from '@/types/alarm-enums';
 
 interface MathChallenge {
@@ -123,6 +125,7 @@ export function MathChallengeComponent({
   onAttempt,
 }: MathChallengeComponentProps) {
   const { t } = useTranslation();
+  const vibrateOnSuccess = useSettingsStore((state) => state.vibrateOnSuccess);
   const [mathChallenge] = useState(() => generateMathChallenge(difficulty));
   const [userInput, setUserInput] = useState('');
   const [showError, setShowError] = useState(false);
@@ -160,7 +163,9 @@ export function MathChallengeComponent({
     const userAnswer = parseInt(userInput, 10);
 
     if (userAnswer === mathChallenge.answer) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (vibrateOnSuccess) {
+        VibrationService.success();
+      }
       onAttempt(true);
       onSuccess();
     } else {
@@ -169,7 +174,7 @@ export function MathChallengeComponent({
       setUserInput('');
       onAttempt(false);
     }
-  }, [userInput, mathChallenge.answer, onSuccess, onAttempt]);
+  }, [userInput, mathChallenge.answer, onSuccess, onAttempt, vibrateOnSuccess]);
 
   return (
     <View className="flex-1 items-center justify-center px-4">
