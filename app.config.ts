@@ -15,6 +15,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: false,
     bundleIdentifier: 'com.wallyson.wakemind',
+    infoPlist: {
+      UIBackgroundModes: ['audio', 'fetch'],
+    },
+    entitlements: {
+      'com.apple.developer.usernotifications.critical-alerts': true,
+    },
   },
   android: {
     adaptiveIcon: {
@@ -24,6 +30,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: './assets/images/android-icon-monochrome.png',
     },
     edgeToEdgeEnabled: true,
+    package: 'com.wallyson.wakemind',
+    permissions: [
+      'SCHEDULE_EXACT_ALARM',
+      'USE_EXACT_ALARM',
+      'USE_FULL_SCREEN_INTENT',
+      'VIBRATE',
+      'RECEIVE_BOOT_COMPLETED',
+      'FOREGROUND_SERVICE',
+      'WAKE_LOCK',
+      'POST_NOTIFICATIONS',
+    ],
   },
   web: {
     bundler: 'metro',

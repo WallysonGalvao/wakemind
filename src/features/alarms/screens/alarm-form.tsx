@@ -15,16 +15,17 @@ import { DifficultySelector } from '../components/difficulty-selector';
 import { DayOfWeek, ScheduleSelector } from '../components/schedule-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
 import type { AlarmFormData } from '../schemas/alarm-form.schema';
-import { alarmFormSchema, DEFAULT_ALARM_FORM_VALUES } from '../schemas/alarm-form.schema';
+import { alarmFormSchema, getDefaultAlarmFormValues } from '../schemas/alarm-form.schema';
 
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
-import type { BackupProtocolId, Period } from '@/types/alarm-enums';
-import { ChallengeType } from '@/types/alarm-enums';
+import type { BackupProtocolId } from '@/types/alarm-enums';
+import { ChallengeType, Period } from '@/types/alarm-enums';
 
 const BRAND_PRIMARY_SHADOW = 'rgba(19, 91, 236, 0.3)';
 
@@ -108,6 +109,58 @@ const getScheduleLabel = (days: DayOfWeek[]): string => {
   return sortedDays.map((d) => DAY_ABBREV[d]).join(', ');
 };
 
+// Map of day abbreviations back to DayOfWeek (reverse of DAY_ABBREV)
+const ABBREV_TO_DAY: Record<string, DayOfWeek> = {
+  Mon: DayOfWeek.MONDAY,
+  Tue: DayOfWeek.TUESDAY,
+  Wed: DayOfWeek.WEDNESDAY,
+  Thu: DayOfWeek.THURSDAY,
+  Fri: DayOfWeek.FRIDAY,
+  Sat: DayOfWeek.SATURDAY,
+  Sun: DayOfWeek.SUNDAY,
+};
+
+// Helper function to parse schedule label back to DayOfWeek array
+const parseScheduleToDays = (schedule: string): DayOfWeek[] => {
+  const allDays = Object.values(DayOfWeek);
+  const weekdays = [
+    DayOfWeek.MONDAY,
+    DayOfWeek.TUESDAY,
+    DayOfWeek.WEDNESDAY,
+    DayOfWeek.THURSDAY,
+    DayOfWeek.FRIDAY,
+  ];
+  const weekends = [DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
+
+  // Handle preset values
+  if (schedule === 'Daily') {
+    return allDays;
+  }
+  if (schedule === 'Weekdays') {
+    return weekdays;
+  }
+  if (schedule === 'Weekends') {
+    return weekends;
+  }
+
+  // Handle single day abbreviation
+  if (ABBREV_TO_DAY[schedule]) {
+    return [ABBREV_TO_DAY[schedule]];
+  }
+
+  // Handle custom: comma-separated day abbreviations
+  const abbreviations = schedule.split(',').map((s) => s.trim());
+  const days: DayOfWeek[] = [];
+  for (const abbr of abbreviations) {
+    if (ABBREV_TO_DAY[abbr]) {
+      days.push(ABBREV_TO_DAY[abbr]);
+    }
+  }
+
+  // If parsing failed, return current day as fallback
+  return days.length > 0 ? days : [getCurrentDayOfWeek()];
+};
+
 interface AlarmFormScreenProps {
   alarmId?: string; // Optional: if provided, we're in edit mode
 }
@@ -117,6 +170,16 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const router = useRouter();
   const toast = useToast();
   const insets = useSafeAreaInsets();
+
+  // Permissions hook
+  const {
+    isAllGranted,
+    needsNotificationPermission,
+    needsExactAlarmPermission,
+    requestNotificationPermission,
+    openBatterySettings,
+    openAlarmSettings,
+  } = useAlarmPermissions();
 
   // Store actions
   const addAlarm = useAlarmsStore((state) => state.addAlarm);
@@ -141,24 +204,28 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     if (isEditMode && alarmId) {
       const existingAlarm = alarms.find((a) => a.id === alarmId);
       if (existingAlarm) {
-        // Parse time string "HH:MM" to hour and minute
+        // Parse time string "HH:MM" - already in 24h format
         const [hourStr, minuteStr] = existingAlarm.time.split(':');
+
+        const defaultVals = getDefaultAlarmFormValues();
         return {
           hour: parseInt(hourStr, 10),
           minute: parseInt(minuteStr, 10),
-          period: existingAlarm.period,
-          selectedDays: [getCurrentDayOfWeek()], // TODO: Parse from alarm schedule once available
+          selectedDays: parseScheduleToDays(existingAlarm.schedule),
+          // Use challengeType directly if available, otherwise fall back to icon-based detection
           challenge:
-            (Object.keys(CHALLENGE_ICONS).find(
+            existingAlarm.challengeType ??
+            ((Object.keys(CHALLENGE_ICONS).find(
               (key) => CHALLENGE_ICONS[key as ChallengeType] === existingAlarm.challengeIcon
-            ) as ChallengeType) || ChallengeType.MATH,
-          difficulty: existingAlarm.difficulty ?? DEFAULT_ALARM_FORM_VALUES.difficulty,
-          protocols: existingAlarm.protocols ?? DEFAULT_ALARM_FORM_VALUES.protocols,
+            ) as ChallengeType) ||
+              ChallengeType.MATH),
+          difficulty: existingAlarm.difficulty ?? defaultVals.difficulty,
+          protocols: existingAlarm.protocols ?? defaultVals.protocols,
         };
       }
     }
     return {
-      ...DEFAULT_ALARM_FORM_VALUES,
+      ...getDefaultAlarmFormValues(),
       selectedDays: [getCurrentDayOfWeek()],
     };
   }, [alarmId, isEditMode, alarms]);
@@ -172,11 +239,13 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   // Watch all form values
   const hour = watch('hour');
   const minute = watch('minute');
-  const period = watch('period');
   const selectedDays = watch('selectedDays');
   const challenge = watch('challenge');
   const difficulty = watch('difficulty');
   const protocols = watch('protocols');
+
+  // Auto-determine period based on hour (0-11 = AM, 12-23 = PM)
+  const period = hour < 12 ? Period.AM : Period.PM;
 
   const handleClose = useCallback(() => {
     router.back();
@@ -184,7 +253,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
   const handleReset = useCallback(() => {
     reset({
-      ...DEFAULT_ALARM_FORM_VALUES,
+      ...getDefaultAlarmFormValues(),
       selectedDays: [getCurrentDayOfWeek()],
     });
   }, [reset]);
@@ -196,10 +265,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     }
   }, [alarmId, deleteAlarm, router]);
 
-  const handleTimeChange = (newHour: number, newMinute: number, newPeriod: Period) => {
+  const handleTimeChange = (newHour: number, newMinute: number) => {
     setValue('hour', newHour);
     setValue('minute', newMinute);
-    setValue('period', newPeriod);
   };
 
   const handleProtocolToggle = (id: BackupProtocolId) => {
@@ -209,18 +277,92 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     setValue('protocols', updatedProtocols);
   };
 
-  const onSubmit = (data: AlarmFormData) => {
+  const onSubmit = async (data: AlarmFormData) => {
+    // Validate hour and minute are valid numbers
+    if (
+      typeof data.hour !== 'number' ||
+      typeof data.minute !== 'number' ||
+      isNaN(data.hour) ||
+      isNaN(data.minute) ||
+      data.hour < 0 ||
+      data.hour > 23 ||
+      data.minute < 0 ||
+      data.minute > 59
+    ) {
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
+            <ToastTitle>{t('newAlarm.validationError.title')}</ToastTitle>
+            <ToastDescription>{t('validation.alarm.timeFormat')}</ToastDescription>
+          </Toast>
+        ),
+      });
+      return;
+    }
+
+    // Store time in 24h format
     const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
+    const displayPeriod = data.hour < 12 ? Period.AM : Period.PM;
     const challengeIcon = CHALLENGE_ICONS[data.challenge];
     const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
     const scheduleLabel = getScheduleLabel(data.selectedDays);
 
     try {
+      // Check permissions before creating/updating alarm
+      if (!isAllGranted) {
+        // Request notification permission first
+        if (needsNotificationPermission) {
+          const granted = await requestNotificationPermission();
+
+          if (!granted) {
+            toast.show({
+              placement: 'top',
+              duration: 4000,
+              render: ({ id }) => (
+                <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+                  <ToastTitle>{t('permissions.notificationsRequired')}</ToastTitle>
+                  <ToastDescription>{t('permissions.openSettings')}</ToastDescription>
+                </Toast>
+              ),
+            });
+            return;
+          }
+        }
+
+        // Check for exact alarm permission (Android 12+)
+        if (needsExactAlarmPermission) {
+          toast.show({
+            placement: 'top',
+            duration: 5000,
+            render: ({ id }) => (
+              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
+                <ToastTitle>{t('permissions.exactAlarmsRequired')}</ToastTitle>
+                <ToastDescription>{t('permissions.batteryOptimization')}</ToastDescription>
+              </Toast>
+            ),
+          });
+
+          // Open both battery optimization and alarm settings
+          // Battery optimization affects alarm reliability
+          await openBatterySettings();
+          // Exact alarm permission is required on Android 12+
+          await openAlarmSettings();
+
+          // After settings, user needs to manually create alarm again
+          // We don't auto-continue here as they need to go through system settings
+          return;
+        }
+      }
+
+      // All permissions granted, proceed with alarm creation/update
       if (isEditMode && alarmId) {
         updateAlarm(alarmId, {
           time: timeString,
-          period: data.period,
+          period: displayPeriod,
           challenge: challengeLabel,
+          challengeType: data.challenge,
           challengeIcon,
           schedule: scheduleLabel,
           difficulty: data.difficulty,
@@ -229,8 +371,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
       } else {
         addAlarm({
           time: timeString,
-          period: data.period,
+          period: displayPeriod,
           challenge: challengeLabel,
+          challengeType: data.challenge,
           challengeIcon,
           schedule: scheduleLabel,
           difficulty: data.difficulty,
@@ -257,6 +400,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     }
   };
 
+  // Format time for display (24h format with period indicator)
   const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
 
   // Dynamic texts based on mode
@@ -327,12 +471,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
       {/* Content */}
       <ScrollView contentContainerClassName="pb-32" showsVerticalScrollIndicator={false}>
         {/* Time Picker Section */}
-        <TimePickerWheel
-          hour={hour}
-          minute={minute}
-          period={period}
-          onTimeChange={handleTimeChange}
-        />
+        <TimePickerWheel hour={hour} minute={minute} onTimeChange={handleTimeChange} />
 
         {/* Schedule Selector */}
         <ScheduleSelector
@@ -359,16 +498,16 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
         <BackupProtocolsSection protocols={protocols} onProtocolToggle={handleProtocolToggle} />
 
         {/* Delete Button - Only in Edit Mode */}
-        {isEditMode ? <Pressable
-          onPress={handleDelete}
-          className="mt-3 h-14  flex-row items-center justify-center rounded-xl bg-red-500 active:scale-[0.98] mx-4"
-          accessibilityRole="button"
-        >
-          <MaterialSymbol name="delete" size={20} className="mr-2 text-white" />
-          <Text className="text-base font-semibold text-white">
-            {t('common.delete')}
-          </Text>
-        </Pressable> : null}
+        {isEditMode ? (
+          <Pressable
+            onPress={handleDelete}
+            className="mx-4 mt-3  h-14 flex-row items-center justify-center rounded-xl bg-red-500 active:scale-[0.98]"
+            accessibilityRole="button"
+          >
+            <MaterialSymbol name="delete" size={20} className="mr-2 text-white" />
+            <Text className="text-base font-semibold text-white">{t('common.delete')}</Text>
+          </Pressable>
+        ) : null}
       </ScrollView>
 
       {/* Bottom CTA */}
@@ -385,8 +524,6 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           <Text className="mr-2 text-lg font-bold text-white">{commitButtonText}</Text>
           <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
         </Pressable>
-
-
       </View>
     </View>
   );

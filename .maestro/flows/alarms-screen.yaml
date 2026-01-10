@@ -1,0 +1,16 @@
+# Alarms Screen Flow
+# Tests the main alarms screen functionality
+
+appId: com.wallyson.wakemind
+
+---
+- launchApp
+
+# Wait for alarms screen to load - FAB indicates screen is ready
+- extendedWaitUntil:
+    visible:
+      id: 'fab'
+    timeout: 15000
+
+# Take a screenshot
+- takeScreenshot: alarms_screen

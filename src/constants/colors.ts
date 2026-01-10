@@ -15,6 +15,34 @@ export const COLORS = {
     600: '#475569',
   },
 
+  // Gray colors (matching Tailwind's gray palette)
+  gray: {
+    300: '#d1d5db',
+    400: '#9ca3af',
+    500: '#6b7280',
+    600: '#4b5563',
+  },
+
+  // Semantic colors (matching Tailwind palette)
+  blue: {
+    500: '#3b82f6',
+  },
+  red: {
+    500: '#ef4444',
+  },
+  green: {
+    500: '#22c55e',
+  },
+  orange: {
+    500: '#f97316',
+  },
+  indigo: {
+    400: '#818cf8',
+  },
+  teal: {
+    500: '#14b8a6',
+  },
+
   // Base colors
   white: '#ffffff',
   black: '#000000',
