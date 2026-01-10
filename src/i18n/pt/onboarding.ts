@@ -1,6 +1,7 @@
 export const onboardingPT = {
   onboarding: {
     skip: 'Pular',
+    next: 'Próximo',
     continue: 'Continuar',
     getStarted: 'Começar',
     steps: {

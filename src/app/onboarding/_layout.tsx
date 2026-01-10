@@ -5,13 +5,10 @@ export default function OnboardingLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
         gestureEnabled: false,
       }}
     >
-      <Stack.Screen name="problem" />
-      <Stack.Screen name="solution" />
-      <Stack.Screen name="outcome" />
+      <Stack.Screen name="index" />
     </Stack>
   );
 }

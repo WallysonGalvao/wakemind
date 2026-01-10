@@ -27,6 +27,7 @@ export const COLORS = {
 
   // Semantic colors (matching Tailwind palette)
   blue: {
+    300: '#93C5FD',
     500: '#3b82f6',
   },
   red: {

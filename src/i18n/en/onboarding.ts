@@ -1,6 +1,7 @@
 export const onboardingEN = {
   onboarding: {
     skip: 'Skip',
+    next: 'Next',
     continue: 'Continue',
     getStarted: 'Get Started',
     steps: {
