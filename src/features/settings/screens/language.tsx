@@ -20,8 +20,10 @@ import { Language } from '@/types/settings-enums';
 
 interface LanguageOption {
   id: Language;
-  name: string;
-  nativeName: string;
+  /** i18n key for the translated language name */
+  nameKey: string;
+  /** i18n key for the native language name */
+  nativeNameKey: string;
   flag: string;
 }
 
@@ -32,20 +34,20 @@ interface LanguageOption {
 const LANGUAGES: LanguageOption[] = [
   {
     id: Language.EN,
-    name: 'English',
-    nativeName: 'English',
+    nameKey: 'language.en.name',
+    nativeNameKey: 'language.en.nativeName',
     flag: '🇺🇸',
   },
   {
     id: Language.PT_BR,
-    name: 'Portuguese (Brazil)',
-    nativeName: 'Português (Brasil)',
+    nameKey: 'language.pt-BR.name',
+    nativeNameKey: 'language.pt-BR.nativeName',
     flag: '🇧🇷',
   },
   {
     id: Language.ES,
-    name: 'Spanish',
-    nativeName: 'Español',
+    nameKey: 'language.es.name',
+    nativeNameKey: 'language.es.nativeName',
     flag: '🇪🇸',
   },
 ];
@@ -63,14 +65,17 @@ function LanguageItem({
   isActive: boolean;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
+  const nativeName = t(language.nativeNameKey);
+  const name = t(language.nameKey);
 
   return (
     <Pressable
       onPress={onSelect}
       accessibilityRole="button"
-      accessibilityLabel={language.nativeName}
-      accessibilityHint={`Select ${language.name} as app language`}
+      accessibilityLabel={nativeName}
+      accessibilityHint={`Select ${name} as app language`}
       accessibilityState={{ selected: isActive }}
       className={`mx-4 mb-3 overflow-hidden rounded-xl border p-4 ${
         isActive
@@ -88,16 +93,16 @@ function LanguageItem({
         </View>
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
-            <Text className="font-bold text-gray-900 dark:text-white">{language.nativeName}</Text>
+            <Text className="font-bold text-gray-900 dark:text-white">{nativeName}</Text>
             {isActive ? (
               <View className="rounded bg-brand-primary/20 px-1.5 py-0.5">
-                <Text className="text-[9px] font-bold text-brand-primary">ACTIVE</Text>
+                <Text className="text-[9px] font-bold text-brand-primary">
+                  {t('common.active')}
+                </Text>
               </View>
             ) : null}
           </View>
-          <Text className="text-xs font-medium text-gray-500 dark:text-gray-400">
-            {language.name}
-          </Text>
+          <Text className="text-xs font-medium text-gray-500 dark:text-gray-400">{name}</Text>
         </View>
         {isActive ? (
           <MaterialSymbol name="check_circle" size={24} color={COLORS.brandPrimary} />

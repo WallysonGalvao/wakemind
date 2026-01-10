@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Platform, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import {
   LogicChallengeComponent,
@@ -26,6 +25,7 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { getToneAudioSource } from '@/constants/alarm-tones';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
+import { VibrationService } from '@/services/vibration-service';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
@@ -43,6 +43,7 @@ export default function AlarmTriggerScreen() {
   const soundRef = useRef<Audio.Sound | null>(null);
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
   const alarmToneId = useSettingsStore((state) => state.alarmToneId);
+  const vibrationPattern = useSettingsStore((state) => state.vibrationPattern);
 
   // Get alarm data first to use its difficulty and challenge type
   const alarm = useMemo(() => {
@@ -122,15 +123,8 @@ export default function AlarmTriggerScreen() {
       try {
         await activateKeepAwakeAsync('alarm-trigger');
 
-        // Start vibration pattern
-        if (Platform.OS !== 'web') {
-          const vibrate = async () => {
-            if (!isMounted) return;
-            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-            setTimeout(vibrate, 2000);
-          };
-          vibrate();
-        }
+        // Start vibration pattern from settings
+        VibrationService.start(vibrationPattern);
 
         // Load and play alarm sound
         await Audio.setAudioModeAsync({
@@ -164,15 +158,17 @@ export default function AlarmTriggerScreen() {
     return () => {
       isMounted = false;
       deactivateKeepAwake('alarm-trigger');
+      VibrationService.stop();
       if (soundRef.current) {
         void soundRef.current.stopAsync().then(() => {
           return soundRef.current?.unloadAsync();
         });
       }
     };
-  }, [alarmToneId]);
+  }, [alarmToneId, vibrationPattern]);
 
   const stopAlarm = useCallback(async () => {
+    VibrationService.stop();
     if (soundRef.current) {
       await soundRef.current.stopAsync();
       await soundRef.current.unloadAsync();

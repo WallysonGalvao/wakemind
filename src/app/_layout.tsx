@@ -123,6 +123,12 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="settings/vibration-pattern"
+              options={{
+                headerShown: false,
+              }}
+            />
           </Stack>
           <StatusBar style={isDark ? 'light' : 'dark'} />
         </ThemeProvider>

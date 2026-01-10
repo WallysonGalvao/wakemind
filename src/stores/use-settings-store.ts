@@ -22,7 +22,7 @@ export const useSettingsStore = create<SettingsState>()(
       language: Language.EN,
       theme: ThemeMode.SYSTEM,
       alarmToneId: DEFAULT_ALARM_TONE_ID,
-      vibrationPattern: VibrationPattern.MEDIUM,
+      vibrationPattern: VibrationPattern.MODERATE,
       setLanguage: (language) => set({ language }),
       setTheme: (theme) => set({ theme }),
       setAlarmToneId: (alarmToneId) => set({ alarmToneId }),

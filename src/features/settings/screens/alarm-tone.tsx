@@ -116,14 +116,16 @@ function ToneItem({
   onPlay: () => void;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
+  const toneName = t(tone.nameKey);
 
   return (
     <Pressable
       onPress={onSelect}
       accessibilityRole="button"
-      accessibilityLabel={tone.name}
-      accessibilityHint={`Select ${tone.name} as alarm tone`}
+      accessibilityLabel={toneName}
+      accessibilityHint={`Select ${toneName} as alarm tone`}
       accessibilityState={{ selected: isActive }}
       className={`mx-4 mb-3 overflow-hidden rounded-xl border p-4 ${
         isActive
@@ -139,7 +141,7 @@ function ToneItem({
           }}
           accessibilityRole="button"
           accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-          accessibilityHint={`${isPlaying ? 'Pause' : 'Play'} ${tone.name} preview`}
+          accessibilityHint={`${isPlaying ? 'Pause' : 'Play'} ${toneName} preview`}
           className={`h-12 w-12 items-center justify-center rounded-full ${
             isPlaying
               ? 'bg-brand-primary'
@@ -177,16 +179,18 @@ function ToneItem({
         </Pressable>
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
-            <Text className="font-bold text-gray-900 dark:text-white">{tone.name}</Text>
+            <Text className="font-bold text-gray-900 dark:text-white">{toneName}</Text>
             {isActive ? (
               <View className="rounded bg-brand-primary/20 px-1.5 py-0.5">
-                <Text className="text-[9px] font-bold text-brand-primary">ACTIVE</Text>
+                <Text className="text-[9px] font-bold text-brand-primary">
+                  {t('common.active')}
+                </Text>
               </View>
             ) : null}
           </View>
-          <Text className="text-xs font-medium text-brand-primary">{tone.category}</Text>
+          <Text className="text-xs font-medium text-brand-primary">{t(tone.categoryKey)}</Text>
           <Text className="mt-0.5 text-[11px] leading-tight text-gray-500 dark:text-gray-400">
-            {tone.description}
+            {t(tone.descriptionKey)}
           </Text>
         </View>
         <Waveform isPlaying={isPlaying} isActive={isActive} pattern={tone.waveformPattern} />

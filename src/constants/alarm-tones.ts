@@ -12,9 +12,12 @@
 
 export interface AlarmTone {
   id: string;
-  name: string;
-  category: string;
-  description: string;
+  /** i18n key for the tone name (e.g., 'alarmTone.tone.neuro-strike-classic.name') */
+  nameKey: string;
+  /** i18n key for the category (e.g., 'alarmTone.tone.neuro-strike-classic.category') */
+  categoryKey: string;
+  /** i18n key for the description (e.g., 'alarmTone.tone.neuro-strike-classic.description') */
+  descriptionKey: string;
   /** Relative path from assets/sounds/ */
   filename: string;
   /** Duration in seconds */
@@ -36,135 +39,135 @@ export interface AlarmTone {
 export const ALARM_TONES: AlarmTone[] = [
   {
     id: 'neuro-strike-classic',
-    name: 'Classic Alert',
-    category: 'Cortical Activation',
-    description: 'Traditional alarm clock beep pattern for reliable awakening',
+    nameKey: 'alarmTone.tone.neuro-strike-classic.name',
+    categoryKey: 'alarmTone.tone.neuro-strike-classic.category',
+    descriptionKey: 'alarmTone.tone.neuro-strike-classic.description',
     filename: 'classic-alarm.wav',
     duration: 5,
     waveformPattern: [0.6, 0.8, 0.6, 0.8, 0.6, 0.8, 0.6, 0.8, 0.6], // Uniform beep pattern
   },
   {
     id: 'digital-pulse',
-    name: 'Digital Pulse',
-    category: 'Rhythmic Sync',
-    description: 'Digital clock buzzer with precise timing intervals',
+    nameKey: 'alarmTone.tone.digital-pulse.name',
+    categoryKey: 'alarmTone.tone.digital-pulse.category',
+    descriptionKey: 'alarmTone.tone.digital-pulse.description',
     filename: 'digital-clock-buzzer.wav',
     duration: 8,
     waveformPattern: [0.3, 0.9, 0.3, 0.9, 0.3, 0.9, 0.3, 0.9, 0.3], // Sharp digital pulses
   },
   {
     id: 'morning-protocol',
-    name: 'Morning Protocol',
-    category: 'Circadian Trigger',
-    description: 'Gentle morning clock alarm designed for natural wake cycles',
+    nameKey: 'alarmTone.tone.morning-protocol.name',
+    categoryKey: 'alarmTone.tone.morning-protocol.category',
+    descriptionKey: 'alarmTone.tone.morning-protocol.description',
     filename: 'morning-clock-alarm.wav',
     duration: 9,
     waveformPattern: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], // Gradual rise
   },
   {
     id: 'alert-surge',
-    name: 'Alert Surge',
-    category: 'Emergency Protocol',
-    description: 'High-priority alert alarm for guaranteed cognitive activation',
+    nameKey: 'alarmTone.tone.alert-surge.name',
+    categoryKey: 'alarmTone.tone.alert-surge.category',
+    descriptionKey: 'alarmTone.tone.alert-surge.description',
     filename: 'alert-alarm.wav',
     duration: 6,
     waveformPattern: [0.9, 0.5, 1.0, 0.4, 0.9, 0.5, 1.0, 0.4, 0.9], // High-intensity spikes
   },
   {
     id: 'facility-breach',
-    name: 'Facility Breach',
-    category: 'Emergency Protocol',
-    description: 'Security-grade alarm for maximum arousal response',
+    nameKey: 'alarmTone.tone.facility-breach.name',
+    categoryKey: 'alarmTone.tone.facility-breach.category',
+    descriptionKey: 'alarmTone.tone.facility-breach.description',
     filename: 'facility-alarm.wav',
     duration: 2,
     waveformPattern: [1.0, 0.8, 1.0, 0.8, 1.0, 0.8, 1.0, 0.8, 1.0], // Constant high alert
   },
   {
     id: 'retro-gamma',
-    name: 'Retro Gamma',
-    category: 'Cortical Activation',
-    description: 'Retro game-style emergency tones with nostalgic trigger response',
+    nameKey: 'alarmTone.tone.retro-gamma.name',
+    categoryKey: 'alarmTone.tone.retro-gamma.category',
+    descriptionKey: 'alarmTone.tone.retro-gamma.description',
     filename: 'retro-game-alarm.wav',
     duration: 25,
     waveformPattern: [0.5, 1.0, 0.3, 0.8, 0.5, 1.0, 0.3, 0.8, 0.5], // 8-bit game pattern
   },
   {
     id: 'vintage-warning',
-    name: 'Vintage Warning',
-    category: 'Progressive Wake',
-    description: 'Classic warning signal with gradual intensity buildup',
+    nameKey: 'alarmTone.tone.vintage-warning.name',
+    categoryKey: 'alarmTone.tone.vintage-warning.category',
+    descriptionKey: 'alarmTone.tone.vintage-warning.description',
     filename: 'vintage-warning-alarm.wav',
     duration: 8,
     waveformPattern: [0.3, 0.5, 0.7, 0.9, 0.7, 0.5, 0.3, 0.5, 0.7], // Sine wave pattern
   },
   {
     id: 'space-command',
-    name: 'Space Command',
-    category: 'Sci-Fi Protocol',
-    description: 'Futuristic spaceship alarm for immersive awakening experience',
+    nameKey: 'alarmTone.tone.space-command.name',
+    categoryKey: 'alarmTone.tone.space-command.category',
+    descriptionKey: 'alarmTone.tone.space-command.description',
     filename: 'spaceship-alarm.wav',
     duration: 25,
     waveformPattern: [0.4, 0.6, 0.9, 0.6, 0.4, 0.6, 0.9, 0.6, 0.4], // Spaceship pulse
   },
   {
     id: 'critical-alert',
-    name: 'Critical Alert',
-    category: 'Emergency Protocol',
-    description: 'Short, intense burst designed for immediate cortical response',
+    nameKey: 'alarmTone.tone.critical-alert.name',
+    categoryKey: 'alarmTone.tone.critical-alert.category',
+    descriptionKey: 'alarmTone.tone.critical-alert.description',
     filename: 'critical-alarm.wav',
     duration: 3,
     waveformPattern: [1.0, 0.2, 1.0, 0.2, 1.0, 0.2, 1.0, 0.2, 1.0], // Sharp critical spikes
   },
   {
     id: 'sci-fi-scanner',
-    name: 'Sci-Fi Scanner',
-    category: 'Sci-Fi Protocol',
-    description: 'Scanning frequency sweep for gradual alpha wave activation',
+    nameKey: 'alarmTone.tone.sci-fi-scanner.name',
+    categoryKey: 'alarmTone.tone.sci-fi-scanner.category',
+    descriptionKey: 'alarmTone.tone.sci-fi-scanner.description',
     filename: 'scanning-sci-fi-alarm.wav',
     duration: 10,
     waveformPattern: [0.2, 0.4, 0.6, 0.8, 1.0, 0.8, 0.6, 0.4, 0.2], // Scanning sweep
   },
   {
     id: 'hint-notification',
-    name: 'Hint Notification',
-    category: 'Progressive Wake',
-    description: 'Gentle interface notification for light sleepers',
+    nameKey: 'alarmTone.tone.hint-notification.name',
+    categoryKey: 'alarmTone.tone.hint-notification.category',
+    descriptionKey: 'alarmTone.tone.hint-notification.description',
     filename: 'hint-notification.wav',
     duration: 1,
     waveformPattern: [0.3, 0.5, 0.7, 0.5, 0.3, 0.2, 0.2, 0.2, 0.2], // Gentle tap
   },
   {
     id: 'rooster-morning',
-    name: 'Rooster Morning',
-    category: 'Circadian Trigger',
-    description: 'Natural rooster crowing for biological awakening',
+    nameKey: 'alarmTone.tone.rooster-morning.name',
+    categoryKey: 'alarmTone.tone.rooster-morning.category',
+    descriptionKey: 'alarmTone.tone.rooster-morning.description',
     filename: 'rooster-morning.wav',
     duration: 4,
     waveformPattern: [0.3, 0.6, 0.9, 1.0, 0.8, 0.5, 0.3, 0.2, 0.1], // Rooster crow shape
   },
   {
     id: 'rooster-short',
-    name: 'Rooster Short',
-    category: 'Circadian Trigger',
-    description: 'Quick rooster crow for instant natural alert',
+    nameKey: 'alarmTone.tone.rooster-short.name',
+    categoryKey: 'alarmTone.tone.rooster-short.category',
+    descriptionKey: 'alarmTone.tone.rooster-short.description',
     filename: 'rooster-short.wav',
     duration: 2,
     waveformPattern: [0.4, 0.8, 1.0, 0.7, 0.4, 0.2, 0.2, 0.2, 0.2], // Quick crow burst
   },
   {
     id: 'casino-payout',
-    name: 'Casino Payout',
-    category: 'Dopamine Trigger',
-    description: 'Slot machine victory sound for reward-based awakening',
+    nameKey: 'alarmTone.tone.casino-payout.name',
+    categoryKey: 'alarmTone.tone.casino-payout.category',
+    descriptionKey: 'alarmTone.tone.casino-payout.description',
     filename: 'casino-payout.wav',
     duration: 10,
     waveformPattern: [0.5, 0.7, 0.9, 0.7, 0.9, 0.7, 0.9, 0.7, 0.5], // Celebratory jingle
   },
   {
     id: 'hall-alert',
-    name: 'Hall Alert',
-    category: 'Progressive Wake',
-    description: 'Spacious hall alert for gradual environmental awakening',
+    nameKey: 'alarmTone.tone.hall-alert.name',
+    categoryKey: 'alarmTone.tone.hall-alert.category',
+    descriptionKey: 'alarmTone.tone.hall-alert.description',
     filename: 'hall-alert.wav',
     duration: 13,
     waveformPattern: [0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6], // Reverberating echo
