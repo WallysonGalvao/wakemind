@@ -144,14 +144,14 @@ export default function RootLayout() {
                 name="settings/privacy-policy"
                 options={{
                   presentation: 'modal',
-                  headerShown: false,
+                  headerShown: true,
                 }}
               />
               <Stack.Screen
                 name="settings/support"
                 options={{
                   presentation: 'modal',
-                  headerShown: false,
+                  headerShown: true,
                 }}
               />
             </Stack>

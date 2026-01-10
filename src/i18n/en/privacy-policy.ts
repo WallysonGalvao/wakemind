@@ -1,68 +1,58 @@
 export const privacyPolicyEN = {
-  'privacyPolicy.lastUpdated': 'Last updated: January 2026',
+  'privacyPolicy.lastUpdatedLabel': 'Last Updated',
+  'privacyPolicy.lastUpdatedDate': 'JAN 2026 // V.1.0',
 
   // Introduction
   'privacyPolicy.introduction.title': 'Introduction',
   'privacyPolicy.introduction.content':
-    'WakeMind ("we", "our" or "app") respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and protect your information.',
+    'Your privacy is fundamental to the WakeMind experience. This document details how we protect your neuro-adaptive data and ensures complete transparency about our security protocols.',
 
   // Data Collected
   'privacyPolicy.dataCollected.title': 'Data We Collect',
   'privacyPolicy.dataCollected.localData.title': 'Locally Stored Data',
+  'privacyPolicy.dataCollected.localData.alarmsTitle': 'Alarm Configuration',
   'privacyPolicy.dataCollected.localData.alarms':
-    'Alarms: Times, repeat settings, and alarm status',
+    'Times, repeat settings, and alarm status for precise scheduling.',
+  'privacyPolicy.dataCollected.localData.preferencesTitle': 'User Preferences',
   'privacyPolicy.dataCollected.localData.preferences':
-    'Preferences: Theme, language, alarm tone, vibration pattern',
+    'Theme, language, alarm tone, and vibration pattern for personalized experience.',
+  'privacyPolicy.dataCollected.localData.performanceTitle': 'Performance Metrics',
   'privacyPolicy.dataCollected.localData.performance':
-    'Performance History: Cognitive challenge data (response time, success rate)',
+    'Cognitive challenge data (response time, success rate) for algorithm calibration.',
+  'privacyPolicy.dataCollected.localData.settingsTitle': 'Behavior Settings',
   'privacyPolicy.dataCollected.localData.settings':
-    'Behavior Settings: Snooze protection, auto-lock prevention',
+    'Snooze protection and auto-lock prevention for optimal wake-up experience.',
 
-  'privacyPolicy.dataCollected.notCollected.title': 'Data NOT Collected',
-  'privacyPolicy.dataCollected.notCollected.personal':
-    'We do not collect personally identifiable information',
-  'privacyPolicy.dataCollected.notCollected.location': 'We do not track your location',
-  'privacyPolicy.dataCollected.notCollected.contacts':
-    'We do not access contacts, photos, or other personal data',
-  'privacyPolicy.dataCollected.notCollected.analytics':
-    'We do not use third-party analytics services',
+  'privacyPolicy.dataCollected.notCollected.title': "What We DON'T Collect",
+  'privacyPolicy.dataCollected.notCollected.personal': 'Personally Identifiable Information',
+  'privacyPolicy.dataCollected.notCollected.location': 'Precise GPS Location',
+  'privacyPolicy.dataCollected.notCollected.contacts': 'Contacts, Photos or Personal Data',
+  'privacyPolicy.dataCollected.notCollected.analytics': 'Third-Party Analytics or Advertising IDs',
+  'privacyPolicy.dataCollected.notCollected.quote':
+    '"Your thoughts belong only to you. Our business model is subscription-based, not data-selling."',
 
   // Data Usage
   'privacyPolicy.dataUsage.title': 'How We Use Your Data',
   'privacyPolicy.dataUsage.content':
     'All data is stored exclusively on your device and is used only to: trigger alarms at configured times, personalize your app experience, and improve cognitive challenge effectiveness based on your performance.',
 
-  // Data Sharing
-  'privacyPolicy.dataSharing.title': 'Data Sharing',
-  'privacyPolicy.dataSharing.content':
-    'We do not share your data with third parties. All data remains on your device.',
-
   // Security
-  'privacyPolicy.security.title': 'Security',
+  'privacyPolicy.security.title': 'Neural Security',
   'privacyPolicy.security.content':
-    'Your data is protected by the native security mechanisms of your operating system (iOS/Android). No data is transmitted over the internet.',
+    'Your data is protected by the native security mechanisms of your operating system (iOS/Android). No data is transmitted over the internet. All processing happens locally on your device.',
+  'privacyPolicy.security.badge': 'Local Storage Only',
 
   // Your Rights
   'privacyPolicy.rights.title': 'Your Rights',
-  'privacyPolicy.rights.delete': 'Delete all app data at any time by uninstalling the app',
-  'privacyPolicy.rights.modify': 'Modify or delete alarms and settings within the app',
-  'privacyPolicy.rights.reset': 'Reset preferences to default values',
+  'privacyPolicy.rights.deleteTitle': 'Right to Delete',
+  'privacyPolicy.rights.delete': 'Delete all app data at any time by uninstalling the application.',
+  'privacyPolicy.rights.modifyTitle': 'Right to Modify',
+  'privacyPolicy.rights.modify': 'Modify or delete alarms and settings within the app at any time.',
+  'privacyPolicy.rights.resetTitle': 'Right to Reset',
+  'privacyPolicy.rights.reset': 'Reset all preferences to default values through settings.',
 
-  // Permissions
-  'privacyPolicy.permissions.title': 'App Permissions',
-  'privacyPolicy.permissions.notifications': 'Notifications: To trigger alarms',
-  'privacyPolicy.permissions.audio': 'Audio: To play alarm sounds',
-  'privacyPolicy.permissions.vibration': 'Vibration: To provide haptic feedback',
-  'privacyPolicy.permissions.screen':
-    'Active Screen (optional): To keep screen on during cognitive challenges',
-
-  // Changes
-  'privacyPolicy.changes.title': 'Changes to This Policy',
-  'privacyPolicy.changes.content':
-    'We may update this policy occasionally. We will notify you of significant changes through app updates.',
-
-  // Contact
-  'privacyPolicy.contact.title': 'Contact',
-  'privacyPolicy.contact.content':
-    'If you have questions about this privacy policy, please contact us through the app support.',
+  // Footer
+  'privacyPolicy.footer.description':
+    'To exercise your privacy rights (GDPR/LGPD), contact our DPO.',
+  'privacyPolicy.footer.email': 'privacy@wakemind.app',
 };
