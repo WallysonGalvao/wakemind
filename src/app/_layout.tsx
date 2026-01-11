@@ -89,7 +89,16 @@ export default function RootLayout() {
       <HapticsProvider>
         <GluestackUIProvider mode={theme}>
           <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-            <Stack>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="onboarding"
+                options={{
+                  headerShown: false,
+                  animation: 'fade',
+                  gestureEnabled: false,
+                }}
+              />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="alarm/create-alarm" options={{ headerShown: false }} />
               <Stack.Screen
@@ -129,6 +138,20 @@ export default function RootLayout() {
                 name="settings/vibration-pattern"
                 options={{
                   headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="settings/privacy-policy"
+                options={{
+                  presentation: 'modal',
+                  headerShown: true,
+                }}
+              />
+              <Stack.Screen
+                name="settings/support"
+                options={{
+                  presentation: 'modal',
+                  headerShown: true,
                 }}
               />
             </Stack>

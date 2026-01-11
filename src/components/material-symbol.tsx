@@ -11,9 +11,114 @@ cssInterop(Text, {
   },
 });
 
+/**
+ * Material Symbols icon names with autocomplete support.
+ * Add new icon names here as needed.
+ * @see https://fonts.google.com/icons for full list
+ */
+export type MaterialSymbolName =
+  // Alarm & Time
+  | 'alarm'
+  | 'alarm_add'
+  | 'alarm_off'
+  | 'alarm_on'
+  | 'add_alarm'
+  | 'schedule'
+  | 'snooze'
+  | 'timer'
+  | 'timer_off'
+  | 'access_time'
+  | 'hourglass_empty'
+  | 'hourglass_full'
+  // Navigation & Actions
+  | 'arrow_back'
+  | 'arrow_forward'
+  | 'chevron_left'
+  | 'chevron_right'
+  | 'close'
+  | 'menu'
+  | 'more_vert'
+  | 'more_horiz'
+  | 'expand_more'
+  | 'expand_less'
+  // Status & Feedback
+  | 'check'
+  | 'check_circle'
+  | 'cancel'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'help'
+  | 'done'
+  | 'done_all'
+  // Common Actions
+  | 'add'
+  | 'remove'
+  | 'delete'
+  | 'edit'
+  | 'save'
+  | 'refresh'
+  | 'search'
+  | 'settings'
+  | 'share'
+  | 'copy'
+  | 'send'
+  | 'replay'
+  | 'backspace'
+  // Notifications
+  | 'notifications'
+  | 'notifications_active'
+  | 'notifications_off'
+  | 'do_not_disturb_on'
+  | 'do_not_disturb_off'
+  // Communication
+  | 'mail'
+  | 'chat'
+  | 'message'
+  | 'support_agent'
+  // Security & Privacy
+  | 'shield'
+  | 'shield_lock'
+  | 'verified_user'
+  | 'lock'
+  | 'lock_open'
+  | 'fingerprint'
+  | 'block'
+  // Media
+  | 'play_arrow'
+  | 'pause'
+  | 'stop'
+  | 'volume_up'
+  | 'volume_off'
+  | 'mic'
+  | 'mic_off'
+  // UI Elements
+  | 'circle'
+  | 'star'
+  | 'star_border'
+  | 'favorite'
+  | 'favorite_border'
+  | 'lightbulb'
+  | 'bolt'
+  // User
+  | 'person'
+  | 'person_add'
+  | 'group'
+  | 'account_circle'
+  // Misc
+  | 'home'
+  | 'language'
+  | 'translate'
+  | 'dark_mode'
+  | 'light_mode'
+  | 'visibility'
+  | 'visibility_off'
+  // Allow any string for icons not in the list
+  | (string & {});
+
 export interface MaterialSymbolProps {
   /** Icon name from Material Symbols (e.g., 'schedule', 'add_alarm', 'settings') */
-  name: string;
+  name: MaterialSymbolName;
   /** Icon size in pixels */
   size?: number;
   /** Icon color */

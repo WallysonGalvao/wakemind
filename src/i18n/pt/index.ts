@@ -1,12 +1,15 @@
-import accessibilityPT from './accessibility'
-import { appPT } from './app'
-import { backPT } from './back'
-import { countriesPT } from './countries'
-import { expoPT } from './expo'
-import { quickActionsPT } from './quick-actions'
-import { settingsPT } from './settings'
-import { sportsPT } from './sports'
-import { tabsPT } from './tabs'
+import accessibilityPT from './accessibility';
+import { appPT } from './app';
+import { backPT } from './back';
+import { countriesPT } from './countries';
+import { expoPT } from './expo';
+import { onboardingPT } from './onboarding';
+import { privacyPolicyPT } from './privacy-policy';
+import { quickActionsPT } from './quick-actions';
+import { settingsPT } from './settings';
+import { sportsPT } from './sports';
+import { supportPT } from './support';
+import { tabsPT } from './tabs';
 
 export default {
   ...appPT,
@@ -14,8 +17,11 @@ export default {
   ...countriesPT,
   ...sportsPT,
   ...expoPT,
+  ...onboardingPT,
   ...quickActionsPT,
   ...settingsPT,
   ...tabsPT,
   ...accessibilityPT,
-}
+  ...privacyPolicyPT,
+  ...supportPT,
+};
