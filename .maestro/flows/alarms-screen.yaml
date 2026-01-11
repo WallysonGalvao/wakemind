@@ -1,7 +1,7 @@
 # Alarms Screen Flow
 # Tests the main alarms screen functionality
 
-appId: com.wallyson.wakemind
+appId: com.wgsoftwares.wakemind
 
 ---
 - launchApp

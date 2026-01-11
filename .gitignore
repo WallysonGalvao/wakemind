@@ -67,3 +67,5 @@ maestro/.maestro
 maestro/results/
 maestro/screenshots/
 .maestro-recordings/
+
+.env.local
