@@ -1,7 +1,7 @@
 # Maestro Configuration for WakeMind
 # https://docs.maestro.dev/
 
-appId: com.wallyson.wakemind
+appId: com.wgsoftwares.wakemind
 
 # Default configurations
 onFlowStart:

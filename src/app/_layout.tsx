@@ -3,6 +3,7 @@ import '../../global.css';
 import { useEffect } from 'react';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -27,7 +28,7 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
-export default function RootLayout() {
+function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
@@ -162,6 +163,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default Sentry.wrap(RootLayout);
 
 const styles = StyleSheet.create({
   gestureHandlerRootView: {
