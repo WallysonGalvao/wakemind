@@ -5,6 +5,8 @@ export const settingsEN = {
   'settings.language': 'Language',
   'settings.soundHaptics': 'Sound & Haptics',
   'settings.behavior': 'Behavior',
+  'settings.general': 'General',
+  'settings.reviewOnboarding': 'Review Onboarding',
   'settings.about': 'About',
 
   // Theme
@@ -74,37 +76,46 @@ export const settingsEN = {
   // Alarm Tone Names
   'alarmTone.tone.neuro-strike-classic.name': 'Classic Alert',
   'alarmTone.tone.neuro-strike-classic.category': 'Cortical Activation',
-  'alarmTone.tone.neuro-strike-classic.description': 'Traditional alarm clock beep pattern for reliable awakening',
+  'alarmTone.tone.neuro-strike-classic.description':
+    'Traditional alarm clock beep pattern for reliable awakening',
   'alarmTone.tone.digital-pulse.name': 'Digital Pulse',
   'alarmTone.tone.digital-pulse.category': 'Rhythmic Sync',
   'alarmTone.tone.digital-pulse.description': 'Digital clock buzzer with precise timing intervals',
   'alarmTone.tone.morning-protocol.name': 'Morning Protocol',
   'alarmTone.tone.morning-protocol.category': 'Circadian Trigger',
-  'alarmTone.tone.morning-protocol.description': 'Gentle morning clock alarm designed for natural wake cycles',
+  'alarmTone.tone.morning-protocol.description':
+    'Gentle morning clock alarm designed for natural wake cycles',
   'alarmTone.tone.alert-surge.name': 'Alert Surge',
   'alarmTone.tone.alert-surge.category': 'Emergency Protocol',
-  'alarmTone.tone.alert-surge.description': 'High-priority alert alarm for guaranteed cognitive activation',
+  'alarmTone.tone.alert-surge.description':
+    'High-priority alert alarm for guaranteed cognitive activation',
   'alarmTone.tone.facility-breach.name': 'Facility Breach',
   'alarmTone.tone.facility-breach.category': 'Emergency Protocol',
   'alarmTone.tone.facility-breach.description': 'Security-grade alarm for maximum arousal response',
   'alarmTone.tone.retro-gamma.name': 'Retro Gamma',
   'alarmTone.tone.retro-gamma.category': 'Cortical Activation',
-  'alarmTone.tone.retro-gamma.description': 'Retro game-style emergency tones with nostalgic trigger response',
+  'alarmTone.tone.retro-gamma.description':
+    'Retro game-style emergency tones with nostalgic trigger response',
   'alarmTone.tone.vintage-warning.name': 'Vintage Warning',
   'alarmTone.tone.vintage-warning.category': 'Progressive Wake',
-  'alarmTone.tone.vintage-warning.description': 'Classic warning signal with gradual intensity buildup',
+  'alarmTone.tone.vintage-warning.description':
+    'Classic warning signal with gradual intensity buildup',
   'alarmTone.tone.space-command.name': 'Space Command',
   'alarmTone.tone.space-command.category': 'Sci-Fi Protocol',
-  'alarmTone.tone.space-command.description': 'Futuristic spaceship alarm for immersive awakening experience',
+  'alarmTone.tone.space-command.description':
+    'Futuristic spaceship alarm for immersive awakening experience',
   'alarmTone.tone.critical-alert.name': 'Critical Alert',
   'alarmTone.tone.critical-alert.category': 'Emergency Protocol',
-  'alarmTone.tone.critical-alert.description': 'Short, intense burst designed for immediate cortical response',
+  'alarmTone.tone.critical-alert.description':
+    'Short, intense burst designed for immediate cortical response',
   'alarmTone.tone.sci-fi-scanner.name': 'Sci-Fi Scanner',
   'alarmTone.tone.sci-fi-scanner.category': 'Sci-Fi Protocol',
-  'alarmTone.tone.sci-fi-scanner.description': 'Scanning frequency sweep for gradual alpha wave activation',
+  'alarmTone.tone.sci-fi-scanner.description':
+    'Scanning frequency sweep for gradual alpha wave activation',
   'alarmTone.tone.hint-notification.name': 'Hint Notification',
   'alarmTone.tone.hint-notification.category': 'Progressive Wake',
-  'alarmTone.tone.hint-notification.description': 'Gentle interface notification for light sleepers',
+  'alarmTone.tone.hint-notification.description':
+    'Gentle interface notification for light sleepers',
   'alarmTone.tone.rooster-morning.name': 'Rooster Morning',
   'alarmTone.tone.rooster-morning.category': 'Circadian Trigger',
   'alarmTone.tone.rooster-morning.description': 'Natural rooster crowing for biological awakening',
@@ -113,10 +124,12 @@ export const settingsEN = {
   'alarmTone.tone.rooster-short.description': 'Quick rooster crow for instant natural alert',
   'alarmTone.tone.casino-payout.name': 'Casino Payout',
   'alarmTone.tone.casino-payout.category': 'Dopamine Trigger',
-  'alarmTone.tone.casino-payout.description': 'Slot machine victory sound for reward-based awakening',
+  'alarmTone.tone.casino-payout.description':
+    'Slot machine victory sound for reward-based awakening',
   'alarmTone.tone.hall-alert.name': 'Hall Alert',
   'alarmTone.tone.hall-alert.category': 'Progressive Wake',
-  'alarmTone.tone.hall-alert.description': 'Spacious hall alert for gradual environmental awakening',
+  'alarmTone.tone.hall-alert.description':
+    'Spacious hall alert for gradual environmental awakening',
 
   // Common
   'common.active': 'ACTIVE',

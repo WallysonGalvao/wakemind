@@ -4,9 +4,21 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'wakemind',
+  name: 'WakeMind',
   slug: 'wakemind',
   version: '1.0.0',
+  owner: 'wallyson',
+  extra: {
+    eas: {
+      projectId: '45b9eb25-dff5-4cfe-9592-c8ea9c435316',
+    },
+  },
+  updates: {
+    url: 'https://u.expo.dev/45b9eb25-dff5-4cfe-9592-c8ea9c435316',
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'wakemind',
@@ -18,9 +30,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       UIBackgroundModes: ['audio', 'fetch'],
     },
-    entitlements: {
-      'com.apple.developer.usernotifications.critical-alerts': true,
-    },
+    // Temporarily commented out - requires Apple approval
+    // entitlements: {
+    //   'com.apple.developer.usernotifications.critical-alerts': true,
+    // },
   },
   android: {
     adaptiveIcon: {

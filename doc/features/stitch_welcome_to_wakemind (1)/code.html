@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Política de Privacidade - WakeMind</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3da8f5",
+              "background-light": "#f6f7f9",
+              "background-dark": "#0b1f32",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Custom scrollbar for a technical feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1f32; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a52; 
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3da8f5; 
+        }
+        
+        .technical-border {
+             background-image: linear-gradient(#3da8f5 33%, rgba(255,255,255,0) 0%);
+             background-position: left;
+             background-size: 1px 6px;
+             background-repeat: repeat-y;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white selection:bg-primary/30 selection:text-white antialiased overflow-x-hidden">
+<div class="relative min-h-screen w-full flex flex-col max-w-md mx-auto bg-background-dark shadow-2xl">
+<!-- Top Navigation -->
+<nav class="sticky top-0 z-50 bg-background-dark/95 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 py-3">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-white/5 transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:-translate-x-0.5 transition-transform" style="font-size: 24px;">arrow_back_ios_new</span>
+</button>
+<h1 class="text-base font-bold tracking-tight text-white/90">Política de Privacidade</h1>
+<div class="size-10"></div> <!-- Spacer for optical centering -->
+</nav>
+<!-- Content Area -->
+<main class="flex-1 px-6 py-6 pb-12 relative z-10">
+<!-- Metadata Header -->
+<div class="flex flex-col items-center mb-10 opacity-70">
+<div class="h-8 w-[1px] bg-gradient-to-b from-transparent via-primary/50 to-transparent mb-2"></div>
+<p class="text-xs font-medium tracking-widest uppercase text-primary/80">Última atualização</p>
+<p class="text-[11px] text-white/60 mt-0.5 font-mono">24 OUT 2023 // V.2.4</p>
+</div>
+<!-- Section 1: Introduction -->
+<section class="mb-12">
+<h2 class="text-primary text-xl font-bold mb-4 tracking-tight flex items-center gap-3">
+<span class="material-symbols-outlined text-primary/60 text-lg">terminal</span>
+                    Introdução
+                </h2>
+<p class="text-background-light/90 text-[15px] leading-loose font-light">
+                    Sua privacidade é fundamental para a experiência <span class="text-white font-medium">WakeMind</span>. Este documento detalha tecnicamente como protegemos seus dados neuro-adaptativos e garante transparência total sobre nossos protocolos de segurança.
+                </p>
+</section>
+<!-- Section 2: Data Collected -->
+<section class="mb-12 relative">
+<!-- Decorative vertical line -->
+<div class="absolute left-[7px] top-8 bottom-4 w-[1px] bg-white/10"></div>
+<h2 class="text-primary text-xl font-bold mb-6 tracking-tight flex items-center gap-3">
+<span class="material-symbols-outlined text-primary/60 text-lg">database</span>
+                    Dados que Coletamos
+                </h2>
+<div class="space-y-6 pl-1">
+<div class="flex gap-4 group">
+<div class="mt-1.5 relative z-10">
+<div class="size-3.5 bg-background-dark border border-primary rounded-sm flex items-center justify-center">
+<div class="size-1 bg-primary rounded-[1px]"></div>
+</div>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-medium text-sm mb-1">Credenciais de Acesso</h3>
+<p class="text-gray-400 text-xs leading-relaxed">Endereço de e-mail (hash criptografado) e token de autenticação para sincronização segura entre dispositivos.</p>
+</div>
+</div>
+<div class="flex gap-4 group">
+<div class="mt-1.5 relative z-10">
+<div class="size-3.5 bg-background-dark border border-primary/60 group-hover:border-primary transition-colors rounded-sm flex items-center justify-center">
+<div class="size-1 bg-primary/60 group-hover:bg-primary transition-colors rounded-[1px]"></div>
+</div>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-medium text-sm mb-1">Métricas de Foco</h3>
+<p class="text-gray-400 text-xs leading-relaxed">Duração das sessões, tipos de interrupção e padrões de horário para calibrar o algoritmo de produtividade pessoal.</p>
+</div>
+</div>
+<div class="flex gap-4 group">
+<div class="mt-1.5 relative z-10">
+<div class="size-3.5 bg-background-dark border border-primary/60 group-hover:border-primary transition-colors rounded-sm flex items-center justify-center">
+<div class="size-1 bg-primary/60 group-hover:bg-primary transition-colors rounded-[1px]"></div>
+</div>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-medium text-sm mb-1">Configurações do Dispositivo</h3>
+<p class="text-gray-400 text-xs leading-relaxed">Modelo do dispositivo e versão do OS para otimização de performance e ajustes de UI.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Data NOT Collected (Trust Signal) -->
+<section class="mb-12 relative overflow-hidden rounded-lg">
+<!-- Background Glow -->
+<div class="absolute inset-0 bg-primary/5"></div>
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+<div class="relative p-6 border-l-2 border-primary">
+<div class="flex items-center justify-between mb-5">
+<h2 class="text-primary text-xl font-bold tracking-tight">O que NÃO Coletamos</h2>
+<span class="material-symbols-outlined text-primary/40 animate-pulse">shield_lock</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-red-400/80 text-[18px]">block</span>
+<span class="text-background-light/80 text-sm font-medium">Conteúdo de suas notas</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-red-400/80 text-[18px]">block</span>
+<span class="text-background-light/80 text-sm font-medium">Localização GPS Precisa</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-red-400/80 text-[18px]">block</span>
+<span class="text-background-light/80 text-sm font-medium">Identificadores Publicitários</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-red-400/80 text-[18px]">block</span>
+<span class="text-background-light/80 text-sm font-medium">Gravações de Áudio Ambiente</span>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-white/5">
+<p class="text-xs text-primary/70 italic font-mono">
+                            "Seus pensamentos pertencem apenas a você. Nosso modelo de negócios é baseado em assinatura, não em venda de dados."
+                        </p>
+</div>
+</div>
+</section>
+<!-- Section 4: Security -->
+<section class="mb-8">
+<h2 class="text-primary text-xl font-bold mb-4 tracking-tight flex items-center gap-3">
+<span class="material-symbols-outlined text-primary/60 text-lg">encrypted</span>
+                    Segurança Neural
+                </h2>
+<p class="text-background-light/90 text-[15px] leading-loose font-light mb-4">
+                    Todo tráfego de dados é protegido por criptografia TLS 1.3 em trânsito e AES-256 em repouso. Nossos servidores são isolados e auditados trimestralmente.
+                </p>
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-white/5 border border-white/10">
+<span class="material-symbols-outlined text-green-400 text-sm">check_circle</span>
+<span class="text-xs font-mono text-gray-300">SOC 2 Compliant</span>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="border-t border-white/5 bg-background-dark/50 p-8 text-center relative z-10">
+<div class="flex justify-center mb-4">
+<span class="material-symbols-outlined text-white/20 text-3xl">fingerprint</span>
+</div>
+<p class="text-gray-500 text-xs mb-3 font-light">
+                Para exercer seus direitos de privacidade (GDPR/LGPD), entre em contato com nosso DPO.
+            </p>
+<a class="text-primary hover:text-white transition-colors text-sm font-medium underline underline-offset-4 decoration-primary/30 hover:decoration-primary" href="mailto:privacy@wakemind.app">
+                privacy@wakemind.app
+            </a>
+<div class="h-6"></div>
+</footer>
+<!-- Background texture/noise for depth -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03]" data-alt="Subtle noise texture overlay" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKPBvABAAIR54tu8T59Ommb1kUURzYUDJacRJP67O4SdDRusIPrmPS6S04eVOG1OEiFpoKJcprAbhOo9XI9DW5atMLRZUEcxnyteby45-Q0H7tL638QXpXYemuKi-EaNL-2dyfQ-V9jMVHKvpz8N5wDc8m2-kZQEMzzuQuBIObe-zSbf6-zZSgpdeUreVq7XnSXqa1t6a2Fj-TR-XT26FP5xI_pcLQlGETlsM8aEWS_pNceWl9yjILg4dh-U2kWEcF1iheAFfs-tl0'); z-index: 0;">
+</div>
+</div>
+</body></html>
