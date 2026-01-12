@@ -17,11 +17,13 @@ import { TimePickerWheel } from '../components/time-picker-wheel';
 import type { AlarmFormData } from '../schemas/alarm-form.schema';
 import { alarmFormSchema, getDefaultAlarmFormValues } from '../schemas/alarm-form.schema';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { BackupProtocolId } from '@/types/alarm-enums';
@@ -191,6 +193,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   // Determine mode
   const isEditMode = Boolean(alarmId);
 
+  // Analytics tracking
+  useAnalyticsScreen(isEditMode ? 'Edit Alarm' : 'Create Alarm');
+
   // CTA shadow style
   const ctaShadow = useCustomShadow({
     offset: { width: 0, height: 4 },
@@ -261,6 +266,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
   const handleDelete = useCallback(() => {
     if (alarmId) {
+      AnalyticsEvents.alarmDeleted(alarmId);
       deleteAlarm(alarmId);
       router.back();
     }
@@ -369,8 +375,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           difficulty: data.difficulty,
           protocols: data.protocols,
         });
+        AnalyticsEvents.alarmUpdated(alarmId);
       } else {
-        addAlarm({
+        const newAlarmInput = {
           time: timeString,
           period: displayPeriod,
           challenge: challengeLabel,
@@ -379,7 +386,10 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           schedule: scheduleLabel,
           difficulty: data.difficulty,
           protocols: data.protocols,
-        });
+        };
+        addAlarm(newAlarmInput);
+        // Track creation (ID will be generated, so we track with available info)
+        AnalyticsEvents.alarmCreated('new-alarm', timeString, data.challenge);
       }
 
       router.back();

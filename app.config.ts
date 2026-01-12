@@ -7,12 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: 'WakeMind',
   slug: 'wakemind',
   version: '1.0.0',
-  owner: 'wallyson',
-  extra: {
-    eas: {
-      projectId: '45b9eb25-dff5-4cfe-9592-c8ea9c435316',
-    },
-  },
+  owner: 'wgsoftwares',
   updates: {
     url: 'https://u.expo.dev/45b9eb25-dff5-4cfe-9592-c8ea9c435316',
   },
@@ -26,7 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   newArchEnabled: true,
   ios: {
     supportsTablet: false,
-    bundleIdentifier: 'com.wallyson.wakemind',
+    bundleIdentifier: 'com.wgsoftwares.wakemind',
     infoPlist: {
       UIBackgroundModes: ['audio', 'fetch'],
     },
@@ -43,7 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: './assets/images/android-icon-monochrome.png',
     },
     edgeToEdgeEnabled: true,
-    package: 'com.wallyson.wakemind',
+    package: 'com.wgsoftwares.wakemind',
     permissions: [
       'SCHEDULE_EXACT_ALARM',
       'USE_EXACT_ALARM',
@@ -71,13 +66,29 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         resizeMode: 'contain',
         backgroundColor: '#ffffff',
         dark: {
-          backgroundColor: '#000000',
+          backgroundColor: '#302841',
         },
+      },
+    ],
+    [
+      '@sentry/react-native/expo',
+      {
+        url: 'https://sentry.io/',
+        project: 'wakemind',
+        organization: 'wgsoftwares',
       },
     ],
   ],
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
+  },
+  extra: {
+    appId: process.env.APP_ID,
+    sentryDNS: process.env.SENTRY_DSN,
+    mixpanelToken: process.env.MIXPANEL_TOKEN,
+    eas: {
+      projectId: process.env.EAS_PROJECT_ID || '',
+    },
   },
 });

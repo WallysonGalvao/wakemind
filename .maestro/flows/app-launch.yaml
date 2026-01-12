@@ -1,7 +1,7 @@
 # App Launch Flow
 # Verifies that the app launches successfully and displays the main screen
 
-appId: com.wallyson.wakemind
+appId: com.wgsoftwares.wakemind
 
 ---
 - launchApp

@@ -7,12 +7,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import type { VibrationPattern } from '@/types/settings-enums';
@@ -137,6 +139,9 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colorScheme = useColorScheme();
+
+  // Analytics tracking
+  useAnalyticsScreen('Settings');
   const {
     theme,
     setTheme,
@@ -177,7 +182,9 @@ export default function SettingsScreen() {
   };
 
   const handleDarkModeToggle = (value: boolean) => {
-    setTheme(value ? ThemeMode.DARK : ThemeMode.LIGHT);
+    const newTheme = value ? ThemeMode.DARK : ThemeMode.LIGHT;
+    setTheme(newTheme);
+    AnalyticsEvents.themeChanged(newTheme);
   };
 
   return (
@@ -287,20 +294,22 @@ export default function SettingsScreen() {
         </View>
 
         {/* General Section */}
-        <View className="mb-2 mt-8">
-          <SectionHeader title={t('settings.general')} />
-          <SectionCard>
-            <SettingRow
-              icon="help_center"
-              iconBgColor="bg-purple-100 dark:bg-purple-900/30"
-              iconColor={COLORS.blue[500]}
-              title={t('settings.reviewOnboarding')}
-              onPress={() => router.push('/onboarding')}
-              isFirst
-              isLast
-            />
-          </SectionCard>
-        </View>
+        {__DEV__ ? (
+          <View className="mb-2 mt-8">
+            <SectionHeader title={t('settings.general')} />
+            <SectionCard>
+              <SettingRow
+                icon="help_center"
+                iconBgColor="bg-purple-100 dark:bg-purple-900/30"
+                iconColor={COLORS.blue[500]}
+                title={t('settings.reviewOnboarding')}
+                onPress={() => router.push('/onboarding')}
+                isFirst
+                isLast
+              />
+            </SectionCard>
+          </View>
+        ) : null}
 
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">

@@ -21,9 +21,11 @@ import {
   MemoryChallengeComponent,
 } from '../components/challenges';
 
+import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { getToneAudioSource } from '@/constants/alarm-tones';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { VibrationService } from '@/services/vibration-service';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
@@ -31,6 +33,9 @@ import { useSettingsStore } from '@/stores/use-settings-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
 
 export default function AlarmTriggerScreen() {
+  // Analytics tracking
+  useAnalyticsScreen('Alarm Trigger');
+
   const params = useLocalSearchParams<{
     alarmId?: string;
     time?: string;
@@ -88,6 +93,9 @@ export default function AlarmTriggerScreen() {
 
   // Start animations
   useEffect(() => {
+    // Track challenge started
+    AnalyticsEvents.challengeStarted(challengeType, difficulty);
+
     pulseScale.value = withRepeat(
       withSequence(withTiming(1.02, { duration: 1000 }), withTiming(1, { duration: 1000 })),
       -1,
@@ -120,6 +128,12 @@ export default function AlarmTriggerScreen() {
   // Keep screen awake and play sound
   useEffect(() => {
     let isMounted = true;
+
+    // Track alarm triggered
+    if (alarm) {
+      const displayTime = params.time || alarm.time || '00:00';
+      AnalyticsEvents.alarmTriggered(alarm.id, displayTime);
+    }
 
     const setup = async () => {
       try {
@@ -187,6 +201,7 @@ export default function AlarmTriggerScreen() {
     await stopAlarm();
 
     if (alarm) {
+      AnalyticsEvents.alarmSnoozed(alarm.id);
       await AlarmScheduler.snoozeAlarm(alarm, 5);
     }
 
@@ -197,6 +212,8 @@ export default function AlarmTriggerScreen() {
     await stopAlarm();
 
     if (alarm) {
+      // Track alarm dismissed with challenge info
+      AnalyticsEvents.alarmDismissed(alarm.id, challengeType, attempt);
       await AlarmScheduler.dismissAlarm(alarm);
 
       // Schedule wake check if protocol is enabled
@@ -206,20 +223,27 @@ export default function AlarmTriggerScreen() {
     }
 
     router.back();
-  }, [alarm, stopAlarm, isWakeCheckEnabled]);
+  }, [alarm, stopAlarm, isWakeCheckEnabled, challengeType, attempt]);
 
   // Challenge callbacks
   const handleChallengeSuccess = useCallback(async () => {
+    // Track challenge completed
+    AnalyticsEvents.challengeCompleted(challengeType, difficulty, attempt);
     await handleDismiss();
-  }, [handleDismiss]);
+  }, [handleDismiss, challengeType, difficulty, attempt]);
 
   const handleChallengeAttempt = useCallback(
     (correct: boolean) => {
-      if (!correct && attempt < maxAttempts) {
-        setAttempt((prev) => prev + 1);
+      if (!correct) {
+        if (attempt >= maxAttempts) {
+          // Track challenge failed after max attempts
+          AnalyticsEvents.challengeFailed(challengeType, difficulty);
+        } else if (attempt < maxAttempts) {
+          setAttempt((prev) => prev + 1);
+        }
       }
     },
-    [attempt, maxAttempts]
+    [attempt, maxAttempts, challengeType, difficulty]
   );
 
   const containerStyle = useMemo(
