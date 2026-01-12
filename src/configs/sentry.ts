@@ -4,20 +4,7 @@ import Constants from 'expo-constants';
 
 import { Platform } from 'react-native';
 
-import type { UserOrm } from '@/graphql';
-import { useUserStore } from '@/stores/use-user-store';
-
 const isDev = __DEV__;
-
-function getSentryUser(user: UserOrm | null): Sentry.User | null {
-  if (!user || !user.id) return null;
-
-  return {
-    id: user.id ?? undefined,
-    email: user.email ?? undefined,
-    username: user.user_name ?? undefined,
-  };
-}
 
 Sentry.init({
   dsn: Constants.expoConfig?.extra?.sentryDNS,
@@ -61,5 +48,3 @@ Sentry.init({
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   spotlight: isDev,
 });
-
-Sentry.setUser(getSentryUser(useUserStore.getState().user));
