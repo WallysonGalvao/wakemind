@@ -8326,6 +8326,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-application@npm:~7.0.8":
+  version: 7.0.8
+  resolution: "expo-application@npm:7.0.8"
+  peerDependencies:
+    expo: "*"
+  checksum: 15b6db7b4854b50a396e54e143b57187711788aa45e1719e4b4b4c5b9d29b7f97efe2d1256ced47d8c2ad95fe88a367b1f2be27e06a8dd17b38251b403fb8585
+  languageName: node
+  linkType: hard
+
 "expo-asset@npm:~12.0.12":
   version: 12.0.12
   resolution: "expo-asset@npm:12.0.12"
@@ -15584,6 +15593,7 @@ __metadata:
     eslint-plugin-react-you-might-not-need-an-effect: ^0.8.3
     eslint-plugin-unused-imports: ^4.3.0
     expo: ~54.0.30
+    expo-application: ~7.0.8
     expo-av: ~16.0.8
     expo-blur: ~15.0.8
     expo-constants: ~18.0.12
