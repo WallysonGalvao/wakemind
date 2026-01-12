@@ -12,10 +12,9 @@ import { StatusBar } from 'expo-status-bar';
 import { HapticsProvider } from 'react-native-custom-haptics';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { AppState, Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
-import { AnalyticsEvents } from '@/analytics';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
@@ -44,35 +43,44 @@ function RootLayout() {
   useEffect(() => {
     if (Platform.OS === 'web') return;
 
-    const initializeServices = async () => {
-      try {
-        await AlarmScheduler.initialize();
-        await NotificationHandler.initialize();
+    // Add delay to ensure app is fully mounted before initializing services
+    const timeoutId = setTimeout(() => {
+      const initializeServices = async () => {
+        try {
+          console.log('[RootLayout] Starting services initialization...');
+          await AlarmScheduler.initialize();
+          console.log('[RootLayout] AlarmScheduler initialized');
 
-        // Set up callbacks for notification events
-        NotificationHandler.setCallbacks({
-          getAlarm: getAlarmById,
-          onAlarmTriggered: (alarmId) => {
-            console.log('[RootLayout] Alarm triggered:', alarmId);
-          },
-          onSnooze: (alarmId) => {
-            console.log('[RootLayout] Alarm snoozed:', alarmId);
-          },
-          onDismiss: (alarmId) => {
-            console.log('[RootLayout] Alarm dismissed:', alarmId);
-          },
-        });
+          await NotificationHandler.initialize();
+          console.log('[RootLayout] NotificationHandler initialized');
 
-        // Sync alarms with scheduler on app start
-        await syncAlarmsWithScheduler();
-      } catch (error) {
-        console.error('[RootLayout] Failed to initialize services:', error);
-      }
-    };
+          // Set up callbacks for notification events
+          NotificationHandler.setCallbacks({
+            getAlarm: getAlarmById,
+            onAlarmTriggered: (alarmId) => {
+              console.log('[RootLayout] Alarm triggered:', alarmId);
+            },
+            onSnooze: (alarmId) => {
+              console.log('[RootLayout] Alarm snoozed:', alarmId);
+            },
+            onDismiss: (alarmId) => {
+              console.log('[RootLayout] Alarm dismissed:', alarmId);
+            },
+          });
 
-    initializeServices();
+          // Sync alarms with scheduler on app start
+          await syncAlarmsWithScheduler();
+          console.log('[RootLayout] Services initialized successfully');
+        } catch (error) {
+          console.error('[RootLayout] Failed to initialize services:', error);
+        }
+      };
+
+      initializeServices();
+    }, 1000); // Wait 1 second after mount
 
     return () => {
+      clearTimeout(timeoutId);
       NotificationHandler.cleanup();
     };
   }, [getAlarmById, syncAlarmsWithScheduler]);
@@ -82,26 +90,6 @@ function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
-  // Track app lifecycle for analytics
-  useEffect(() => {
-    if (Platform.OS === 'web') return;
-
-    // Track app opened
-    AnalyticsEvents.appOpened();
-
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      if (nextAppState === 'background') {
-        AnalyticsEvents.appBackgrounded();
-      } else if (nextAppState === 'active') {
-        AnalyticsEvents.appOpened();
-      }
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
 
   if (!fontsLoaded) {
     return null;

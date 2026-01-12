@@ -24,7 +24,6 @@ import { EmptyState } from '../components/empty-state';
 import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
-import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
@@ -51,9 +50,6 @@ export default function AlarmsScreen() {
   const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-
-  // Track screen view
-  useAnalyticsScreen('Alarms');
 
   // Sort alarms with useMemo to prevent infinite re-renders
   const sortedAlarms = useMemo(() => sortAlarmsByTime(alarms), [alarms]);

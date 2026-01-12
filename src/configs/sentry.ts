@@ -22,13 +22,13 @@ Sentry.init({
   // Configure Session Replay
   profilesSampleRate: isDev ? 1.0 : 0.05, // Only during debugging, change to lower value in production
   // replaysSessionSampleRate: isDev ? 0.1 : 0.01, // Only during debugging, change to lower value in production
-  replaysOnErrorSampleRate: 1.0,
+  // replaysOnErrorSampleRate: 1.0,
   integrations: [
-    Sentry.mobileReplayIntegration({
-      maskAllText: false,
-      maskAllImages: false,
-      maskAllVectors: false,
-    }),
+    // Sentry.mobileReplayIntegration({
+    //   maskAllText: false,
+    //   maskAllImages: false,
+    //   maskAllVectors: false,
+    // }),
     Sentry.feedbackIntegration(),
     ...(isDev ? [Sentry.spotlightIntegration()] : []),
   ],
