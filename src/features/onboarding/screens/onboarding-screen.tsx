@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { FlatList } from 'react-native';
 import { Platform, StatusBar, StyleSheet, useWindowDimensions, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
@@ -27,7 +28,6 @@ import { SplitButton } from '@/features/onboarding/components/split-button';
 import { ONBOARDING_ITEMS } from '@/features/onboarding/constants/onboarding-config';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AnalyticsEvents } from '@/services/analytics';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
 export default function OnboardingScreen() {

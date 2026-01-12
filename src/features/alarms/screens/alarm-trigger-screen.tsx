@@ -21,12 +21,12 @@ import {
   MemoryChallengeComponent,
 } from '../components/challenges';
 
+import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { getToneAudioSource } from '@/constants/alarm-tones';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
-import { AnalyticsEvents } from '@/services/analytics';
 import { VibrationService } from '@/services/vibration-service';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import { useSettingsStore } from '@/stores/use-settings-store';

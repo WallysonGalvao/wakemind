@@ -5,9 +5,9 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { Platform } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
-import { AnalyticsEvents } from '@/services/analytics';
 import type { Alarm } from '@/types/alarm';
 import type { ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
 import { sortAlarmsByTime } from '@/utils/alarm-sorting';

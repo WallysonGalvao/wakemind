@@ -63,8 +63,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     'expo-font',
     '@react-native-firebase/app',
-    '@react-native-firebase/analytics',
-    '@react-native-firebase/crashlytics',
     [
       'expo-splash-screen',
       {
