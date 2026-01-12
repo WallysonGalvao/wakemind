@@ -8,6 +8,7 @@ import { Linking, Pressable, ScrollView, View } from 'react-native';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 
 // ============================================================================
 // Sub-Components
@@ -58,6 +59,9 @@ function NotCollectedItem({ text }: { text: string }) {
 export default function PrivacyPolicyScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
+
+  // Analytics tracking
+  useAnalyticsScreen('Privacy Policy');
   const router = useRouter();
 
   useLayoutEffect(() => {

@@ -1,5 +1,4 @@
 import type { Alarm } from '@/types/alarm';
-import type { Period } from '@/types/alarm-enums';
 
 /**
  * Converts alarm time string (HH:MM in 24-hour format) to minutes from midnight
@@ -16,7 +15,7 @@ import type { Period } from '@/types/alarm-enums';
  * - 13:00 = 780 minutes
  * - 23:59 = 1439 minutes
  */
-export function alarmTimeToMinutes(time: string, period: Period): number {
+export function alarmTimeToMinutes(time: string): number {
   const [hourStr, minuteStr] = time.split(':');
   const hour = parseInt(hourStr, 10);
   const minute = parseInt(minuteStr, 10);

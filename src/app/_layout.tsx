@@ -1,8 +1,11 @@
 import '../../global.css';
+import '../analytics';
+import '../configs';
 
 import { useEffect } from 'react';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -27,7 +30,7 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
-export default function RootLayout() {
+function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
@@ -41,35 +44,44 @@ export default function RootLayout() {
   useEffect(() => {
     if (Platform.OS === 'web') return;
 
-    const initializeServices = async () => {
-      try {
-        await AlarmScheduler.initialize();
-        await NotificationHandler.initialize();
+    // Add delay to ensure app is fully mounted before initializing services
+    const timeoutId = setTimeout(() => {
+      const initializeServices = async () => {
+        try {
+          console.log('[RootLayout] Starting services initialization...');
+          await AlarmScheduler.initialize();
+          console.log('[RootLayout] AlarmScheduler initialized');
 
-        // Set up callbacks for notification events
-        NotificationHandler.setCallbacks({
-          getAlarm: getAlarmById,
-          onAlarmTriggered: (alarmId) => {
-            console.log('[RootLayout] Alarm triggered:', alarmId);
-          },
-          onSnooze: (alarmId) => {
-            console.log('[RootLayout] Alarm snoozed:', alarmId);
-          },
-          onDismiss: (alarmId) => {
-            console.log('[RootLayout] Alarm dismissed:', alarmId);
-          },
-        });
+          await NotificationHandler.initialize();
+          console.log('[RootLayout] NotificationHandler initialized');
 
-        // Sync alarms with scheduler on app start
-        await syncAlarmsWithScheduler();
-      } catch (error) {
-        console.error('[RootLayout] Failed to initialize services:', error);
-      }
-    };
+          // Set up callbacks for notification events
+          NotificationHandler.setCallbacks({
+            getAlarm: getAlarmById,
+            onAlarmTriggered: (alarmId) => {
+              console.log('[RootLayout] Alarm triggered:', alarmId);
+            },
+            onSnooze: (alarmId) => {
+              console.log('[RootLayout] Alarm snoozed:', alarmId);
+            },
+            onDismiss: (alarmId) => {
+              console.log('[RootLayout] Alarm dismissed:', alarmId);
+            },
+          });
 
-    initializeServices();
+          // Sync alarms with scheduler on app start
+          await syncAlarmsWithScheduler();
+          console.log('[RootLayout] Services initialized successfully');
+        } catch (error) {
+          console.error('[RootLayout] Failed to initialize services:', error);
+        }
+      };
+
+      initializeServices();
+    }, 1000); // Wait 1 second after mount
 
     return () => {
+      clearTimeout(timeoutId);
       NotificationHandler.cleanup();
     };
   }, [getAlarmById, syncAlarmsWithScheduler]);
@@ -162,6 +174,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default Sentry.wrap(RootLayout);
 
 const styles = StyleSheet.create({
   gestureHandlerRootView: {

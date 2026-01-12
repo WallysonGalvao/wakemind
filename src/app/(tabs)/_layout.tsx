@@ -3,9 +3,9 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+import { MaterialSymbol } from '@/components/material-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-import { MaterialSymbol } from '@/components/material-symbol';
 
 export default function TabLayout() {
   const { t } = useTranslation();

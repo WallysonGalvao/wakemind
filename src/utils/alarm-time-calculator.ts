@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { alarmTimeToMinutes } from './alarm-sorting';
 
 import type { Alarm } from '@/types/alarm';
-import type { Period } from '@/types/alarm-enums';
 import { Schedule } from '@/types/alarm-enums';
 
 /**
@@ -58,7 +57,7 @@ export function parseScheduleToDays(schedule: string): number[] {
  * Parse time string (already in 24-hour format: HH:MM)
  * Period is stored for display purposes only
  */
-export function convertTo24Hour(time: string, period: Period): { hour: number; minute: number } {
+export function convertTo24Hour(time: string): { hour: number; minute: number } {
   const [hourStr, minuteStr] = time.split(':');
   const hour = parseInt(hourStr, 10);
   const minute = parseInt(minuteStr, 10);
@@ -73,8 +72,8 @@ export function convertTo24Hour(time: string, period: Period): { hour: number; m
  */
 export function getNextTriggerDate(alarm: Alarm): Date {
   const now = dayjs();
-  const { hour, minute } = convertTo24Hour(alarm.time, alarm.period);
-  const alarmMinutesInDay = alarmTimeToMinutes(alarm.time, alarm.period);
+  const { hour, minute } = convertTo24Hour(alarm.time);
+  const alarmMinutesInDay = alarmTimeToMinutes(alarm.time);
   const currentMinutesInDay = now.hour() * 60 + now.minute();
 
   // For "Once" schedule, return today if time hasn't passed, otherwise tomorrow
