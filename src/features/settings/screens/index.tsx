@@ -7,14 +7,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
-import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import type { VibrationPattern } from '@/types/settings-enums';
@@ -153,9 +151,6 @@ export default function SettingsScreen() {
     setSnoozeProtection,
   } = useSettingsStore();
 
-  // Track screen view
-  useAnalyticsScreen('Settings');
-
   const version = Constants.expoConfig?.version || '0.0.0';
 
   // Derived state
@@ -184,7 +179,6 @@ export default function SettingsScreen() {
   const handleDarkModeToggle = (value: boolean) => {
     const newTheme = value ? ThemeMode.DARK : ThemeMode.LIGHT;
     setTheme(newTheme);
-    AnalyticsEvents.themeChanged(newTheme);
   };
 
   return (

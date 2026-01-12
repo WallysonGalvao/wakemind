@@ -14,14 +14,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import type { AlarmTone } from '@/constants/alarm-tones';
 import { ALARM_TONES, getToneAudioSource } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
-import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
@@ -214,9 +212,6 @@ export default function AlarmToneScreen() {
   const [playingToneId, setPlayingToneId] = useState<string | null>(null);
   const soundRef = useRef<Audio.Sound | null>(null);
 
-  // Track screen view
-  useAnalyticsScreen('AlarmTone');
-
   // Cleanup sound on unmount
   useEffect(() => {
     return () => {
@@ -283,7 +278,6 @@ export default function AlarmToneScreen() {
 
   const handleSelect = (toneId: string) => {
     setAlarmToneId(toneId);
-    AnalyticsEvents.alarmToneChanged(toneId);
   };
 
   return (
