@@ -12,13 +12,14 @@ import { StatusBar } from 'expo-status-bar';
 import { HapticsProvider } from 'react-native-custom-haptics';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Platform, StyleSheet } from 'react-native';
+import { AppState, Platform, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
+import { AnalyticsEvents } from '@/services/analytics';
 import { NotificationHandler } from '@/services/notification-handler';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 
@@ -81,6 +82,26 @@ function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  // Track app lifecycle for analytics
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+
+    // Track app opened
+    AnalyticsEvents.appOpened();
+
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'background') {
+        AnalyticsEvents.appBackgrounded();
+      } else if (nextAppState === 'active') {
+        AnalyticsEvents.appOpened();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   if (!fontsLoaded) {
     return null;

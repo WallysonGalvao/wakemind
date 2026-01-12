@@ -24,7 +24,9 @@ import {
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { getToneAudioSource } from '@/constants/alarm-tones';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
+import { AnalyticsEvents } from '@/services/analytics';
 import { VibrationService } from '@/services/vibration-service';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -80,6 +82,17 @@ export default function AlarmTriggerScreen() {
   // Challenge state
   const [attempt, setAttempt] = useState(1);
   const maxAttempts = 3;
+
+  // Track screen view
+  useAnalyticsScreen('AlarmTrigger');
+
+  // Track alarm triggered
+  useEffect(() => {
+    if (params.alarmId && params.time) {
+      AnalyticsEvents.alarmTriggered(params.alarmId, params.time);
+      AnalyticsEvents.challengeStarted(challengeType, difficulty);
+    }
+  }, [params.alarmId, params.time, challengeType, difficulty]);
 
   // Animation values
   const pulseScale = useSharedValue(1);
@@ -187,6 +200,8 @@ export default function AlarmTriggerScreen() {
     await stopAlarm();
 
     if (alarm) {
+      // Track snooze
+      AnalyticsEvents.alarmSnoozed(alarm.id);
       await AlarmScheduler.snoozeAlarm(alarm, 5);
     }
 
@@ -197,6 +212,9 @@ export default function AlarmTriggerScreen() {
     await stopAlarm();
 
     if (alarm) {
+      // Track alarm dismissed with challenge info
+      AnalyticsEvents.alarmDismissed(alarm.id, challengeType, attempt);
+      AnalyticsEvents.challengeCompleted(challengeType, difficulty, attempt);
       await AlarmScheduler.dismissAlarm(alarm);
 
       // Schedule wake check if protocol is enabled
