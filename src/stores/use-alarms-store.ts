@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 
 import type { BackupProtocol } from '@/features/alarms/components/backup-protocols-section';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
+import { AnalyticsEvents } from '@/services/analytics';
 import type { Alarm } from '@/types/alarm';
 import type { ChallengeType, DifficultyLevel, Period } from '@/types/alarm-enums';
 import { sortAlarmsByTime } from '@/utils/alarm-sorting';
@@ -80,6 +81,9 @@ export const useAlarmsStore = create<AlarmsState>()(
           }
         }
 
+        // Track alarm creation
+        AnalyticsEvents.alarmCreated(newAlarm.id, newAlarm.time, newAlarm.challengeType);
+
         // Add alarm to state
         set({
           alarms: [...state.alarms, newAlarm],
@@ -136,6 +140,9 @@ export const useAlarmsStore = create<AlarmsState>()(
           }
         }
 
+        // Track alarm update
+        AnalyticsEvents.alarmUpdated(id);
+
         // Update alarm in state
         set({
           alarms: state.alarms.map((alarm) => (alarm.id === id ? mergedAlarm : alarm)),
@@ -151,6 +158,9 @@ export const useAlarmsStore = create<AlarmsState>()(
             console.error('[AlarmsStore] Failed to cancel alarm:', error);
           }
         }
+
+        // Track alarm deletion
+        AnalyticsEvents.alarmDeleted(id);
 
         set((state) => ({
           alarms: state.alarms.filter((alarm) => alarm.id !== id),
@@ -177,6 +187,9 @@ export const useAlarmsStore = create<AlarmsState>()(
             console.error('[AlarmsStore] Failed to toggle alarm schedule:', error);
           }
         }
+
+        // Track alarm toggle
+        AnalyticsEvents.alarmToggled(id, newEnabledState);
 
         set({
           alarms: state.alarms.map((a) => (a.id === id ? { ...a, isEnabled: newEnabledState } : a)),

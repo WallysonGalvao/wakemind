@@ -10,7 +10,9 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AnalyticsEvents } from '@/services/analytics';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { Language } from '@/types/settings-enums';
 
@@ -129,8 +131,12 @@ export default function LanguageScreen() {
 
   const { language, setLanguage } = useSettingsStore();
 
+  // Track screen view
+  useAnalyticsScreen('Language');
+
   const handleSelect = (languageId: Language) => {
     setLanguage(languageId);
+    AnalyticsEvents.languageChanged(languageId);
   };
 
   return (

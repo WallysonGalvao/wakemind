@@ -12,7 +12,9 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
 import { HAPTIC_TEST_PATTERNS } from '@/constants/haptic-patterns';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AnalyticsEvents } from '@/services/analytics';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { VibrationPattern } from '@/types/settings-enums';
 
@@ -185,6 +187,9 @@ export default function VibrationPatternScreen() {
 
   const { vibrationPattern, setVibrationPattern } = useSettingsStore();
 
+  // Track screen view
+  useAnalyticsScreen('VibrationPattern');
+
   // Cleanup haptics on unmount
   useEffect(() => {
     return () => {
@@ -203,6 +208,7 @@ export default function VibrationPatternScreen() {
   const handleSelect = useCallback(
     (pattern: VibrationPattern) => {
       setVibrationPattern(pattern);
+      AnalyticsEvents.vibrationPatternChanged(pattern);
       const testPattern = HAPTIC_TEST_PATTERNS[pattern];
       trigger(testPattern);
     },

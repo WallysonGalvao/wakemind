@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,9 @@ import type { OnboardingItemData } from '@/features/onboarding/components/onboar
 import { OnboardingItem } from '@/features/onboarding/components/onboarding-item';
 import { SplitButton } from '@/features/onboarding/components/split-button';
 import { ONBOARDING_ITEMS } from '@/features/onboarding/constants/onboarding-config';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AnalyticsEvents } from '@/services/analytics';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
 export default function OnboardingScreen() {
@@ -42,6 +44,14 @@ export default function OnboardingScreen() {
   const isDark = colorScheme === 'dark';
   const completeOnboarding = useSettingsStore((state) => state.completeOnboarding);
   const { pulseIntensity, triggerPulse } = usePulseTrigger();
+
+  // Track screen view
+  useAnalyticsScreen('Onboarding');
+
+  // Track onboarding started
+  useEffect(() => {
+    AnalyticsEvents.onboardingStarted();
+  }, []);
 
   const colors = {
     background: isDark ? COLORS.gray[900] : COLORS.gray[50],
@@ -64,9 +74,15 @@ export default function OnboardingScreen() {
   );
 
   const handleSkipOrContinue = useCallback(() => {
+    // Track skip or complete based on current step
+    if (activeIndex < ONBOARDING_ITEMS.length - 1) {
+      AnalyticsEvents.onboardingSkipped(activeIndex);
+    } else {
+      AnalyticsEvents.onboardingCompleted();
+    }
     completeOnboarding();
     router.replace('/(tabs)');
-  }, [completeOnboarding]);
+  }, [completeOnboarding, activeIndex]);
 
   const handleNext = useCallback(() => {
     triggerPulse();
