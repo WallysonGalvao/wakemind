@@ -7,11 +7,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
 import { HAPTIC_TEST_PATTERNS } from '@/constants/haptic-patterns';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { VibrationPattern } from '@/types/settings-enums';
@@ -182,6 +184,9 @@ export default function VibrationPatternScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { trigger, stop } = useHaptics();
+
+  // Analytics tracking
+  useAnalyticsScreen('Vibration Pattern Settings');
 
   const { vibrationPattern, setVibrationPattern } = useSettingsStore();
 
