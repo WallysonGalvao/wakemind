@@ -287,20 +287,22 @@ export default function SettingsScreen() {
         </View>
 
         {/* General Section */}
-        <View className="mb-2 mt-8">
-          <SectionHeader title={t('settings.general')} />
-          <SectionCard>
-            <SettingRow
-              icon="help_center"
-              iconBgColor="bg-purple-100 dark:bg-purple-900/30"
-              iconColor={COLORS.blue[500]}
-              title={t('settings.reviewOnboarding')}
-              onPress={() => router.push('/onboarding')}
-              isFirst
-              isLast
-            />
-          </SectionCard>
-        </View>
+        {__DEV__ ? (
+          <View className="mb-2 mt-8">
+            <SectionHeader title={t('settings.general')} />
+            <SectionCard>
+              <SettingRow
+                icon="help_center"
+                iconBgColor="bg-purple-100 dark:bg-purple-900/30"
+                iconColor={COLORS.blue[500]}
+                title={t('settings.reviewOnboarding')}
+                onPress={() => router.push('/onboarding')}
+                isFirst
+                isLast
+              />
+            </SectionCard>
+          </View>
+        ) : null}
 
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">

@@ -25,6 +25,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       UIBackgroundModes: ['audio', 'fetch'],
     },
+    googleServicesFile:
+      process.env.IOS_GOOGLE_SERVICES_FILE || './google-services/GoogleService-Info.plist',
     // Temporarily commented out - requires Apple approval
     // entitlements: {
     //   'com.apple.developer.usernotifications.critical-alerts': true,
@@ -49,6 +51,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'WAKE_LOCK',
       'POST_NOTIFICATIONS',
     ],
+    googleServicesFile:
+      process.env.ANDROID_GOOGLE_SERVICES_FILE || './google-services/google-services.json',
   },
   web: {
     bundler: 'metro',
@@ -58,6 +62,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     'expo-font',
+    '@react-native-firebase/app',
+    '@react-native-firebase/analytics',
+    '@react-native-firebase/crashlytics',
     [
       'expo-splash-screen',
       {
@@ -66,7 +73,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         resizeMode: 'contain',
         backgroundColor: '#ffffff',
         dark: {
-          backgroundColor: '#000000',
+          backgroundColor: '#0F1621',
         },
       },
     ],
