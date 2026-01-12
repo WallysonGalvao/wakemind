@@ -15,11 +15,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppState, Platform, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
+import { AnalyticsEvents } from '@/analytics';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
-import { AnalyticsEvents } from '@/services/analytics';
 import { NotificationHandler } from '@/services/notification-handler';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 

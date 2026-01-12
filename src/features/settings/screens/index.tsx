@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
@@ -15,7 +16,6 @@ import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AnalyticsEvents } from '@/services/analytics';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import type { VibrationPattern } from '@/types/settings-enums';
 import { Language, ThemeMode } from '@/types/settings-enums';

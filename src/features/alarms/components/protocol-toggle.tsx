@@ -2,11 +2,11 @@ import React from 'react';
 
 import { View } from 'react-native';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
 
 interface ProtocolToggleProps {

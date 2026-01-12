@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { logScreenView } from '@/services/analytics';
+import { logScreenView } from '@/analytics';
 
 /**
  * Hook to track screen views in Firebase Analytics
