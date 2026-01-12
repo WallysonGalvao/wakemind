@@ -21,9 +21,11 @@ import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
 import { EmptyState } from '../components/empty-state';
 
+import { AnalyticsEvents } from '@/analytics';
 import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
@@ -48,6 +50,9 @@ export default function AlarmsScreen() {
   const alarms = useAlarmsStore((state) => state.alarms);
   const toggleAlarm = useAlarmsStore((state) => state.toggleAlarm);
   const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
+
+  // Analytics tracking
+  useAnalyticsScreen('Alarms');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -70,13 +75,19 @@ export default function AlarmsScreen() {
 
   const handleToggleAlarm = useCallback(
     (id: string) => {
+      const alarm = alarms.find((a) => a.id === id);
+      if (alarm) {
+        const newState = !alarm.isEnabled;
+        AnalyticsEvents.alarmToggled(id, newState);
+      }
       toggleAlarm(id);
     },
-    [toggleAlarm]
+    [toggleAlarm, alarms]
   );
 
   const handleDeleteAlarm = useCallback(
     (id: string) => {
+      AnalyticsEvents.alarmDeleted(id);
       deleteAlarm(id);
       // If no more alarms, exit edit mode
       if (sortedAlarms.length <= 1) {

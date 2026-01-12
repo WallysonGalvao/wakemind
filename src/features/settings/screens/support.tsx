@@ -8,6 +8,7 @@ import { Linking, Pressable, ScrollView, View } from 'react-native';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 
 // ============================================================================
 // Sub-Components
@@ -49,6 +50,9 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 export default function SupportScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
+
+  // Analytics tracking
+  useAnalyticsScreen('Support');
   const router = useRouter();
 
   const handleEmailSupport = () => {

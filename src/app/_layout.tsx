@@ -1,4 +1,5 @@
 import '../../global.css';
+import '../analytics';
 import '../configs';
 
 import { useEffect } from 'react';
