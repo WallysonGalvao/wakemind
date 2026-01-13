@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Audio } from 'expo-av';
+import { useAudioPlayer, type AudioPlayer, type AudioSource } from 'expo-audio';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -215,70 +215,56 @@ export default function AlarmToneScreen() {
 
   const { alarmToneId, setAlarmToneId } = useSettingsStore();
   const [playingToneId, setPlayingToneId] = useState<string | null>(null);
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const playerRef = useRef<{ player: AudioPlayer; toneId: string } | null>(null);
 
   // Cleanup sound on unmount
   useEffect(() => {
     return () => {
-      if (soundRef.current) {
-        soundRef.current.unloadAsync();
+      if (playerRef.current) {
+        playerRef.current.player.pause();
       }
     };
   }, []);
 
-  const stopCurrentSound = useCallback(async () => {
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
+  const stopCurrentSound = useCallback(() => {
+    if (playerRef.current) {
+      playerRef.current.player.pause();
+      playerRef.current = null;
     }
   }, []);
 
+  // Audio player hooks for preview (we need to create them outside conditionals)
+  const dummyPlayer = useAudioPlayer(getToneAudioSource(ALARM_TONES[0].id) as AudioSource);
+
   const handlePlay = useCallback(
-    async (toneId: string) => {
+    (toneId: string) => {
       // If same tone is playing, stop it
       if (playingToneId === toneId) {
-        await stopCurrentSound();
+        stopCurrentSound();
         setPlayingToneId(null);
         return;
       }
 
       // Stop any currently playing sound
-      await stopCurrentSound();
+      stopCurrentSound();
 
       try {
-        // Configure audio mode for playback
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
-          shouldDuckAndroid: true,
-        });
-
         // Get the audio source for this tone
-        const audioSource = getToneAudioSource(toneId);
+        const audioSource = getToneAudioSource(toneId) as AudioSource;
 
-        // Create and play the sound
-        const { sound } = await Audio.Sound.createAsync(audioSource, {
-          shouldPlay: true,
-          isLooping: true,
-        });
+        // Use the dummy player (we can change its source dynamically)
+        dummyPlayer.replace(audioSource);
+        dummyPlayer.loop = true;
+        dummyPlayer.play();
 
-        soundRef.current = sound;
+        playerRef.current = { player: dummyPlayer, toneId };
         setPlayingToneId(toneId);
-
-        // Listen for playback status to handle when sound finishes
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (status.isLoaded && !status.isPlaying && !status.isLooping) {
-            setPlayingToneId(null);
-          }
-        });
       } catch (error) {
         console.error('Error playing alarm tone:', error);
         setPlayingToneId(null);
       }
     },
-    [playingToneId, stopCurrentSound]
+    [playingToneId, stopCurrentSound, dummyPlayer]
   );
 
   const handleSelect = (toneId: string) => {

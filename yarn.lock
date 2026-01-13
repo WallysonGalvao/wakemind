@@ -8360,18 +8360,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-av@npm:~16.0.8":
-  version: 16.0.8
-  resolution: "expo-av@npm:16.0.8"
+"expo-audio@npm:~1.1.1":
+  version: 1.1.1
+  resolution: "expo-audio@npm:1.1.1"
   peerDependencies:
     expo: "*"
+    expo-asset: "*"
     react: "*"
     react-native: "*"
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  checksum: 883cec6aed7debc67d02bf86636df9100b1891c7f5b17fb02394762685ee6447fd4e55963fd9faaa6cab160c1fd4a3b5afa80d4ebc6052ee23c841bd42995415
+  checksum: 5ed753e0a43b63dbf1914352e30fe18667025936a79a776222cd50e1d1e821932fc55a56f7c63b465b864932d3bbb1277250e04880c9ba740a3b45784d4af645
   languageName: node
   linkType: hard
 
@@ -15659,7 +15656,7 @@ __metadata:
     eslint-plugin-unused-imports: ^4.3.0
     expo: ~54.0.30
     expo-application: ~7.0.8
-    expo-av: ~16.0.8
+    expo-audio: ~1.1.1
     expo-blur: ~15.0.8
     expo-constants: ~18.0.12
     expo-crypto: ~15.0.8

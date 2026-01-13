@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Audio } from 'expo-av';
+import { useAudioPlayer, AudioSource } from 'expo-audio';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -45,9 +45,9 @@ export default function AlarmTriggerScreen() {
   }>();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const soundRef = useRef<Audio.Sound | null>(null);
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
   const alarmToneId = useSettingsStore((state) => state.alarmToneId);
+  const player = useAudioPlayer(getToneAudioSource(alarmToneId) as AudioSource);
   const vibrationPattern = useSettingsStore((state) => state.vibrationPattern);
   const preventAutoLock = useSettingsStore((state) => state.preventAutoLock);
   const snoozeProtection = useSettingsStore((state) => state.snoozeProtection);
@@ -145,28 +145,10 @@ export default function AlarmTriggerScreen() {
         // Start vibration pattern from settings
         VibrationService.start(vibrationPattern);
 
-        // Load and play alarm sound
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: true,
-          shouldDuckAndroid: false,
-        });
-
-        // Get the selected tone from settings
-        const audioSource = getToneAudioSource(alarmToneId);
-
-        const { sound } = await Audio.Sound.createAsync(audioSource, {
-          isLooping: true,
-          volume: 1.0,
-        });
-
-        if (isMounted) {
-          soundRef.current = sound;
-          await sound.playAsync();
-        } else {
-          await sound.unloadAsync();
-        }
+        // Play alarm sound with expo-audio
+        player.loop = true;
+        player.volume = 1.0;
+        player.play();
       } catch (error) {
         console.error('[AlarmTriggerScreen] Setup error:', error);
       }
@@ -180,22 +162,14 @@ export default function AlarmTriggerScreen() {
         deactivateKeepAwake('alarm-trigger');
       }
       VibrationService.stop();
-      if (soundRef.current) {
-        void soundRef.current.stopAsync().then(() => {
-          return soundRef.current?.unloadAsync();
-        });
-      }
+      player.pause();
     };
   }, [alarmToneId, vibrationPattern, preventAutoLock]);
 
   const stopAlarm = useCallback(async () => {
     VibrationService.stop();
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
-    }
-  }, []);
+    player.pause();
+  }, [player]);
 
   const handleSnooze = useCallback(async () => {
     await stopAlarm();
