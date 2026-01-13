@@ -56,6 +56,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     'expo-font',
+    'expo-audio',
     './plugins/withNotifee.js',
     [
       'expo-splash-screen',
