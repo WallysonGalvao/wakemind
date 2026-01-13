@@ -58,5 +58,5 @@ export const privacyPolicyPT = {
   // Footer
   'privacyPolicy.footer.description':
     'Para exercer seus direitos de privacidade (GDPR/LGPD), entre em contato com nosso DPO.',
-  'privacyPolicy.footer.email': 'privacy@wakemind.app',
+  'privacyPolicy.footer.email': 'wallyson.galvao@gmail.com',
 };
