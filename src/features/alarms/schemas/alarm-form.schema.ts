@@ -30,7 +30,7 @@ export const alarmFormSchema = z.object({
         DayOfWeek.SUNDAY,
       ])
     )
-    .min(1, 'At least one day must be selected'),
+    .min(1, 'validation.atLeastOneDayRequired'),
   challenge: z.enum([ChallengeType.MATH, ChallengeType.MEMORY, ChallengeType.LOGIC]),
   difficulty: z.enum([
     DifficultyLevel.EASY,
