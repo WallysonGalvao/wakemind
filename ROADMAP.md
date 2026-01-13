@@ -7,6 +7,7 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 ### ✅ Concluído (Core MVP)
 
 #### Sistema de Alarmes
+
 - [x] CRUD completo de alarmes (criar, editar, excluir)
 - [x] Toggle de ativação individual
 - [x] Time picker com animações (scale, opacity, 3D rotation)
@@ -16,6 +17,7 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Persistência com Zustand + MMKV
 
 #### Notificações e Alarmes Reais
+
 - [x] Notifee com TimestampTrigger (agendamento real)
 - [x] Full Screen Intent (Android)
 - [x] iOS Critical Alerts (interruptionLevel: 'critical')
@@ -25,15 +27,18 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Keep Awake durante alarme
 
 #### Desafios Cognitivos (3 de 3)
+
 - [x] **Math Challenge** - 3 níveis, teclado numérico customizado
 - [x] **Memory Challenge** - Simon Says com countdown e review
 - [x] **Logic Challenge** - Sequence + Odd One Out
 
 #### Backup Protocols
+
 - [x] Snooze condicional (baseado no protocol)
 - [x] Wake Check (notificação 5min após dismiss)
 
 #### Onboarding Flow
+
 - [x] 3 telas (Problem, Solution, Outcome)
 - [x] Background animado com neural flow + fog
 - [x] Navegação horizontal com FlatList
@@ -42,6 +47,7 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Estado de conclusão persistido
 
 #### Settings
+
 - [x] Tema (Light/Dark/System)
 - [x] Idioma (EN, PT-BR, ES)
 - [x] Tela de Privacy Policy completa
@@ -50,69 +56,96 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Behavior (Snooze Protection, Prevent Auto Lock)
 
 #### Qualidade
+
 - [x] Internacionalização 3 idiomas (EN, PT-BR, ES)
 - [x] Dark Mode completo em todas as telas
 - [x] Acessibilidade (accessibilityRole, labels, hints)
 - [x] Suite de testes (~1200+ linhas em 5 arquivos)
 - [x] TypeScript strict mode
 
+#### Analytics & Tracking
+
+- [x] Mixpanel integration (Javascript Mode)
+- [x] Screen view tracking automático (11 telas)
+- [x] Alarm lifecycle events (create, update, delete, toggle, trigger, dismiss, snooze)
+- [x] Challenge events (started, completed, failed)
+- [x] Settings events (theme, language, alarm tone, vibration)
+- [x] App lifecycle events (opened, backgrounded)
+- [x] Sentry error tracking (Session Replay disabled)
+
+#### Estabilidade iOS
+
+- [x] iOS crash fix (Sentry Session Replay desabilitado)
+- [x] Notification services initialization delay (race condition fix)
+- [x] Mixpanel Javascript Mode (Expo compatibility)
+
 ---
 
-## 🎯 O QUE FALTA PARA MVP COMPLETO
+## 🎯 O QUE FALTA PARA LANÇAMENTO NAS STORES
 
-### Crítico (Bloqueante para lançamento)
+### 🚨 CRÍTICO - Bloqueadores de Lançamento
 
-| Item | Status | Descrição |
-|------|--------|-----------|
-| Apple Critical Alerts Entitlement | 🔴 Pendente | Solicitar aprovação especial da Apple |
-| Build de Produção iOS | 🔴 Pendente | Testar em dispositivo real |
-| Build de Produção Android | 🔴 Pendente | Testar em dispositivo real |
+| Item                                  | Status      | Prazo Estimado | Descrição                                                     |
+| ------------------------------------- | ----------- | -------------- | ------------------------------------------------------------- |
+| **Apple Critical Alerts Entitlement** | 🔴 Pendente | 1-2 semanas    | Solicitar e aguardar aprovação da Apple para alarmes críticos |
+| **Build de Produção iOS**             | 🔴 Pendente | 1-2 dias       | Gerar IPA, testar em device real, validar alarmes             |
+| **Build de Produção Android**         | 🔴 Pendente | 1 dia          | Gerar APK/AAB, testar em device real, validar alarmes         |
+| **Privacy Policy hospedada**          | 🔴 Pendente | 1 dia          | Criar página web ou usar GitHub Pages                         |
+| **Screenshots App Store**             | 🔴 Pendente | 1 dia          | 5.5", 6.5", 12.9" + iPad (mín. 3 screens)                     |
+| **Screenshots Play Store**            | 🔴 Pendente | 1 dia          | Phone + 7" + 10" tablets (mín. 2 screens)                     |
+| **App Store metadata**                | 🔴 Pendente | 2-3 horas      | Título, subtítulo, descrição, keywords, categorias            |
+| **Play Store metadata**               | 🔴 Pendente | 2-3 horas      | Título, descrição curta/longa, gráficos promocionais          |
 
-### Importante (Alta prioridade)
+**📍 Status atual:** 70% do MVP técnico completo. **Bloqueador principal:** Apple Critical Alerts Entitlement pode levar até 2 semanas.
 
-| Item | Status | Descrição |
-|------|--------|-----------|
-| Testes E2E | 🔴 Não iniciado | Maestro ou Detox |
-| Coverage mínimo 70% | 🟡 Parcial | Medir e aumentar cobertura |
-| README.md atualizado | 🔴 Pendente | Documentação para usuários/devs |
+### ⚡ Importante (Alta prioridade, mas não bloqueante)
+
+| Item                    | Status          | Descrição                                            |
+| ----------------------- | --------------- | ---------------------------------------------------- |
+| Testes E2E              | 🔴 Não iniciado | Maestro ou Detox - pode ir depois do lançamento beta |
+| Coverage mínimo 70%     | 🟡 Parcial      | Medir e aumentar cobertura - unit tests existentes   |
+| README.md atualizado    | 🔴 Pendente     | Documentação para usuários/devs                      |
+| Beta testing real users | 🔴 Pendente     | TestFlight (iOS) + Play Console Beta (Android)       |
 
 ### Nice to Have (Pode ir depois do MVP)
 
-| Item | Status | Descrição |
-|------|--------|-----------|
-| Lógica próximo disparo | 🔴 Pendente | Calcular e exibir próximo alarme |
-| Indicador visual próximo alarme | 🔴 Pendente | Badge/highlight na lista |
-| Filtros na lista (Ativos/Inativos) | 🔴 Pendente | Melhorar organização |
-| Swipe to delete | 🔴 Pendente | UX alternativa para exclusão |
-| Animação de criação (confetti) | 🔴 Pendente | Celebração visual |
-| Skeleton screens | 🔴 Pendente | Loading states melhorados |
+| Item                               | Status      | Descrição                        |
+| ---------------------------------- | ----------- | -------------------------------- |
+| Lógica próximo disparo             | 🔴 Pendente | Calcular e exibir próximo alarme |
+| Indicador visual próximo alarme    | 🔴 Pendente | Badge/highlight na lista         |
+| Filtros na lista (Ativos/Inativos) | 🔴 Pendente | Melhorar organização             |
+| Swipe to delete                    | 🔴 Pendente | UX alternativa para exclusão     |
+| Animação de criação (confetti)     | 🔴 Pendente | Celebração visual                |
+| Skeleton screens                   | 🔴 Pendente | Loading states melhorados        |
 
 ---
 
 ## 📈 Métricas do Projeto
 
-| Métrica | Valor |
-|---------|-------|
-| Arquivos TypeScript/TSX | ~60+ |
-| Linhas de código | ~8000+ |
-| Arquivos de teste | 5 |
-| Linhas de teste | ~1200+ |
-| Componentes UI | ~25+ |
-| Hooks customizados | 7+ |
-| Stores Zustand | 2 |
-| Idiomas suportados | 3 |
+| Métrica                 | Valor  |
+| ----------------------- | ------ |
+| Arquivos TypeScript/TSX | ~60+   |
+| Linhas de código        | ~8000+ |
+| Arquivos de teste       | 5      |
+| Linhas de teste         | ~1200+ |
+| Componentes UI          | ~25+   |
+| Hooks customizados      | 7+     |
+| Stores Zustand          | 2      |
+| Idiomas suportados      | 3      |
 
 ---
 
 ## 🚀 Features Futuras (Pós-MVP)
 
 ### Fase 1 - Polimento
+
 - [ ] Barcode Scan protocol (requer câmera)
 - [ ] Estatísticas de uso e gráficos
 - [ ] Insights e recomendações
 - [ ] Exportar dados (CSV/JSON)
 
 ### Fase 2 - Avançado
+
 - [ ] Difficulty Adaptive (ML/histórico)
 - [ ] Widget iOS/Android
 - [ ] Siri/Google Assistant shortcuts
@@ -120,34 +153,133 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [ ] Sunrise simulation
 
 ### Fase 3 - Social & Gamification
+
 - [ ] Badges e achievements
 - [ ] Streaks (dias consecutivos)
 - [ ] Alarmes compartilhados
 - [ ] Leaderboards
 
 ### Fase 4 - Plataforma
+
 - [ ] Wearables (Apple Watch, WearOS)
 - [ ] Cloud backup (opcional)
 - [ ] Migração entre dispositivos
 
 ---
 
-## ✅ Checklist Final para MVP
+## ✅ Checklist Final para Lançamento nas Stores
+
+### 📱 PRÉ-REQUISITOS TÉCNICOS
 
 ```
-ANTES DO LANÇAMENTO:
-├── [ ] Solicitar Apple Critical Alerts Entitlement
-│       └── https://developer.apple.com/contact/request/notifications-critical-alerts-entitlement/
-├── [ ] Build de produção iOS testado
-├── [ ] Build de produção Android testado
-├── [ ] Privacy Policy URL hospedada
-├── [ ] Support email configurado (support@wakemind.app)
-├── [ ] Screenshots para App Store
-├── [ ] Screenshots para Play Store
-├── [ ] App Store metadata (descrição, keywords)
-├── [ ] Play Store metadata (descrição, tags)
-└── [ ] Beta testing com usuários reais
+MVP FUNCIONAL:
+├── [✅] Sistema de alarmes completo (CRUD + agendamento)
+├── [✅] 3 desafios cognitivos (Math, Memory, Logic)
+├── [✅] Backup protocols (Snooze, Wake Check)
+├── [✅] Onboarding flow
+├── [✅] Settings completo (Theme, Language, Sound, Behavior)
+├── [✅] Analytics tracking (Mixpanel + Sentry)
+├── [✅] Internacionalização (EN, PT-BR, ES)
+├── [✅] Dark mode completo
+├── [✅] iOS stability (crashes resolvidos)
+└── [✅] Suite de testes unitários
+
+TOTAL: 10/10 ✅ COMPLETO
 ```
+
+### 🚀 CHECKLIST DE PUBLICAÇÃO
+
+#### 1️⃣ Apple App Store (iOS)
+
+```
+REQUISITOS APPLE:
+├── [ ] ⏳ Apple Critical Alerts Entitlement solicitado
+│       └── https://developer.apple.com/contact/request/notifications-critical-alerts-entitlement/
+│       └── Justificativa: Alarme deve despertar usuário mesmo em DND
+## 📊 RESUMO EXECUTIVO
+
+**Status do MVP:** ✅ **70% COMPLETO**
+- ✅ Core funcional 100% pronto (alarmes, desafios, settings, analytics)
+- ⏳ Falta apenas: assets de publicação + aprovações das stores
+- 🚨 Bloqueador: Apple Critical Alerts Entitlement (1-2 semanas)
+
+**Próximos Passos Imediatos:**
+1. Solicitar Apple Critical Alerts Entitlement HOJE
+2. Criar Privacy Policy hospedada (GitHub Pages)
+3. Gerar builds de produção e testar em devices reais
+4. Criar screenshots e assets gráficos
+5. Preencher metadata das stores
+6. Submeter para review (~2-7 dias)
+
+**Previsão de Lançamento:** 🎯 **3-4 semanas**
+
+---
+
+**Última atualização:** 2026-01-12
+**Versão do Roadmap:** 4.0 (Analytics Complete + Store Prep)
+**Branch atual:** feat/analyticsarme, som, vibração, DND)
+├── [ ] Screenshots obrigatórios:
+│       ├── 6.5" (iPhone 14 Pro Max) - mínimo 3 screens
+│       ├── 5.5" (iPhone 8 Plus) - mínimo 3 screens
+│       └── 12.9" (iPad Pro) - mínimo 3 screens
+├── [ ] App icon 1024x1024 (sem transparência, sem cantos arredondados)
+├── [ ] Metadata da App Store:
+│       ├── App Name (30 chars)
+│       ├── Subtitle (30 chars)
+│       ├── Description (4000 chars)
+│       ├── Keywords (100 chars)
+│       ├── Category (Productivity + Utilities)
+│       └── Age Rating (4+)
+├── [ ] Privacy Policy URL ativa
+└── [ ] TestFlight beta com 5-10 usuários (opcional mas recomendado)
+```
+
+#### 2️⃣ Google Play Store (Android)
+
+```
+REQUISITOS GOOGLE:
+├── [ ] Build AAB de produção (EAS Build)
+├── [ ] Testar em Android real (alarme, som, vibração, DND, battery optimization)
+├── [ ] Screenshots obrigatórios:
+│       ├── Phone (mínimo 2 screens)
+│       ├── 7" Tablet (mínimo 2 screens)
+│       └── 10" Tablet (mínimo 2 screens)
+├── [ ] Feature Graphic (1024x500)
+├── [ ] App icon 512x512 (PNG com transparência)
+├── [ ] Metadata da Play Store:
+│       ├── App Name (50 chars)
+│       ├── Short Description (80 chars)
+│       ├── Full Description (4000 chars)
+│       ├── Category (Productivity)
+│       └── Content Rating (Everyone)
+├── [ ] Privacy Policy URL ativa
+└── [ ] Closed Beta Testing (opcional mas recomendado)
+```
+
+#### 3️⃣ Infraestrutura & Compliance
+
+```
+OBRIGATÓRIO:
+├── [ ] Privacy Policy hospedada (GitHub Pages ou domínio próprio)
+├── [ ] Terms of Service (opcional para MVP)
+├── [ ] Support email ativo (support@wakemind.app ou similar)
+├── [ ] Analytics privacy disclosure no Privacy Policy
+└── [ ] App Store / Play Console accounts criados e configurados
+```
+
+### ⏱️ TIMELINE ESTIMADA
+
+| Etapa                              | Tempo          | Status      |
+| ---------------------------------- | -------------- | ----------- |
+| Solicitar Apple Critical Alerts    | 1-2 semanas ⏳ | 🔴 Pendente |
+| Builds de produção (iOS + Android) | 2-3 dias       | 🔴 Pendente |
+| Screenshots e assets gráficos      | 2-3 dias       | 🔴 Pendente |
+| Privacy Policy + Support setup     | 1 dia          | 🔴 Pendente |
+| Metadata e descrições (2 stores)   | 1 dia          | 🔴 Pendente |
+| Beta testing (opcional)            | 1 semana       | 🔴 Pendente |
+| Submissão final + Review           | 2-7 dias       | 🔴 Pendente |
+
+**📊 TOTAL: ~3-4 semanas até lançamento público** (aguardando principalmente Apple Critical Alerts)
 
 ---
 

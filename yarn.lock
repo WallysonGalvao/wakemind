@@ -3965,13 +3965,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-menu/menu@npm:1.2.2":
-  version: 1.2.2
-  resolution: "@react-native-menu/menu@npm:1.2.2"
+"@react-native-menu/menu@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@react-native-menu/menu@npm:2.0.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: c3f22c11f7a138d559113e1f1e2b187f39438438d506a7997c2e97a7dc69b416f3f42d508a3252b76965527219af32ebea9f0f263a1db23b7b208e5cd65eb914
+  checksum: 9562abdb05cb69bcad16cc5892d31a734fb0b00e17e5ee6a471414359ec141be621c761929be598604779529cc6686a6fe7dc32d64aff8d7beab5445b8a24788
   languageName: node
   linkType: hard
 
@@ -15628,7 +15628,7 @@ __metadata:
     "@hookform/resolvers": ^5.2.2
     "@legendapp/motion": ^2.5.3
     "@notifee/react-native": ^9.1.8
-    "@react-native-menu/menu": 1.2.2
+    "@react-native-menu/menu": ^2.0.0
     "@react-navigation/bottom-tabs": ^7.4.0
     "@react-navigation/elements": ^2.6.3
     "@react-navigation/native": ^7.1.8
