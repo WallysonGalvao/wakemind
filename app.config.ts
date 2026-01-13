@@ -32,10 +32,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
-      foregroundImage: './assets/images/android-icon-foreground.png',
-      backgroundImage: './assets/images/android-icon-background.png',
-      monochromeImage: './assets/images/android-icon-monochrome.png',
+      backgroundColor: '#1A1A2E',
+      foregroundImage: './assets/images/adaptive-icon.png',
     },
     edgeToEdgeEnabled: true,
     package: 'com.wgsoftwares.wakemind',
