@@ -246,8 +246,8 @@ export function MathChallengeComponent({
                   <Pressable
                     key={key}
                     accessibilityRole="button"
-                    accessibilityLabel="Submit"
-                    accessibilityHint="Submit your answer"
+                    accessibilityLabel={t('alarmTrigger.accessibility.submit')}
+                    accessibilityHint={t('alarmTrigger.accessibility.submitAnswer')}
                     onPress={handleSubmit}
                     disabled={userInput.length === 0}
                     className="h-16 flex-1 items-center justify-center rounded-2xl border border-primary-500/50 bg-primary-500"

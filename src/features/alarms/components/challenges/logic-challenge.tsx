@@ -70,29 +70,37 @@ const generateSequencePuzzle = (difficulty: DifficultyLevel): LogicPuzzle => {
     question: selected.display,
     options: shuffled,
     correctIndex: shuffled.indexOf(selected.answer.toString()),
-    hint: 'Find the pattern',
+    hint: 'alarmTrigger.hints.findPattern',
   };
 };
 
 const generateOddOneOutPuzzle = (difficulty: DifficultyLevel): LogicPuzzle => {
   const puzzles = {
     [DifficultyLevel.EASY]: [
-      { items: ['🍎', '🍊', '🍋', '🐕'], oddIndex: 3, hint: 'Fruits vs Animal' },
-      { items: ['🚗', '🚌', '🚂', '🌲'], oddIndex: 3, hint: 'Vehicles vs Nature' },
-      { items: ['⭐', '🌙', '☀️', '🎈'], oddIndex: 3, hint: 'Sky objects' },
+      {
+        items: ['🍎', '🍊', '🍋', '🐕'],
+        oddIndex: 3,
+        hintKey: 'alarmTrigger.hints.fruitsVsAnimal',
+      },
+      {
+        items: ['🚗', '🚌', '🚂', '🌲'],
+        oddIndex: 3,
+        hintKey: 'alarmTrigger.hints.vehiclesVsNature',
+      },
+      { items: ['⭐', '🌙', '☀️', '🎈'], oddIndex: 3, hintKey: 'alarmTrigger.hints.skyObjects' },
     ],
     [DifficultyLevel.MEDIUM]: [
-      { items: ['2', '4', '6', '9'], oddIndex: 3, hint: 'Even numbers' },
-      { items: ['A', 'E', 'I', 'B'], oddIndex: 3, hint: 'Vowels' },
-      { items: ['🔵', '🔴', '🟢', '⬛'], oddIndex: 3, hint: 'Colors vs Shape' },
+      { items: ['2', '4', '6', '9'], oddIndex: 3, hintKey: 'alarmTrigger.hints.evenNumbers' },
+      { items: ['A', 'E', 'I', 'B'], oddIndex: 3, hintKey: 'alarmTrigger.hints.vowels' },
+      { items: ['🔵', '🔴', '🟢', '⬛'], oddIndex: 3, hintKey: 'alarmTrigger.hints.colorsVsShape' },
     ],
     [DifficultyLevel.HARD]: [
-      { items: ['2', '3', '5', '9'], oddIndex: 3, hint: 'Prime numbers' },
-      { items: ['1', '4', '9', '15'], oddIndex: 3, hint: 'Perfect squares' },
-      { items: ['8', '27', '64', '100'], oddIndex: 3, hint: 'Perfect cubes' },
+      { items: ['2', '3', '5', '9'], oddIndex: 3, hintKey: 'alarmTrigger.hints.primeNumbers' },
+      { items: ['1', '4', '9', '15'], oddIndex: 3, hintKey: 'alarmTrigger.hints.perfectSquares' },
+      { items: ['8', '27', '64', '100'], oddIndex: 3, hintKey: 'alarmTrigger.hints.perfectCubes' },
     ],
     [DifficultyLevel.ADAPTIVE]: [
-      { items: ['2', '4', '6', '9'], oddIndex: 3, hint: 'Even numbers' },
+      { items: ['2', '4', '6', '9'], oddIndex: 3, hintKey: 'alarmTrigger.hints.evenNumbers' },
     ],
   };
 
@@ -104,7 +112,7 @@ const generateOddOneOutPuzzle = (difficulty: DifficultyLevel): LogicPuzzle => {
     question: "Which one doesn't belong?",
     options: selected.items,
     correctIndex: selected.oddIndex,
-    hint: selected.hint,
+    hint: selected.hintKey,
   };
 };
 
@@ -194,7 +202,16 @@ export function LogicChallengeComponent({
         }, 1500);
       }
     },
-    [selectedIndex, puzzle.correctIndex, onSuccess, onAttempt, shakeX, successScale, difficulty, vibrateOnSuccess]
+    [
+      selectedIndex,
+      puzzle.correctIndex,
+      onSuccess,
+      onAttempt,
+      shakeX,
+      successScale,
+      difficulty,
+      vibrateOnSuccess,
+    ]
   );
 
   const toggleHint = useCallback(() => {
@@ -235,14 +252,14 @@ export function LogicChallengeComponent({
       {/* Hint Button */}
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Show hint"
-        accessibilityHint="Tap to reveal a hint for the puzzle"
+        accessibilityLabel={t('alarmTrigger.accessibility.showHintButton')}
+        accessibilityHint={t('alarmTrigger.accessibility.showHintDescription')}
         onPress={toggleHint}
         className="mb-4 flex-row items-center gap-1 rounded-full bg-gray-200 px-3 py-1 dark:bg-gray-700"
       >
         <MaterialSymbol name="lightbulb" size={16} color="#F59E0B" />
         <Text className="text-xs text-gray-600 dark:text-gray-400">
-          {showHint ? puzzle.hint : t('alarmTrigger.showHint')}
+          {showHint ? t(puzzle.hint) : t('alarmTrigger.showHint')}
         </Text>
       </Pressable>
 
@@ -263,8 +280,8 @@ export function LogicChallengeComponent({
             <Pressable
               key={index}
               accessibilityRole="button"
-              accessibilityLabel={`Option ${option}`}
-              accessibilityHint="Select this option as your answer"
+              accessibilityLabel={t('alarmTrigger.accessibility.option', { option })}
+              accessibilityHint={t('alarmTrigger.accessibility.selectOption')}
               disabled={selectedIndex !== null}
               onPress={() => handleOptionPress(index)}
               className={`min-h-[70px] min-w-[70px] items-center justify-center rounded-2xl border-2 px-4 py-3 ${getOptionStyle(index)}`}
