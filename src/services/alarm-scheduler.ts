@@ -19,6 +19,7 @@ export interface PermissionStatus {
   notifications: 'granted' | 'denied' | 'undetermined';
   exactAlarms: 'granted' | 'denied' | 'undetermined';
   fullScreen: 'granted' | 'denied' | 'undetermined';
+  batteryOptimization: 'granted' | 'denied' | 'undetermined';
 }
 
 /**
@@ -47,6 +48,7 @@ export async function checkPermissions(): Promise<PermissionStatus> {
     notifications: 'undetermined',
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
+    batteryOptimization: 'undetermined',
   };
 
   try {
@@ -68,8 +70,17 @@ export async function checkPermissions(): Promise<PermissionStatus> {
     // Android-specific permissions
     if (Platform.OS === 'android') {
       // Check exact alarms permission (Android 12+)
+      // Use settings.android.alarm to check SCHEDULE_EXACT_ALARM permission
+      if (settings.android?.alarm !== undefined) {
+        status.exactAlarms = settings.android.alarm === 1 ? 'granted' : 'denied';
+      } else {
+        // Fallback: assume granted on older Android versions
+        status.exactAlarms = 'granted';
+      }
+
+      // Check battery optimization (important for alarm reliability)
       const batteryOptimizationEnabled = await notifee.isBatteryOptimizationEnabled();
-      status.exactAlarms = batteryOptimizationEnabled ? 'denied' : 'granted';
+      status.batteryOptimization = batteryOptimizationEnabled ? 'denied' : 'granted';
 
       // Full screen intent is typically granted by default for alarm apps
       status.fullScreen = 'granted';
