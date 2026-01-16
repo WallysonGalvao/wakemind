@@ -46,6 +46,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'FOREGROUND_SERVICE',
       'WAKE_LOCK',
       'POST_NOTIFICATIONS',
+      'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
     ],
   },
   web: {
