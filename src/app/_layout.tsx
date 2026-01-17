@@ -117,6 +117,7 @@ function RootLayout() {
                 name="alarm/edit-alarm"
                 options={{
                   presentation: 'modal',
+                  headerShown: true,
                 }}
               />
               <Stack.Screen
