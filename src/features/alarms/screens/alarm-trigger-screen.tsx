@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useAudioPlayer, AudioSource } from 'expo-audio';
+import type { AudioSource } from 'expo-audio';
+import { useAudioPlayer } from 'expo-audio';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, View } from 'react-native';
+import { BackHandler, Pressable, View } from 'react-native';
 
 import {
   LogicChallengeComponent,
@@ -110,7 +111,17 @@ export default function AlarmTriggerScreen() {
 
     // Efficiency timer animation (30 seconds)
     progressWidth.value = withTiming(100, { duration: 30000 });
-  }, [pulseScale, glowOpacity, progressWidth]);
+  }, [pulseScale, glowOpacity, progressWidth, challengeType, difficulty]);
+
+  // Block back button on Android and prevent navigation on iOS
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      // Return true to prevent default back behavior
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, []);
 
   // Animated styles
   const pulseAnimatedStyle = useAnimatedStyle(() => ({
@@ -127,8 +138,6 @@ export default function AlarmTriggerScreen() {
 
   // Keep screen awake and play sound
   useEffect(() => {
-    let isMounted = true;
-
     // Track alarm triggered
     if (alarm) {
       const displayTime = params.time || alarm.time || '00:00';
@@ -157,14 +166,13 @@ export default function AlarmTriggerScreen() {
     setup();
 
     return () => {
-      isMounted = false;
       if (preventAutoLock) {
         deactivateKeepAwake('alarm-trigger');
       }
       VibrationService.stop();
       player.pause();
     };
-  }, [alarmToneId, vibrationPattern, preventAutoLock]);
+  }, [alarmToneId, vibrationPattern, preventAutoLock, alarm, params.time, player]);
 
   const stopAlarm = useCallback(async () => {
     VibrationService.stop();
