@@ -7,7 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: 'WakeMind',
   slug: 'wakemind',
   version: '1.0.0',
-  owner: 'wgsoftwares',
+  owner: 'wallyson',
   updates: {
     url: 'https://u.expo.dev/45b9eb25-dff5-4cfe-9592-c8ea9c435316',
   },
@@ -32,10 +32,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
-      foregroundImage: './assets/images/android-icon-foreground.png',
-      backgroundImage: './assets/images/android-icon-background.png',
-      monochromeImage: './assets/images/android-icon-monochrome.png',
+      backgroundColor: '#1A1A2E',
+      foregroundImage: './assets/images/adaptive-icon.png',
     },
     edgeToEdgeEnabled: true,
     package: 'com.wgsoftwares.wakemind',
@@ -48,6 +46,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'FOREGROUND_SERVICE',
       'WAKE_LOCK',
       'POST_NOTIFICATIONS',
+      'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
     ],
   },
   web: {
@@ -56,8 +55,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: './assets/images/favicon.png',
   },
   plugins: [
+    'expo-asset',
     'expo-router',
     'expo-font',
+    'expo-audio',
+    './plugins/withNotifee.js',
     [
       'expo-splash-screen',
       {

@@ -126,6 +126,30 @@ export const appPT = {
   'alarmTrigger.sequencePuzzle': 'Puzzle de sequência',
   'alarmTrigger.oddOneOut': 'Elemento diferente',
 
+  // Logic Challenge Hints
+  'alarmTrigger.hints.findPattern': 'Encontre o padrão',
+  'alarmTrigger.hints.fruitsVsAnimal': 'Frutas vs Animal',
+  'alarmTrigger.hints.vehiclesVsNature': 'Veículos vs Natureza',
+  'alarmTrigger.hints.skyObjects': 'Objetos do céu',
+  'alarmTrigger.hints.evenNumbers': 'Números pares',
+  'alarmTrigger.hints.vowels': 'Vogais',
+  'alarmTrigger.hints.colorsVsShape': 'Cores vs Forma',
+  'alarmTrigger.hints.primeNumbers': 'Números primos',
+  'alarmTrigger.hints.perfectSquares': 'Quadrados perfeitos',
+  'alarmTrigger.hints.perfectCubes': 'Cubos perfeitos',
+
+  // Logic Challenge Accessibility
+  'alarmTrigger.accessibility.option': 'Opção {{option}}',
+  'alarmTrigger.accessibility.selectOption': 'Selecione esta opção como sua resposta',
+  'alarmTrigger.accessibility.showHintButton': 'Mostrar dica',
+  'alarmTrigger.accessibility.showHintDescription': 'Toque para revelar uma dica do quebra-cabeça',
+  'alarmTrigger.accessibility.submit': 'Enviar',
+  'alarmTrigger.accessibility.submitAnswer': 'Enviar sua resposta',
+  'alarmTrigger.accessibility.reviewPattern': 'Toque para ver o padrão novamente',
+
+  // Validation
+  'validation.atLeastOneDayRequired': 'Pelo menos um dia deve ser selecionado',
+
   // Notifications & Permissions
   'notifications.alarmTitle': 'Alarme WakeMind',
   'notifications.snoozedTitle': 'WakeMind - Soneca',

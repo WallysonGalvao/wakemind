@@ -17,6 +17,7 @@ export function useAlarmPermissions() {
     notifications: 'undetermined',
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
+    batteryOptimization: 'undetermined',
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -62,10 +63,13 @@ export function useAlarmPermissions() {
   const isAllGranted =
     status.notifications === 'granted' &&
     status.exactAlarms === 'granted' &&
-    status.fullScreen === 'granted';
+    status.fullScreen === 'granted' &&
+    status.batteryOptimization === 'granted';
 
   const needsNotificationPermission = status.notifications !== 'granted';
   const needsExactAlarmPermission = Platform.OS === 'android' && status.exactAlarms !== 'granted';
+  const needsBatteryOptimizationPermission =
+    Platform.OS === 'android' && status.batteryOptimization !== 'granted';
 
   return {
     status,
@@ -73,6 +77,7 @@ export function useAlarmPermissions() {
     isAllGranted,
     needsNotificationPermission,
     needsExactAlarmPermission,
+    needsBatteryOptimizationPermission,
     checkPermissions,
     requestNotificationPermission,
     openBatterySettings,

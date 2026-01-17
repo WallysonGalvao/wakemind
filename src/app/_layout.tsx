@@ -48,32 +48,21 @@ function RootLayout() {
     const timeoutId = setTimeout(() => {
       const initializeServices = async () => {
         try {
-          console.log('[RootLayout] Starting services initialization...');
           await AlarmScheduler.initialize();
-          console.log('[RootLayout] AlarmScheduler initialized');
-
           await NotificationHandler.initialize();
-          console.log('[RootLayout] NotificationHandler initialized');
 
           // Set up callbacks for notification events
           NotificationHandler.setCallbacks({
             getAlarm: getAlarmById,
-            onAlarmTriggered: (alarmId) => {
-              console.log('[RootLayout] Alarm triggered:', alarmId);
-            },
-            onSnooze: (alarmId) => {
-              console.log('[RootLayout] Alarm snoozed:', alarmId);
-            },
-            onDismiss: (alarmId) => {
-              console.log('[RootLayout] Alarm dismissed:', alarmId);
-            },
+            onAlarmTriggered: (_alarmId) => {},
+            onSnooze: (_alarmId) => {},
+            onDismiss: (_alarmId) => {},
           });
 
           // Sync alarms with scheduler on app start
           await syncAlarmsWithScheduler();
-          console.log('[RootLayout] Services initialized successfully');
         } catch (error) {
-          console.error('[RootLayout] Failed to initialize services:', error);
+          Sentry.captureException(error);
         }
       };
 
@@ -117,6 +106,7 @@ function RootLayout() {
                 name="alarm/edit-alarm"
                 options={{
                   presentation: 'modal',
+                  headerShown: true,
                 }}
               />
               <Stack.Screen

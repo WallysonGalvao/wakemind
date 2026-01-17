@@ -129,6 +129,30 @@ export const appES = {
   'alarmTrigger.sequencePuzzle': 'Puzzle de secuencia',
   'alarmTrigger.oddOneOut': 'El diferente',
 
+  // Logic Challenge Hints
+  'alarmTrigger.hints.findPattern': 'Encuentra el patrón',
+  'alarmTrigger.hints.fruitsVsAnimal': 'Frutas vs Animal',
+  'alarmTrigger.hints.vehiclesVsNature': 'Vehículos vs Naturaleza',
+  'alarmTrigger.hints.skyObjects': 'Objetos del cielo',
+  'alarmTrigger.hints.evenNumbers': 'Números pares',
+  'alarmTrigger.hints.vowels': 'Vocales',
+  'alarmTrigger.hints.colorsVsShape': 'Colores vs Forma',
+  'alarmTrigger.hints.primeNumbers': 'Números primos',
+  'alarmTrigger.hints.perfectSquares': 'Cuadrados perfectos',
+  'alarmTrigger.hints.perfectCubes': 'Cubos perfectos',
+
+  // Logic Challenge Accessibility
+  'alarmTrigger.accessibility.option': 'Opción {{option}}',
+  'alarmTrigger.accessibility.selectOption': 'Selecciona esta opción como tu respuesta',
+  'alarmTrigger.accessibility.showHintButton': 'Mostrar pista',
+  'alarmTrigger.accessibility.showHintDescription': 'Toca para revelar una pista del rompecabezas',
+  'alarmTrigger.accessibility.submit': 'Enviar',
+  'alarmTrigger.accessibility.submitAnswer': 'Enviar tu respuesta',
+  'alarmTrigger.accessibility.reviewPattern': 'Toca para ver el patrón nuevamente',
+
+  // Validation
+  'validation.atLeastOneDayRequired': 'Debe seleccionarse al menos un día',
+
   // Notifications & Permissions
   'notifications.alarmTitle': 'Alarma WakeMind',
   'notifications.snoozedTitle': 'WakeMind - Pospuesto',

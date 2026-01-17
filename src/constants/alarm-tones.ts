@@ -198,7 +198,7 @@ const AUDIO_SOURCES: Record<string, ReturnType<typeof require>> = {
 
 /**
  * Get the audio source for a specific tone.
- * Returns a require() source compatible with expo-av's AVPlaybackSource.
+ * Returns a require() source compatible with expo-audio's AudioSource.
  */
 export const getToneAudioSource = (toneId: string): number => {
   return (AUDIO_SOURCES[toneId] || AUDIO_SOURCES['neuro-strike-classic']) as number;

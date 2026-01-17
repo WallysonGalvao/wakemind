@@ -57,6 +57,7 @@ interface AnimatedCardProps {
   isSelected: boolean;
   title: string;
   description: string;
+  onSelect: () => void;
 }
 
 function AnimatedCard({
@@ -68,6 +69,7 @@ function AnimatedCard({
   isSelected,
   title,
   description,
+  onSelect,
 }: AnimatedCardProps) {
   const animatedStyle = useAnimatedStyle(() => {
     const inputRange = [
@@ -94,6 +96,7 @@ function AnimatedCard({
         icon={challenge.icon}
         imageUrl={challenge.imageUrl}
         isSelected={isSelected}
+        onSelect={onSelect}
       />
     </Animated.View>
   );
@@ -112,6 +115,7 @@ export function CognitiveActivationSection({
   const { width: screenWidth } = useWindowDimensions();
   const scrollX = useSharedValue(0);
   const scrollViewRef = useRef<Animated.ScrollView | null>(null);
+  const isProgrammaticScroll = useRef(false);
 
   // Calculate card width based on screen width (80% of screen - padding)
   const cardWidth = Math.min(screenWidth * 0.8, 320);
@@ -145,9 +149,15 @@ export function CognitiveActivationSection({
     },
   });
 
-  // Auto-select challenge when scroll ends (momentum or drag)
+  // Auto-select challenge when scroll ends (momentum or drag) - only for manual scrolls
   const handleScrollEnd = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      // Skip if this is a programmatic scroll (from card click)
+      if (isProgrammaticScroll.current) {
+        isProgrammaticScroll.current = false;
+        return;
+      }
+
       const offsetX = event.nativeEvent.contentOffset.x;
       const centeredIndex = Math.round(offsetX / snapInterval);
       const clampedIndex = Math.max(0, Math.min(centeredIndex, challenges.length - 1));
@@ -158,6 +168,25 @@ export function CognitiveActivationSection({
       }
     },
     [snapInterval, selectedChallenge, onChallengeSelect]
+  );
+
+  // Handle card click - select and scroll to center
+  const handleCardSelect = useCallback(
+    (index: number, type: ChallengeType) => {
+      // Mark as programmatic scroll to prevent handleScrollEnd from overriding selection
+      isProgrammaticScroll.current = true;
+      onChallengeSelect(type);
+      // Scroll to center the selected card
+      (
+        scrollViewRef.current as unknown as {
+          scrollTo: (opts: { x: number; animated: boolean }) => void;
+        }
+      )?.scrollTo({
+        x: index * snapInterval,
+        animated: true,
+      });
+    },
+    [onChallengeSelect, snapInterval]
   );
 
   return (
@@ -202,6 +231,7 @@ export function CognitiveActivationSection({
             isSelected={selectedChallenge === challenge.type}
             title={t(`newAlarm.challenges.${challenge.type}.title`)}
             description={t(`newAlarm.challenges.${challenge.type}.description`)}
+            onSelect={() => handleCardSelect(index, challenge.type)}
           />
         ))}
       </Animated.ScrollView>
