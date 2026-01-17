@@ -170,7 +170,11 @@ export default function AlarmTriggerScreen() {
         deactivateKeepAwake('alarm-trigger');
       }
       VibrationService.stop();
-      player.pause();
+      try {
+        player.pause();
+      } catch (_error) {
+        // Player may already be released when component unmounts
+      }
     };
   }, [alarmToneId, vibrationPattern, preventAutoLock, alarm, params.time, player]);
 
