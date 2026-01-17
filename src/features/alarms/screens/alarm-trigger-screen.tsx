@@ -13,6 +13,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { VolumeManager } from 'react-native-volume-manager';
 
 import { BackHandler, Pressable, View } from 'react-native';
 
@@ -48,6 +49,7 @@ export default function AlarmTriggerScreen() {
   const insets = useSafeAreaInsets();
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
   const alarmToneId = useSettingsStore((state) => state.alarmToneId);
+  const alarmVolume = useSettingsStore((state) => state.alarmVolume);
   const player = useAudioPlayer(getToneAudioSource(alarmToneId) as AudioSource);
   const vibrationPattern = useSettingsStore((state) => state.vibrationPattern);
   const preventAutoLock = useSettingsStore((state) => state.preventAutoLock);
@@ -156,7 +158,7 @@ export default function AlarmTriggerScreen() {
 
         // Play alarm sound with expo-audio
         player.loop = true;
-        player.volume = 1.0;
+        player.volume = alarmVolume;
         player.play();
       } catch (error) {
         console.error('[AlarmTriggerScreen] Setup error:', error);
@@ -176,7 +178,28 @@ export default function AlarmTriggerScreen() {
         // Player may already be released when component unmounts
       }
     };
-  }, [alarmToneId, vibrationPattern, preventAutoLock, alarm, params.time, player]);
+  }, [alarmToneId, alarmVolume, vibrationPattern, preventAutoLock, alarm, params.time, player]);
+
+  // Lock volume during alarm
+  useEffect(() => {
+    // Set device volume to match alarm volume
+    VolumeManager.setVolume(alarmVolume, { showUI: false });
+
+    // Hide native volume UI when user presses hardware buttons
+    VolumeManager.showNativeVolumeUI({ enabled: false });
+
+    // Listen for volume changes and reset to alarm volume
+    const subscription = VolumeManager.addVolumeListener((result) => {
+      if (Math.abs(result.volume - alarmVolume) > 0.01) {
+        VolumeManager.setVolume(alarmVolume, { showUI: false });
+      }
+    });
+
+    return () => {
+      subscription.remove();
+      VolumeManager.showNativeVolumeUI({ enabled: true });
+    };
+  }, [alarmVolume]);
 
   const stopAlarm = useCallback(async () => {
     VibrationService.stop();
