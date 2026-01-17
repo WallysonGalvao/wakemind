@@ -10,6 +10,7 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
+import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { ALARM_TONES } from '@/constants/alarm-tones';
@@ -42,6 +43,14 @@ interface SettingToggleRowProps {
   title: string;
   value: boolean;
   onValueChange: (value: boolean) => void;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
+interface VolumeSliderRowProps {
+  title: string;
+  value: number;
+  onValueChange: (value: number) => void;
   isFirst?: boolean;
   isLast?: boolean;
 }
@@ -130,6 +139,36 @@ function SectionCard({ children }: { children: React.ReactNode }) {
   );
 }
 
+function VolumeSliderRow({ title, value, onValueChange, isLast = false }: VolumeSliderRowProps) {
+  const percentage = Math.round(value * 100);
+
+  return (
+    <View
+      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
+    >
+      <View className="flex-row items-center justify-between">
+        <Text className="text-base font-medium text-gray-900 dark:text-white">{title}</Text>
+        <Text className="text-sm font-semibold text-primary-500">{percentage}%</Text>
+      </View>
+      <Slider
+        value={percentage}
+        onChange={(val) => onValueChange(val / 100)}
+        minValue={0}
+        maxValue={100}
+        step={1}
+        size="md"
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
+    </View>
+  );
+}
+
 // ============================================================================
 // Main Component
 // ============================================================================
@@ -147,6 +186,8 @@ export default function SettingsScreen() {
     setTheme,
     language,
     alarmToneId,
+    alarmVolume,
+    setAlarmVolume,
     vibrationPattern,
     vibrateOnSuccess,
     setVibrateOnSuccess,
@@ -246,6 +287,11 @@ export default function SettingsScreen() {
               value={selectedToneName}
               onPress={() => router.push('/settings/alarm-tone')}
               isFirst
+            />
+            <VolumeSliderRow
+              title={t('settings.alarmVolume')}
+              value={alarmVolume}
+              onValueChange={setAlarmVolume}
             />
             <SettingToggleRow
               icon="check_circle"

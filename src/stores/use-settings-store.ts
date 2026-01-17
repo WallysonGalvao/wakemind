@@ -9,6 +9,7 @@ interface SettingsState {
   language: Language;
   theme: ThemeMode;
   alarmToneId: string;
+  alarmVolume: number;
   vibrationPattern: VibrationPattern;
   vibrateOnSuccess: boolean;
   preventAutoLock: boolean;
@@ -17,6 +18,7 @@ interface SettingsState {
   setLanguage: (language: Language) => void;
   setTheme: (theme: ThemeMode) => void;
   setAlarmToneId: (toneId: string) => void;
+  setAlarmVolume: (volume: number) => void;
   setVibrationPattern: (pattern: VibrationPattern) => void;
   setVibrateOnSuccess: (value: boolean) => void;
   setPreventAutoLock: (value: boolean) => void;
@@ -30,6 +32,7 @@ export const useSettingsStore = create<SettingsState>()(
       language: Language.EN,
       theme: ThemeMode.SYSTEM,
       alarmToneId: DEFAULT_ALARM_TONE_ID,
+      alarmVolume: 0.85,
       vibrationPattern: VibrationPattern.MODERATE,
       vibrateOnSuccess: true,
       preventAutoLock: true,
@@ -38,6 +41,7 @@ export const useSettingsStore = create<SettingsState>()(
       setLanguage: (language) => set({ language }),
       setTheme: (theme) => set({ theme }),
       setAlarmToneId: (alarmToneId) => set({ alarmToneId }),
+      setAlarmVolume: (alarmVolume) => set({ alarmVolume }),
       setVibrationPattern: (vibrationPattern) => set({ vibrationPattern }),
       setVibrateOnSuccess: (vibrateOnSuccess) => set({ vibrateOnSuccess }),
       setPreventAutoLock: (preventAutoLock) => set({ preventAutoLock }),
