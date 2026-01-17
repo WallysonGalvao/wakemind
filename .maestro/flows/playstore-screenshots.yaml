@@ -1,0 +1,197 @@
+# Play Store Screenshots Flow
+# Generates all screenshots needed for Google Play Store listing
+# Run with: maestro test .maestro/flows/playstore-screenshots.yaml
+#
+# IMPORTANT: For store-quality screenshots, use a PREVIEW or PRODUCTION build
+# not a Development Build. Development builds show the Expo Dev Client.
+#
+# Build preview APK: eas build --profile preview --platform android
+# Or run local preview: npx expo run:android --variant release
+#
+# Screenshots are saved to ~/.maestro/screenshots/ by default
+# Move them to assets/store/playstore/ after generation
+
+appId: com.wgsoftwares.wakemind
+
+# Clear app data to ensure consistent screenshots
+onFlowStart:
+  - clearState
+
+---
+# ============================================
+# PHONE SCREENSHOTS (1080x1920 on emulator)
+# ============================================
+
+- launchApp
+
+# Wait for the app to fully load
+- extendedWaitUntil:
+    visible:
+      text: '.*'
+    timeout: 15000
+
+# ============================================
+# HANDLE EXPO DEV CLIENT (development builds only)
+# If you see this, consider using a preview/production build instead
+# ============================================
+
+# Tap on the development server URL to launch the bundled JS
+- tapOn:
+    text: '10.0.2.2'
+    optional: true
+
+# Alternative server addresses
+- tapOn:
+    text: 'localhost'
+    optional: true
+
+- tapOn:
+    text: '127.0.0.1'
+    optional: true
+
+# Wait for the JS bundle to load
+- extendedWaitUntil:
+    visible:
+      text: '.*'
+    timeout: 30000
+
+# ============================================
+# HANDLE ONBOARDING (if shown)
+# ============================================
+
+# Check if we're on the onboarding screen and skip it
+# Try both English and Portuguese
+- tapOn:
+    text: 'Skip'
+    optional: true
+
+- tapOn:
+    text: 'Pular'
+    optional: true
+
+- tapOn:
+    text: 'Get Started'
+    optional: true
+
+- tapOn:
+    text: 'Começar'
+    optional: true
+
+# Wait for navigation to complete
+- waitForAnimationToEnd
+
+# ============================================
+# MAIN ALARMS SCREEN
+# ============================================
+
+# Wait for the main screen to be fully loaded
+- extendedWaitUntil:
+    visible:
+      text: '.*'
+    timeout: 5000
+
+# Screenshot 1: Alarms List
+- takeScreenshot: playstore_phone_01_alarms_list
+
+# ============================================
+# CREATE A NEW ALARM
+# ============================================
+
+# Try to tap on FAB (when there are alarms)
+- tapOn:
+    id: 'fab'
+    optional: true
+
+# If no FAB, tap the empty state button
+- tapOn:
+    text: 'Set Your First Alarm'
+    optional: true
+
+- tapOn:
+    text: 'Configurar Primeiro Alarme'
+    optional: true
+
+# Wait for create alarm screen to load
+- waitForAnimationToEnd
+
+# Screenshot 2: Alarm Creation Form
+# Wait for create alarm screen (matches English or Portuguese)
+- extendedWaitUntil:
+    visible:
+      text: '(New Alarm|Novo Alarme)'
+    timeout: 5000
+
+- takeScreenshot: playstore_phone_02_alarm_form
+
+# Select Math challenge
+- tapOn:
+    text: 'Math'
+    optional: true
+
+- tapOn:
+    text: 'Matemática'
+    optional: true
+
+# Wait for any animations
+- waitForAnimationToEnd
+
+# Screenshot 3: Alarm Form with challenge selected
+- takeScreenshot: playstore_phone_03_challenge_selection
+
+# Go back to main screen
+- back
+
+# Confirm discard if dialog appears
+- tapOn:
+    text: 'Discard'
+    optional: true
+
+- tapOn:
+    text: 'Descartar'
+    optional: true
+
+# Wait for navigation back
+- waitForAnimationToEnd
+
+# ============================================
+# SETTINGS SCREEN
+# ============================================
+
+# Wait briefly to ensure we're back on main screen
+- extendedWaitUntil:
+    visible:
+      text: '.*'
+    timeout: 3000
+
+# Navigate to Settings tab
+- tapOn:
+    id: 'settings-tab'
+    optional: true
+
+- tapOn:
+    text: 'Settings'
+    optional: true
+
+- tapOn:
+    text: 'Configurações'
+    optional: true
+
+# Wait for settings screen to load
+- waitForAnimationToEnd
+
+# Screenshot 4: Settings Screen
+- takeScreenshot: playstore_phone_04_settings
+
+# ============================================
+# Final message
+# ============================================
+- runFlow:
+    commands:
+      - evalScript: |
+          console.log('✅ Play Store screenshots generated successfully!')
+          console.log('📁 Find them in: ~/.maestro/screenshots/')
+          console.log('📋 Files generated:')
+          console.log('   - playstore_phone_01_alarms_list.png')
+          console.log('   - playstore_phone_02_alarm_form.png')
+          console.log('   - playstore_phone_03_challenge_selection.png')
+          console.log('   - playstore_phone_04_settings.png')

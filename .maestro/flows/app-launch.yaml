@@ -1,0 +1,29 @@
+# App Launch Flow
+# Verifies that the app launches successfully and displays the main screen
+# Handles both fresh installs (with onboarding) and configured apps
+
+appId: com.wgsoftwares.wakemind
+
+---
+- launchApp
+
+# Wait for the app to fully load - the app may show onboarding or main screen
+- extendedWaitUntil:
+    visible:
+      text: '.*'
+    timeout: 15000
+
+# Skip onboarding if present
+- tapOn:
+    text: 'Skip'
+    optional: true
+
+- tapOn:
+    text: 'Get Started'
+    optional: true
+
+# Wait for navigation
+- waitForAnimationToEnd
+
+# Take a screenshot for verification
+- takeScreenshot: app_launch
