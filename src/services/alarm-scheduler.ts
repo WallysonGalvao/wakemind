@@ -211,10 +211,6 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     trigger
   );
 
-  console.log(
-    `[AlarmScheduler] Scheduled alarm ${alarm.id} for ${new Date(triggerTimestamp).toLocaleString()}`
-  );
-
   return notificationId;
 }
 
@@ -224,7 +220,6 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
 export async function cancelAlarm(alarmId: string): Promise<void> {
   try {
     await notifee.cancelNotification(alarmId);
-    console.log(`[AlarmScheduler] Cancelled alarm ${alarmId}`);
   } catch (error) {
     console.error(`[AlarmScheduler] Error cancelling alarm ${alarmId}:`, error);
   }
@@ -244,7 +239,6 @@ export async function rescheduleAlarm(alarm: Alarm): Promise<string> {
 export async function cancelAllAlarms(): Promise<void> {
   try {
     await notifee.cancelAllNotifications();
-    console.log('[AlarmScheduler] Cancelled all alarms');
   } catch (error) {
     console.error('[AlarmScheduler] Error cancelling all alarms:', error);
   }
@@ -328,8 +322,6 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
     trigger
   );
 
-  console.log(`[AlarmScheduler] Snoozed alarm ${alarm.id} for ${durationMinutes} minutes`);
-
   return notificationId;
 }
 
@@ -345,8 +337,6 @@ export async function dismissAlarm(alarm: Alarm): Promise<void> {
   if (isRepeatingAlarm(alarm) && alarm.isEnabled) {
     await scheduleAlarm(alarm);
   }
-
-  console.log(`[AlarmScheduler] Dismissed alarm ${alarm.id}`);
 }
 
 /**
@@ -398,10 +388,6 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
     trigger
   );
 
-  console.log(
-    `[AlarmScheduler] Scheduled wake check for alarm ${alarm.id} at ${new Date(triggerTimestamp).toLocaleString()}`
-  );
-
   return notificationId;
 }
 
@@ -410,7 +396,6 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
  */
 export async function initializeAlarmScheduler(): Promise<void> {
   await createAlarmChannel();
-  console.log('[AlarmScheduler] Initialized');
 }
 
 export const AlarmScheduler = {

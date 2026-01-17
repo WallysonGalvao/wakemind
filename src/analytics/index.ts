@@ -218,7 +218,6 @@ export default {
 try {
   mixpanel.init();
   isInitialized = true;
-  console.log('[Analytics] Mixpanel initialized');
-} catch (error) {
-  console.error('[Analytics] Failed to initialize Mixpanel:', error);
+} catch (_error) {
+  // Silently fail - analytics is not critical
 }

@@ -200,8 +200,6 @@ export const useAlarmsStore = create<AlarmsState>()(
             console.error(`[AlarmsStore] Failed to sync alarm ${alarm.id}:`, error);
           }
         }
-
-        console.log(`[AlarmsStore] Synced ${enabledAlarms.length} alarms with scheduler`);
       },
     }),
     {
