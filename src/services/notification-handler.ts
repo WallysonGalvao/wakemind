@@ -170,17 +170,15 @@ async function setupIOSCategories(): Promise<void> {
   await notifee.setNotificationCategories([
     {
       id: 'alarm',
+      actions: [],
+    },
+    {
+      id: 'alarm-snooze',
       actions: [
         {
           id: 'snooze',
           title: 'Snooze',
           foreground: true,
-        },
-        {
-          id: 'dismiss',
-          title: 'Dismiss',
-          foreground: true,
-          destructive: true,
         },
       ],
     },
