@@ -1,0 +1,105 @@
+## Git Workflow
+
+- Do not include "Claude Code" in commit messages
+- Use conventional commits (be brief and descriptive)
+
+## Important Concepts
+
+Focus on these principles in all code:
+
+- **DRY (Don't Repeat Yourself)** - Extract reusable logic into hooks, components, or utilities
+- **Type-safety** - Use TypeScript strictly, avoid `any`, prefer interfaces/types
+- **Testability** - Write code that's easy to test, separate concerns
+- **Consistency** - Follow established patterns in the codebase
+- **Performance** - Use `useMemo`, `useCallback`, avoid unnecessary re-renders
+- **Maintainability** - Clear naming, small functions, single responsibility
+- **Scalability** - Design for growth, avoid tight coupling
+- **Avoid prop drilling** - Use context, Zustand stores, or composition
+- **Error monitoring/observability** - Log errors, handle edge cases
+- **Automated tests** - Write tests for critical flows
+
+All detailed coding guidelines are in the skills:
+
+- Use `software-engineering` skill for core principles
+- Use `typescript` skill for TypeScript/JavaScript standards
+- Use `react` skill for React/Next.js best practices
+- Use `reviewing-code` skill for code reviews
+- Use `writing` skill for documentation and commit messages
+
+# WakeMind - Project Guidelines
+
+## Styling Standards
+
+This project uses **TailwindCSS + NativeWind** for styling. Follow these rules:
+
+### ✅ DO
+
+- Use `className` with Tailwind utility classes for all styling
+- Use `contentContainerClassName` for ScrollView/FlatList content styling
+- Use `useMemo` for dynamic styles that depend on runtime values (e.g., safe area insets)
+- Support dark/light themes with `dark:` prefix
+
+### ❌ DON'T
+
+- Do NOT use `StyleSheet.create()` - this is not the project pattern
+- Avoid inline `style={{}}` objects when possible
+- Never use CSS `filter` property (not supported in React Native)
+- **CRITICAL**: Avoid `shadow-*` and `transition-*` classes in conditional `className` on `Pressable` components (causes navigation context errors with Expo Router + React 19 + NativeWind)
+
+### Examples
+
+```tsx
+// ✅ Good - Using NativeWind
+<View className="flex-1 bg-background-light dark:bg-background-dark">
+<ScrollView contentContainerClassName="gap-4 pb-36">
+
+// ✅ Good - Dynamic values with useMemo
+const headerStyle = useMemo(() => ({ paddingTop: insets.top + 12 }), [insets.top]);
+<View style={headerStyle}>
+
+// ❌ Bad - StyleSheet.create
+const styles = StyleSheet.create({ container: { flex: 1 } });
+
+// ❌ Bad - Inline styles for static values
+<View style={{ paddingBottom: 140, gap: 16 }}>
+
+// ❌ Bad - shadow-* in conditional Pressable (causes navigation context error)
+<Pressable className={`base-classes ${isSelected ? 'bg-primary shadow-lg' : ''}`}>
+
+// ✅ Good - Use inline style for shadows instead
+<Pressable
+  className={`base-classes ${isSelected ? 'bg-primary' : ''}`}
+  style={isSelected ? { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 } : undefined}
+>
+```
+
+### expo-image Dimensions
+
+The `expo-image` package does NOT properly interpret TailwindCSS classes for width/height. You must use inline `style` prop:
+
+```tsx
+// ✅ Required for expo-image
+<Image
+  source={{ uri: imageUrl }}
+  className="h-full w-full"
+  // eslint-disable-next-line react-native/no-inline-styles -- expo-image requires style for dimensions
+  style={{ width: '100%', height: '100%' }}
+  contentFit="cover"
+/>
+```
+
+## Accessibility
+
+Always add `accessibilityRole` to interactive elements:
+
+```tsx
+<Pressable accessibilityRole="button" onPress={handlePress}>
+```
+
+## Icon Types
+
+Use proper TypeScript types for MaterialIcons:
+
+```tsx
+icon?: keyof typeof MaterialIcons.glyphMap
+```

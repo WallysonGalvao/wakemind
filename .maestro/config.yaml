@@ -1,0 +1,8 @@
+# Maestro Configuration for WakeMind
+# https://docs.maestro.dev/
+
+appId: com.wgsoftwares.wakemind
+
+# Default configurations
+onFlowStart:
+  - clearState # Clear app state before each flow

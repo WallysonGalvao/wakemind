@@ -1,0 +1,275 @@
+<!doctype html>
+
+<html class="dark" lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Política de Privacidade - WakeMind</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3da8f5',
+              'background-light': '#f6f7f9',
+              'background-dark': '#0b1f32',
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif'],
+            },
+            borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem', full: '0.75rem' },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom scrollbar for a technical feel */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0b1f32;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e3a52;
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3da8f5;
+      }
+
+      .technical-border {
+        background-image: linear-gradient(#3da8f5 33%, rgba(255, 255, 255, 0) 0%);
+        background-position: left;
+        background-size: 1px 6px;
+        background-repeat: repeat-y;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="font-display selection:bg-primary/30 overflow-x-hidden bg-background-light text-white antialiased selection:text-white dark:bg-background-dark"
+  >
+    <div
+      class="relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-background-dark shadow-2xl"
+    >
+      <!-- Top Navigation -->
+      <nav
+        class="sticky top-0 z-50 flex items-center justify-between border-b border-white/5 bg-background-dark/95 px-4 py-3 backdrop-blur-md"
+      >
+        <button
+          class="group flex size-10 items-center justify-center rounded-full transition-colors hover:bg-white/5"
+        >
+          <span
+            class="material-symbols-outlined text-primary transition-transform group-hover:-translate-x-0.5"
+            style="font-size: 24px"
+            >arrow_back_ios_new</span
+          >
+        </button>
+        <h1 class="text-base font-bold tracking-tight text-white/90">Política de Privacidade</h1>
+        <div class="size-10"></div>
+        <!-- Spacer for optical centering -->
+      </nav>
+      <!-- Content Area -->
+      <main class="relative z-10 flex-1 px-6 py-6 pb-12">
+        <!-- Metadata Header -->
+        <div class="mb-10 flex flex-col items-center opacity-70">
+          <div
+            class="via-primary/50 mb-2 h-8 w-[1px] bg-gradient-to-b from-transparent to-transparent"
+          ></div>
+          <p class="text-primary/80 text-xs font-medium uppercase tracking-widest">
+            Última atualização
+          </p>
+          <p class="font-mono mt-0.5 text-[11px] text-white/60">24 OUT 2023 // V.2.4</p>
+        </div>
+        <!-- Section 1: Introduction -->
+        <section class="mb-12">
+          <h2 class="text-primary mb-4 flex items-center gap-3 text-xl font-bold tracking-tight">
+            <span class="material-symbols-outlined text-primary/60 text-lg">terminal</span>
+            Introdução
+          </h2>
+          <p class="text-[15px] font-light leading-loose text-background-light/90">
+            Sua privacidade é fundamental para a experiência
+            <span class="font-medium text-white">WakeMind</span>. Este documento detalha
+            tecnicamente como protegemos seus dados neuro-adaptativos e garante transparência total
+            sobre nossos protocolos de segurança.
+          </p>
+        </section>
+        <!-- Section 2: Data Collected -->
+        <section class="relative mb-12">
+          <!-- Decorative vertical line -->
+          <div class="absolute bottom-4 left-[7px] top-8 w-[1px] bg-white/10"></div>
+          <h2 class="text-primary mb-6 flex items-center gap-3 text-xl font-bold tracking-tight">
+            <span class="material-symbols-outlined text-primary/60 text-lg">database</span>
+            Dados que Coletamos
+          </h2>
+          <div class="space-y-6 pl-1">
+            <div class="group flex gap-4">
+              <div class="relative z-10 mt-1.5">
+                <div
+                  class="border-primary flex size-3.5 items-center justify-center rounded-sm border bg-background-dark"
+                >
+                  <div class="bg-primary size-1 rounded-[1px]"></div>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h3 class="mb-1 text-sm font-medium text-white">Credenciais de Acesso</h3>
+                <p class="text-xs leading-relaxed text-gray-400">
+                  Endereço de e-mail (hash criptografado) e token de autenticação para sincronização
+                  segura entre dispositivos.
+                </p>
+              </div>
+            </div>
+            <div class="group flex gap-4">
+              <div class="relative z-10 mt-1.5">
+                <div
+                  class="border-primary/60 group-hover:border-primary flex size-3.5 items-center justify-center rounded-sm border bg-background-dark transition-colors"
+                >
+                  <div
+                    class="bg-primary/60 group-hover:bg-primary size-1 rounded-[1px] transition-colors"
+                  ></div>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h3 class="mb-1 text-sm font-medium text-white">Métricas de Foco</h3>
+                <p class="text-xs leading-relaxed text-gray-400">
+                  Duração das sessões, tipos de interrupção e padrões de horário para calibrar o
+                  algoritmo de produtividade pessoal.
+                </p>
+              </div>
+            </div>
+            <div class="group flex gap-4">
+              <div class="relative z-10 mt-1.5">
+                <div
+                  class="border-primary/60 group-hover:border-primary flex size-3.5 items-center justify-center rounded-sm border bg-background-dark transition-colors"
+                >
+                  <div
+                    class="bg-primary/60 group-hover:bg-primary size-1 rounded-[1px] transition-colors"
+                  ></div>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h3 class="mb-1 text-sm font-medium text-white">Configurações do Dispositivo</h3>
+                <p class="text-xs leading-relaxed text-gray-400">
+                  Modelo do dispositivo e versão do OS para otimização de performance e ajustes de
+                  UI.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Section 3: Data NOT Collected (Trust Signal) -->
+        <section class="relative mb-12 overflow-hidden rounded-lg">
+          <!-- Background Glow -->
+          <div class="bg-primary/5 absolute inset-0"></div>
+          <div
+            class="via-primary/40 absolute left-0 top-0 h-[1px] w-full bg-gradient-to-r from-transparent to-transparent"
+          ></div>
+          <div
+            class="via-primary/40 absolute bottom-0 left-0 h-[1px] w-full bg-gradient-to-r from-transparent to-transparent"
+          ></div>
+          <div class="border-primary relative border-l-2 p-6">
+            <div class="mb-5 flex items-center justify-between">
+              <h2 class="text-primary text-xl font-bold tracking-tight">O que NÃO Coletamos</h2>
+              <span class="material-symbols-outlined text-primary/40 animate-pulse"
+                >shield_lock</span
+              >
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[18px] text-red-400/80">block</span>
+                <span class="text-sm font-medium text-background-light/80"
+                  >Conteúdo de suas notas</span
+                >
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[18px] text-red-400/80">block</span>
+                <span class="text-sm font-medium text-background-light/80"
+                  >Localização GPS Precisa</span
+                >
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[18px] text-red-400/80">block</span>
+                <span class="text-sm font-medium text-background-light/80"
+                  >Identificadores Publicitários</span
+                >
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[18px] text-red-400/80">block</span>
+                <span class="text-sm font-medium text-background-light/80"
+                  >Gravações de Áudio Ambiente</span
+                >
+              </div>
+            </div>
+            <div class="mt-6 border-t border-white/5 pt-4">
+              <p class="text-primary/70 font-mono text-xs italic">
+                "Seus pensamentos pertencem apenas a você. Nosso modelo de negócios é baseado em
+                assinatura, não em venda de dados."
+              </p>
+            </div>
+          </div>
+        </section>
+        <!-- Section 4: Security -->
+        <section class="mb-8">
+          <h2 class="text-primary mb-4 flex items-center gap-3 text-xl font-bold tracking-tight">
+            <span class="material-symbols-outlined text-primary/60 text-lg">encrypted</span>
+            Segurança Neural
+          </h2>
+          <p class="mb-4 text-[15px] font-light leading-loose text-background-light/90">
+            Todo tráfego de dados é protegido por criptografia TLS 1.3 em trânsito e AES-256 em
+            repouso. Nossos servidores são isolados e auditados trimestralmente.
+          </p>
+          <div
+            class="inline-flex items-center gap-2 rounded border border-white/10 bg-white/5 px-3 py-1.5"
+          >
+            <span class="material-symbols-outlined text-sm text-green-400">check_circle</span>
+            <span class="font-mono text-xs text-gray-300">SOC 2 Compliant</span>
+          </div>
+        </section>
+      </main>
+      <!-- Footer -->
+      <footer class="relative z-10 border-t border-white/5 bg-background-dark/50 p-8 text-center">
+        <div class="mb-4 flex justify-center">
+          <span class="material-symbols-outlined text-3xl text-white/20">fingerprint</span>
+        </div>
+        <p class="mb-3 text-xs font-light text-gray-500">
+          Para exercer seus direitos de privacidade (GDPR/LGPD), entre em contato com nosso DPO.
+        </p>
+        <a
+          class="text-primary decoration-primary/30 hover:decoration-primary text-sm font-medium underline underline-offset-4 transition-colors hover:text-white"
+          href="mailto:wallyson.galvao@gmail.com"
+        >
+          wallyson.galvao@gmail.com
+        </a>
+        <div class="h-6"></div>
+      </footer>
+      <!-- Background texture/noise for depth -->
+      <div
+        class="pointer-events-none fixed inset-0 opacity-[0.03]"
+        data-alt="Subtle noise texture overlay"
+        style="
+          background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKPBvABAAIR54tu8T59Ommb1kUURzYUDJacRJP67O4SdDRusIPrmPS6S04eVOG1OEiFpoKJcprAbhOo9XI9DW5atMLRZUEcxnyteby45-Q0H7tL638QXpXYemuKi-EaNL-2dyfQ-V9jMVHKvpz8N5wDc8m2-kZQEMzzuQuBIObe-zSbf6-zZSgpdeUreVq7XnSXqa1t6a2Fj-TR-XT26FP5xI_pcLQlGETlsM8aEWS_pNceWl9yjILg4dh-U2kWEcF1iheAFfs-tl0');
+          z-index: 0;
+        "
+      ></div>
+    </div>
+  </body>
+</html>

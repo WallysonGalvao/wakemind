@@ -1,0 +1,145 @@
+export const settingsPT = {
+  // Settings Screen
+  'settings.title': 'Configurações',
+  'settings.appearance': 'Aparência',
+  'settings.language': 'Idioma',
+  'settings.soundHaptics': 'Som e Vibração',
+  'settings.behavior': 'Comportamento',
+  'settings.general': 'Geral',
+  'settings.reviewOnboarding': 'Rever Tutorial',
+  'settings.about': 'Sobre',
+
+  // Theme
+  'theme.title': 'Tema',
+  'theme.light': 'Claro',
+  'theme.dark': 'Escuro',
+  'theme.system': 'Sistema',
+  'theme.darkMode': 'Modo Escuro',
+  'theme.description': 'Escolha seu tema preferido',
+
+  // Language
+  'language.title': 'Idioma',
+  'language.english': 'English',
+  'language.portuguese': 'Português',
+  'language.spanish': 'Español',
+  'language.description': 'Selecione seu idioma',
+  'language.availableLanguages': 'Idiomas Disponíveis',
+  'language.restartNote': 'O idioma do app será alterado imediatamente após a seleção.',
+
+  // Vibration Pattern
+  'vibration.title': 'Padrão de Vibração',
+  'vibration.availablePatterns': 'Padrões Disponíveis',
+  'vibration.tapToTest': 'Toque no ícone de vibração para testar cada padrão antes de selecionar.',
+  'vibration.test': 'Testar vibração',
+  'vibration.gentle': 'Suave',
+  'vibration.gentleDescription': 'Vibração leve a cada 3 segundos. Para quem acorda fácil.',
+  'vibration.moderate': 'Moderado',
+  'vibration.moderateDescription': 'Vibração média a cada 2 segundos. Despertar equilibrado.',
+  'vibration.intense': 'Intenso',
+  'vibration.intenseDescription': 'Vibração forte a cada segundo. Para sono pesado.',
+  'vibration.progressive': 'Progressivo',
+  'vibration.progressiveDescription': 'Começa suave e intensifica com o tempo até você acordar.',
+
+  // Sound & Haptics
+  'settings.alarmTone': 'Som do Alarme',
+  'settings.alarmVolume': 'Volume do Alarme',
+  'settings.vibrateOnSuccess': 'Vibrar ao Acertar',
+  'settings.vibrationPattern': 'Padrão de Vibração',
+
+  // Behavior
+  'settings.snoozeProtection': 'Proteção do Snooze',
+  'settings.preventAutoLock': 'Evitar Bloqueio Automático',
+  'settings.preventAutoLockDescription': 'Mantém a tela ativa durante os desafios cognitivos.',
+
+  // App Info
+  'settings.privacyPolicy': 'Política de Privacidade',
+  'settings.support': 'Suporte',
+
+  // Sections
+  'section.general': 'Geral',
+  'section.preferences': 'Preferências',
+
+  // Alarm Tone Screen
+  'alarmTone.title': 'Tom do Alarme',
+  'alarmTone.filterAll': 'Todos',
+  'alarmTone.filterRecent': 'Recentes',
+  'alarmTone.filterCustom': 'Personalizados',
+  'alarmTone.reliabilityScore': 'Pontuação de Confiabilidade',
+  'alarmTone.currentSelection': 'Seleção atual',
+  'alarmTone.suggestionTitle': 'Sugestão de Performance Máxima',
+  'alarmTone.suggestionText': 'Com base no seu histórico,',
+  'alarmTone.suggestionSuffix': 'ativa sua resposta cognitiva mais rápida (média 4s).',
+  'alarmTone.availableTones': 'Tons Disponíveis',
+  'alarmTone.viewAnalytics': 'Ver Análises',
+  'alarmTone.footer': 'Confiabilidade é Missão Crítica',
+
+  // Alarm Tone Names
+  'alarmTone.tone.neuro-strike-classic.name': 'Alerta Clássico',
+  'alarmTone.tone.neuro-strike-classic.category': 'Ativação Cortical',
+  'alarmTone.tone.neuro-strike-classic.description':
+    'Padrão tradicional de bipe de despertador para despertar confiável',
+  'alarmTone.tone.digital-pulse.name': 'Pulso Digital',
+  'alarmTone.tone.digital-pulse.category': 'Sincronia Rítmica',
+  'alarmTone.tone.digital-pulse.description': 'Buzina de relógio digital com intervalos precisos',
+  'alarmTone.tone.morning-protocol.name': 'Protocolo Matinal',
+  'alarmTone.tone.morning-protocol.category': 'Gatilho Circadiano',
+  'alarmTone.tone.morning-protocol.description':
+    'Alarme matinal suave projetado para ciclos naturais de despertar',
+  'alarmTone.tone.alert-surge.name': 'Surto de Alerta',
+  'alarmTone.tone.alert-surge.category': 'Protocolo de Emergência',
+  'alarmTone.tone.alert-surge.description':
+    'Alarme de alta prioridade para ativação cognitiva garantida',
+  'alarmTone.tone.facility-breach.name': 'Violação de Instalação',
+  'alarmTone.tone.facility-breach.category': 'Protocolo de Emergência',
+  'alarmTone.tone.facility-breach.description':
+    'Alarme de segurança para máxima resposta de despertar',
+  'alarmTone.tone.retro-gamma.name': 'Retro Gamma',
+  'alarmTone.tone.retro-gamma.category': 'Ativação Cortical',
+  'alarmTone.tone.retro-gamma.description':
+    'Sons de emergência estilo retrô com resposta nostálgica',
+  'alarmTone.tone.vintage-warning.name': 'Aviso Vintage',
+  'alarmTone.tone.vintage-warning.category': 'Despertar Progressivo',
+  'alarmTone.tone.vintage-warning.description': 'Sinal de aviso clássico com intensidade gradual',
+  'alarmTone.tone.space-command.name': 'Comando Espacial',
+  'alarmTone.tone.space-command.category': 'Protocolo Sci-Fi',
+  'alarmTone.tone.space-command.description':
+    'Alarme futurista de nave espacial para despertar imersivo',
+  'alarmTone.tone.critical-alert.name': 'Alerta Crítico',
+  'alarmTone.tone.critical-alert.category': 'Protocolo de Emergência',
+  'alarmTone.tone.critical-alert.description':
+    'Rajada curta e intensa para resposta cortical imediata',
+  'alarmTone.tone.sci-fi-scanner.name': 'Scanner Sci-Fi',
+  'alarmTone.tone.sci-fi-scanner.category': 'Protocolo Sci-Fi',
+  'alarmTone.tone.sci-fi-scanner.description':
+    'Varredura de frequência para ativação gradual de ondas alfa',
+  'alarmTone.tone.hint-notification.name': 'Notificação Suave',
+  'alarmTone.tone.hint-notification.category': 'Despertar Progressivo',
+  'alarmTone.tone.hint-notification.description':
+    'Notificação de interface suave para quem acorda fácil',
+  'alarmTone.tone.rooster-morning.name': 'Galo Matinal',
+  'alarmTone.tone.rooster-morning.category': 'Gatilho Circadiano',
+  'alarmTone.tone.rooster-morning.description': 'Canto natural do galo para despertar biológico',
+  'alarmTone.tone.rooster-short.name': 'Galo Rápido',
+  'alarmTone.tone.rooster-short.category': 'Gatilho Circadiano',
+  'alarmTone.tone.rooster-short.description':
+    'Canto rápido do galo para alerta natural instantâneo',
+  'alarmTone.tone.casino-payout.name': 'Prêmio de Cassino',
+  'alarmTone.tone.casino-payout.category': 'Gatilho de Dopamina',
+  'alarmTone.tone.casino-payout.description':
+    'Som de vitória de caça-níquel para despertar baseado em recompensa',
+  'alarmTone.tone.hall-alert.name': 'Alerta de Salão',
+  'alarmTone.tone.hall-alert.category': 'Despertar Progressivo',
+  'alarmTone.tone.hall-alert.description':
+    'Alerta espaçoso de salão para despertar ambiental gradual',
+
+  // Common
+  'common.active': 'ATIVO',
+
+  // Language Screen
+  'language.en.name': 'Inglês',
+  'language.en.nativeName': 'English',
+  'language.pt-BR.name': 'Português (Brasil)',
+  'language.pt-BR.nativeName': 'Português (Brasil)',
+  'language.es.name': 'Espanhol',
+  'language.es.nativeName': 'Español',
+};
