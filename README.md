@@ -1,152 +1,203 @@
-# WakeMind
+<div align="center">
+  <img src="./assets/images/icon.png" alt="WakeMind Logo" width="120" height="120" />
+  
+  # WakeMind
+  
+  **Wake your mind. Execute your day.**
+  
+  A cognitive alarm clock app that helps you wake up by engaging your brain with interactive challenges.
+  
+  [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/WallysonGalvao/wakemind)
+  [![React Native](https://img.shields.io/badge/React%20Native-0.81.5-61DAFB?logo=react)](https://reactnative.dev/)
+  [![Expo](https://img.shields.io/badge/Expo-54-000020?logo=expo)](https://expo.dev)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+  [![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
+  
+</div>
 
-A cognitive alarm clock app that helps you wake up by engaging your brain with interactive challenges.
+---
 
-## Features
+## ✨ Features
 
-- **Smart Alarms** - Create, edit, and manage alarms with customizable schedules
-- **Cognitive Challenges** - Three challenge types to ensure you're fully awake:
-  - **Math** - Solve arithmetic problems (3 difficulty levels)
-  - **Memory** - Simon Says-style pattern recognition
-  - **Logic** - Sequence completion and odd-one-out puzzles
-- **Backup Protocols** - Snooze protection and wake check notifications
-- **Critical Alerts** - Notifications that bypass Do Not Disturb (iOS)
-- **Dark Mode** - Full light/dark theme support
-- **Internationalization** - Available in English, Portuguese, and Spanish
+### 🎯 Smart Alarms
 
-## Tech Stack
+- Create, edit, and manage alarms with customizable schedules
+- Repeat options: Once, Daily, Weekdays, Weekends, Custom
+- Difficulty levels for each challenge (Easy, Medium, Hard)
 
-- **Framework**: [Expo](https://expo.dev) (SDK 54) + [React Native](https://reactnative.dev) 0.81
-- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/) (file-based routing)
-- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/) + [MMKV](https://github.com/mrousavy/react-native-mmkv) persistence
-- **Styling**: [TailwindCSS](https://tailwindcss.com/) + [NativeWind](https://www.nativewind.dev/)
-- **Animations**: [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
-- **Notifications**: [Notifee](https://notifee.app/)
-- **Forms**: [React Hook Form](https://react-hook-form.com/) + Zod validation
-- **Testing**: [Jest](https://jestjs.io/) + [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)
-- **i18n**: [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/)
+### 🧠 Cognitive Challenges
 
-## Getting Started
+Ensure you're fully awake with three brain-engaging challenge types:
+
+- **Math** 🔢 - Arithmetic problems with 3 difficulty levels
+- **Memory** 🧩 - Simon Says-style pattern recognition
+- **Logic** 💡 - Sequence completion and odd-one-out puzzles
+
+### 🛡️ Backup Protocols
+
+- **Snooze Protection** - Disable snooze to prevent oversleeping
+- **Wake Check** - Follow-up notification 5 minutes after dismissal
+
+### 🔔 Reliable Notifications
+
+- Critical alerts that bypass Do Not Disturb (iOS)
+- Exact alarm scheduling (Android 12+)
+- Full-screen intent for lock screen display
+- Battery optimization handling
+
+### 🎨 Polished Experience
+
+- **Dark Mode** - Full light/dark theme support with system preference detection
+- **Multi-language** - Available in English, Portuguese, and Spanish
+- **Analytics** - Mixpanel integration for usage insights
+- **Error Tracking** - Sentry integration for production monitoring
+
+---
+
+## 🛠️ Tech Stack
+
+| Category          | Technologies                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Framework**     | [Expo](https://expo.dev) SDK 54 + [React Native](https://reactnative.dev) 0.81                                         |
+| **Architecture**  | New Architecture enabled                                                                                               |
+| **Navigation**    | [Expo Router](https://docs.expo.dev/router/introduction/) (file-based)                                                 |
+| **State**         | [Zustand](https://zustand-demo.pmnd.rs/) + [MMKV](https://github.com/mrousavy/react-native-mmkv) (encrypted)           |
+| **Styling**       | [TailwindCSS](https://tailwindcss.com/) + [NativeWind](https://www.nativewind.dev/) v4                                 |
+| **Animations**    | [Reanimated](https://docs.swmansion.com/react-native-reanimated/) v4                                                   |
+| **Notifications** | [Notifee](https://notifee.app/) v9                                                                                     |
+| **Forms**         | [React Hook Form](https://react-hook-form.com/) + Zod                                                                  |
+| **Testing**       | [Jest](https://jestjs.io/) + [React Native Testing Library](https://callstack.github.io/react-native-testing-library/) |
+| **E2E Testing**   | [Maestro](https://maestro.mobile.dev/)                                                                                 |
+| **i18n**          | [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/)                                      |
+| **Analytics**     | [Mixpanel](https://mixpanel.com/)                                                                                      |
+| **Monitoring**    | [Sentry](https://sentry.io/)                                                                                           |
+| **CI/CD**         | [EAS Build](https://docs.expo.dev/build/introduction/) + [EAS Submit](https://docs.expo.dev/submit/introduction/)      |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- iOS: Xcode 15+ (for iOS development)
-- Android: Android Studio with SDK 34+ (for Android development)
+- **Node.js** 18+ ([Download](https://nodejs.org/))
+- **iOS**: macOS with Xcode 15+ (iOS development)
+- **Android**: Android Studio with SDK 34+ (Android development)
+- **EAS CLI**: `npm install -g eas-cli` (optional, for cloud builds)
 
 ### Installation
 
-1. Clone the repository:
+```bash
+# Clone the repository
+git clone https://github.com/WallysonGalvao/wakemind.git
+cd wakemind
 
-   ```bash
-   git clone https://github.com/your-username/wakemind.git
-   cd wakemind
-   ```
+# Install dependencies
+npm install
 
-2. Install dependencies:
+# iOS only: Install CocoaPods
+cd ios && pod install && cd ..
 
-   ```bash
-   npm install
-   ```
-
-3. Install iOS pods (macOS only):
-
-   ```bash
-   cd ios && pod install && cd ..
-   ```
-
-4. Start the development server:
-
-   ```bash
-   npm start
-   ```
+# Start development server
+npm start
+```
 
 ### Running the App
 
 ```bash
-# iOS Simulator
+# Development server
+npm start
+
+# iOS (opens simulator)
 npm run ios
 
-# Android Emulator
+# Android (opens emulator)
 npm run android
 
-# Start Metro bundler
-npm start
+# Web
+npm run web
 ```
 
-## Scripts
+---
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start Expo development server |
-| `npm run ios` | Run on iOS simulator |
-| `npm run android` | Run on Android emulator |
-| `npm test` | Run Jest tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint errors |
-| `npm run format` | Format code with Prettier |
-| `npm run maestro` | Run Maestro E2E tests |
-
-## Project Structure
+## 📂 Project Structure
 
 ```
-src/
-├── app/                    # Expo Router pages
-│   ├── (tabs)/             # Tab navigation
-│   ├── alarm/              # Alarm screens
-│   ├── onboarding/         # Onboarding flow
-│   └── settings/           # Settings screens
-├── components/             # Shared components
-├── constants/              # App constants and colors
-├── features/               # Feature modules
-│   ├── alarms/             # Alarm management
-│   │   ├── components/     # Alarm components
-│   │   ├── screens/        # Alarm screens
-│   │   └── schemas/        # Validation schemas
-│   ├── onboarding/         # Onboarding flow
-│   └── settings/           # Settings screens
-├── hooks/                  # Custom React hooks
-├── i18n/                   # Internationalization
-│   └── locales/            # Translation files (en, pt, es)
-├── services/               # Business logic services
-│   ├── alarm-scheduler.ts  # Notification scheduling
-│   └── notification-handler.ts
-├── stores/                 # Zustand stores
-├── types/                  # TypeScript types
-└── utils/                  # Utility functions
+wakemind/
+├── src/
+│   ├── app/                    # Expo Router pages
+│   │   ├── (tabs)/             # Tab navigation (Alarms, Settings)
+│   │   ├── alarm/              # Alarm screens (create, edit, trigger)
+│   │   ├── onboarding/         # First-time user onboarding
+│   │   └── settings/           # Settings screens
+│   ├── analytics/              # Mixpanel events and tracking
+│   ├── components/             # Shared UI components
+│   ├── configs/                # App configuration (Sentry, etc.)
+│   ├── constants/              # Constants (colors, tones, themes)
+│   ├── features/               # Feature modules
+│   │   ├── alarms/             # Alarm management
+│   │   │   ├── components/     # Alarm-specific components
+│   │   │   ├── screens/        # Alarm screens
+│   │   │   └── schemas/        # Zod validation schemas
+│   │   ├── onboarding/         # Onboarding feature
+│   │   └── settings/           # Settings feature
+│   ├── hooks/                  # Custom React hooks
+│   ├── i18n/                   # Internationalization
+│   │   ├── en/                 # English translations
+│   │   ├── pt/                 # Portuguese translations
+│   │   └── es/                 # Spanish translations
+│   ├── services/               # Business logic
+│   │   ├── alarm-scheduler.ts  # Notifee scheduling
+│   │   ├── notification-handler.ts # Event handling
+│   │   └── vibration-service.ts
+│   ├── stores/                 # Zustand stores
+│   │   ├── use-alarms-store.ts
+│   │   └── use-settings-store.ts
+│   ├── types/                  # TypeScript type definitions
+│   └── utils/                  # Utility functions
+├── assets/                     # Images, fonts, sounds
+├── .maestro/                   # Maestro E2E tests
+└── plugins/                    # Expo config plugins
 ```
 
-## Testing
+---
+
+## 🧪 Testing
 
 ```bash
 # Run all tests
 npm test
 
-# Run tests in watch mode
+# Watch mode
 npm run test:watch
 
-# Generate coverage report
+# Coverage report
 npm run test:coverage
+
+# E2E tests with Maestro
+npm run maestro
 ```
 
-## Building & Publishing
+### Coverage
 
-This project uses [EAS Build](https://docs.expo.dev/build/introduction/) for cloud builds and [EAS Submit](https://docs.expo.dev/submit/introduction/) for store submissions.
+```
+| Statements | Branches | Functions | Lines |
+|------------|----------|-----------|-------|
+| ~75%       | ~70%     | ~68%      | ~75%  |
+```
+
+---
+
+## 📦 Building & Deployment
 
 ### Build Profiles
 
-| Profile | Platform | Output | Use Case |
-|---------|----------|--------|----------|
-| `development` | iOS | Simulator build | Local development |
-| `development` | Android | APK | Local development |
-| `preview` | iOS | Ad-hoc IPA | Internal testing |
-| `preview` | Android | APK | Internal testing |
-| `production` | iOS | App Store build | Production release |
-| `production` | Android | AAB | Production release |
+| Profile       | Platform    | Output        | Use Case         |
+| ------------- | ----------- | ------------- | ---------------- |
+| `development` | iOS/Android | Simulator/APK | Local dev        |
+| `preview`     | iOS/Android | Ad-hoc/APK    | Internal testing |
+| `production`  | iOS/Android | App Store/AAB | Production       |
 
-### Building the App
+### Build Commands
 
 ```bash
 # Development builds
@@ -154,93 +205,115 @@ eas build --profile development --platform ios
 eas build --profile development --platform android
 
 # Preview builds (internal testing)
-eas build --profile preview --platform ios
-eas build --profile preview --platform android
+eas build --profile preview --platform all
 
 # Production builds
-eas build --profile production --platform ios
-eas build --profile production --platform android
-
-# Build for all platforms
 eas build --profile production --platform all
 ```
 
 ### Over-the-Air Updates
 
 ```bash
-# Push an update to production
-eas update --branch production --message "Bug fixes"
+# Push update to production
+eas update --branch production --message "Bug fixes and improvements"
 
-# Push an update to preview
-eas update --branch preview --message "New feature"
+# Preview channel
+eas update --branch preview --message "New feature testing"
 ```
 
-### Publishing to Stores
+### Store Submission
 
 #### iOS App Store
 
-1. **Configure credentials** in `eas.json`:
-   ```json
-   "ios": {
-     "appleId": "your-apple-id@email.com",
-     "ascAppId": "YOUR_APP_STORE_CONNECT_APP_ID",
-     "appleTeamId": "YOUR_APPLE_TEAM_ID"
-   }
-   ```
-
-2. **Request Critical Alerts entitlement** (required for alarm apps):
-   - Apply at: https://developer.apple.com/contact/request/notifications-critical-alerts-entitlement/
-
-3. **Submit to App Store**:
+1. **Configure `eas.json`** with your Apple credentials
+2. **Request Critical Alerts entitlement** at [Apple Developer](https://developer.apple.com/contact/request/notifications-critical-alerts-entitlement/)
+3. **Submit**:
    ```bash
    eas submit --platform ios --latest
    ```
 
 #### Google Play Store
 
-1. **Create a service account** in Google Cloud Console
-
-2. **Download the JSON key** and save as `google-service-account.json` in project root
-
-3. **Configure in `eas.json`**:
-   ```json
-   "android": {
-     "serviceAccountKeyPath": "./google-service-account.json",
-     "track": "internal"
-   }
-   ```
-
-4. **Submit to Play Store**:
+1. **Create service account** in Google Cloud Console
+2. **Download JSON key** → save as `google-service-account.json`
+3. **Configure `eas.json`** with service account path
+4. **Submit**:
    ```bash
    eas submit --platform android --latest
    ```
 
-### Environment Variables
+---
 
-For production builds, set secrets using EAS:
+## 🔐 Security
 
-```bash
-# Set a secret
-eas secret:create --name API_KEY --value "your-api-key" --scope project
+- ✅ **Encrypted Storage**: MMKV with encryption key
+- ✅ **No Hardcoded Secrets**: All tokens via environment variables
+- ✅ **No Console Logs**: Removed in production builds
+- ✅ **Secure Permissions**: Android battery optimization + exact alarms
+- ✅ **Error Tracking**: Sentry for production monitoring
 
-# List secrets
-eas secret:list
-```
+---
 
-## Contributing
+## 🌍 Internationalization
+
+Supported languages:
+
+- 🇺🇸 English
+- 🇧🇷 Portuguese
+- 🇪🇸 Spanish
+
+Translation files are located in `src/i18n/`.
+
+---
+
+## 📜 Scripts Reference
+
+| Command                  | Description                   |
+| ------------------------ | ----------------------------- |
+| `npm start`              | Start Expo development server |
+| `npm run ios`            | Run on iOS simulator          |
+| `npm run android`        | Run on Android emulator       |
+| `npm run web`            | Run on web browser            |
+| `npm test`               | Run Jest tests                |
+| `npm run test:watch`     | Run tests in watch mode       |
+| `npm run test:coverage`  | Generate coverage report      |
+| `npm run lint`           | Run ESLint                    |
+| `npm run lint:fix`       | Fix ESLint errors             |
+| `npm run format`         | Format code with Prettier     |
+| `npm run maestro`        | Run Maestro E2E tests         |
+| `npm run maestro:studio` | Open Maestro Studio           |
+
+---
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes using conventional commits
+3. Commit using [Conventional Commits](https://www.conventionalcommits.org/)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+---
 
-This project is private and proprietary.
+## 📄 License
 
-## Acknowledgments
+This project is **private** and **proprietary**. All rights reserved.
 
-- [Expo](https://expo.dev) for the excellent React Native tooling
-- [Notifee](https://notifee.app) for reliable notification handling
-- [NativeWind](https://nativewind.dev) for bringing Tailwind to React Native
+---
+
+## 🙏 Acknowledgments
+
+- [Expo](https://expo.dev) - For excellent React Native tooling
+- [Notifee](https://notifee.app) - For reliable local notifications
+- [NativeWind](https://nativewind.dev) - For bringing Tailwind to React Native
+- [Reanimated](https://docs.swmansion.com/react-native-reanimated/) - For smooth animations
+
+---
+
+<div align="center">
+  
+  ### 𝑊𝑎𝑘𝑒 𝑦𝑜𝑢𝑟 𝑚𝑖𝑛𝑑. 𝐸𝑥𝑒𝑐𝑢𝑡𝑒 𝑦𝑜𝑢𝑟 𝑑𝑎𝑦.
+  
+  Made with ❤️ by [Wallyson Galvão](https://github.com/WallysonGalvao)
+  
+</div>
