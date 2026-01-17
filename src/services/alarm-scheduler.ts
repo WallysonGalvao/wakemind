@@ -10,6 +10,7 @@ import notifee, {
 import { Platform } from 'react-native';
 
 import type { Alarm } from '@/types/alarm';
+import { BackupProtocolId } from '@/types/alarm-enums';
 import { getNextTriggerTimestamp, isRepeatingAlarm } from '@/utils/alarm-time-calculator';
 
 const ALARM_CHANNEL_ID = 'wakemind-alarm';
@@ -160,6 +161,22 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     },
   };
 
+  // Build actions dynamically based on alarm protocols
+  const actions = [];
+
+  // Check if snooze protocol is enabled
+  const isSnoozeEnabled =
+    alarm.protocols?.some(
+      (protocol) => protocol.id === BackupProtocolId.SNOOZE && protocol.enabled
+    ) ?? false;
+
+  if (isSnoozeEnabled) {
+    actions.push({
+      title: 'Snooze',
+      pressAction: { id: 'snooze' },
+    });
+  }
+
   const notificationId = await notifee.createTriggerNotification(
     {
       id: alarm.id,
@@ -189,23 +206,14 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
           id: 'default',
           launchActivity: 'default',
         },
-        actions: [
-          {
-            title: 'Snooze',
-            pressAction: { id: 'snooze' },
-          },
-          {
-            title: 'Dismiss',
-            pressAction: { id: 'dismiss' },
-          },
-        ],
+        actions,
       },
       ios: {
         sound: 'alarm_sound.wav',
         critical: true,
         criticalVolume: 1.0,
         interruptionLevel: 'critical',
-        categoryId: 'alarm',
+        categoryId: isSnoozeEnabled ? 'alarm-snooze' : 'alarm',
       },
     },
     trigger
