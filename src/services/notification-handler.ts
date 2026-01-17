@@ -44,8 +44,6 @@ export function setNotificationCallbacks(newCallbacks: NotificationHandlerCallba
  * Handle snooze action
  */
 async function handleSnoozeAction(data: AlarmNotificationData): Promise<void> {
-  console.log('[NotificationHandler] Snoozing alarm:', data.alarmId);
-
   const alarm = callbacks.getAlarm?.(data.alarmId);
   if (alarm) {
     await AlarmScheduler.snoozeAlarm(alarm, 5);
@@ -70,8 +68,6 @@ async function handleSnoozeAction(data: AlarmNotificationData): Promise<void> {
  * Handle dismiss action
  */
 async function handleDismissAction(data: AlarmNotificationData): Promise<void> {
-  console.log('[NotificationHandler] Dismissing alarm:', data.alarmId);
-
   const alarm = callbacks.getAlarm?.(data.alarmId);
   if (alarm) {
     await AlarmScheduler.dismissAlarm(alarm);
@@ -107,20 +103,17 @@ function handleForegroundEvent(event: Event): void {
 
   switch (type) {
     case EventType.DELIVERED:
-      console.log('[NotificationHandler] Alarm delivered:', data.alarmId);
       // Navigate to alarm trigger screen
       navigateToAlarmScreen(data);
       callbacks.onAlarmTriggered?.(data.alarmId, data);
       break;
 
     case EventType.PRESS:
-      console.log('[NotificationHandler] Notification pressed:', data.alarmId);
       navigateToAlarmScreen(data);
       break;
 
     case EventType.ACTION_PRESS:
       const actionId = detail.pressAction?.id;
-      console.log('[NotificationHandler] Action pressed:', actionId, 'for alarm:', data.alarmId);
 
       if (actionId === 'snooze') {
         handleSnoozeAction(data);
@@ -130,7 +123,6 @@ function handleForegroundEvent(event: Event): void {
       break;
 
     case EventType.DISMISSED:
-      console.log('[NotificationHandler] Notification dismissed:', data.alarmId);
       break;
   }
 }
@@ -144,8 +136,6 @@ async function handleBackgroundEvent(event: Event): Promise<void> {
   const data = detail.notification?.data as AlarmNotificationData | undefined;
 
   if (!data?.alarmId) return;
-
-  console.log('[NotificationHandler] Background event:', type, 'for alarm:', data.alarmId);
 
   switch (type) {
     case EventType.DELIVERED:
@@ -195,8 +185,6 @@ async function setupIOSCategories(): Promise<void> {
       ],
     },
   ]);
-
-  console.log('[NotificationHandler] iOS categories configured');
 }
 
 /**
@@ -206,19 +194,14 @@ export async function initializeNotificationHandler(): Promise<void> {
   // Setup iOS categories
   await setupIOSCategories();
 
-  // Register Notifee foreground event handler
   notifee.onForegroundEvent(handleForegroundEvent);
-
-  console.log('[NotificationHandler] Initialized');
 }
 
 /**
  * Clean up notification handlers
  */
 export function cleanupNotificationHandler(): void {
-  // Notifee handlers are automatically cleaned up
   callbacks = {};
-  console.log('[NotificationHandler] Cleaned up');
 }
 
 export const NotificationHandler = {

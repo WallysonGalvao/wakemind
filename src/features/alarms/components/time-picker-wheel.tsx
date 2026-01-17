@@ -178,6 +178,7 @@ function TimePickerColumn({ value, onChange, items, type }: TimePickerColumnProp
         onScroll={scrollHandler}
         onMomentumScrollEnd={handleMomentumScrollEnd}
         scrollEventThrottle={16}
+        nestedScrollEnabled
         contentContainerStyle={{
           paddingTop: ITEM_HEIGHT * 2,
           paddingBottom: ITEM_HEIGHT * 2,

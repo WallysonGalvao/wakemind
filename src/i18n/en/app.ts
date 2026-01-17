@@ -125,6 +125,30 @@ export const appEN = {
   'alarmTrigger.sequencePuzzle': 'Sequence puzzle',
   'alarmTrigger.oddOneOut': 'Odd one out',
 
+  // Logic Challenge Hints
+  'alarmTrigger.hints.findPattern': 'Find the pattern',
+  'alarmTrigger.hints.fruitsVsAnimal': 'Fruits vs Animal',
+  'alarmTrigger.hints.vehiclesVsNature': 'Vehicles vs Nature',
+  'alarmTrigger.hints.skyObjects': 'Sky objects',
+  'alarmTrigger.hints.evenNumbers': 'Even numbers',
+  'alarmTrigger.hints.vowels': 'Vowels',
+  'alarmTrigger.hints.colorsVsShape': 'Colors vs Shape',
+  'alarmTrigger.hints.primeNumbers': 'Prime numbers',
+  'alarmTrigger.hints.perfectSquares': 'Perfect squares',
+  'alarmTrigger.hints.perfectCubes': 'Perfect cubes',
+
+  // Logic Challenge Accessibility
+  'alarmTrigger.accessibility.option': 'Option {{option}}',
+  'alarmTrigger.accessibility.selectOption': 'Select this option as your answer',
+  'alarmTrigger.accessibility.showHintButton': 'Show hint',
+  'alarmTrigger.accessibility.showHintDescription': 'Tap to reveal a hint for the puzzle',
+  'alarmTrigger.accessibility.submit': 'Submit',
+  'alarmTrigger.accessibility.submitAnswer': 'Submit your answer',
+  'alarmTrigger.accessibility.reviewPattern': 'Tap to see the pattern again',
+
+  // Validation
+  'validation.atLeastOneDayRequired': 'At least one day must be selected',
+
   // Notifications & Permissions
   'notifications.alarmTitle': 'WakeMind Alarm',
   'notifications.snoozedTitle': 'WakeMind - Snoozed',

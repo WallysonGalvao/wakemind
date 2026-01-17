@@ -19,6 +19,7 @@ export interface PermissionStatus {
   notifications: 'granted' | 'denied' | 'undetermined';
   exactAlarms: 'granted' | 'denied' | 'undetermined';
   fullScreen: 'granted' | 'denied' | 'undetermined';
+  batteryOptimization: 'granted' | 'denied' | 'undetermined';
 }
 
 /**
@@ -47,6 +48,7 @@ export async function checkPermissions(): Promise<PermissionStatus> {
     notifications: 'undetermined',
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
+    batteryOptimization: 'undetermined',
   };
 
   try {
@@ -68,8 +70,17 @@ export async function checkPermissions(): Promise<PermissionStatus> {
     // Android-specific permissions
     if (Platform.OS === 'android') {
       // Check exact alarms permission (Android 12+)
+      // Use settings.android.alarm to check SCHEDULE_EXACT_ALARM permission
+      if (settings.android?.alarm !== undefined) {
+        status.exactAlarms = settings.android.alarm === 1 ? 'granted' : 'denied';
+      } else {
+        // Fallback: assume granted on older Android versions
+        status.exactAlarms = 'granted';
+      }
+
+      // Check battery optimization (important for alarm reliability)
       const batteryOptimizationEnabled = await notifee.isBatteryOptimizationEnabled();
-      status.exactAlarms = batteryOptimizationEnabled ? 'denied' : 'granted';
+      status.batteryOptimization = batteryOptimizationEnabled ? 'denied' : 'granted';
 
       // Full screen intent is typically granted by default for alarm apps
       status.fullScreen = 'granted';
@@ -200,10 +211,6 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     trigger
   );
 
-  console.log(
-    `[AlarmScheduler] Scheduled alarm ${alarm.id} for ${new Date(triggerTimestamp).toLocaleString()}`
-  );
-
   return notificationId;
 }
 
@@ -213,7 +220,6 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
 export async function cancelAlarm(alarmId: string): Promise<void> {
   try {
     await notifee.cancelNotification(alarmId);
-    console.log(`[AlarmScheduler] Cancelled alarm ${alarmId}`);
   } catch (error) {
     console.error(`[AlarmScheduler] Error cancelling alarm ${alarmId}:`, error);
   }
@@ -233,7 +239,6 @@ export async function rescheduleAlarm(alarm: Alarm): Promise<string> {
 export async function cancelAllAlarms(): Promise<void> {
   try {
     await notifee.cancelAllNotifications();
-    console.log('[AlarmScheduler] Cancelled all alarms');
   } catch (error) {
     console.error('[AlarmScheduler] Error cancelling all alarms:', error);
   }
@@ -317,8 +322,6 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
     trigger
   );
 
-  console.log(`[AlarmScheduler] Snoozed alarm ${alarm.id} for ${durationMinutes} minutes`);
-
   return notificationId;
 }
 
@@ -334,8 +337,6 @@ export async function dismissAlarm(alarm: Alarm): Promise<void> {
   if (isRepeatingAlarm(alarm) && alarm.isEnabled) {
     await scheduleAlarm(alarm);
   }
-
-  console.log(`[AlarmScheduler] Dismissed alarm ${alarm.id}`);
 }
 
 /**
@@ -387,10 +388,6 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
     trigger
   );
 
-  console.log(
-    `[AlarmScheduler] Scheduled wake check for alarm ${alarm.id} at ${new Date(triggerTimestamp).toLocaleString()}`
-  );
-
   return notificationId;
 }
 
@@ -399,7 +396,6 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
  */
 export async function initializeAlarmScheduler(): Promise<void> {
   await createAlarmChannel();
-  console.log('[AlarmScheduler] Initialized');
 }
 
 export const AlarmScheduler = {

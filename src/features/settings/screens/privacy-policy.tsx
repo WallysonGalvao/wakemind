@@ -76,7 +76,7 @@ export default function PrivacyPolicyScreen() {
   }, [navigation, t, router]);
 
   const handleContactPress = () => {
-    Linking.openURL('mailto:privacy@wakemind.app');
+    Linking.openURL('mailto:wallyson.galvao@gmail.com');
   };
 
   return (

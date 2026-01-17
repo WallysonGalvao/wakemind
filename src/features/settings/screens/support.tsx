@@ -155,7 +155,7 @@ export default function SupportScreen() {
         </View>
 
         {/* Contact Card */}
-        <View className="relative mb-12 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 shadow-sm dark:border-primary-500/40 dark:bg-primary-500/5">
+        {/* <View className="relative mb-12 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 shadow-sm dark:border-primary-500/40 dark:bg-primary-500/5">
           <View className="absolute left-0 right-0 top-0 hidden h-[1px] bg-primary-500/40 dark:flex" />
           <View className="absolute bottom-0 left-0 right-0 hidden h-[1px] bg-primary-500/40 dark:flex" />
 
@@ -182,7 +182,7 @@ export default function SupportScreen() {
               </Text>
             </Pressable>
           </View>
-        </View>
+        </View> */}
 
         {/* Footer */}
         <View className="items-center border-t border-gray-200 pt-8 dark:border-white/5">

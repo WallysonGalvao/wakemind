@@ -377,11 +377,12 @@ interface ReviewButtonProps {
 }
 
 function ReviewButton({ label, onPress }: ReviewButtonProps) {
+  const { t } = useTranslation();
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityHint="Tap to see the pattern again"
+      accessibilityHint={t('alarmTrigger.accessibility.reviewPattern')}
       onPress={onPress}
       className="mb-6 h-32 w-32 items-center justify-center rounded-3xl bg-blue-500/20"
     >

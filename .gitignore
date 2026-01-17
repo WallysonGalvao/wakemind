@@ -69,3 +69,5 @@ maestro/screenshots/
 .maestro-recordings/
 
 .env.local
+
+google-service-account.json
