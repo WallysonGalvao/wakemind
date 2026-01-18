@@ -28,6 +28,8 @@ export default function MorningPerformanceSummaryScreen() {
     getAverageCognitiveScore,
     getWeeklyStats,
     getRecentReactionTimes,
+    getStreakGain,
+    getScoreGain,
     completionHistory,
   } = usePerformanceStore();
 
@@ -35,6 +37,8 @@ export default function MorningPerformanceSummaryScreen() {
   const averageCognitiveScore = getAverageCognitiveScore();
   const weeklyStats = getWeeklyStats();
   const recentReactionTimes = getRecentReactionTimes(7);
+  const streakGain = getStreakGain();
+  const scoreGain = getScoreGain();
 
   // Track performance summary viewed
   useEffect(() => {
@@ -183,7 +187,14 @@ export default function MorningPerformanceSummaryScreen() {
                 title={t('performance.streak')}
                 value={currentStreak}
                 subtitle={t('performance.daysConsistent')}
-                badge={{ text: t('performance.oneDayMore'), color: 'text-success-500' }}
+                badge={
+                  streakGain > 0
+                    ? {
+                        text: t('performance.daysGain', { count: streakGain }),
+                        color: 'text-success-500',
+                      }
+                    : undefined
+                }
               />
             </View>
 
@@ -195,7 +206,19 @@ export default function MorningPerformanceSummaryScreen() {
                 title={t('performance.score')}
                 value={averageCognitiveScore}
                 subtitle={t('performance.outOf100')}
-                badge={{ text: t('performance.fivePointsMore'), color: 'text-success-500' }}
+                badge={
+                  scoreGain > 0
+                    ? {
+                        text: t('performance.pointsGain', { count: scoreGain }),
+                        color: 'text-success-500',
+                      }
+                    : scoreGain < 0
+                      ? {
+                          text: t('performance.pointsGain', { count: scoreGain }),
+                          color: 'text-red-500',
+                        }
+                      : undefined
+                }
               />
             </View>
           </View>

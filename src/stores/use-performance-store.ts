@@ -1,7 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import dayjs from 'dayjs';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+
+import { createMMKVStorage } from '@/utils/storage';
 
 export interface AlarmCompletionRecord {
   id: string;
@@ -34,6 +35,8 @@ interface PerformanceState {
   getCurrentStreak: () => number;
   getAverageCognitiveScore: () => number;
   getRecentReactionTimes: (days?: number) => number[];
+  getStreakGain: () => number;
+  getScoreGain: () => number;
   resetPerformance: () => void;
 }
 
@@ -184,13 +187,75 @@ export const usePerformanceStore = create<PerformanceState>()(
           .slice(-days); // Get last N days
       },
 
+      getStreakGain: () => {
+        const { completionHistory } = get();
+        if (completionHistory.length === 0) return 0;
+
+        const today = dayjs().format('YYYY-MM-DD');
+        const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+
+        // Check if completed today
+        const completedToday = completionHistory.some(
+          (r) => dayjs(r.date).format('YYYY-MM-DD') === today
+        );
+
+        // If not completed today, no gain
+        if (!completedToday) return 0;
+
+        // If this is the first completion ever, it's a +1 day gain
+        if (completionHistory.length === 1) return 1;
+
+        // Check if completed yesterday
+        const completedYesterday = completionHistory.some(
+          (r) => dayjs(r.date).format('YYYY-MM-DD') === yesterday
+        );
+
+        // If completed both days (consecutive), it's a +1 day gain
+        if (completedYesterday) {
+          return 1;
+        }
+
+        // If only completed today but not yesterday, streak restarted
+        // Still a +1 from 0
+        return 1;
+      },
+
+      getScoreGain: () => {
+        const { completionHistory } = get();
+        if (completionHistory.length === 0) return 0;
+
+        const today = dayjs().format('YYYY-MM-DD');
+
+        // Get today's completion
+        const todayRecord = completionHistory.find(
+          (r) => dayjs(r.date).format('YYYY-MM-DD') === today
+        );
+
+        if (!todayRecord) return 0;
+
+        // Get previous completions (excluding today)
+        const previousRecords = completionHistory.filter(
+          (r) => dayjs(r.date).format('YYYY-MM-DD') !== today
+        );
+
+        // If this is the first completion, return the full score
+        if (previousRecords.length === 0) return todayRecord.cognitiveScore;
+
+        // Calculate previous average
+        const previousAverage =
+          previousRecords.reduce((sum, r) => sum + r.cognitiveScore, 0) / previousRecords.length;
+
+        // Return the difference
+        return Math.round(todayRecord.cognitiveScore - previousAverage);
+      },
+
       resetPerformance: () => {
         set(initialState);
       },
     }),
     {
       name: STORAGE_KEY,
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => createMMKVStorage(STORAGE_KEY)),
     }
   )
 );

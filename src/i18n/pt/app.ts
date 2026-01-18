@@ -200,8 +200,10 @@ export const appPT = {
   'performance.trendingUp': 'Tendência Crescente',
   'performance.trendingDown': 'Tendência Decrescente',
   'performance.stable': 'Estável',
-  'performance.oneDayMore': '+1 dia',
-  'performance.fivePointsMore': '+5 pts',
+  'performance.daysGain': '+{{count}} dia',
+  'performance.daysGain_other': '+{{count}} dias',
+  'performance.pointsGain': '+{{count}} pt',
+  'performance.pointsGain_other': '+{{count}} pts',
   'performance.a11y.closeHint': 'Fecha o resumo de desempenho e retorna para a tela inicial',
   'performance.a11y.shareHint': 'Compartilhar seu resumo de desempenho',
 };

@@ -203,8 +203,10 @@ export const appES = {
   'performance.trendingUp': 'Tendencia Creciente',
   'performance.trendingDown': 'Tendencia Decreciente',
   'performance.stable': 'Estable',
-  'performance.oneDayMore': '+1 día',
-  'performance.fivePointsMore': '+5 pts',
+  'performance.daysGain': '+{{count}} día',
+  'performance.daysGain_other': '+{{count}} días',
+  'performance.pointsGain': '+{{count}} pt',
+  'performance.pointsGain_other': '+{{count}} pts',
   'performance.a11y.closeHint': 'Cierra el resumen de rendimiento y vuelve a la pantalla de inicio',
   'performance.a11y.shareHint': 'Compartir tu resumen de rendimiento',
 };
