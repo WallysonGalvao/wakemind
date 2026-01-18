@@ -51,7 +51,7 @@ export default function AlarmTriggerScreen() {
     const cognitiveScore = calculateCognitiveScore(); // 0-100
     const reactionTime = Date.now() - challengeStartTime; // em ms
     const targetTime = alarm.time; // "05:00"
-    const actualTime = new Date().toISOString();
+    const actualTime = dayjs().toISOString();
     const challengeType = alarm.challenge; // "Math Challenge", etc.
 
     // Registrar conclusão
@@ -145,7 +145,7 @@ const { recordAlarmCompletion } = usePerformanceStore.getState();
 for (let i = 0; i < 7; i++) {
   recordAlarmCompletion({
     targetTime: '06:00',
-    actualTime: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+    actualTime: dayjs().subtract(i, 'day').toISOString(),
     cognitiveScore: 70 + Math.random() * 30,
     reactionTime: 200 + Math.random() * 100,
     challengeType: 'Math Challenge',

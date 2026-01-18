@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import dayjs from 'dayjs';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -48,11 +49,7 @@ export default function MorningPerformanceSummaryScreen() {
   const lastCompletion = completionHistory[completionHistory.length - 1];
   const targetTime = lastCompletion?.targetTime || '05:00';
   const actualTime = lastCompletion?.actualTime
-    ? new Date(lastCompletion.actualTime).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      })
+    ? dayjs(lastCompletion.actualTime).format('HH:mm')
     : '05:02';
 
   const currentReactionTime = lastCompletion?.reactionTime || 240;

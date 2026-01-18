@@ -62,7 +62,7 @@ function run(command, silent = false) {
       stdio: silent ? 'pipe' : 'inherit',
       cwd: ROOT_DIR,
     });
-  } catch (error) {
+  } catch (_error) {
     console.error(`\n✗ Command failed: ${command}`);
     process.exit(1);
   }
