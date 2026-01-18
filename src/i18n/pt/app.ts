@@ -178,4 +178,20 @@ export const appPT = {
   'common.info': 'Mais informações',
   'common.close': 'Fechar',
   'common.back': 'Voltar',
+  'common.share': 'Compartilhar',
+
+  // Performance Summary
+  'performance.summary': 'Resumo',
+  'performance.wakeUpSuccess': 'Despertar Bem-Sucedido',
+  'performance.missionAccomplished': 'Missão Cumprida',
+  'performance.target': 'Meta',
+  'performance.actual': 'Real',
+  'performance.streak': 'Sequência',
+  'performance.daysConsistent': 'Dias Consistentes',
+  'performance.score': 'Pontuação',
+  'performance.outOf100': 'De 100',
+  'performance.weeklyExecution': 'Execução Semanal',
+  'performance.reactionSpeed': 'Velocidade de Reação',
+  'performance.startDay': 'Começar o Dia',
+  'performance.quote': 'Disciplina é igual à liberdade.',
 };

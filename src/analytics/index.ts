@@ -183,6 +183,16 @@ export const AnalyticsEvents = {
 
   vibrationPatternChanged: (pattern: string) => logEvent('vibration_pattern_changed', { pattern }),
 
+  // Performance Summary events
+  performanceSummaryViewed: (streak: number, cognitiveScore: number, executionRate: number) =>
+    logEvent('performance_summary_viewed', {
+      streak,
+      cognitive_score: cognitiveScore,
+      execution_rate: executionRate,
+    }),
+
+  performanceSummaryShared: () => logEvent('performance_summary_shared'),
+
   // App lifecycle
   appOpened: () => {
     logEvent('app_opened');
