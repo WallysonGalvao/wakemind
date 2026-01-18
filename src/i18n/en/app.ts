@@ -198,8 +198,10 @@ export const appEN = {
   'performance.trendingUp': 'Trending Up',
   'performance.trendingDown': 'Trending Down',
   'performance.stable': 'Stable',
-  'performance.oneDayMore': '+1 day',
-  'performance.fivePointsMore': '+5 pts',
+  'performance.daysGain': '+{{count}} day',
+  'performance.daysGain_other': '+{{count}} days',
+  'performance.pointsGain': '+{{count}} pt',
+  'performance.pointsGain_other': '+{{count}} pts',
   'performance.a11y.closeHint': 'Closes the performance summary and returns to home',
   'performance.a11y.shareHint': 'Share your performance summary',
 };
