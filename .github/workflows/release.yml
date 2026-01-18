@@ -1,0 +1,57 @@
+name: Release to Stores
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Triggers on version tags like v1.0.0
+
+jobs:
+  build-and-submit:
+    name: 📦 Build & Submit to Stores
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📥 Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🏗️ Build Android Production
+        run: eas build --platform android --profile production --non-interactive --auto-submit
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🏗️ Build iOS Production
+        run: eas build --platform ios --profile production --non-interactive --auto-submit
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📱 Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## WakeMind ${{ github.ref_name }}
+
+            ### 🚀 Released to App Stores
+            - ✅ Google Play Store
+            - ✅ Apple App Store
+
+            See EAS builds: https://expo.dev/accounts/wallyson/projects/wakemind/builds
+          draft: false
+          prerelease: false
