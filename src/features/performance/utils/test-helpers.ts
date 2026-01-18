@@ -5,6 +5,8 @@
  * with mock data during development.
  */
 
+import dayjs from 'dayjs';
+
 import { usePerformanceStore } from '@/stores/use-performance-store';
 
 /**
@@ -14,12 +16,11 @@ export function generateTestPerformanceData() {
   const { recordAlarmCompletion } = usePerformanceStore.getState();
 
   // Generate 14 days of test data
-  const today = new Date();
+  const today = dayjs();
   const challengeTypes = ['Math Challenge', 'Memory Match', 'Logic Puzzle'];
 
   for (let i = 0; i < 14; i++) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
+    const date = today.subtract(i, 'day');
 
     // Skip some days randomly to test streak breaks
     if (Math.random() > 0.85) continue;

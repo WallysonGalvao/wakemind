@@ -6,6 +6,7 @@ import notifee, {
   AuthorizationStatus,
   TriggerType,
 } from '@notifee/react-native';
+import dayjs from 'dayjs';
 
 import { Platform } from 'react-native';
 
@@ -152,7 +153,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
   await createAlarmChannel();
 
   const triggerTimestamp = getNextTriggerTimestamp(alarm);
-  const triggerDate = new Date(triggerTimestamp);
+  const triggerDate = dayjs(triggerTimestamp);
   const isRepeating = isRepeatingAlarm(alarm);
 
   // Log scheduling information for debugging

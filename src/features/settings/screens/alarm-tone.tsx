@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useAudioPlayer, type AudioPlayer, type AudioSource } from 'expo-audio';
+import { type AudioPlayer, type AudioSource, useAudioPlayer } from 'expo-audio';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Animated, {

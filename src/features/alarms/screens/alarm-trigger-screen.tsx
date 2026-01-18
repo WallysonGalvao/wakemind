@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import dayjs from 'dayjs';
 import type { AudioSource } from 'expo-audio';
 import { useAudioPlayer } from 'expo-audio';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
@@ -261,7 +262,7 @@ export default function AlarmTriggerScreen() {
     // Record alarm completion for performance tracking
     if (alarm) {
       const targetTime = `${params.time || alarm.time}`;
-      const actualTime = new Date().toISOString();
+      const actualTime = dayjs().toISOString();
 
       recordAlarmCompletion({
         targetTime,
@@ -328,16 +329,8 @@ export default function AlarmTriggerScreen() {
   );
 
   // Current time display - fallback to alarm data or current time
-  const displayTime =
-    params.time ||
-    alarm?.time ||
-    new Date().toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  const displayPeriod =
-    params.period || alarm?.period || (new Date().getHours() >= 12 ? 'PM' : 'AM');
+  const displayTime = params.time || alarm?.time || dayjs().format('HH:mm');
+  const displayPeriod = params.period || alarm?.period || (dayjs().hour() >= 12 ? 'PM' : 'AM');
 
   // Render the appropriate challenge component based on challenge type
   const renderChallenge = () => {
