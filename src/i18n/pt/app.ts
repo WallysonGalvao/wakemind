@@ -89,6 +89,10 @@ export const appPT = {
   'newAlarm.error.title': 'Erro',
   'newAlarm.error.message': 'Ocorreu um erro inesperado. Por favor, tente novamente.',
 
+  // Errors
+  'errors.failedToScheduleAlarm':
+    'Falha ao agendar alarme. Verifique as permissões e tente novamente.',
+
   // Validation Errors
   'validation.alarm.timeRequired': 'A hora é obrigatória e deve ser uma string',
   'validation.alarm.timeFormat': 'Formato de hora inválido. Formato esperado: HH:MM (ex., "05:30")',

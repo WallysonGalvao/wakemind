@@ -71,12 +71,14 @@ export const useAlarmsStore = create<AlarmsState>()(
           protocols: sanitizedInput.protocols,
         };
 
-        // Schedule notification on native platforms
+        // Schedule notification on native platforms BEFORE adding to state
         if (isNativePlatform) {
           try {
             await AlarmScheduler.scheduleAlarm(newAlarm);
           } catch (error) {
             console.error('[AlarmsStore] Failed to schedule alarm:', error);
+            // Re-throw to prevent adding alarm to state if scheduling failed
+            throw new Error(i18n.t('errors.failedToScheduleAlarm'));
           }
         }
 
@@ -175,6 +177,8 @@ export const useAlarmsStore = create<AlarmsState>()(
             }
           } catch (error) {
             console.error('[AlarmsStore] Failed to toggle alarm schedule:', error);
+            // Re-throw to prevent state update if operation failed
+            throw error;
           }
         }
 
@@ -192,14 +196,16 @@ export const useAlarmsStore = create<AlarmsState>()(
         // Cancel all existing scheduled alarms
         await AlarmScheduler.cancelAllAlarms();
 
-        // Reschedule all enabled alarms
-        for (const alarm of enabledAlarms) {
-          try {
-            await AlarmScheduler.scheduleAlarm(alarm);
-          } catch (error) {
+        // Reschedule all enabled alarms IN PARALLEL for better performance
+        const schedulePromises = enabledAlarms.map((alarm) =>
+          AlarmScheduler.scheduleAlarm(alarm).catch((error) => {
             console.error(`[AlarmsStore] Failed to sync alarm ${alarm.id}:`, error);
-          }
-        }
+            return null;
+          })
+        );
+
+        await Promise.allSettled(schedulePromises);
+        console.log('[AlarmsStore] All alarms synced');
       },
     }),
     {
