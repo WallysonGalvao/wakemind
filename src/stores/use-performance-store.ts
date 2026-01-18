@@ -32,6 +32,7 @@ interface PerformanceState {
   // Actions
   recordAlarmCompletion: (record: Omit<AlarmCompletionRecord, 'id' | 'date'>) => void;
   getWeeklyStats: () => WeeklyStats;
+  getPreviousWeekExecutionRate: () => number;
   getCurrentStreak: () => number;
   getAverageCognitiveScore: () => number;
   getRecentReactionTimes: (days?: number) => number[];
@@ -147,6 +148,32 @@ export const usePerformanceStore = create<PerformanceState>()(
           completedDays,
           totalScheduledDays,
         };
+      },
+
+      getPreviousWeekExecutionRate: () => {
+        const now = dayjs();
+        // Previous week is from 13 days ago to 7 days ago
+        const previousWeekStart = now.subtract(13, 'day').startOf('day');
+        const previousWeekEnd = now.subtract(7, 'day').endOf('day');
+        const { completionHistory } = get();
+
+        const previousWeekRecords = completionHistory.filter((record) => {
+          const recordDate = dayjs(record.date);
+          return (
+            (recordDate.isAfter(previousWeekStart) ||
+              recordDate.isSame(previousWeekStart, 'day')) &&
+            (recordDate.isBefore(previousWeekEnd) || recordDate.isSame(previousWeekEnd, 'day'))
+          );
+        });
+
+        const completedDays = new Set(
+          previousWeekRecords.map((r) => dayjs(r.date).format('YYYY-MM-DD'))
+        ).size;
+
+        const totalScheduledDays = 7;
+        const executionRate = (completedDays / totalScheduledDays) * 100;
+
+        return Math.round(executionRate);
       },
 
       getCurrentStreak: () => {

@@ -12,6 +12,7 @@ import { TrendChartCard } from './trend-chart-card';
 
 interface PerformanceTrendsProps {
   weeklyExecutionRate: number;
+  previousWeekExecutionRate: number;
   currentReactionTime: number;
   recentReactionTimes: number[];
   averageReactionTime: number;
@@ -19,10 +20,10 @@ interface PerformanceTrendsProps {
 }
 
 const CHART_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const;
-const PREVIOUS_WEEK_EXECUTION = 85; // Could be calculated from history in the future
 
 export function PerformanceTrends({
   weeklyExecutionRate,
+  previousWeekExecutionRate,
   currentReactionTime,
   recentReactionTimes,
   averageReactionTime,
@@ -36,7 +37,7 @@ export function PerformanceTrends({
         icon="bar_chart"
         title={t('performance.weeklyExecution')}
         value={weeklyExecutionRate}
-        previousValue={PREVIOUS_WEEK_EXECUTION}
+        previousValue={previousWeekExecutionRate}
       />
 
       <TrendChartCard

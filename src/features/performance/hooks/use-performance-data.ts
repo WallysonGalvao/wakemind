@@ -20,6 +20,7 @@ export interface PerformanceMetrics {
 
   // Weekly metrics
   weeklyExecutionRate: number;
+  previousWeekExecutionRate: number;
 
   // Reaction time metrics
   currentReactionTime: number;
@@ -52,6 +53,7 @@ export function usePerformanceData(): PerformanceMetrics {
       getCurrentStreak,
       getAverageCognitiveScore,
       getWeeklyStats,
+      getPreviousWeekExecutionRate,
       getRecentReactionTimes,
       getStreakGain,
       getScoreGain,
@@ -62,6 +64,7 @@ export function usePerformanceData(): PerformanceMetrics {
     const currentStreak = getCurrentStreak();
     const averageCognitiveScore = getAverageCognitiveScore();
     const weeklyStats = getWeeklyStats();
+    const previousWeekExecutionRate = getPreviousWeekExecutionRate();
     const recentReactionTimes = getRecentReactionTimes(7);
     const streakGain = getStreakGain();
     const scoreGain = getScoreGain();
@@ -92,6 +95,7 @@ export function usePerformanceData(): PerformanceMetrics {
       averageCognitiveScore,
       scoreGain,
       weeklyExecutionRate: weeklyStats.executionRate,
+      previousWeekExecutionRate,
       currentReactionTime,
       averageReactionTime,
       isBestReactionTime,

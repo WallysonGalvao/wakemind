@@ -57,6 +57,7 @@ export default function MorningPerformanceSummaryScreen() {
 
           <PerformanceTrends
             weeklyExecutionRate={metrics.weeklyExecutionRate}
+            previousWeekExecutionRate={metrics.previousWeekExecutionRate}
             currentReactionTime={metrics.currentReactionTime}
             recentReactionTimes={metrics.recentReactionTimes}
             averageReactionTime={metrics.averageReactionTime}
