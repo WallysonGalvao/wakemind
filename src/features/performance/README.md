@@ -11,6 +11,40 @@ Tela de **Resumo de Performance Matinal** que mostra estatísticas após complet
 - ✅ Analytics integrado
 - ✅ Funcionalidade de compartilhamento
 - ✅ Rota configurada: `/alarm/performance-summary`
+- ✅ **Integração completa com AlarmTriggerScreen**
+- ✅ **Cálculo de Cognitive Score implementado**
+
+## 🚀 Como funciona
+
+### Fluxo completo
+
+1. Usuário acorda e desafio de alarme é exibido
+2. Sistema rastreia tempo de início do desafio
+3. Usuário completa o desafio
+4. Sistema calcula:
+   - **Tempo de reação** (tempo total para completar)
+   - **Cognitive Score** (0-100 baseado em performance)
+5. Performance é registrada no store
+6. Usuário é redirecionado para tela de Performance Summary
+7. Métricas são exibidas (streak, score médio, execução semanal, etc.)
+
+### Cálculo de Cognitive Score
+
+O score é calculado considerando:
+
+- **Base Score** (por dificuldade):
+  - Easy: 60 pontos
+  - Medium: 75 pontos
+  - Hard: 90 pontos
+- **Penalidades**:
+  - -10 pontos por tentativa extra
+  - -10 pontos se demorar mais de 2 minutos
+- **Bônus**:
+  - +15 pontos se completar em < 10s
+  - +10 pontos se completar em < 20s
+  - +5 pontos se completar em < 30s
+
+**Exemplo**: Desafio Medium, 1 tentativa, 15 segundos = 85 pontos (75 base + 10 bônus)
 
 ## 🚀 Como testar agora
 
@@ -45,48 +79,7 @@ Opção 2 - Navegue via Settings (já em DEV mode):
 
 A tela já pode ser acessada de Settings > Review Onboarding (em desenvolvimento)
 
-## 📝 Próximos passos para integração completa
-
-### 1. Integrar com Alarm Trigger
-
-Em `src/features/alarms/screens/alarm-trigger-screen.tsx`:
-
-```typescript
-import { usePerformanceStore } from '@/stores/use-performance-store';
-
-// Adicionar após desafio bem-sucedido
-const recordAlarmCompletion = usePerformanceStore((state) => state.recordAlarmCompletion);
-
-const handleChallengeSuccess = () => {
-  // Calcular pontuação
-  const cognitiveScore = calculateScore(); // 0-100
-  const reactionTime = endTime - startTime; // ms
-
-  // Registrar
-  recordAlarmCompletion({
-    targetTime: alarm.time,
-    actualTime: new Date().toISOString(),
-    cognitiveScore,
-    reactionTime,
-    challengeType: alarm.challenge,
-  });
-
-  // Navegar para summary
-  router.replace('/alarm/performance-summary');
-};
-```
-
-### 2. Implementar cálculo de pontuação
-
-```typescript
-function calculateScore(attempts: number, timeSpent: number, difficulty: string) {
-  const baseScores = { easy: 60, medium: 75, hard: 90 };
-  const base = baseScores[difficulty] || 75;
-  const penalty = (attempts - 1) * 5;
-  const bonus = timeSpent < 30000 ? 10 : 0;
-  return Math.max(0, Math.min(100, base - penalty + bonus));
-}
-```
+**Ou simplesmente complete um alarme!** A navegação para o Performance Summary agora acontece automaticamente após completar um desafio.
 
 ## 📁 Estrutura de arquivos criados
 
@@ -94,6 +87,9 @@ function calculateScore(attempts: number, timeSpent: number, difficulty: string)
 src/
 ├── stores/
 │   └── use-performance-store.ts          # Store principal
+├── utils/
+│   ├── cognitive-score.ts                # Cálculo de pontuação ✅
+│   └── cognitive-score.test.ts           # Testes unitários ✅
 ├── features/performance/
 │   ├── components/
 │   │   ├── metric-card.tsx               # Card de métrica
@@ -103,6 +99,8 @@ src/
 │   │   └── morning-performance-summary-screen.tsx  # Tela principal
 │   └── utils/
 │       └── test-helpers.ts               # Utilitários de teste
+├── features/alarms/screens/
+│   └── alarm-trigger-screen.tsx          # INTEGRADO ✅
 ├── app/alarm/
 │   └── performance-summary.tsx           # Rota da tela
 └── i18n/
@@ -110,6 +108,32 @@ src/
     ├── pt/app.ts                         # Traduções PT
     └── es/app.ts                         # Traduções ES
 ```
+
+## ✅ Status da Integração
+
+### Implementado
+
+- ✅ Performance store com persistência
+- ✅ Cálculo automático de streaks
+- ✅ Estatísticas semanais
+- ✅ Componentes de UI reutilizáveis
+- ✅ Traduções i18n (EN, PT, ES)
+- ✅ Analytics integrado
+- ✅ Funcionalidade de compartilhamento
+- ✅ Roteamento configurado
+- ✅ Dark mode suportado
+- ✅ **Integração com AlarmTriggerScreen**
+- ✅ **Cálculo de Cognitive Score**
+- ✅ **Testes unitários para cálculo de score**
+- ✅ **Rastreamento de tempo de reação**
+- ✅ **Navegação automática para summary após sucesso**
+
+### Opcional (Futuro)
+
+⏳ Animações de transição
+⏳ Histórico detalhado navegável
+⏳ Comparação com média de outros usuários
+⏳ Conquistas e badges
 
 ## 🎨 Componentes reutilizáveis
 

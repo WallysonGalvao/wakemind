@@ -31,8 +31,10 @@ import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { VibrationService } from '@/services/vibration-service';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
+import { usePerformanceStore } from '@/stores/use-performance-store';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
+import { calculateCognitiveScore } from '@/utils/cognitive-score';
 
 export default function AlarmTriggerScreen() {
   // Analytics tracking
@@ -54,6 +56,10 @@ export default function AlarmTriggerScreen() {
   const vibrationPattern = useSettingsStore((state) => state.vibrationPattern);
   const preventAutoLock = useSettingsStore((state) => state.preventAutoLock);
   const snoozeProtection = useSettingsStore((state) => state.snoozeProtection);
+  const recordAlarmCompletion = usePerformanceStore((state) => state.recordAlarmCompletion);
+
+  // Track challenge start time for performance metrics
+  const [challengeStartTime] = useState(() => Date.now());
 
   // Get alarm data first to use its difficulty and challenge type
   const alarm = useMemo(() => {
@@ -236,10 +242,62 @@ export default function AlarmTriggerScreen() {
 
   // Challenge callbacks
   const handleChallengeSuccess = useCallback(async () => {
-    // Track challenge completed
-    AnalyticsEvents.challengeCompleted(challengeType, difficulty, attempt);
-    await handleDismiss();
-  }, [handleDismiss, challengeType, difficulty, attempt]);
+    // Calculate performance metrics
+    const challengeEndTime = Date.now();
+    const timeSpent = challengeEndTime - challengeStartTime;
+    const reactionTime = timeSpent;
+
+    // Calculate cognitive score
+    const cognitiveScore = calculateCognitiveScore({
+      attempts: attempt,
+      timeSpent,
+      difficulty,
+      maxAttempts,
+    });
+
+    // Stop alarm sound and vibration
+    await stopAlarm();
+
+    // Record alarm completion for performance tracking
+    if (alarm) {
+      const targetTime = `${params.time || alarm.time}`;
+      const actualTime = new Date().toISOString();
+
+      recordAlarmCompletion({
+        targetTime,
+        actualTime,
+        cognitiveScore,
+        reactionTime,
+        challengeType,
+      });
+
+      // Track challenge completed
+      AnalyticsEvents.challengeCompleted(challengeType, difficulty, attempt);
+
+      // Dismiss alarm from scheduler
+      AnalyticsEvents.alarmDismissed(alarm.id, challengeType, attempt);
+      await AlarmScheduler.dismissAlarm(alarm);
+
+      // Schedule wake check if protocol is enabled
+      if (isWakeCheckEnabled) {
+        await AlarmScheduler.scheduleWakeCheck(alarm);
+      }
+    }
+
+    // Navigate to performance summary
+    router.replace('/alarm/performance-summary');
+  }, [
+    challengeType,
+    difficulty,
+    attempt,
+    challengeStartTime,
+    maxAttempts,
+    alarm,
+    params.time,
+    recordAlarmCompletion,
+    stopAlarm,
+    isWakeCheckEnabled,
+  ]);
 
   const handleChallengeAttempt = useCallback(
     (correct: boolean) => {
