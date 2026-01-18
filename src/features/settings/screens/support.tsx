@@ -138,7 +138,27 @@ export default function SupportScreen() {
           </View>
         </View>
 
-        {/* Section 4: Problemas Técnicos */}
+        {/* Section 4: Performance Summary */}
+        <View className="relative mb-12">
+          <View className="absolute bottom-4 left-[7px] top-8 w-[1px] bg-gray-300 dark:bg-white/10" />
+          <SectionTitle icon="trending_up" title={t('support.faq.performance.title')} />
+          <View className="pl-1">
+            <FAQItem
+              question={t('support.faq.performance.cognitiveScore.question')}
+              answer={t('support.faq.performance.cognitiveScore.answer')}
+            />
+            <FAQItem
+              question={t('support.faq.performance.streak.question')}
+              answer={t('support.faq.performance.streak.answer')}
+            />
+            <FAQItem
+              question={t('support.faq.performance.data.question')}
+              answer={t('support.faq.performance.data.answer')}
+            />
+          </View>
+        </View>
+
+        {/* Section 5: Problemas Técnicos */}
         <View className="relative mb-12">
           <View className="absolute bottom-4 left-[7px] top-8 w-[1px] bg-gray-300 dark:bg-white/10" />
           <SectionTitle icon="bug_report" title={t('support.faq.technical.title')} />
