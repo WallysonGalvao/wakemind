@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "maestro": "maestro test .maestro/flows/",
     "maestro:studio": "maestro studio",
+    "release": "node scripts/release.js",
     "prepare": "husky"
   },
   "dependencies": {

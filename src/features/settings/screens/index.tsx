@@ -84,9 +84,8 @@ function SettingRow({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
-        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-      }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+        }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -111,9 +110,8 @@ function SettingToggleRow({
 }: SettingToggleRowProps) {
   return (
     <View
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
-        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-      }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+        }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -144,9 +142,8 @@ function VolumeSliderRow({ title, value, onValueChange, isLast = false }: Volume
 
   return (
     <View
-      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${
-        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-      }`}
+      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+        }`}
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-base font-medium text-gray-900 dark:text-white">{title}</Text>
@@ -198,6 +195,8 @@ export default function SettingsScreen() {
   } = useSettingsStore();
 
   const version = Constants.expoConfig?.version || '0.0.0';
+  const buildNumber =
+    Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || '1';
 
   // Derived state
   const isDarkMode =
@@ -360,7 +359,7 @@ export default function SettingsScreen() {
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">
           <Text className="text-sm font-medium text-gray-500 dark:text-gray-600">
-            WakeMind v{version}
+            WakeMind v{version} ({buildNumber})
           </Text>
           <View className="flex-row gap-4">
             <Pressable
