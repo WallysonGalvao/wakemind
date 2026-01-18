@@ -31,6 +31,18 @@ export const supportPT = {
   'support.faq.challenges.screenLock.answer':
     'Ative "Evitar Bloqueio Automático" em Configurações > Comportamento.',
 
+  // Performance Summary
+  'support.faq.performance.title': 'Resumo de Performance',
+  'support.faq.performance.cognitiveScore.question': 'Como minha Pontuação Cognitiva é calculada?',
+  'support.faq.performance.cognitiveScore.answer':
+    'Sua pontuação (0-100) é baseada em: dificuldade do desafio (Fácil: 60pts, Médio: 75pts, Difícil: 90pts), número de tentativas (-10pts por tentativa extra), velocidade de conclusão (bônus até +15pts para <10s), e tempo total (-10pts se >2min).',
+  'support.faq.performance.streak.question': 'O que é uma Sequência?',
+  'support.faq.performance.streak.answer':
+    'Sua sequência conta dias consecutivos em que você completou desafios de alarme com sucesso. Ela reseta se você perder um dia ou não completar um desafio.',
+  'support.faq.performance.data.question': 'Onde meus dados de performance são armazenados?',
+  'support.faq.performance.data.answer':
+    'Todos os dados de performance (sequências, pontuações, tempos de reação) são armazenados localmente no seu dispositivo. Nenhum dado é enviado para servidores externos.',
+
   // Technical Issues
   'support.faq.technical.title': 'Problemas Técnicos',
   'support.faq.technical.crashing.question': 'O app está travando',

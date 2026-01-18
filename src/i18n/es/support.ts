@@ -31,6 +31,18 @@ export const supportES = {
   'support.faq.challenges.screenLock.answer':
     'Activa "Evitar Bloqueo Automático" en Configuración > Comportamiento.',
 
+  // Performance Summary
+  'support.faq.performance.title': 'Resumen de Rendimiento',
+  'support.faq.performance.cognitiveScore.question': '¿Cómo se calcula mi Puntuación Cognitiva?',
+  'support.faq.performance.cognitiveScore.answer':
+    'Tu puntuación (0-100) se basa en: dificultad del desafío (Fácil: 60pts, Medio: 75pts, Difícil: 90pts), número de intentos (-10pts por intento extra), velocidad de conclusión (bonificación hasta +15pts para <10s), y tiempo total (-10pts si >2min).',
+  'support.faq.performance.streak.question': '¿Qué es una Racha?',
+  'support.faq.performance.streak.answer':
+    'Tu racha cuenta días consecutivos en los que completaste desafíos de alarma con éxito. Se reinicia si pierdes un día o no completas un desafío.',
+  'support.faq.performance.data.question': '¿Dónde se almacenan mis datos de rendimiento?',
+  'support.faq.performance.data.answer':
+    'Todos los datos de rendimiento (rachas, puntuaciones, tiempos de reacción) se almacenan localmente en tu dispositivo. Ningún dato se envía a servidores externos.',
+
   // Technical Issues
   'support.faq.technical.title': 'Problemas Técnicos',
   'support.faq.technical.crashing.question': 'La app se está cerrando',

@@ -30,6 +30,18 @@ export const supportEN = {
   'support.faq.challenges.screenLock.question': 'Screen locks during challenge',
   'support.faq.challenges.screenLock.answer': 'Enable "Prevent Auto-Lock" in Settings > Behavior.',
 
+  // Performance Summary
+  'support.faq.performance.title': 'Performance Summary',
+  'support.faq.performance.cognitiveScore.question': 'How is my Cognitive Score calculated?',
+  'support.faq.performance.cognitiveScore.answer':
+    'Your score (0-100) is based on: challenge difficulty (Easy: 60pts, Medium: 75pts, Hard: 90pts), number of attempts (-10pts per extra attempt), completion speed (bonus up to +15pts for <10s), and total time (-10pts if >2min).',
+  'support.faq.performance.streak.question': 'What is a Streak?',
+  'support.faq.performance.streak.answer':
+    'Your streak counts consecutive days you successfully completed alarm challenges. It resets if you miss a day or fail to complete a challenge.',
+  'support.faq.performance.data.question': 'Where is my performance data stored?',
+  'support.faq.performance.data.answer':
+    'All performance data (streaks, scores, reaction times) is stored locally on your device. No data is sent to external servers.',
+
   // Technical Issues
   'support.faq.technical.title': 'Technical Issues',
   'support.faq.technical.crashing.question': 'App is crashing',
