@@ -152,6 +152,18 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
   await createAlarmChannel();
 
   const triggerTimestamp = getNextTriggerTimestamp(alarm);
+  const triggerDate = new Date(triggerTimestamp);
+  const isRepeating = isRepeatingAlarm(alarm);
+
+  // Log scheduling information for debugging
+  console.log('[AlarmScheduler] Scheduling alarm:', {
+    id: alarm.id,
+    time: alarm.time,
+    schedule: alarm.schedule,
+    isRepeating,
+    triggerDate: triggerDate.toISOString(),
+    triggerTimestamp,
+  });
 
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
@@ -188,7 +200,8 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         period: alarm.period,
         challenge: alarm.challenge,
         challengeIcon: alarm.challengeIcon,
-        isRepeating: isRepeatingAlarm(alarm).toString(),
+        isRepeating: isRepeating.toString(),
+        schedule: alarm.schedule,
       },
       android: {
         channelId: ALARM_CHANNEL_ID,
@@ -218,6 +231,8 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     },
     trigger
   );
+
+  console.log('[AlarmScheduler] Alarm scheduled successfully:', notificationId);
 
   return notificationId;
 }
@@ -334,17 +349,21 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
 }
 
 /**
- * Dismiss an alarm and reschedule if repeating
+ * Dismiss an alarm
+ * Note: Rescheduling for repeating alarms is handled automatically
+ * in the notification DELIVERED event handler to avoid double scheduling
  */
 export async function dismissAlarm(alarm: Alarm): Promise<void> {
+  console.log('[AlarmScheduler] Dismissing alarm:', alarm.id);
+
   // Cancel current notification
   await cancelAlarm(alarm.id);
   await cancelAlarm(`${alarm.id}-snooze`);
 
-  // If repeating, schedule for next occurrence
-  if (isRepeatingAlarm(alarm) && alarm.isEnabled) {
-    await scheduleAlarm(alarm);
-  }
+  // NOTE: We do NOT reschedule here anymore
+  // Rescheduling is handled in notification-handler.ts when DELIVERED event fires
+  // This avoids double-scheduling the same alarm
+  console.log('[AlarmScheduler] Alarm dismissed (rescheduling handled by DELIVERED event)');
 }
 
 /**

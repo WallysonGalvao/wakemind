@@ -139,7 +139,30 @@ async function handleBackgroundEvent(event: Event): Promise<void> {
 
   switch (type) {
     case EventType.DELIVERED:
-      // Alarm triggered in background - full screen intent will handle it on Android
+      console.log('[NotificationHandler] Alarm delivered (background):', data.alarmId);
+
+      // Automatically reschedule repeating alarms when they trigger
+      // This is critical for background alarms to ensure they repeat
+      if (data.isRepeating === 'true') {
+        const alarm = callbacks.getAlarm?.(data.alarmId);
+        if (alarm) {
+          console.log(
+            '[NotificationHandler] Auto-rescheduling repeating alarm (bg):',
+            alarm.schedule
+          );
+          try {
+            await AlarmScheduler.scheduleAlarm(alarm);
+            console.log('[NotificationHandler] Repeating alarm rescheduled successfully (bg)');
+          } catch (error) {
+            console.error(
+              '[NotificationHandler] Failed to reschedule repeating alarm (bg):',
+              error
+            );
+          }
+        } else {
+          console.warn('[NotificationHandler] Cannot reschedule (bg): alarm not found in store');
+        }
+      }
       break;
 
     case EventType.PRESS:
@@ -192,7 +215,10 @@ export async function initializeNotificationHandler(): Promise<void> {
   // Setup iOS categories
   await setupIOSCategories();
 
-  notifee.onForegroundEvent(handleForegroundEvent);
+  // Register foreground event handler (async version)
+  notifee.onForegroundEvent(async (event) => {
+    await handleForegroundEvent(event);
+  });
 }
 
 /**

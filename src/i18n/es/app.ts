@@ -92,6 +92,10 @@ export const appES = {
   'newAlarm.error.title': 'Error',
   'newAlarm.error.message': 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
 
+  // Errors
+  'errors.failedToScheduleAlarm':
+    'Error al programar alarma. Verifica los permisos e inténtalo de nuevo.',
+
   // Validation Errors
   'validation.alarm.timeRequired': 'La hora es requerida y debe ser una cadena de texto',
   'validation.alarm.timeFormat': 'Formato de hora inválido. Formato esperado: HH:MM (ej., "05:30")',
