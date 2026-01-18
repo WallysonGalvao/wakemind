@@ -181,4 +181,20 @@ export const appES = {
   'common.info': 'Más información',
   'common.close': 'Cerrar',
   'common.back': 'Atrás',
+  'common.share': 'Compartir',
+
+  // Performance Summary
+  'performance.summary': 'Resumen',
+  'performance.wakeUpSuccess': 'Despertar Exitoso',
+  'performance.missionAccomplished': 'Misión Cumplida',
+  'performance.target': 'Objetivo',
+  'performance.actual': 'Real',
+  'performance.streak': 'Racha',
+  'performance.daysConsistent': 'Días Consistentes',
+  'performance.score': 'Puntuación',
+  'performance.outOf100': 'De 100',
+  'performance.weeklyExecution': 'Ejecución Semanal',
+  'performance.reactionSpeed': 'Velocidad de Reacción',
+  'performance.startDay': 'Comenzar el Día',
+  'performance.quote': 'La disciplina es igual a la libertad.',
 };

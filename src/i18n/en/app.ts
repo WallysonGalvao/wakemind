@@ -176,4 +176,20 @@ export const appEN = {
   'common.info': 'More information',
   'common.close': 'Close',
   'common.back': 'Back',
+  'common.share': 'Share',
+
+  // Performance Summary
+  'performance.summary': 'Summary',
+  'performance.wakeUpSuccess': 'Wake Up Success',
+  'performance.missionAccomplished': 'Mission Accomplished',
+  'performance.target': 'Target',
+  'performance.actual': 'Actual',
+  'performance.streak': 'Streak',
+  'performance.daysConsistent': 'Days Consistent',
+  'performance.score': 'Score',
+  'performance.outOf100': 'Out of 100',
+  'performance.weeklyExecution': 'Weekly Execution',
+  'performance.reactionSpeed': 'Reaction Speed',
+  'performance.startDay': 'Start Day',
+  'performance.quote': 'Discipline equals freedom.',
 };

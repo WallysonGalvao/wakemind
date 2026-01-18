@@ -132,6 +132,15 @@ function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="alarm/performance-summary"
+                options={{
+                  headerShown: false,
+                  presentation: 'fullScreenModal',
+                  animation: 'fade',
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
                 name="settings/alarm-tone"
                 options={{
                   headerShown: false,
