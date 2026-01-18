@@ -120,6 +120,17 @@ export const useAlarmsStore = create<AlarmsState>()(
           }
         }
 
+        // Validate schedule if being updated
+        if (updatedAlarm.schedule) {
+          try {
+            // Import at top: import { parseScheduleToDays } from '@/utils/alarm-time-calculator';
+            const { parseScheduleToDays } = require('@/utils/alarm-time-calculator');
+            parseScheduleToDays(updatedAlarm.schedule);
+          } catch (_error) {
+            throw new Error(i18n.t('validation.alarm.invalidSchedule'));
+          }
+        }
+
         const mergedAlarm: Alarm = { ...existingAlarm, ...updatedAlarm };
 
         // Reschedule notification if alarm is enabled and time/schedule changed
@@ -134,6 +145,8 @@ export const useAlarmsStore = create<AlarmsState>()(
               await AlarmScheduler.rescheduleAlarm(mergedAlarm);
             } catch (error) {
               console.error('[AlarmsStore] Failed to reschedule alarm:', error);
+              // Re-throw to prevent state update if rescheduling failed
+              throw new Error(i18n.t('errors.failedToRescheduleAlarm'));
             }
           }
         }

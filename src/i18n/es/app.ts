@@ -95,6 +95,8 @@ export const appES = {
   // Errors
   'errors.failedToScheduleAlarm':
     'Error al programar alarma. Verifica los permisos e inténtalo de nuevo.',
+  'errors.failedToRescheduleAlarm':
+    'Error al actualizar alarma. Verifica los permisos e inténtalo de nuevo.',
 
   // Validation Errors
   'validation.alarm.timeRequired': 'La hora es requerida y debe ser una cadena de texto',
@@ -105,6 +107,7 @@ export const appES = {
   'validation.alarm.challengeRequired': 'El tipo de desafío es requerido',
   'validation.alarm.challengeIconRequired': 'El ícono del desafío es requerido',
   'validation.alarm.scheduleRequired': 'El horario es requerido',
+  'validation.alarm.invalidSchedule': 'Formato de agenda inválido. Selecciona días válidos.',
   'validation.alarm.notFound': 'Alarma no encontrada',
 
   // Edit Alarm Screen
