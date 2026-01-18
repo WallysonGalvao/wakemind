@@ -45,11 +45,17 @@ function RootLayout() {
     if (Platform.OS === 'web') return;
     if (!fontsLoaded) return; // Wait for fonts to load before initializing
 
+    let isMounted = true;
+
     const initializeServices = async () => {
       try {
+        if (!isMounted) return;
         await AlarmScheduler.initialize();
+
+        if (!isMounted) return;
         await NotificationHandler.initialize();
 
+        if (!isMounted) return;
         // Set up callbacks for notification events
         NotificationHandler.setCallbacks({
           getAlarm: getAlarmById,
@@ -58,16 +64,20 @@ function RootLayout() {
           onDismiss: (_alarmId) => {},
         });
 
+        if (!isMounted) return;
         // Sync alarms with scheduler on app start
         await syncAlarmsWithScheduler();
       } catch (error) {
-        Sentry.captureException(error);
+        if (isMounted) {
+          Sentry.captureException(error);
+        }
       }
     };
 
     initializeServices();
 
     return () => {
+      isMounted = false;
       NotificationHandler.cleanup();
     };
   }, [getAlarmById, syncAlarmsWithScheduler, fontsLoaded]);
