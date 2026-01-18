@@ -13,6 +13,7 @@ import { MetricCard } from '@/features/performance/components/metric-card';
 import { ProgressBarCard } from '@/features/performance/components/progress-bar-card';
 import { TrendChartCard } from '@/features/performance/components/trend-chart-card';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 import { usePerformanceStore } from '@/stores/use-performance-store';
 
 export default function MorningPerformanceSummaryScreen() {
@@ -32,7 +33,7 @@ export default function MorningPerformanceSummaryScreen() {
   const currentStreak = getCurrentStreak();
   const averageCognitiveScore = getAverageCognitiveScore();
   const weeklyStats = getWeeklyStats();
-  const recentReactionTimes = getRecentReactionTimes(6);
+  const recentReactionTimes = getRecentReactionTimes(7);
 
   // Track performance summary viewed
   useEffect(() => {
@@ -55,6 +56,13 @@ export default function MorningPerformanceSummaryScreen() {
     : '05:02';
 
   const currentReactionTime = lastCompletion?.reactionTime || 240;
+  const averageReactionTime =
+    recentReactionTimes.length > 0
+      ? Math.round(recentReactionTimes.reduce((a, b) => a + b, 0) / recentReactionTimes.length)
+      : 258;
+  const isBestReactionTime = currentReactionTime <= Math.min(...recentReactionTimes, 999);
+  const shadowStyle = useShadowStyle('sm');
+  const shadowStyleLg = useShadowStyle('lg');
 
   const handleClose = () => {
     router.replace('/(tabs)');
@@ -88,7 +96,7 @@ export default function MorningPerformanceSummaryScreen() {
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
       <View
-        className="flex-row items-center justify-between bg-background-light/90 px-4 backdrop-blur-md dark:bg-background-dark/90"
+        className="flex-row items-center justify-between border-b border-slate-200/50 bg-background-light/95 px-4 backdrop-blur-md dark:border-white/5 dark:bg-background-dark/90"
         style={{ paddingTop: insets.top + 16 }}
       >
         <Pressable
@@ -96,12 +104,12 @@ export default function MorningPerformanceSummaryScreen() {
           className="flex size-12 shrink-0 items-center justify-start transition-opacity active:opacity-70"
           accessibilityRole="button"
           accessibilityLabel={t('common.close')}
-          accessibilityHint="Closes the performance summary and returns to home"
+          accessibilityHint={t('performance.a11y.closeHint')}
         >
           <MaterialSymbol name="close" size={28} className="text-slate-900 dark:text-white" />
         </Pressable>
 
-        <Text className="flex-1 text-center text-sm font-bold uppercase tracking-widest text-slate-900/80 dark:text-white/80">
+        <Text className="flex-1 text-center text-xs font-extrabold uppercase tracking-widest text-slate-900/70 dark:text-white/80">
           {t('performance.summary')}
         </Text>
 
@@ -111,7 +119,7 @@ export default function MorningPerformanceSummaryScreen() {
             className="flex h-12 items-center justify-center overflow-hidden rounded-lg bg-transparent transition-opacity active:opacity-70"
             accessibilityRole="button"
             accessibilityLabel={t('common.share')}
-            accessibilityHint="Share your performance summary"
+            accessibilityHint={t('performance.a11y.shareHint')}
           >
             <MaterialSymbol name="share" size={24} className="text-slate-900 dark:text-white" />
           </Pressable>
@@ -120,66 +128,79 @@ export default function MorningPerformanceSummaryScreen() {
 
       {/* Main Content */}
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <View className="flex-1 px-5 pb-8 pt-2">
+        <View className="flex-1 px-5 pb-8 pt-4">
           {/* Hero / Status */}
           <View className="mb-8 flex-col items-center justify-center">
-            {/* Icon with glow */}
-            <View className="relative mb-4">
-              <View className="absolute inset-0 rounded-full bg-primary-500/20 blur-xl" />
-              <MaterialSymbol
-                name="check_circle"
-                size={60}
-                className="relative z-10 text-primary-500"
-              />
+            {/* Icon with background circle */}
+            <View className="relative mb-5">
+              {/* Glow effect */}
+              <View className="absolute inset-0 scale-150 rounded-full bg-success-500/20 blur-2xl" />
+              {/* Green circle background with check icon */}
+              <View
+                style={shadowStyleLg}
+                className="relative z-10 h-20 w-20 items-center justify-center rounded-full bg-success-500"
+              >
+                <MaterialSymbol name="check" size={48} className="text-white" />
+              </View>
             </View>
 
             {/* Badge */}
-            <View className="mb-3 flex-row items-center gap-2">
-              <View className="border-success/20 bg-success/10 flex h-7 flex-row items-center justify-center gap-x-2 rounded-full border px-3">
-                <MaterialSymbol name="alarm_on" size={18} className="text-success" />
-                <Text className="text-success text-xs font-bold uppercase tracking-wide">
+            <View className="mb-4 flex-row items-center gap-2">
+              <View className="flex h-8 flex-row items-center justify-center gap-x-2 rounded-full border border-success-500/20 bg-success-500/10 px-4">
+                <MaterialSymbol name="alarm_on" size={20} className="text-success-500" />
+                <Text className="text-xs font-bold uppercase tracking-wide text-success-500">
                   {t('performance.wakeUpSuccess')}
                 </Text>
               </View>
             </View>
 
             {/* Title */}
-            <Text className="mb-2 text-center text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white">
+            <Text className="mb-4 text-center text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">
               {t('performance.missionAccomplished')}
             </Text>
 
             {/* Time comparison */}
-            <View className="rounded-full bg-slate-200 px-4 py-1.5 dark:bg-white/5">
-              <Text className="text-center text-sm font-medium leading-normal text-slate-500 dark:text-slate-400">
+            <View
+              style={shadowStyle}
+              className="flex-row items-center justify-center gap-4 rounded-full border border-slate-200 bg-white px-6 py-2 dark:border-white/5 dark:bg-surface-dark"
+            >
+              <Text className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 {t('performance.target')}:{' '}
-                <Text className="font-bold text-slate-900 dark:text-white">{targetTime}</Text>{' '}
-                <Text className="mx-1 text-slate-400">|</Text> {t('performance.actual')}:{' '}
-                <Text className="text-success font-bold">{actualTime}</Text>
+                <Text className="font-bold text-slate-900 dark:text-white">{targetTime}</Text>
+              </Text>
+              <View className="h-4 w-px bg-slate-200 dark:bg-white/10" />
+              <Text className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                {t('performance.actual')}:{' '}
+                <Text className="font-bold text-success-500">{actualTime}</Text>
               </Text>
             </View>
           </View>
 
           {/* Primary Metrics Grid */}
-          <View className="mb-6 grid grid-cols-2 gap-4">
-            <MetricCard
-              icon="local_fire_department"
-              iconColor="text-orange-500"
-              iconBgColor="bg-orange-500/10"
-              title={t('performance.streak')}
-              value={currentStreak}
-              subtitle={t('performance.daysConsistent')}
-              badge={{ text: '+1 day', color: 'text-success' }}
-            />
+          <View className="mb-6 flex-row gap-4">
+            <View className="flex-1">
+              <MetricCard
+                icon="local_fire_department"
+                iconColor="text-orange-500"
+                iconBgColor="bg-orange-50"
+                title={t('performance.streak')}
+                value={currentStreak}
+                subtitle={t('performance.daysConsistent')}
+                badge={{ text: t('performance.oneDayMore'), color: 'text-success-500' }}
+              />
+            </View>
 
-            <MetricCard
-              icon="psychology"
-              iconColor="text-primary-500"
-              iconBgColor="bg-primary-500/10"
-              title={t('performance.score')}
-              value={averageCognitiveScore}
-              subtitle={t('performance.outOf100')}
-              badge={{ text: '+5 pts', color: 'text-success' }}
-            />
+            <View className="flex-1">
+              <MetricCard
+                icon="psychology"
+                iconColor="text-primary-500"
+                iconBgColor="bg-blue-50"
+                title={t('performance.score')}
+                value={averageCognitiveScore}
+                subtitle={t('performance.outOf100')}
+                badge={{ text: t('performance.fivePointsMore'), color: 'text-success-500' }}
+              />
+            </View>
           </View>
 
           {/* Secondary Metrics / Trends */}
@@ -198,8 +219,11 @@ export default function MorningPerformanceSummaryScreen() {
               data={
                 recentReactionTimes.length > 0
                   ? recentReactionTimes
-                  : [300, 280, 290, 270, 260, 240]
+                  : [320, 290, 350, 260, 280, 250, 240]
               }
+              labels={['M', 'T', 'W', 'T', 'F', 'S', 'S']}
+              averageValue={averageReactionTime}
+              isBestScore={isBestReactionTime}
             />
           </View>
         </View>
@@ -212,14 +236,15 @@ export default function MorningPerformanceSummaryScreen() {
       >
         <Pressable
           onPress={handleStartDay}
-          className="flex h-14 w-full flex-row items-center justify-center gap-2 rounded-lg bg-primary-500 shadow-lg shadow-primary-500/25 transition-transform active:scale-[0.98]"
+          style={shadowStyleLg}
+          className="flex h-14 w-full flex-row items-center justify-center gap-2 rounded-xl bg-primary-500 transition-transform active:scale-[0.98]"
           accessibilityRole="button"
         >
           <Text className="text-base font-bold text-white">{t('performance.startDay')}</Text>
           <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
         </Pressable>
 
-        <Text className="mt-3 text-center text-[10px] font-medium text-slate-400 opacity-60">
+        <Text className="mt-4 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400 opacity-70">
           "{t('performance.quote')}"
         </Text>
       </View>

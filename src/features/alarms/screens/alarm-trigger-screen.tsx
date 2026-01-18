@@ -327,9 +327,17 @@ export default function AlarmTriggerScreen() {
     [insets.top, insets.bottom]
   );
 
-  // Current time display
-  const displayTime = params.time || '00:00';
-  const displayPeriod = params.period || 'AM';
+  // Current time display - fallback to alarm data or current time
+  const displayTime =
+    params.time ||
+    alarm?.time ||
+    new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  const displayPeriod =
+    params.period || alarm?.period || (new Date().getHours() >= 12 ? 'PM' : 'AM');
 
   // Render the appropriate challenge component based on challenge type
   const renderChallenge = () => {

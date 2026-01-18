@@ -3,7 +3,7 @@ import React, { useLayoutEffect } from 'react';
 import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Linking, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -55,10 +55,6 @@ export default function SupportScreen() {
   useAnalyticsScreen('Support');
   const router = useRouter();
 
-  const handleEmailSupport = () => {
-    Linking.openURL('mailto:support@wakemind.app?subject=WakeMind Support');
-  };
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('settings.support'),
@@ -75,7 +71,7 @@ export default function SupportScreen() {
       {/* Content */}
       <ScrollView
         className="flex-1 px-6"
-        contentContainerStyle={{ paddingBottom: 40, paddingTop: 24 }}
+        contentContainerClassName="pb-10 pt-6"
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
