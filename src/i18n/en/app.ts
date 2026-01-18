@@ -91,6 +91,8 @@ export const appEN = {
   // Errors
   'errors.failedToScheduleAlarm':
     'Failed to schedule alarm. Please check permissions and try again.',
+  'errors.failedToRescheduleAlarm':
+    'Failed to update alarm. Please check permissions and try again.',
 
   // Validation Errors
   'validation.alarm.timeRequired': 'Time is required and must be a string',
@@ -101,6 +103,7 @@ export const appEN = {
   'validation.alarm.challengeRequired': 'Challenge type is required',
   'validation.alarm.challengeIconRequired': 'Challenge icon is required',
   'validation.alarm.scheduleRequired': 'Schedule is required',
+  'validation.alarm.invalidSchedule': 'Invalid schedule format. Please select valid days.',
   'validation.alarm.notFound': 'Alarm not found',
 
   // Edit Alarm Screen

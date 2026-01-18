@@ -92,6 +92,8 @@ export const appPT = {
   // Errors
   'errors.failedToScheduleAlarm':
     'Falha ao agendar alarme. Verifique as permissões e tente novamente.',
+  'errors.failedToRescheduleAlarm':
+    'Falha ao atualizar alarme. Verifique as permissões e tente novamente.',
 
   // Validation Errors
   'validation.alarm.timeRequired': 'A hora é obrigatória e deve ser uma string',
@@ -102,6 +104,7 @@ export const appPT = {
   'validation.alarm.challengeRequired': 'O tipo de desafio é obrigatório',
   'validation.alarm.challengeIconRequired': 'O ícone do desafio é obrigatório',
   'validation.alarm.scheduleRequired': 'O horário é obrigatório',
+  'validation.alarm.invalidSchedule': 'Formato de agenda inválido. Selecione dias válidos.',
   'validation.alarm.notFound': 'Alarme não encontrado',
 
   // Edit Alarm Screen

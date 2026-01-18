@@ -43,37 +43,34 @@ function RootLayout() {
   // Initialize notification services on native platforms
   useEffect(() => {
     if (Platform.OS === 'web') return;
+    if (!fontsLoaded) return; // Wait for fonts to load before initializing
 
-    // Add delay to ensure app is fully mounted before initializing services
-    const timeoutId = setTimeout(() => {
-      const initializeServices = async () => {
-        try {
-          await AlarmScheduler.initialize();
-          await NotificationHandler.initialize();
+    const initializeServices = async () => {
+      try {
+        await AlarmScheduler.initialize();
+        await NotificationHandler.initialize();
 
-          // Set up callbacks for notification events
-          NotificationHandler.setCallbacks({
-            getAlarm: getAlarmById,
-            onAlarmTriggered: (_alarmId) => {},
-            onSnooze: (_alarmId) => {},
-            onDismiss: (_alarmId) => {},
-          });
+        // Set up callbacks for notification events
+        NotificationHandler.setCallbacks({
+          getAlarm: getAlarmById,
+          onAlarmTriggered: (_alarmId) => {},
+          onSnooze: (_alarmId) => {},
+          onDismiss: (_alarmId) => {},
+        });
 
-          // Sync alarms with scheduler on app start
-          await syncAlarmsWithScheduler();
-        } catch (error) {
-          Sentry.captureException(error);
-        }
-      };
+        // Sync alarms with scheduler on app start
+        await syncAlarmsWithScheduler();
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    };
 
-      initializeServices();
-    }, 1000); // Wait 1 second after mount
+    initializeServices();
 
     return () => {
-      clearTimeout(timeoutId);
       NotificationHandler.cleanup();
     };
-  }, [getAlarmById, syncAlarmsWithScheduler]);
+  }, [getAlarmById, syncAlarmsWithScheduler, fontsLoaded]);
 
   useEffect(() => {
     if (fontsLoaded) {
