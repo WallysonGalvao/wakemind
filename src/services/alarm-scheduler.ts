@@ -152,6 +152,18 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
   await createAlarmChannel();
 
   const triggerTimestamp = getNextTriggerTimestamp(alarm);
+  const triggerDate = new Date(triggerTimestamp);
+  const isRepeating = isRepeatingAlarm(alarm);
+
+  // Log scheduling information for debugging
+  console.log('[AlarmScheduler] Scheduling alarm:', {
+    id: alarm.id,
+    time: alarm.time,
+    schedule: alarm.schedule,
+    isRepeating,
+    triggerDate: triggerDate.toISOString(),
+    triggerTimestamp,
+  });
 
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
@@ -188,7 +200,8 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         period: alarm.period,
         challenge: alarm.challenge,
         challengeIcon: alarm.challengeIcon,
-        isRepeating: isRepeatingAlarm(alarm).toString(),
+        isRepeating: isRepeating.toString(),
+        schedule: alarm.schedule,
       },
       android: {
         channelId: ALARM_CHANNEL_ID,
@@ -218,6 +231,8 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     },
     trigger
   );
+
+  console.log('[AlarmScheduler] Alarm scheduled successfully:', notificationId);
 
   return notificationId;
 }
@@ -334,16 +349,43 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
 }
 
 /**
+ * Reschedule a repeating alarm for its next occurrence
+ * This is called automatically when an alarm triggers to ensure it repeats
+ */
+export async function rescheduleNextOccurrence(alarm: Alarm): Promise<void> {
+  console.log('[AlarmScheduler] Rescheduling next occurrence for alarm:', alarm.id);
+
+  // Only reschedule if it's a repeating alarm and it's enabled
+  if (!isRepeatingAlarm(alarm) || !alarm.isEnabled) {
+    console.log('[AlarmScheduler] Alarm is not repeating or not enabled, skipping reschedule');
+    return;
+  }
+
+  try {
+    // Schedule the next occurrence
+    await scheduleAlarm(alarm);
+    console.log('[AlarmScheduler] Next occurrence scheduled successfully');
+  } catch (error) {
+    console.error('[AlarmScheduler] Failed to reschedule next occurrence:', error);
+  }
+}
+
+/**
  * Dismiss an alarm and reschedule if repeating
  */
 export async function dismissAlarm(alarm: Alarm): Promise<void> {
+  console.log('[AlarmScheduler] Dismissing alarm:', alarm.id);
+
   // Cancel current notification
   await cancelAlarm(alarm.id);
   await cancelAlarm(`${alarm.id}-snooze`);
 
   // If repeating, schedule for next occurrence
   if (isRepeatingAlarm(alarm) && alarm.isEnabled) {
+    console.log('[AlarmScheduler] Alarm is repeating, scheduling next occurrence');
     await scheduleAlarm(alarm);
+  } else {
+    console.log('[AlarmScheduler] Alarm is not repeating or not enabled, not rescheduling');
   }
 }
 
@@ -415,6 +457,7 @@ export const AlarmScheduler = {
   scheduleAlarm,
   cancelAlarm,
   rescheduleAlarm,
+  rescheduleNextOccurrence,
   cancelAllAlarms,
   getScheduledAlarms,
   snoozeAlarm,
