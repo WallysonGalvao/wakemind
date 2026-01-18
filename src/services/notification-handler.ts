@@ -9,6 +9,7 @@ import { AlarmScheduler } from './alarm-scheduler';
 
 import type { Alarm } from '@/types/alarm';
 import type { Period } from '@/types/alarm-enums';
+import { ChallengeType } from '@/types/alarm-enums';
 
 export interface AlarmNotificationData {
   alarmId: string;
@@ -54,6 +55,7 @@ async function handleSnoozeAction(data: AlarmNotificationData): Promise<void> {
       time: data.time,
       period: data.period,
       challenge: data.challenge,
+      challengeType: ChallengeType.MATH, // Default for minimal alarm
       challengeIcon: data.challengeIcon,
       schedule: 'Once',
       isEnabled: true,
@@ -92,10 +94,7 @@ function navigateToAlarmScreen(data: AlarmNotificationData): void {
   }
 }
 
-/**
- * Handle Notifee foreground events
- */
-function handleForegroundEvent(event: Event): void {
+async function handleForegroundEvent(event: Event): Promise<void> {
   const { type, detail } = event;
   const data = detail.notification?.data as AlarmNotificationData | undefined;
 
@@ -103,6 +102,26 @@ function handleForegroundEvent(event: Event): void {
 
   switch (type) {
     case EventType.DELIVERED:
+      console.log('[NotificationHandler] Alarm delivered (foreground):', data.alarmId);
+
+      // Automatically reschedule repeating alarms when they trigger
+      // This is the ONLY place where we reschedule - dismissAlarm should NOT reschedule
+      // Skip rescheduling for snoozed alarms to avoid race condition
+      if (data.isRepeating === 'true' && data.isSnooze !== 'true') {
+        const alarm = callbacks.getAlarm?.(data.alarmId);
+        if (alarm) {
+          console.log('[NotificationHandler] Auto-rescheduling repeating alarm:', alarm.schedule);
+          try {
+            await AlarmScheduler.scheduleAlarm(alarm);
+            console.log('[NotificationHandler] Repeating alarm rescheduled successfully');
+          } catch (error) {
+            console.error('[NotificationHandler] Failed to reschedule repeating alarm:', error);
+          }
+        } else {
+          console.warn('[NotificationHandler] Cannot reschedule: alarm not found in store');
+        }
+      }
+
       // Navigate to alarm trigger screen
       navigateToAlarmScreen(data);
       callbacks.onAlarmTriggered?.(data.alarmId, data);
@@ -139,7 +158,31 @@ async function handleBackgroundEvent(event: Event): Promise<void> {
 
   switch (type) {
     case EventType.DELIVERED:
-      // Alarm triggered in background - full screen intent will handle it on Android
+      console.log('[NotificationHandler] Alarm delivered (background):', data.alarmId);
+
+      // Automatically reschedule repeating alarms when they trigger
+      // This is critical for background alarms to ensure they repeat
+      // Skip rescheduling for snoozed alarms to avoid race condition
+      if (data.isRepeating === 'true' && data.isSnooze !== 'true') {
+        const alarm = callbacks.getAlarm?.(data.alarmId);
+        if (alarm) {
+          console.log(
+            '[NotificationHandler] Auto-rescheduling repeating alarm (bg):',
+            alarm.schedule
+          );
+          try {
+            await AlarmScheduler.scheduleAlarm(alarm);
+            console.log('[NotificationHandler] Repeating alarm rescheduled successfully (bg)');
+          } catch (error) {
+            console.error(
+              '[NotificationHandler] Failed to reschedule repeating alarm (bg):',
+              error
+            );
+          }
+        } else {
+          console.warn('[NotificationHandler] Cannot reschedule (bg): alarm not found in store');
+        }
+      }
       break;
 
     case EventType.PRESS:
@@ -192,7 +235,10 @@ export async function initializeNotificationHandler(): Promise<void> {
   // Setup iOS categories
   await setupIOSCategories();
 
-  notifee.onForegroundEvent(handleForegroundEvent);
+  // Register foreground event handler (async version)
+  notifee.onForegroundEvent(async (event) => {
+    await handleForegroundEvent(event);
+  });
 }
 
 /**

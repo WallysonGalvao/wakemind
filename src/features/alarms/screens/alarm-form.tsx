@@ -365,7 +365,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
       // All permissions granted, proceed with alarm creation/update
       if (isEditMode && alarmId) {
-        updateAlarm(alarmId, {
+        await updateAlarm(alarmId, {
           time: timeString,
           period: displayPeriod,
           challenge: challengeLabel,
@@ -387,7 +387,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           difficulty: data.difficulty,
           protocols: data.protocols,
         };
-        addAlarm(newAlarmInput);
+        await addAlarm(newAlarmInput);
         // Track creation (ID will be generated, so we track with available info)
         AnalyticsEvents.alarmCreated('new-alarm', timeString, data.challenge);
       }

@@ -88,6 +88,12 @@ export const appEN = {
   'newAlarm.error.title': 'Error',
   'newAlarm.error.message': 'An unexpected error occurred. Please try again.',
 
+  // Errors
+  'errors.failedToScheduleAlarm':
+    'Failed to schedule alarm. Please check permissions and try again.',
+  'errors.failedToRescheduleAlarm':
+    'Failed to update alarm. Please check permissions and try again.',
+
   // Validation Errors
   'validation.alarm.timeRequired': 'Time is required and must be a string',
   'validation.alarm.timeFormat': 'Invalid time format. Expected format: HH:MM (e.g., "05:30")',
@@ -97,6 +103,7 @@ export const appEN = {
   'validation.alarm.challengeRequired': 'Challenge type is required',
   'validation.alarm.challengeIconRequired': 'Challenge icon is required',
   'validation.alarm.scheduleRequired': 'Schedule is required',
+  'validation.alarm.invalidSchedule': 'Invalid schedule format. Please select valid days.',
   'validation.alarm.notFound': 'Alarm not found',
 
   // Edit Alarm Screen

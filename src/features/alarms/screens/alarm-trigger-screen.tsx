@@ -87,7 +87,7 @@ export default function AlarmTriggerScreen() {
 
   // Challenge state
   const [attempt, setAttempt] = useState(1);
-  const maxAttempts = 3;
+  const maxAttempts = useSettingsStore((state) => state.maxChallengeAttempts);
 
   // Animation values
   const pulseScale = useSharedValue(1);
@@ -247,12 +247,18 @@ export default function AlarmTriggerScreen() {
         if (attempt >= maxAttempts) {
           // Track challenge failed after max attempts
           AnalyticsEvents.challengeFailed(challengeType, difficulty);
+
+          // Auto-dismiss alarm after max failed attempts to prevent indefinite ringing
+          // This ensures the alarm stops even if user struggles with the challenge
+          setTimeout(() => {
+            handleDismiss();
+          }, 1500); // Small delay to show final feedback
         } else if (attempt < maxAttempts) {
           setAttempt((prev) => prev + 1);
         }
       }
     },
-    [attempt, maxAttempts, challengeType, difficulty]
+    [attempt, maxAttempts, challengeType, difficulty, handleDismiss]
   );
 
   const containerStyle = useMemo(
