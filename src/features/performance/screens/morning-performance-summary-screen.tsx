@@ -7,7 +7,6 @@ import { ScrollView, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
-import { MaterialSymbol } from '@/components/material-symbol';
 import { PerformanceFooter } from '@/features/performance/components/performance-footer';
 import { PerformanceHero } from '@/features/performance/components/performance-hero';
 import { PerformanceMetricsGrid } from '@/features/performance/components/performance-metrics-grid';
@@ -26,7 +25,7 @@ export default function MorningPerformanceSummaryScreen() {
   const metrics = usePerformanceData();
 
   // Get action handlers
-  const { handleClose, handleShare, handleStartDay } = usePerformanceActions({
+  const { handleStartDay } = usePerformanceActions({
     currentStreak: metrics.currentStreak,
     averageCognitiveScore: metrics.averageCognitiveScore,
     weeklyExecutionRate: metrics.weeklyExecutionRate,
@@ -50,26 +49,26 @@ export default function MorningPerformanceSummaryScreen() {
     >
       <Header
         title={t('performance.summary')}
-        leftIcons={[
-          {
-            icon: (
-              <MaterialSymbol name="close" size={28} className="text-slate-900 dark:text-white" />
-            ),
-            onPress: handleClose,
-            accessibilityLabel: t('common.close'),
-            accessibilityHint: t('performance.a11y.closeHint'),
-          },
-        ]}
-        rightIcons={[
-          {
-            icon: (
-              <MaterialSymbol name="share" size={24} className="text-slate-900 dark:text-white" />
-            ),
-            onPress: handleShare,
-            accessibilityLabel: t('common.share'),
-            accessibilityHint: t('performance.a11y.shareHint'),
-          },
-        ]}
+        // leftIcons={[
+        //   {
+        //     icon: (
+        //       <MaterialSymbol name="close" size={28} className="text-slate-900 dark:text-white" />
+        //     ),
+        //     onPress: handleClose,
+        //     accessibilityLabel: t('common.close'),
+        //     accessibilityHint: t('performance.a11y.closeHint'),
+        //   },
+        // ]}
+        // rightIcons={[
+        //   {
+        //     icon: (
+        //       <MaterialSymbol name="share" size={24} className="text-slate-900 dark:text-white" />
+        //     ),
+        //     onPress: handleShare,
+        //     accessibilityLabel: t('common.share'),
+        //     accessibilityHint: t('performance.a11y.shareHint'),
+        //   },
+        // ]}
       />
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>

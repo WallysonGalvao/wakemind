@@ -21,7 +21,6 @@ interface PerformanceActionsParams {
 }
 
 export interface PerformanceActions {
-  handleClose: () => void;
   handleShare: () => Promise<void>;
   handleStartDay: () => void;
 }
@@ -38,10 +37,6 @@ export function usePerformanceActions({
   actualTime,
 }: PerformanceActionsParams): PerformanceActions {
   const { t } = useTranslation();
-
-  const handleClose = useCallback(() => {
-    router.replace('/(tabs)');
-  }, []);
 
   const handleShare = useCallback(async () => {
     try {
@@ -65,7 +60,6 @@ export function usePerformanceActions({
   }, []);
 
   return {
-    handleClose,
     handleShare,
     handleStartDay,
   };
