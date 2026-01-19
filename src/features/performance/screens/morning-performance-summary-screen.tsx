@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScrollView, View } from 'react-native';
+import { BackHandler, ScrollView, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
@@ -41,6 +41,16 @@ export default function MorningPerformanceSummaryScreen() {
       metrics.weeklyExecutionRate
     );
   }, [metrics.currentStreak, metrics.averageCognitiveScore, metrics.weeklyExecutionRate]);
+
+  // Block back button on Android and prevent navigation on iOS
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      // Return true to prevent default back behavior
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View

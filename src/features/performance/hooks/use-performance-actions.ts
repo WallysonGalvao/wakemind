@@ -56,6 +56,8 @@ export function usePerformanceActions({
   }, [t, currentStreak, averageCognitiveScore, weeklyExecutionRate, targetTime, actualTime]);
 
   const handleStartDay = useCallback(() => {
+    // Dismiss all modals and navigate to tabs
+    router.dismissAll();
     router.replace('/(tabs)');
   }, []);
 
