@@ -19,6 +19,7 @@ export interface AlarmNotificationData {
   challengeIcon: string;
   isRepeating?: string;
   isSnooze?: string;
+  type?: 'wake-check' | 'alarm';
 }
 
 type AlarmEventCallback = (alarmId: string, data: AlarmNotificationData) => void;
@@ -74,9 +75,8 @@ async function handleDismissAction(data: AlarmNotificationData): Promise<void> {
   if (alarm) {
     await AlarmScheduler.dismissAlarm(alarm);
   } else {
-    // Just cancel the notification if we don't have alarm data
-    await AlarmScheduler.cancelAlarm(data.alarmId);
-    await AlarmScheduler.cancelAlarm(`${data.alarmId}-snooze`);
+    // Just cancel all notifications if we don't have alarm data
+    await AlarmScheduler.cancelAllAlarmNotifications(data.alarmId);
   }
 
   callbacks.onDismiss?.(data.alarmId, data);
@@ -87,7 +87,26 @@ async function handleDismissAction(data: AlarmNotificationData): Promise<void> {
  */
 function navigateToAlarmScreen(data: AlarmNotificationData): void {
   try {
-    const url = `/alarm/trigger?alarmId=${data.alarmId}&time=${data.time}&period=${data.period}&challenge=${encodeURIComponent(data.challenge)}&challengeIcon=${data.challengeIcon}`;
+    // Ensure all required data is present with fallbacks
+    const alarmId = data.alarmId || '';
+    const time = data.time || '00:00';
+    const period = data.period || 'AM';
+    const challenge = data.challenge || 'Challenge';
+    const challengeIcon = data.challengeIcon || 'calculate';
+    const type = data.type || 'alarm';
+
+    const url = `/alarm/trigger?alarmId=${alarmId}&time=${time}&period=${period}&challenge=${encodeURIComponent(challenge)}&challengeIcon=${challengeIcon}&type=${type}`;
+
+    console.log('[NotificationHandler] Navigating with data:', {
+      alarmId,
+      time,
+      period,
+      challenge,
+      challengeIcon,
+      type,
+      rawData: data,
+    });
+
     router.push(url as Href);
   } catch (error) {
     console.error('[NotificationHandler] Error navigating to alarm screen:', error);
