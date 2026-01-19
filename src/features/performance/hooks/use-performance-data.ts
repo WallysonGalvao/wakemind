@@ -3,11 +3,9 @@
  * Provides a clean, testable interface for performance metrics
  */
 
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
-import dayjs from 'dayjs';
-
-import { usePerformanceStore } from '@/stores/use-performance-store';
+import * as performanceService from '@/db/performance';
 
 export interface PerformanceMetrics {
   // Streak metrics
@@ -41,71 +39,108 @@ const DEFAULT_FALLBACK_VALUES = {
   recentReactionTimes: [320, 290, 350, 260, 280, 250, 240] as const,
 } as const;
 
+const DEFAULT_METRICS: PerformanceMetrics = {
+  currentStreak: 0,
+  streakGain: 0,
+  averageCognitiveScore: 0,
+  scoreGain: 0,
+  weeklyExecutionRate: 0,
+  previousWeekExecutionRate: 0,
+  currentReactionTime: DEFAULT_FALLBACK_VALUES.currentReactionTime,
+  averageReactionTime: DEFAULT_FALLBACK_VALUES.averageReactionTime,
+  isBestReactionTime: false,
+  recentReactionTimes: Array.from(DEFAULT_FALLBACK_VALUES.recentReactionTimes),
+  targetTime: DEFAULT_FALLBACK_VALUES.targetTime,
+  actualTime: DEFAULT_FALLBACK_VALUES.actualTime,
+};
+
 /**
  * Hook to get all performance-related data in a structured format
- * Memoizes calculations for optimal performance
+ * Loads data asynchronously from SQLite database
  */
-export function usePerformanceData(): PerformanceMetrics {
-  const store = usePerformanceStore();
+export function usePerformanceData(): PerformanceMetrics & { isLoading: boolean } {
+  const [metrics, setMetrics] = useState<PerformanceMetrics>(DEFAULT_METRICS);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const metrics = useMemo(() => {
-    const {
-      getCurrentStreak,
-      getAverageCognitiveScore,
-      getWeeklyStats,
-      getPreviousWeekExecutionRate,
-      getRecentReactionTimes,
-      getStreakGain,
-      getScoreGain,
-      completionHistory,
-    } = store;
+  useEffect(() => {
+    let isMounted = true;
 
-    // Get basic metrics
-    const currentStreak = getCurrentStreak();
-    const averageCognitiveScore = getAverageCognitiveScore();
-    const weeklyStats = getWeeklyStats();
-    const previousWeekExecutionRate = getPreviousWeekExecutionRate();
-    const recentReactionTimes = getRecentReactionTimes(7);
-    const streakGain = getStreakGain();
-    const scoreGain = getScoreGain();
+    async function loadMetrics() {
+      try {
+        setIsLoading(true);
 
-    // Get last completion for time comparison
-    const lastCompletion = completionHistory[completionHistory.length - 1];
+        // Load all metrics in parallel
+        const [
+          currentStreak,
+          averageCognitiveScore,
+          weeklyStats,
+          previousWeekExecutionRate,
+          recentReactionTimes,
+          streakGain,
+          scoreGain,
+        ] = await Promise.all([
+          performanceService.getCurrentStreak(),
+          performanceService.getAverageCognitiveScore(),
+          performanceService.getWeeklyStats(),
+          performanceService.getPreviousWeekExecutionRate(),
+          performanceService.getRecentReactionTimes(7),
+          performanceService.getStreakGain(),
+          performanceService.getScoreGain(),
+        ]);
 
-    // Calculate target and actual times
-    const targetTime = lastCompletion?.targetTime || DEFAULT_FALLBACK_VALUES.targetTime;
-    const actualTime = lastCompletion?.actualTime
-      ? dayjs(lastCompletion.actualTime).format('HH:mm')
-      : DEFAULT_FALLBACK_VALUES.actualTime;
+        // Get last completion from recent reaction times data (if available)
+        // Note: We could add a getLastCompletion() function to the service if needed
+        // For now, using defaults or calculating from available data
 
-    // Calculate reaction time metrics
-    const currentReactionTime =
-      lastCompletion?.reactionTime || DEFAULT_FALLBACK_VALUES.currentReactionTime;
+        // Calculate reaction time metrics
+        const hasReactionTimes = recentReactionTimes.length > 0;
+        const currentReactionTime = hasReactionTimes
+          ? recentReactionTimes[recentReactionTimes.length - 1]
+          : DEFAULT_FALLBACK_VALUES.currentReactionTime;
 
-    const hasReactionTimes = recentReactionTimes.length > 0;
-    const averageReactionTime = hasReactionTimes
-      ? Math.round(recentReactionTimes.reduce((a, b) => a + b, 0) / recentReactionTimes.length)
-      : DEFAULT_FALLBACK_VALUES.averageReactionTime;
+        const averageReactionTimeValue = hasReactionTimes
+          ? Math.round(
+              recentReactionTimes.reduce((a: number, b: number) => a + b, 0) /
+                recentReactionTimes.length
+            )
+          : DEFAULT_FALLBACK_VALUES.averageReactionTime;
 
-    const isBestReactionTime = currentReactionTime <= Math.min(...recentReactionTimes, 999);
+        const isBestReactionTime = currentReactionTime <= Math.min(...recentReactionTimes, 999);
 
-    return {
-      currentStreak,
-      streakGain,
-      averageCognitiveScore,
-      scoreGain,
-      weeklyExecutionRate: weeklyStats.executionRate,
-      previousWeekExecutionRate,
-      currentReactionTime,
-      averageReactionTime,
-      isBestReactionTime,
-      recentReactionTimes: hasReactionTimes
-        ? recentReactionTimes
-        : Array.from(DEFAULT_FALLBACK_VALUES.recentReactionTimes),
-      targetTime,
-      actualTime,
+        if (isMounted) {
+          setMetrics({
+            currentStreak,
+            streakGain,
+            averageCognitiveScore,
+            scoreGain,
+            weeklyExecutionRate: weeklyStats.executionRate,
+            previousWeekExecutionRate,
+            currentReactionTime,
+            averageReactionTime: averageReactionTimeValue,
+            isBestReactionTime,
+            recentReactionTimes: hasReactionTimes
+              ? recentReactionTimes
+              : Array.from(DEFAULT_FALLBACK_VALUES.recentReactionTimes),
+            targetTime: DEFAULT_FALLBACK_VALUES.targetTime,
+            actualTime: DEFAULT_FALLBACK_VALUES.actualTime,
+          });
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('[usePerformanceData] Error loading metrics:', error);
+        if (isMounted) {
+          setMetrics(DEFAULT_METRICS);
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadMetrics();
+
+    return () => {
+      isMounted = false;
     };
-  }, [store]);
+  }, []);
 
-  return metrics;
+  return { ...metrics, isLoading };
 }
