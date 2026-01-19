@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-
 export default function TabLayout() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
@@ -30,6 +29,13 @@ export default function TabLayout() {
         options={{
           title: t('tabs.alarms'),
           tabBarIcon: ({ color }) => <MaterialSymbol name="alarm" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="dashboard"
+        options={{
+          title: t('tabs.dashboard'),
+          tabBarIcon: ({ color }) => <MaterialSymbol name="dashboard" size={28} color={color} />,
         }}
       />
       <Tabs.Screen

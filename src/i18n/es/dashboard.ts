@@ -1,0 +1,13 @@
+export const dashboardES = {
+  'dashboard.activeAlarms': 'Alarmas Activas',
+  'dashboard.completedToday': 'Completados Hoy',
+  'dashboard.recentActivity': 'Actividad Reciente',
+  'dashboard.noActivityYet': 'No hay actividad aún',
+  'dashboard.performanceInsights': 'Perspectivas de Rendimiento',
+  'dashboard.noInsightsYet': 'No hay perspectivas aún',
+  'dashboard.period.day': 'Día',
+  'dashboard.period.week': 'Semana',
+  'dashboard.period.month': 'Mes',
+  'dashboard.period.custom': 'Personalizado',
+  'dashboard.executionScore.title': 'Puntuación de Ejecución Diaria',
+};

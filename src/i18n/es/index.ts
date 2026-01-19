@@ -3,6 +3,7 @@ import { alarmSchedulerES } from './alarm-scheduler';
 import { appES } from './app';
 import { backES } from './back';
 import { countriesES } from './countries';
+import { dashboardES } from './dashboard';
 import { expoES } from './expo';
 import { onboardingES } from './onboarding';
 import { privacyPolicyES } from './privacy-policy';
@@ -16,6 +17,7 @@ export default {
   ...appES,
   ...backES,
   ...countriesES,
+  ...dashboardES,
   ...sportsES,
   ...expoES,
   ...onboardingES,
