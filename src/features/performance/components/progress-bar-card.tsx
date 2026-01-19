@@ -1,7 +1,11 @@
+import { useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { View } from 'react-native';
 
+import { AnimatedCounter } from '@/components/animated-counter';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -29,6 +33,19 @@ export function ProgressBarCard({
   const isTrendingDown = previousValue !== undefined && value < previousValue;
   const shadowStyle = useShadowStyle('sm');
 
+  // Animated progress bar width
+  const progressWidth = useSharedValue(0);
+
+  useEffect(() => {
+    progressWidth.value = withTiming(Math.min(value, 100), {
+      duration: 1000,
+    });
+  }, [value, progressWidth]);
+
+  const animatedProgressStyle = useAnimatedStyle(() => ({
+    width: `${progressWidth.value}%`,
+  }));
+
   const getTrendText = () => {
     if (isTrendingUp) return t('performance.trendingUp');
     if (isTrendingDown) return t('performance.trendingDown');
@@ -51,16 +68,25 @@ export function ProgressBarCard({
           </View>
           <Text className="text-sm font-bold text-slate-900 dark:text-white">{title}</Text>
         </View>
-        <Text className="text-lg font-bold text-slate-900 dark:text-white">
-          {displayValue || `${value}%`}
-        </Text>
+        {displayValue ? (
+          <Text className="text-lg font-bold text-slate-900 dark:text-white">{displayValue}</Text>
+        ) : (
+          <View className="flex-row">
+            <AnimatedCounter
+              value={value}
+              duration={1000}
+              className="text-lg font-bold text-slate-900 dark:text-white"
+            />
+            <Text className="text-lg font-bold text-slate-900 dark:text-white">%</Text>
+          </View>
+        )}
       </View>
 
       {/* Progress Bar */}
       <View className="relative h-3 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
-        <View
+        <Animated.View
           className="absolute left-0 top-0 h-full rounded-full bg-primary-500 shadow-[0_2px_10px_rgba(19,91,236,0.3)]"
-          style={{ width: `${Math.min(value, 100)}%` }}
+          style={animatedProgressStyle}
         />
       </View>
 
