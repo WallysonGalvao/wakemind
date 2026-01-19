@@ -50,7 +50,7 @@ export function MetricCard({
           <MaterialSymbol name={icon} size={20} className={iconColor} />
         </View>
         {badge ? (
-          <View className="rounded-md border border-success-500/10 bg-success-500/5 px-2 py-1">
+          <View className="rounded-md border border-green-400/10 bg-green-400/5 px-2 py-1">
             <Text className={cn('text-xs font-bold', badge.color)}>{badge.text}</Text>
           </View>
         ) : null}

@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScrollView, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
+import { Header } from '@/components/header';
+import { MaterialSymbol } from '@/components/material-symbol';
 import { PerformanceFooter } from '@/features/performance/components/performance-footer';
-import { PerformanceHeader } from '@/features/performance/components/performance-header';
 import { PerformanceHero } from '@/features/performance/components/performance-hero';
 import { PerformanceMetricsGrid } from '@/features/performance/components/performance-metrics-grid';
 import { PerformanceTrends } from '@/features/performance/components/performance-trends';
@@ -16,6 +18,7 @@ import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 
 export default function MorningPerformanceSummaryScreen() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   useAnalyticsScreen('Performance Summary');
 
@@ -41,8 +44,33 @@ export default function MorningPerformanceSummaryScreen() {
   }, [metrics.currentStreak, metrics.averageCognitiveScore, metrics.weeklyExecutionRate]);
 
   return (
-    <View className="flex-1 bg-background-light dark:bg-background-dark">
-      <PerformanceHeader onClose={handleClose} onShare={handleShare} topInset={insets.top} />
+    <View
+      className="flex-1 bg-background-light dark:bg-background-dark"
+      style={{ paddingTop: insets.top }}
+    >
+      <Header
+        title={t('performance.summary')}
+        leftIcons={[
+          {
+            icon: (
+              <MaterialSymbol name="close" size={28} className="text-slate-900 dark:text-white" />
+            ),
+            onPress: handleClose,
+            accessibilityLabel: t('common.close'),
+            accessibilityHint: t('performance.a11y.closeHint'),
+          },
+        ]}
+        rightIcons={[
+          {
+            icon: (
+              <MaterialSymbol name="share" size={24} className="text-slate-900 dark:text-white" />
+            ),
+            onPress: handleShare,
+            accessibilityLabel: t('common.share'),
+            accessibilityHint: t('performance.a11y.shareHint'),
+          },
+        ]}
+      />
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="flex-1 px-5 pb-8 pt-4">
