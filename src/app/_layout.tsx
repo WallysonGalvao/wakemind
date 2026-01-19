@@ -16,6 +16,15 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Platform, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: '#0F1621',
+    card: '#0F1621',
+  },
+};
+
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { syncAlarmsWithScheduler } from '@/db/functions/alarms';
 import { useAlarms } from '@/hooks/use-alarms';
@@ -98,7 +107,7 @@ function RootLayout() {
     <GestureHandlerRootView style={styles.gestureHandlerRootView}>
       <HapticsProvider>
         <GluestackUIProvider mode={theme}>
-          <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+          <ThemeProvider value={isDark ? CustomDarkTheme : DefaultTheme}>
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen
@@ -122,6 +131,7 @@ function RootLayout() {
                 name="alarm/backup-protocols-info"
                 options={{
                   presentation: 'modal',
+                  headerShown: true,
                 }}
               />
               <Stack.Screen
