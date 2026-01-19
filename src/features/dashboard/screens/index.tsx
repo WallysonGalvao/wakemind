@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScrollView, View } from 'react-native';
+
+import { useExecutionScore } from '../hooks/use-execution-score';
 
 import { Header } from '@/components/header';
 import { SegmentedControl } from '@/components/segmented-control';
@@ -20,21 +22,8 @@ export default function DashboardScreen() {
 
   useAnalyticsScreen('Dashboard');
 
-  // Mock data based on selected period
-  const executionData = useMemo(() => {
-    switch (selectedPeriod) {
-      case 'day':
-        return { score: 94, percentageChange: 2.3 };
-      case 'week':
-        return { score: 88, percentageChange: 5.1 };
-      case 'month':
-        return { score: 91, percentageChange: -1.2 };
-      case 'custom':
-        return { score: 85, percentageChange: 0 };
-      default:
-        return { score: 94, percentageChange: 2.3 };
-    }
-  }, [selectedPeriod]);
+  // Get real execution score data from database
+  const executionData = useExecutionScore(selectedPeriod);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
@@ -62,6 +51,7 @@ export default function DashboardScreen() {
           score={executionData.score}
           percentageChange={executionData.percentageChange}
           period={selectedPeriod}
+          sparklineData={executionData.sparklineData}
         />
       </ScrollView>
     </View>

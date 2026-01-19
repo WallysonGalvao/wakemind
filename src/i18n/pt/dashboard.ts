@@ -13,5 +13,8 @@ export const dashboardPT = {
   'dashboard.executionScore.title.week': 'Pontuação de Execução Semanal',
   'dashboard.executionScore.title.month': 'Pontuação de Execução Mensal',
   'dashboard.executionScore.title.custom': 'Pontuação de Execução Personalizada',
-  'dashboard.executionScore.comparisonPeriod': 'vs últimos 7 dias',
+  'dashboard.executionScore.comparisonPeriod.day': 'vs ontem',
+  'dashboard.executionScore.comparisonPeriod.week': 'vs últimos 7 dias',
+  'dashboard.executionScore.comparisonPeriod.month': 'vs últimos 30 dias',
+  'dashboard.executionScore.comparisonPeriod.custom': 'vs período anterior',
 };
