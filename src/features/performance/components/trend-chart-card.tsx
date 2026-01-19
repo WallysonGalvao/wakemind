@@ -1,6 +1,8 @@
+import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
+import { BarChart } from 'react-native-chart-kit';
 
-import { View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -29,11 +31,54 @@ export function TrendChartCard({
   className,
 }: TrendChartCardProps) {
   const { t } = useTranslation();
-  // Normalize data to percentages for bar heights (based on max 400ms range)
-  const maxRange = 400;
-  const normalizedData = data.map((value) => Math.min((value / maxRange) * 100, 100));
-  const isLastIndex = (index: number) => index === data.length - 1;
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const shadowStyle = useShadowStyle('sm');
+
+  const screenWidth = Dimensions.get('window').width;
+  const chartWidth = screenWidth - 80; // Account for padding
+
+  const chartStyles = { borderRadius: 8 };
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        data,
+        colors: data.map(
+          (_, index) =>
+            index === data.length - 1
+              ? () => '#135bec' // Primary color for last bar
+              : () => (isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0') // Slate-200 for other bars
+        ),
+      },
+    ],
+  };
+
+  const chartConfig = {
+    backgroundColor: 'transparent',
+    backgroundGradientFrom: isDark ? '#1a1a2e' : '#ffffff',
+    backgroundGradientTo: isDark ? '#1a1a2e' : '#ffffff',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    decimalPlaces: 0,
+    color: () => (isDark ? 'rgba(255, 255, 255, 0.3)' : '#cbd5e1'),
+    labelColor: () => (isDark ? '#94a3b8' : '#94a3b8'),
+    barPercentage: 0.4,
+    barRadius: 4,
+    propsForBackgroundLines: {
+      strokeDasharray: '4 4',
+      stroke: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
+      strokeWidth: 1,
+    },
+    propsForLabels: {
+      fontSize: 10,
+      fontWeight: 'bold' as const,
+    },
+    fillShadowGradientFrom: '#135bec',
+    fillShadowGradientTo: '#135bec',
+    fillShadowGradientOpacity: 1,
+  };
 
   return (
     <View
@@ -83,50 +128,22 @@ export function TrendChartCard({
       </View>
 
       {/* Bar Chart */}
-      <View className="relative mt-6 h-44">
-        {/* Y-axis labels and grid lines */}
-        <View className="pointer-events-none absolute inset-0 z-0 flex-col justify-between pb-7">
-          {[400, 300, 200].map((label) => (
-            <View key={label} className="w-full flex-row items-center">
-              <Text className="w-7 pr-2 text-right text-[10px] font-medium text-slate-300">
-                {label}
-              </Text>
-              <View className="h-px flex-1 border-t border-dashed border-slate-200 dark:border-white/10" />
-            </View>
-          ))}
-          <View className="w-full flex-row items-center opacity-0">
-            <Text className="w-7 pr-2 text-right text-[10px] font-medium text-slate-300">0</Text>
-            <View className="h-px flex-1" />
-          </View>
-        </View>
-
-        {/* Bars */}
-        <View className="absolute inset-0 z-10 flex-row items-end justify-between pb-0 pl-9 pt-2">
-          {normalizedData.map((height, index) => {
-            const isLast = isLastIndex(index);
-            return (
-              <View key={index} className="h-full w-full flex-col items-center justify-end gap-2">
-                <View
-                  className={cn(
-                    'w-3 rounded-md',
-                    isLast
-                      ? 'bg-primary-500 shadow-[0_4px_12px_rgba(19,91,236,0.4)]'
-                      : 'bg-slate-200 dark:bg-white/10'
-                  )}
-                  style={{ height: `${Math.max(height, 5)}%` }}
-                />
-                <Text
-                  className={cn(
-                    'h-4 text-[10px] font-bold',
-                    isLast ? 'text-primary-500' : 'text-slate-400'
-                  )}
-                >
-                  {labels[index] || ''}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
+      <View className="-ml-4 mt-4">
+        <BarChart
+          data={chartData}
+          width={chartWidth}
+          height={176}
+          yAxisLabel=""
+          yAxisSuffix=""
+          chartConfig={chartConfig}
+          fromZero
+          showBarTops={false}
+          withCustomBarColorFromData
+          flatColor
+          withInnerLines
+          segments={3}
+          style={chartStyles}
+        />
       </View>
     </View>
   );
