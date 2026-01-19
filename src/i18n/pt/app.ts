@@ -117,6 +117,7 @@ export const appPT = {
   'alarmTrigger.reliabilityMode': 'Modo Alta Confiabilidade Ativo',
   'alarmTrigger.offlineGuaranteed': 'Garantia Offline',
   'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
+  'alarmTrigger.wakeCheckProtocol': 'Protocolo de Verificação',
   'alarmTrigger.efficiencyTimer': 'Timer de Eficiência',
   'alarmTrigger.cognitiveChallenge': 'Desafio Cognitivo',
   'alarmTrigger.mathChallenge': 'Desafio de Matemática',

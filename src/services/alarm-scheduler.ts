@@ -7,6 +7,7 @@ import notifee, {
   TriggerType,
 } from '@notifee/react-native';
 import dayjs from 'dayjs';
+import i18n from 'i18next';
 
 import { Platform } from 'react-native';
 
@@ -15,7 +16,6 @@ import { BackupProtocolId } from '@/types/alarm-enums';
 import { getNextTriggerTimestamp, isRepeatingAlarm } from '@/utils/alarm-time-calculator';
 
 const ALARM_CHANNEL_ID = 'wakemind-alarm';
-const ALARM_CHANNEL_NAME = 'Alarm Notifications';
 
 export interface PermissionStatus {
   notifications: 'granted' | 'denied' | 'undetermined';
@@ -32,13 +32,14 @@ async function createAlarmChannel(): Promise<void> {
 
   await notifee.createChannel({
     id: ALARM_CHANNEL_ID,
-    name: ALARM_CHANNEL_NAME,
+    name: i18n.t('alarmScheduler.channel.name'),
     importance: AndroidImportance.HIGH,
     visibility: AndroidVisibility.PUBLIC,
     sound: 'alarm_sound',
     vibration: true,
     vibrationPattern: [300, 500],
     bypassDnd: true,
+    lights: false,
   });
 }
 
@@ -145,12 +146,15 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     const newSettings = await notifee.requestPermission();
 
     if (newSettings.authorizationStatus < AuthorizationStatus.AUTHORIZED) {
-      throw new Error('Notification permissions not granted');
+      throw new Error(i18n.t('alarmScheduler.errors.permissionsNotGranted'));
     }
   }
 
   // Ensure channel exists
   await createAlarmChannel();
+
+  // Cancel any existing notifications for this alarm before scheduling new one
+  await cancelAllAlarmNotifications(alarm.id);
 
   const triggerTimestamp = getNextTriggerTimestamp(alarm);
   const triggerDate = dayjs(triggerTimestamp);
@@ -185,7 +189,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
 
   if (isSnoozeEnabled) {
     actions.push({
-      title: 'Snooze',
+      title: i18n.t('alarmScheduler.actions.snooze'),
       pressAction: { id: 'snooze' },
     });
   }
@@ -193,8 +197,12 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
   const notificationId = await notifee.createTriggerNotification(
     {
       id: alarm.id,
-      title: 'WakeMind Alarm',
-      body: `${alarm.time} ${alarm.period} - ${alarm.challenge}`,
+      title: i18n.t('alarmScheduler.notification.title'),
+      body: i18n.t('alarmScheduler.notification.body', {
+        time: alarm.time,
+        period: alarm.period,
+        challenge: alarm.challenge,
+      }),
       data: {
         alarmId: alarm.id,
         time: alarm.time,
@@ -250,6 +258,20 @@ export async function cancelAlarm(alarmId: string): Promise<void> {
 }
 
 /**
+ * Cancel all notifications related to an alarm (main, snooze, wake-check)
+ */
+export async function cancelAllAlarmNotifications(alarmId: string): Promise<void> {
+  try {
+    console.log(`[AlarmScheduler] Cancelling all notifications for alarm ${alarmId}`);
+    await notifee.cancelNotification(alarmId);
+    await notifee.cancelNotification(`${alarmId}-snooze`);
+    await notifee.cancelNotification(`${alarmId}-wake-check`);
+  } catch (error) {
+    console.error(`[AlarmScheduler] Error cancelling all alarm notifications ${alarmId}:`, error);
+  }
+}
+
+/**
  * Reschedule an alarm (cancel and schedule again)
  */
 export async function rescheduleAlarm(alarm: Alarm): Promise<string> {
@@ -285,8 +307,8 @@ export async function getScheduledAlarms(): Promise<string[]> {
  * Snooze an alarm for a specified duration
  */
 export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Promise<string> {
-  // Cancel current notification
-  await cancelAlarm(alarm.id);
+  // Cancel all notifications related to this alarm before snoozing
+  await cancelAllAlarmNotifications(alarm.id);
 
   // Schedule snooze notification
   const snoozeTimestamp = Date.now() + durationMinutes * 60 * 1000;
@@ -302,8 +324,11 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
   const notificationId = await notifee.createTriggerNotification(
     {
       id: `${alarm.id}-snooze`,
-      title: 'WakeMind - Snoozed',
-      body: `Wake up! Snoozed from ${alarm.time} ${alarm.period}`,
+      title: i18n.t('alarmScheduler.notification.snooze.title'),
+      body: i18n.t('alarmScheduler.notification.snooze.body', {
+        time: alarm.time,
+        period: alarm.period,
+      }),
       data: {
         alarmId: alarm.id,
         time: alarm.time,
@@ -330,7 +355,7 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         },
         actions: [
           {
-            title: 'Dismiss',
+            title: i18n.t('alarmScheduler.actions.dismiss'),
             pressAction: { id: 'dismiss' },
           },
         ],
@@ -357,9 +382,8 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
 export async function dismissAlarm(alarm: Alarm): Promise<void> {
   console.log('[AlarmScheduler] Dismissing alarm:', alarm.id);
 
-  // Cancel current notification
-  await cancelAlarm(alarm.id);
-  await cancelAlarm(`${alarm.id}-snooze`);
+  // Cancel all notifications related to this alarm
+  await cancelAllAlarmNotifications(alarm.id);
 
   // NOTE: We do NOT reschedule here anymore
   // Rescheduling is handled in notification-handler.ts when DELIVERED event fires
@@ -374,6 +398,14 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
   const notificationId = `${alarm.id}-wake-check`;
   const triggerTimestamp = Date.now() + 5 * 60 * 1000; // 5 minutes from now
 
+  // Calculate the next wake check time to display
+  const wakeCheckDate = dayjs(triggerTimestamp);
+  const hours = wakeCheckDate.hour();
+  const minutes = wakeCheckDate.minute();
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  const displayTime = `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
     timestamp: triggerTimestamp,
@@ -385,11 +417,15 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
   await notifee.createTriggerNotification(
     {
       id: notificationId,
-      title: 'Wake Check',
-      body: 'Are you still awake? Tap to confirm.',
+      title: i18n.t('alarmScheduler.notification.wakeCheck.title'),
+      body: i18n.t('alarmScheduler.notification.wakeCheck.body'),
       data: {
         alarmId: alarm.id,
         type: 'wake-check',
+        time: displayTime,
+        period,
+        challenge: alarm.challenge,
+        challengeIcon: alarm.challengeIcon,
       },
       android: {
         channelId: ALARM_CHANNEL_ID,
@@ -403,7 +439,7 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
         },
         actions: [
           {
-            title: "I'm awake!",
+            title: i18n.t('alarmScheduler.actions.awake'),
             pressAction: { id: 'wake-check-confirm' },
           },
         ],
@@ -434,6 +470,7 @@ export const AlarmScheduler = {
   openAlarmPermissionSettings,
   scheduleAlarm,
   cancelAlarm,
+  cancelAllAlarmNotifications,
   rescheduleAlarm,
   cancelAllAlarms,
   getScheduledAlarms,

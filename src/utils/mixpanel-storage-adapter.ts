@@ -15,7 +15,7 @@ const storage = createMMKV({
 /**
  * AsyncStorage-compatible adapter using MMKV
  */
-const AsyncStorageAdapter = {
+const MixPanelStorageAdapter = {
   /**
    * Set a string value for a key
    */
@@ -105,9 +105,9 @@ const AsyncStorageAdapter = {
    */
   multiMerge: async (keyValuePairs: [string, string][]): Promise<void> => {
     for (const [key, value] of keyValuePairs) {
-      await AsyncStorageAdapter.mergeItem(key, value);
+      await MixPanelStorageAdapter.mergeItem(key, value);
     }
   },
 };
 
-export default AsyncStorageAdapter;
+export default MixPanelStorageAdapter;

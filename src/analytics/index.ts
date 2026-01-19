@@ -9,7 +9,7 @@ import { Mixpanel } from 'mixpanel-react-native';
 
 import { Platform } from 'react-native';
 
-import AsyncStorageAdapter from '@/utils/mixpanel-storage-adapter';
+import MixPanelStorageAdapter from '@/utils/mixpanel-storage-adapter';
 
 type EventProperties = Record<string, string | number | boolean | undefined>;
 
@@ -22,7 +22,7 @@ export const mixpanel = new Mixpanel(
   Constants.expoConfig?.extra?.mixpanelToken || '',
   trackAutomaticEvents,
   useNative,
-  AsyncStorageAdapter
+  MixPanelStorageAdapter
 );
 
 // Track initialization state
