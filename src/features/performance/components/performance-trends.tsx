@@ -31,6 +31,10 @@ export function PerformanceTrends({
 }: PerformanceTrendsProps) {
   const { t } = useTranslation();
 
+  console.log('[PerformanceTrends] currentReactionTime:', currentReactionTime);
+  console.log('[PerformanceTrends] recentReactionTimes:', recentReactionTimes);
+  console.log('[PerformanceTrends] averageReactionTime:', averageReactionTime);
+
   return (
     <View className="flex-col gap-4">
       <ProgressBarCard

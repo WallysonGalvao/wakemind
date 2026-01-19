@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
@@ -47,8 +47,22 @@ export function TrendChartCard({
 
   const screenWidth = Dimensions.get('window').width;
 
-  // Extract numeric value from currentValue (e.g., "450ms" -> 450)
-  const numericValue = parseInt(currentValue.replace('ms', ''), 10) || 0;
+  // Extract numeric value from currentValue (e.g., "450ms" -> 450, or 450 -> 450)
+  const numericValue = useMemo(() => {
+    console.log('[TrendChartCard] currentValue:', currentValue, 'type:', typeof currentValue);
+    if (typeof currentValue === 'number') {
+      return currentValue;
+    }
+    if (typeof currentValue === 'string') {
+      // Remove all non-numeric characters and parse
+      const parsed = parseInt(currentValue.replace(/\D/g, ''), 10);
+      console.log('[TrendChartCard] parsed:', parsed);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  }, [currentValue]);
+
+  console.log('[TrendChartCard] numericValue:', numericValue);
 
   // Badge scale animation
   const badgeScale = useSharedValue(0);

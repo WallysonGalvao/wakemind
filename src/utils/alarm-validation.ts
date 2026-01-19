@@ -1,4 +1,4 @@
-import type { AlarmInput } from '@/stores/use-alarms-store';
+import type { AlarmInput } from '@/db/functions/alarms';
 import type { Alarm } from '@/types/alarm';
 import type { Period } from '@/types/alarm-enums';
 import { Period as PeriodEnum } from '@/types/alarm-enums';
