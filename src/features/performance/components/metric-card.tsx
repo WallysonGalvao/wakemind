@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -10,6 +9,7 @@ import Animated, {
 
 import { View } from 'react-native';
 
+import { AnimatedCounter } from '@/components/animated-counter';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -41,32 +41,14 @@ export function MetricCard({
 }: MetricCardProps) {
   const shadowStyle = useShadowStyle('sm');
 
-  // Animation values
-  const counterValue = useSharedValue(0);
+  // Animation value for badge
   const badgeScale = useSharedValue(0);
-
-  // State for displaying animated counter
-  const [displayCounter, setDisplayCounter] = useState(0);
 
   // Check if value is a number for counter animation
   const isNumericValue = typeof value === 'number';
-  const numericValue = isNumericValue ? value : 0;
 
-  // Start animations on mount
+  // Start badge animation on mount
   useEffect(() => {
-    if (isNumericValue) {
-      counterValue.value = withTiming(
-        numericValue,
-        {
-          duration: 1000,
-        },
-        () => {
-          // Ensure final value is set correctly
-          runOnJS(setDisplayCounter)(numericValue);
-        }
-      );
-    }
-
     if (badge) {
       badgeScale.value = withDelay(
         100,
@@ -75,19 +57,7 @@ export function MetricCard({
         })
       );
     }
-  }, [isNumericValue, numericValue, badge, counterValue, badgeScale]);
-
-  // Update display counter during animation
-  useEffect(() => {
-    if (!isNumericValue) return;
-
-    const interval = setInterval(() => {
-      const current = Math.round(counterValue.value);
-      setDisplayCounter(current);
-    }, 16); // ~60fps
-
-    return () => clearInterval(interval);
-  }, [isNumericValue, counterValue]);
+  }, [badge, badgeScale]);
 
   // Animated styles
   const badgeAnimatedStyle = useAnimatedStyle(() => ({
@@ -127,9 +97,16 @@ export function MetricCard({
         <Text className="mb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">
           {title}
         </Text>
-        <Text className="text-3xl font-black leading-none tracking-tight text-slate-900 dark:text-white">
-          {isNumericValue ? displayCounter : value}
-        </Text>
+        {isNumericValue ? (
+          <AnimatedCounter
+            value={value as number}
+            className="text-3xl font-black leading-none tracking-tight text-slate-900 dark:text-white"
+          />
+        ) : (
+          <Text className="text-3xl font-black leading-none tracking-tight text-slate-900 dark:text-white">
+            {value}
+          </Text>
+        )}
         {subtitle ? (
           <Text className="mt-1 text-xs font-medium text-slate-400 dark:text-slate-500">
             {subtitle}
