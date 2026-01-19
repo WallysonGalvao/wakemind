@@ -204,14 +204,22 @@ export const usePerformanceStore = create<PerformanceState>()(
 
       getRecentReactionTimes: (days = 7) => {
         const { completionHistory } = get();
-        const cutoffDate = dayjs()
-          .subtract(days - 1, 'day')
-          .startOf('day');
+        const today = dayjs();
+        const result: number[] = [];
 
-        return completionHistory
-          .filter((record) => dayjs(record.date).isAfter(cutoffDate))
-          .map((record) => record.reactionTime)
-          .slice(-days); // Get last N days
+        // Get the start of the current week (Monday)
+        const weekStart = today.startOf('week').add(1, 'day'); // dayjs week starts on Sunday, so add 1 day for Monday
+
+        // Generate array for Monday through Sunday of current week
+        for (let i = 0; i < days; i++) {
+          const targetDate = weekStart.add(i, 'day').format('YYYY-MM-DD');
+          const record = completionHistory.find(
+            (r) => dayjs(r.date).format('YYYY-MM-DD') === targetDate
+          );
+          result.push(record?.reactionTime || 0);
+        }
+
+        return result;
       },
 
       getStreakGain: () => {

@@ -1,6 +1,7 @@
 import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
 import { BarChart } from 'react-native-chart-kit';
+import type { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 
 import { Dimensions, View } from 'react-native';
 
@@ -40,6 +41,12 @@ export function TrendChartCard({
 
   const chartStyles = { borderRadius: 8 };
 
+  // Find the index of the last non-zero value (today's data)
+  const lastNonZeroIndex = data.reduce(
+    (lastIndex, value, index) => (value > 0 ? index : lastIndex),
+    -1
+  );
+
   const chartData = {
     labels,
     datasets: [
@@ -47,15 +54,15 @@ export function TrendChartCard({
         data,
         colors: data.map(
           (_, index) =>
-            index === data.length - 1
-              ? () => '#135bec' // Primary color for last bar
+            index === lastNonZeroIndex
+              ? () => '#135bec' // Primary color for today (last non-zero bar)
               : () => (isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0') // Slate-200 for other bars
         ),
       },
     ],
   };
 
-  const chartConfig = {
+  const chartConfig: AbstractChartConfig = {
     backgroundColor: 'transparent',
     backgroundGradientFrom: isDark ? '#1a1a2e' : '#ffffff',
     backgroundGradientTo: isDark ? '#1a1a2e' : '#ffffff',
@@ -65,19 +72,18 @@ export function TrendChartCard({
     color: () => (isDark ? 'rgba(255, 255, 255, 0.3)' : '#cbd5e1'),
     labelColor: () => (isDark ? '#94a3b8' : '#94a3b8'),
     barPercentage: 0.4,
-    barRadius: 4,
+    barRadius: 6,
     propsForBackgroundLines: {
       strokeDasharray: '4 4',
       stroke: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
       strokeWidth: 1,
+      strokeOpacity: 0.5,
     },
     propsForLabels: {
+      dy: 4,
       fontSize: 10,
-      fontWeight: 'bold' as const,
+      fontWeight: 'bold',
     },
-    fillShadowGradientFrom: '#135bec',
-    fillShadowGradientTo: '#135bec',
-    fillShadowGradientOpacity: 1,
   };
 
   return (
