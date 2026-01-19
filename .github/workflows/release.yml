@@ -29,12 +29,12 @@ jobs:
         run: npm ci --prefer-offline --no-audit
 
       - name: 🏗️ Build Android Production
-        run: eas build --platform android --profile production --non-interactive --auto-submit
+        run: eas build --platform android --profile production --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🏗️ Build iOS Production
-        run: eas build --platform ios --profile production --non-interactive --auto-submit
+        run: eas build --platform ios --profile production --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -48,10 +48,17 @@ jobs:
           body: |
             ## WakeMind ${{ github.ref_name }}
 
-            ### 🚀 Released to App Stores
-            - ✅ Google Play Store
-            - ✅ Apple App Store
+            ### 🚀 Production Builds Created
+            - 📦 Android AAB (ready for manual Play Store upload)
+            - 📦 iOS IPA (ready for manual App Store upload)
+
+            **Next Steps:**
+            1. Download builds from EAS
+            2. Submit iOS manually (requires Apple Developer credentials)
+            3. Submit Android manually via Play Console
 
             See EAS builds: https://expo.dev/accounts/wallyson/projects/wakemind/builds
+
+            **Note:** Auto-submit disabled until store credentials are configured in EAS.
           draft: false
           prerelease: false
