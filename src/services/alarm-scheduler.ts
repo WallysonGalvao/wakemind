@@ -38,6 +38,7 @@ async function createAlarmChannel(): Promise<void> {
     vibration: true,
     vibrationPattern: [300, 500],
     bypassDnd: true,
+    lights: false,
   });
 }
 
