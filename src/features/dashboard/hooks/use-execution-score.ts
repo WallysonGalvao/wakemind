@@ -5,14 +5,13 @@ import { and, desc, gte, lte } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { alarmCompletions } from '@/db/schema';
+import type { PeriodType } from '@/features/dashboard/types';
 
 interface ExecutionScoreData {
   score: number;
   percentageChange: number;
   sparklineData: number[];
 }
-
-type PeriodType = 'day' | 'week' | 'month' | 'custom';
 
 /**
  * Custom hook to calculate execution score based on alarm completions

@@ -5,6 +5,8 @@ import Svg, { Path } from 'react-native-svg';
 
 import { View } from 'react-native';
 
+import type { PeriodType } from '../types';
+
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -13,7 +15,7 @@ interface DailyExecutionScoreProps {
   score: number;
   maxScore?: number;
   percentageChange?: number;
-  period?: 'day' | 'week' | 'month' | 'custom';
+  period?: PeriodType;
   sparklineData?: number[];
 }
 
