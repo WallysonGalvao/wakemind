@@ -141,6 +141,15 @@ wakemind/
 │   │   ├── onboarding/         # Onboarding feature
 │   │   └── settings/           # Settings feature
 │   ├── hooks/                  # Custom React hooks
+│   │   ├── use-alarms.ts       # Reactive hook for alarms
+│   │   └── use-performance-data.ts # Performance analytics hook
+│   ├── db/                     # SQLite database layer
+│   │   ├── schema.ts           # Drizzle schema definitions
+│   │   ├── index.ts            # Database initialization
+│   │   ├── migrate-alarms.ts   # One-time MMKV → SQLite migration
+│   │   └── functions/          # Database operations
+│   │       ├── alarms.ts       # Alarm CRUD + scheduling
+│   │       └── performance.ts  # Performance tracking
 │   ├── i18n/                   # Internationalization
 │   │   ├── en/                 # English translations
 │   │   ├── pt/                 # Portuguese translations
@@ -150,8 +159,7 @@ wakemind/
 │   │   ├── notification-handler.ts # Event handling
 │   │   └── vibration-service.ts
 │   ├── stores/                 # Zustand stores
-│   │   ├── use-alarms-store.ts
-│   │   └── use-settings-store.ts
+│   │   └── use-settings-store.ts # Settings (MMKV-persisted)
 │   ├── types/                  # TypeScript type definitions
 │   └── utils/                  # Utility functions
 ├── assets/                     # Images, fonts, sounds

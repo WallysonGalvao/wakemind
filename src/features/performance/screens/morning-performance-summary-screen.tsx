@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
+import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -22,7 +23,14 @@ export default function MorningPerformanceSummaryScreen() {
   useAnalyticsScreen('Performance Summary');
 
   // Get all performance data through custom hook
-  const metrics = usePerformanceData();
+  const { isLoading, refetch, ...metrics } = usePerformanceData();
+
+  // Refetch data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   // Get action handlers
   const { handleStartDay } = usePerformanceActions({

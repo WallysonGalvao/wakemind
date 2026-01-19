@@ -7,14 +7,12 @@
 
 import dayjs from 'dayjs';
 
-import { usePerformanceStore } from '@/stores/use-performance-store';
+import * as performanceService from '@/db/functions/performance';
 
 /**
  * Generates random test data for performance tracking
  */
-export function generateTestPerformanceData() {
-  const { recordAlarmCompletion } = usePerformanceStore.getState();
-
+export async function generateTestPerformanceData() {
   // Generate 14 days of test data
   const today = dayjs();
   const challengeTypes = ['Math Challenge', 'Memory Match', 'Logic Puzzle'];
@@ -25,7 +23,7 @@ export function generateTestPerformanceData() {
     // Skip some days randomly to test streak breaks
     if (Math.random() > 0.85) continue;
 
-    recordAlarmCompletion({
+    await performanceService.recordAlarmCompletion({
       targetTime: '06:00',
       actualTime: date.toISOString(),
       cognitiveScore: Math.floor(70 + Math.random() * 30), // 70-100
@@ -40,24 +38,27 @@ export function generateTestPerformanceData() {
 /**
  * Clears all performance data
  */
-export function clearPerformanceData() {
-  const { resetPerformance } = usePerformanceStore.getState();
-  resetPerformance();
+export async function clearPerformanceData() {
+  await performanceService.resetPerformance();
   console.log('🗑️ Performance data cleared!');
 }
 
 /**
  * Prints current performance stats to console
  */
-export function printPerformanceStats() {
-  const { getCurrentStreak, getAverageCognitiveScore, getWeeklyStats, completionHistory } =
-    usePerformanceStore.getState();
+export async function printPerformanceStats() {
+  const [currentStreak, averageCognitiveScore, weeklyStats, totalCompletions] = await Promise.all([
+    performanceService.getCurrentStreak(),
+    performanceService.getAverageCognitiveScore(),
+    performanceService.getWeeklyStats(),
+    performanceService.getTotalAlarmsCompleted(),
+  ]);
 
   console.log('📊 Current Performance Stats:');
-  console.log('  Streak:', getCurrentStreak());
-  console.log('  Avg Score:', getAverageCognitiveScore());
-  console.log('  Weekly Stats:', getWeeklyStats());
-  console.log('  Total Completions:', completionHistory.length);
+  console.log('  Streak:', currentStreak);
+  console.log('  Avg Score:', averageCognitiveScore);
+  console.log('  Weekly Stats:', weeklyStats);
+  console.log('  Total Completions:', totalCompletions);
 }
 
 // Make functions available globally in dev mode for easy testing
@@ -69,7 +70,7 @@ if (__DEV__) {
   };
 
   console.log('🧪 Performance testing helpers available:');
-  console.log('  testPerformance.generate() - Generate test data');
-  console.log('  testPerformance.clear() - Clear all data');
-  console.log('  testPerformance.stats() - Print current stats');
+  console.log('  await testPerformance.generate() - Generate test data');
+  console.log('  await testPerformance.clear() - Clear all data');
+  console.log('  await testPerformance.stats() - Print current stats');
 }

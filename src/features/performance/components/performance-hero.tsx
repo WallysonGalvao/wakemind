@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
+import { PulsingGlow } from '@/components/pulsing-glow';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
 
@@ -26,7 +27,15 @@ export function PerformanceHero({ targetTime, actualTime }: PerformanceHeroProps
       {/* Icon with background circle */}
       <View className="relative mb-5">
         {/* Glow effect */}
-        <View className="absolute inset-0 scale-150 rounded-full bg-green-400/20 blur-2xl" />
+        <View className="absolute inset-0 items-center justify-center">
+          <PulsingGlow
+            size={140}
+            color="#4ade80"
+            duration={2500}
+            minOpacity={0.3}
+            maxOpacity={0.6}
+          />
+        </View>
         {/* Green circle background with check icon */}
         <View
           style={shadowStyleLg}
