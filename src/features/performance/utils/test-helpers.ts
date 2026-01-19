@@ -7,7 +7,7 @@
 
 import dayjs from 'dayjs';
 
-import * as performanceService from '@/db/performance';
+import * as performanceService from '@/db/functions/performance';
 
 /**
  * Generates random test data for performance tracking
