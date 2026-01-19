@@ -2,6 +2,7 @@ import React, { useCallback, useLayoutEffect, useMemo } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
+import { randomUUID } from 'expo-crypto';
 import { useNavigation, useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -22,10 +23,11 @@ import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import * as alarmsDb from '@/db/functions/alarms';
 import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
+import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
-import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { BackupProtocolId } from '@/types/alarm-enums';
 import { ChallengeType, Period } from '@/types/alarm-enums';
 
@@ -184,11 +186,8 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     openAlarmSettings,
   } = useAlarmPermissions();
 
-  // Store actions
-  const addAlarm = useAlarmsStore((state) => state.addAlarm);
-  const updateAlarm = useAlarmsStore((state) => state.updateAlarm);
-  const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
-  const alarms = useAlarmsStore((state) => state.alarms);
+  // Get alarms from hook
+  const { alarms, refetch } = useAlarms();
 
   // Determine mode
   const isEditMode = Boolean(alarmId);
@@ -264,13 +263,14 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     });
   }, [reset]);
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = useCallback(async () => {
     if (alarmId) {
       AnalyticsEvents.alarmDeleted(alarmId);
-      deleteAlarm(alarmId);
+      await alarmsDb.deleteAlarm(alarmId);
+      await refetch();
       router.back();
     }
-  }, [alarmId, deleteAlarm, router]);
+  }, [alarmId, refetch, router]);
 
   const handleTimeChange = (newHour: number, newMinute: number) => {
     setValue('hour', newHour);
@@ -365,7 +365,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
       // All permissions granted, proceed with alarm creation/update
       if (isEditMode && alarmId) {
-        await updateAlarm(alarmId, {
+        await alarmsDb.updateAlarm(alarmId, {
           time: timeString,
           period: displayPeriod,
           challenge: challengeLabel,
@@ -375,6 +375,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           difficulty: data.difficulty,
           protocols: data.protocols,
         });
+        await refetch();
         AnalyticsEvents.alarmUpdated(alarmId);
       } else {
         const newAlarmInput = {
@@ -387,9 +388,11 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
           difficulty: data.difficulty,
           protocols: data.protocols,
         };
-        await addAlarm(newAlarmInput);
+        const newId = randomUUID();
+        await alarmsDb.addAlarm(newId, newAlarmInput);
+        await refetch();
         // Track creation (ID will be generated, so we track with available info)
-        AnalyticsEvents.alarmCreated('new-alarm', timeString, data.challenge);
+        AnalyticsEvents.alarmCreated(newId, timeString, data.challenge);
       }
 
       router.back();

@@ -205,6 +205,15 @@ export const getToneAudioSource = (toneId: string): number => {
 };
 
 /**
+ * Get the filename for a specific tone (for iOS notifications).
+ * Returns the .wav filename without path.
+ */
+export const getToneFilename = (toneId: string): string => {
+  const tone = ALARM_TONES.find((t) => t.id === toneId);
+  return tone?.filename || 'classic-alarm.wav';
+};
+
+/**
  * Default tone ID for new alarms
  */
 export const DEFAULT_ALARM_TONE_ID = 'neuro-strike-classic';
