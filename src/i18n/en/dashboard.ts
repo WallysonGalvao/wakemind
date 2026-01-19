@@ -13,5 +13,8 @@ export const dashboardEN = {
   'dashboard.executionScore.title.week': 'Weekly Execution Score',
   'dashboard.executionScore.title.month': 'Monthly Execution Score',
   'dashboard.executionScore.title.custom': 'Custom Execution Score',
-  'dashboard.executionScore.comparisonPeriod': 'vs last 7 days',
+  'dashboard.executionScore.comparisonPeriod.day': 'vs yesterday',
+  'dashboard.executionScore.comparisonPeriod.week': 'vs last 7 days',
+  'dashboard.executionScore.comparisonPeriod.month': 'vs last 30 days',
+  'dashboard.executionScore.comparisonPeriod.custom': 'vs previous period',
 };

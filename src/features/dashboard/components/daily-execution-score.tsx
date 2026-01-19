@@ -14,6 +14,7 @@ interface DailyExecutionScoreProps {
   maxScore?: number;
   percentageChange?: number;
   period?: 'day' | 'week' | 'month' | 'custom';
+  sparklineData?: number[];
 }
 
 export function DailyExecutionScore({
@@ -21,10 +22,33 @@ export function DailyExecutionScore({
   maxScore = 100,
   percentageChange = 0,
   period = 'day',
+  sparklineData = [],
 }: DailyExecutionScoreProps) {
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('sm');
   const isPositive = percentageChange >= 0;
+
+  // Generate dynamic SVG path from sparkline data
+  const generateSparklinePath = () => {
+    if (sparklineData.length === 0) {
+      return 'M0 40 L10 35 L20 38 L30 25 L40 30 L50 20 L60 25 L70 15 L80 18 L90 5 L100 10';
+    }
+
+    const maxValue = Math.max(...sparklineData, 1);
+    const minValue = Math.min(...sparklineData, 0);
+    const range = maxValue - minValue || 1;
+    const width = 100;
+    const height = 50;
+    const stepX = width / (sparklineData.length - 1 || 1);
+
+    return sparklineData
+      .map((value, index) => {
+        const x = index * stepX;
+        const y = height - ((value - minValue) / range) * height * 0.8;
+        return `${index === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
+      })
+      .join(' ');
+  };
 
   return (
     <View
@@ -49,7 +73,7 @@ export function DailyExecutionScore({
         <View className="h-12 w-24">
           <Svg width="100%" height="100%" viewBox="0 0 100 50">
             <Path
-              d="M0 40 L10 35 L20 38 L30 25 L40 30 L50 20 L60 25 L70 15 L80 18 L90 5 L100 10"
+              d={generateSparklinePath()}
               fill="none"
               stroke="#135bec"
               strokeWidth="2"
@@ -77,7 +101,7 @@ export function DailyExecutionScore({
           </Text>
         </View>
         <Text className="text-sm text-slate-500 dark:text-slate-400">
-          {t('dashboard.executionScore.comparisonPeriod')}
+          {t(`dashboard.executionScore.comparisonPeriod.${period}`)}
         </Text>
       </View>
     </View>
