@@ -9,17 +9,20 @@ import { Mixpanel } from 'mixpanel-react-native';
 
 import { Platform } from 'react-native';
 
+import MixPanelStorageAdapter from '@/utils/mixpanel-storage-adapter';
+
 type EventProperties = Record<string, string | number | boolean | undefined>;
 
 // Configuration
 const trackAutomaticEvents = false; // Disable legacy mobile autotrack
 const useNative = false; // Use Javascript Mode for better Expo compatibility
 
-// Create Mixpanel instance
+// Create Mixpanel instance with custom storage
 export const mixpanel = new Mixpanel(
   Constants.expoConfig?.extra?.mixpanelToken || '',
   trackAutomaticEvents,
-  useNative
+  useNative,
+  MixPanelStorageAdapter
 );
 
 // Track initialization state
@@ -183,6 +186,16 @@ export const AnalyticsEvents = {
 
   vibrationPatternChanged: (pattern: string) => logEvent('vibration_pattern_changed', { pattern }),
 
+  // Performance Summary events
+  performanceSummaryViewed: (streak: number, cognitiveScore: number, executionRate: number) =>
+    logEvent('performance_summary_viewed', {
+      streak,
+      cognitive_score: cognitiveScore,
+      execution_rate: executionRate,
+    }),
+
+  performanceSummaryShared: () => logEvent('performance_summary_shared'),
+
   // App lifecycle
   appOpened: () => {
     logEvent('app_opened');
@@ -201,23 +214,6 @@ export const AnalyticsEvents = {
   },
 };
 
-/**
- * Initializes Mixpanel asynchronously
- * Safe to call multiple times - will only initialize once
- */
-export async function initializeAnalytics(): Promise<void> {
-  if (isInitialized) return;
-
-  try {
-    await mixpanel.init();
-    isInitialized = true;
-  } catch (error) {
-    // Silently fail - analytics is not critical
-    // Mixpanel will fall back to in-memory storage
-    console.warn('[Analytics] Using in-memory storage:', error);
-  }
-}
-
 export default {
   logScreenView,
   logEvent,
@@ -225,7 +221,16 @@ export default {
   setUserId,
   resetAnalytics,
   flush,
-  initializeAnalytics,
   mixpanel,
   ...AnalyticsEvents,
 };
+
+/**
+ * Initializes Mixpanel and marks as ready
+ */
+try {
+  mixpanel.init();
+  isInitialized = true;
+} catch (_error) {
+  // Silently fail - analytics is not critical
+}

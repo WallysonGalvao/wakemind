@@ -1,11 +1,11 @@
 import '../../global.css';
+import '../analytics';
 import '../configs';
 
 import { useEffect } from 'react';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
-import { setAudioModeAsync } from 'expo-audio';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -16,7 +16,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Platform, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
-import { initializeAnalytics } from '@/analytics';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
@@ -50,17 +49,6 @@ function RootLayout() {
 
     const initializeServices = async () => {
       try {
-        // Initialize analytics
-        await initializeAnalytics();
-
-        // Configure audio mode for iOS to play sound even when device is in silent mode
-        if (Platform.OS === 'ios') {
-          await setAudioModeAsync({
-            playsInSilentMode: true,
-            shouldPlayInBackground: true,
-          });
-        }
-
         if (!isMounted) return;
         await AlarmScheduler.initialize();
 
