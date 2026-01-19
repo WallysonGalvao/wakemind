@@ -116,6 +116,7 @@ export const appEN = {
   'alarmTrigger.reliabilityMode': 'High-Reliability Mode Active',
   'alarmTrigger.offlineGuaranteed': 'Offline Guaranteed',
   'alarmTrigger.wakeUpProtocol': 'Wake-up Protocol',
+  'alarmTrigger.wakeCheckProtocol': 'Wake Check Protocol',
   'alarmTrigger.efficiencyTimer': 'Efficiency Timer',
   'alarmTrigger.cognitiveChallenge': 'Cognitive Challenge',
   'alarmTrigger.mathChallenge': 'Math Challenge',

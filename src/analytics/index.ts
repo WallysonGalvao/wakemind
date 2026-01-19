@@ -201,6 +201,23 @@ export const AnalyticsEvents = {
   },
 };
 
+/**
+ * Initializes Mixpanel asynchronously
+ * Safe to call multiple times - will only initialize once
+ */
+export async function initializeAnalytics(): Promise<void> {
+  if (isInitialized) return;
+
+  try {
+    await mixpanel.init();
+    isInitialized = true;
+  } catch (error) {
+    // Silently fail - analytics is not critical
+    // Mixpanel will fall back to in-memory storage
+    console.warn('[Analytics] Using in-memory storage:', error);
+  }
+}
+
 export default {
   logScreenView,
   logEvent,
@@ -208,16 +225,7 @@ export default {
   setUserId,
   resetAnalytics,
   flush,
+  initializeAnalytics,
   mixpanel,
   ...AnalyticsEvents,
 };
-
-/**
- * Initializes Mixpanel and marks as ready
- */
-try {
-  mixpanel.init();
-  isInitialized = true;
-} catch (_error) {
-  // Silently fail - analytics is not critical
-}

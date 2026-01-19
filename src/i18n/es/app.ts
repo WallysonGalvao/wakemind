@@ -120,6 +120,7 @@ export const appES = {
   'alarmTrigger.reliabilityMode': 'Modo Alta Confiabilidad Activo',
   'alarmTrigger.offlineGuaranteed': 'Garantía Sin Conexión',
   'alarmTrigger.wakeUpProtocol': 'Protocolo de Despertar',
+  'alarmTrigger.wakeCheckProtocol': 'Protocolo de Verificación',
   'alarmTrigger.efficiencyTimer': 'Temporizador de Eficiencia',
   'alarmTrigger.cognitiveChallenge': 'Desafío Cognitivo',
   'alarmTrigger.mathChallenge': 'Desafío de Matemáticas',
