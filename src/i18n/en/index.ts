@@ -1,4 +1,5 @@
 import accessibilityEN from './accessibility';
+import { alarmSchedulerEN } from './alarm-scheduler';
 import { appEN } from './app';
 import { backEN } from './back';
 import { countriesEN } from './countries';
@@ -24,4 +25,5 @@ export default {
   ...accessibilityEN,
   ...privacyPolicyEN,
   ...supportEN,
+  ...alarmSchedulerEN,
 };

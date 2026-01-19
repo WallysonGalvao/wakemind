@@ -47,7 +47,14 @@ export default function AlarmTriggerScreen() {
     period?: string;
     challenge?: string;
     challengeIcon?: string;
+    type?: string;
   }>();
+
+  // Log received params for debugging
+  useEffect(() => {
+    console.log('[AlarmTriggerScreen] Received params:', params);
+  }, [params]);
+
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
@@ -62,10 +69,15 @@ export default function AlarmTriggerScreen() {
   // Track challenge start time for performance metrics
   const [challengeStartTime] = useState(() => Date.now());
 
+  // Check if this is a wake check notification
+  const isWakeCheck = params.type === 'wake-check';
+
   // Get alarm data first to use its difficulty and challenge type
   const alarm = useMemo(() => {
     if (params.alarmId) {
-      return getAlarmById(params.alarmId);
+      const foundAlarm = getAlarmById(params.alarmId);
+      console.log('[AlarmTriggerScreen] Found alarm:', foundAlarm);
+      return foundAlarm;
     }
     return undefined;
   }, [params.alarmId, getAlarmById]);
@@ -153,6 +165,13 @@ export default function AlarmTriggerScreen() {
       AnalyticsEvents.alarmTriggered(alarm.id, displayTime);
     }
 
+    // Cancel all other notifications for this alarm to prevent duplicates
+    if (params.alarmId) {
+      AlarmScheduler.cancelAllAlarmNotifications(params.alarmId).catch((error) => {
+        console.error('[AlarmTriggerScreen] Error cancelling notifications:', error);
+      });
+    }
+
     const setup = async () => {
       try {
         // Keep screen awake if enabled in settings
@@ -185,7 +204,16 @@ export default function AlarmTriggerScreen() {
         // Player may already be released when component unmounts
       }
     };
-  }, [alarmToneId, alarmVolume, vibrationPattern, preventAutoLock, alarm, params.time, player]);
+  }, [
+    alarmToneId,
+    alarmVolume,
+    vibrationPattern,
+    preventAutoLock,
+    alarm,
+    params.time,
+    params.alarmId,
+    player,
+  ]);
 
   // Lock volume during alarm
   useEffect(() => {
@@ -328,9 +356,36 @@ export default function AlarmTriggerScreen() {
     [insets.top, insets.bottom]
   );
 
-  // Current time display - fallback to alarm data or current time
-  const displayTime = params.time || alarm?.time || dayjs().format('HH:mm');
-  const displayPeriod = params.period || alarm?.period || (dayjs().hour() >= 12 ? 'PM' : 'AM');
+  // Current time display with robust fallbacks
+  const displayTime = useMemo(() => {
+    // Try params first
+    if (params.time && params.time !== 'undefined') {
+      return params.time;
+    }
+    // Try alarm data
+    if (alarm?.time) {
+      return alarm.time;
+    }
+    // Fallback to current time
+    const now = dayjs();
+    const hours = now.hour();
+    const minutes = now.minute();
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }, [params.time, alarm?.time]);
+
+  const displayPeriod = useMemo(() => {
+    // Try params first
+    if (params.period && params.period !== 'undefined') {
+      return params.period;
+    }
+    // Try alarm data
+    if (alarm?.period) {
+      return alarm.period;
+    }
+    // Fallback to current period
+    const now = dayjs();
+    return now.hour() >= 12 ? 'PM' : 'AM';
+  }, [params.period, alarm?.period]);
 
   // Render the appropriate challenge component based on challenge type
   const renderChallenge = () => {
@@ -376,10 +431,16 @@ export default function AlarmTriggerScreen() {
       <View className="items-center px-6 pb-4 pt-6">
         <View className="mb-1 flex-row items-center gap-2">
           <Animated.View style={pulseAnimatedStyle}>
-            <MaterialSymbol name="alarm_on" size={20} color="#3B82F6" />
+            <MaterialSymbol
+              name={isWakeCheck ? 'notifications_active' : 'alarm_on'}
+              size={20}
+              color={isWakeCheck ? '#F59E0B' : '#3B82F6'}
+            />
           </Animated.View>
-          <Text className="text-xs font-bold uppercase tracking-widest text-primary-500">
-            {t('alarmTrigger.wakeUpProtocol')}
+          <Text
+            className={`text-xs font-bold uppercase tracking-widest ${isWakeCheck ? 'text-amber-500' : 'text-primary-500'}`}
+          >
+            {isWakeCheck ? t('alarmTrigger.wakeCheckProtocol') : t('alarmTrigger.wakeUpProtocol')}
           </Text>
         </View>
 
@@ -390,18 +451,20 @@ export default function AlarmTriggerScreen() {
           <Text className="ml-2 text-xl font-medium text-gray-500">{displayPeriod}</Text>
         </View>
 
-        {/* Efficiency Timer */}
-        <View className="mt-4 w-44 items-center gap-1">
-          <View className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
-            <Animated.View
-              className="h-full rounded-full bg-primary-500"
-              style={[progressAnimatedStyle, glowAnimatedStyle]}
-            />
+        {/* Efficiency Timer - Only show for regular alarms, not wake checks */}
+        {!isWakeCheck && (
+          <View className="mt-4 w-44 items-center gap-1">
+            <View className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
+              <Animated.View
+                className="h-full rounded-full bg-primary-500"
+                style={[progressAnimatedStyle, glowAnimatedStyle]}
+              />
+            </View>
+            <Text className="text-[10px] font-bold uppercase tracking-widest text-primary-500/80">
+              {t('alarmTrigger.efficiencyTimer')}
+            </Text>
           </View>
-          <Text className="text-[10px] font-bold uppercase tracking-widest text-primary-500/80">
-            {t('alarmTrigger.efficiencyTimer')}
-          </Text>
-        </View>
+        )}
       </View>
 
       {/* Main Challenge Area */}

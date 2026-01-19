@@ -60,6 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-font',
     'expo-audio',
     './plugins/withNotifee.js',
+    './plugins/withAlarmIOS.js',
     [
       'expo-splash-screen',
       {
