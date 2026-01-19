@@ -14,6 +14,7 @@ interface SettingsState {
   vibrateOnSuccess: boolean;
   preventAutoLock: boolean;
   snoozeProtection: boolean;
+  maxChallengeAttempts: number;
   hasCompletedOnboarding: boolean;
   setLanguage: (language: Language) => void;
   setTheme: (theme: ThemeMode) => void;
@@ -23,6 +24,7 @@ interface SettingsState {
   setVibrateOnSuccess: (value: boolean) => void;
   setPreventAutoLock: (value: boolean) => void;
   setSnoozeProtection: (value: boolean) => void;
+  setMaxChallengeAttempts: (value: number) => void;
   completeOnboarding: () => void;
 }
 
@@ -37,6 +39,7 @@ export const useSettingsStore = create<SettingsState>()(
       vibrateOnSuccess: true,
       preventAutoLock: true,
       snoozeProtection: true,
+      maxChallengeAttempts: 3,
       hasCompletedOnboarding: false,
       setLanguage: (language) => set({ language }),
       setTheme: (theme) => set({ theme }),
@@ -46,6 +49,7 @@ export const useSettingsStore = create<SettingsState>()(
       setVibrateOnSuccess: (vibrateOnSuccess) => set({ vibrateOnSuccess }),
       setPreventAutoLock: (preventAutoLock) => set({ preventAutoLock }),
       setSnoozeProtection: (snoozeProtection) => set({ snoozeProtection }),
+      setMaxChallengeAttempts: (maxChallengeAttempts) => set({ maxChallengeAttempts }),
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
     }),
     {

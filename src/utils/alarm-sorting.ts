@@ -33,8 +33,8 @@ export function alarmTimeToMinutes(time: string): number {
  */
 export function sortAlarmsByTime(alarms: Alarm[]): Alarm[] {
   return [...alarms].sort((a, b) => {
-    const aMinutes = alarmTimeToMinutes(a.time, a.period);
-    const bMinutes = alarmTimeToMinutes(b.time, b.period);
+    const aMinutes = alarmTimeToMinutes(a.time);
+    const bMinutes = alarmTimeToMinutes(b.time);
     return aMinutes - bMinutes;
   });
 }

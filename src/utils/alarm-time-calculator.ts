@@ -46,10 +46,21 @@ export function parseScheduleToDays(schedule: string): number[] {
         const dayNum = DAY_MAPPINGS[part];
         if (dayNum !== undefined) {
           days.push(dayNum);
+        } else {
+          console.warn(
+            `[AlarmTimeCalculator] Unknown day abbreviation: ${part} in schedule: ${schedule}`
+          );
         }
       }
 
-      return days.length > 0 ? days : [0, 1, 2, 3, 4, 5, 6];
+      if (days.length === 0) {
+        console.error(`[AlarmTimeCalculator] Invalid schedule format: ${schedule}`);
+        throw new Error(
+          `Invalid alarm schedule: ${schedule}. Expected format: "Mon", "Mon, Wed, Fri", "Daily", "Weekdays", or "Weekends"`
+        );
+      }
+
+      return days;
   }
 }
 
@@ -58,9 +69,19 @@ export function parseScheduleToDays(schedule: string): number[] {
  * Period is stored for display purposes only
  */
 export function convertTo24Hour(time: string): { hour: number; minute: number } {
-  const [hourStr, minuteStr] = time.split(':');
+  const parts = time.split(':');
+
+  if (parts.length !== 2) {
+    throw new Error(`Invalid time format: ${time}. Expected format: HH:MM`);
+  }
+
+  const [hourStr, minuteStr] = parts;
   const hour = parseInt(hourStr, 10);
   const minute = parseInt(minuteStr, 10);
+
+  if (isNaN(hour) || isNaN(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+    throw new Error(`Invalid time values: ${time}. Hour must be 0-23, minute must be 0-59`);
+  }
 
   // Time is already in 24-hour format (0-23), period is just for display
   return { hour, minute };

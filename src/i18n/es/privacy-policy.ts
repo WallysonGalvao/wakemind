@@ -18,7 +18,7 @@ export const privacyPolicyES = {
     'Tema, idioma, tono de alarma y patrón de vibración para experiencia personalizada.',
   'privacyPolicy.dataCollected.localData.performanceTitle': 'Métricas de Rendimiento',
   'privacyPolicy.dataCollected.localData.performance':
-    'Datos de desafíos cognitivos (tiempo de respuesta, tasa de acierto) para calibración del algoritmo.',
+    'Datos de desafíos cognitivos incluyendo: tiempos de respuesta, tasas de acierto, rachas, puntuaciones cognitivas (0-100), y estadísticas semanales. Usados solo para retroalimentación personalizada y calibración del algoritmo. Todos los datos permanecen en tu dispositivo.',
   'privacyPolicy.dataCollected.localData.settingsTitle': 'Configuraciones de Comportamiento',
   'privacyPolicy.dataCollected.localData.settings':
     'Protección de snooze y prevención de bloqueo automático para despertar optimizado.',

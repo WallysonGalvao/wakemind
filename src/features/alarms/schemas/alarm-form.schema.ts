@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { z } from 'zod';
 
 import { DayOfWeek } from '@/features/alarms/components/schedule-selector';
@@ -50,9 +51,9 @@ export type AlarmFormData = z.infer<typeof alarmFormSchema>;
  * Get default alarm form values with dynamic time (current time + 1 hour)
  */
 export function getDefaultAlarmFormValues(): AlarmFormData {
-  const now = new Date();
-  const nextHour = (now.getHours() + 1) % 24;
-  const currentMinute = now.getMinutes();
+  const now = dayjs();
+  const nextHour = (now.hour() + 1) % 24;
+  const currentMinute = now.minute();
 
   return {
     hour: nextHour,
