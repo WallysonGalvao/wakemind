@@ -128,7 +128,7 @@ export function SegmentedControl<T extends string>({
       translateX.value = withTiming(targetPosition, ANIMATION_CONFIG);
       startX.value = targetPosition;
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, slotWidth.value, startX, translateX]);
 
   return (
     <View className="flex flex-col gap-2 px-4 py-3">
