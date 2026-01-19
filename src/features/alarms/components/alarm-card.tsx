@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-import { MaterialIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -192,11 +191,7 @@ export function AlarmCard({
 
             {/* Challenge and Schedule Info */}
             <View className="mt-1 flex-row items-center gap-2">
-              <MaterialIcons
-                name={alarm.challengeIcon as keyof typeof MaterialIcons.glyphMap}
-                size={20}
-                color={getIconColor()}
-              />
+              <MaterialSymbol name={alarm.challengeIcon} size={20} color={getIconColor()} />
               <Text
                 className={`text-sm font-medium ${
                   isActive

@@ -220,15 +220,23 @@ export default function AlarmToneScreen() {
   // Cleanup sound on unmount
   useEffect(() => {
     return () => {
-      if (playerRef.current) {
-        playerRef.current.player.pause();
+      if (playerRef.current?.player) {
+        try {
+          playerRef.current.player.pause();
+        } catch (error) {
+          // Player might already be destroyed, ignore the error
+        }
       }
     };
   }, []);
 
   const stopCurrentSound = useCallback(() => {
-    if (playerRef.current) {
-      playerRef.current.player.pause();
+    if (playerRef.current?.player) {
+      try {
+        playerRef.current.player.pause();
+      } catch (error) {
+        // Player might already be destroyed, ignore the error
+      }
       playerRef.current = null;
     }
   }, []);
