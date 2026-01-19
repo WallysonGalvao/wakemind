@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 
-import * as performanceService from '@/db/performance';
+import * as performanceService from '@/db/functions/performance';
 
 export interface PerformanceMetrics {
   // Streak metrics
@@ -67,8 +67,6 @@ export function usePerformanceData(): PerformanceMetrics & { isLoading: boolean 
 
     async function loadMetrics() {
       try {
-        setIsLoading(true);
-
         // Load all metrics in parallel
         const [
           currentStreak,

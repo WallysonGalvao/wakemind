@@ -25,11 +25,11 @@ import { AnalyticsEvents } from '@/analytics';
 import { FloatingActionButton } from '@/components/floating-action-button';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import * as alarmsDb from '@/db/functions/alarms';
+import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAlarmsStore } from '@/stores/use-alarms-store';
 import type { Alarm } from '@/types/alarm';
-import { sortAlarmsByTime } from '@/utils/alarm-sorting';
 
 const AnimatedFlatList = Animated.FlatList<Alarm>;
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
@@ -47,17 +47,12 @@ export default function AlarmsScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
-  const alarms = useAlarmsStore((state) => state.alarms);
-  const toggleAlarm = useAlarmsStore((state) => state.toggleAlarm);
-  const deleteAlarm = useAlarmsStore((state) => state.deleteAlarm);
+  const { sortedAlarms, isLoading, refetch } = useAlarms();
 
   // Analytics tracking
   useAnalyticsScreen('Alarms');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-
-  // Sort alarms with useMemo to prevent infinite re-renders
-  const sortedAlarms = useMemo(() => sortAlarmsByTime(alarms), [alarms]);
 
   // Scroll position tracking
   const scrollY = useSharedValue(0);
@@ -74,27 +69,29 @@ export default function AlarmsScreen() {
   const headerHeight = useMemo(() => insets.top + 12 + 40 + 30, [insets.top]); // paddingTop + title height + bottom padding
 
   const handleToggleAlarm = useCallback(
-    (id: string) => {
-      const alarm = alarms.find((a) => a.id === id);
+    async (id: string) => {
+      const alarm = sortedAlarms.find((a) => a.id === id);
       if (alarm) {
         const newState = !alarm.isEnabled;
         AnalyticsEvents.alarmToggled(id, newState);
       }
-      toggleAlarm(id);
+      await alarmsDb.toggleAlarm(id);
+      refetch();
     },
-    [toggleAlarm, alarms]
+    [sortedAlarms, refetch]
   );
 
   const handleDeleteAlarm = useCallback(
-    (id: string) => {
+    async (id: string) => {
       AnalyticsEvents.alarmDeleted(id);
-      deleteAlarm(id);
+      await alarmsDb.deleteAlarm(id);
+      refetch();
       // If no more alarms, exit edit mode
       if (sortedAlarms.length <= 1) {
         setIsEditMode(false);
       }
     },
-    [deleteAlarm, sortedAlarms.length]
+    [refetch, sortedAlarms.length]
   );
 
   const handleNewAlarm = useCallback(() => {
@@ -163,13 +160,12 @@ export default function AlarmsScreen() {
     // Haptic feedback on refresh
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    // Simulate refresh delay (in real app, would sync with backend)
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    await refetch();
 
     setIsRefreshing(false);
     // Success haptic
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  }, []);
+  }, [refetch]);
 
   const keyExtractor = useCallback((item: Alarm) => item.id, []);
 

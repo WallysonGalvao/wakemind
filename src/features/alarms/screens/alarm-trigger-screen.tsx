@@ -28,11 +28,11 @@ import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { getToneAudioSource } from '@/constants/alarm-tones';
-import { recordAlarmCompletion } from '@/db/performance';
+import { recordAlarmCompletion } from '@/db/functions/performance';
+import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { VibrationService } from '@/services/vibration-service';
-import { useAlarmsStore } from '@/stores/use-alarms-store';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
 import { calculateCognitiveScore } from '@/utils/cognitive-score';
@@ -57,7 +57,7 @@ export default function AlarmTriggerScreen() {
 
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
+  const { getAlarmById } = useAlarms();
   const alarmToneId = useSettingsStore((state) => state.alarmToneId);
   const alarmVolume = useSettingsStore((state) => state.alarmVolume);
   const player = useAudioPlayer(getToneAudioSource(alarmToneId) as AudioSource);

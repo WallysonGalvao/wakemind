@@ -85,3 +85,13 @@ export const createMMKVStorage = (storageName: string): StateStorage => {
     },
   };
 };
+
+/**
+ * Default MMKV storage instance for direct access
+ * Used for flags, migrations, and non-Zustand storage
+ */
+const encryptionKey = Constants.expoConfig?.slug;
+export const storage = createMMKV({
+  id: 'default-storage',
+  encryptionKey,
+});
