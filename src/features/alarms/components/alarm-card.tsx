@@ -134,8 +134,12 @@ export function AlarmCard({
         style={[animatedStyle, shadowStyle]}
         className={`rounded-2xl border p-5 ${
           isActive
-            ? 'border-slate-200 bg-white dark:border-slate-700 dark:bg-[#1a2230]'
-            : 'border-slate-100 bg-white/50 dark:border-slate-800/50 dark:bg-[#1a2230]/50'
+            ? colorScheme === 'dark'
+              ? 'border-slate-700 bg-[#1a2230]'
+              : 'border-slate-200 bg-white'
+            : colorScheme === 'dark'
+              ? 'border-slate-800/50 bg-[#1a2230]/50'
+              : 'border-slate-100 bg-white/50'
         }`}
       >
         <View className="flex-row items-center justify-between">
@@ -160,7 +164,13 @@ export function AlarmCard({
             <View className="flex-row items-baseline gap-2">
               <Text
                 className={`text-5xl font-bold tracking-tight ${
-                  isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-600'
+                  isActive
+                    ? colorScheme === 'dark'
+                      ? 'text-white'
+                      : 'text-slate-900'
+                    : colorScheme === 'dark'
+                      ? 'text-slate-600'
+                      : 'text-slate-400'
                 }`}
               >
                 {alarm.time}
@@ -168,8 +178,12 @@ export function AlarmCard({
               <Text
                 className={`text-xl font-medium ${
                   isActive
-                    ? 'text-slate-500 dark:text-slate-400'
-                    : 'text-slate-400 dark:text-slate-600'
+                    ? colorScheme === 'dark'
+                      ? 'text-slate-400'
+                      : 'text-slate-500'
+                    : colorScheme === 'dark'
+                      ? 'text-slate-600'
+                      : 'text-slate-400'
                 }`}
               >
                 {alarm.period}
@@ -186,16 +200,24 @@ export function AlarmCard({
               <Text
                 className={`text-sm font-medium ${
                   isActive
-                    ? 'text-slate-600 dark:text-slate-400'
-                    : 'text-slate-400 dark:text-slate-600'
+                    ? colorScheme === 'dark'
+                      ? 'text-slate-400'
+                      : 'text-slate-600'
+                    : colorScheme === 'dark'
+                      ? 'text-slate-600'
+                      : 'text-slate-400'
                 }`}
               >
                 {alarm.challenge}
                 <Text
                   className={
                     isActive
-                      ? 'text-slate-400 dark:text-slate-600'
-                      : 'text-slate-300 dark:text-slate-700'
+                      ? colorScheme === 'dark'
+                        ? 'text-slate-600'
+                        : 'text-slate-400'
+                      : colorScheme === 'dark'
+                        ? 'text-slate-700'
+                        : 'text-slate-300'
                   }
                 >
                   {' • '}
@@ -226,7 +248,7 @@ export function AlarmCard({
               <MaterialSymbol
                 name="chevron_right"
                 size={28}
-                className="text-slate-400 dark:text-slate-500"
+                className={colorScheme === 'dark' ? 'text-slate-500' : 'text-slate-400'}
               />
             </Animated.View>
           </View>

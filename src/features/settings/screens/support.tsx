@@ -3,7 +3,7 @@ import React, { useLayoutEffect } from 'react';
 import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Linking, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -55,10 +55,6 @@ export default function SupportScreen() {
   useAnalyticsScreen('Support');
   const router = useRouter();
 
-  const handleEmailSupport = () => {
-    Linking.openURL('mailto:support@wakemind.app?subject=WakeMind Support');
-  };
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: t('settings.support'),
@@ -75,7 +71,7 @@ export default function SupportScreen() {
       {/* Content */}
       <ScrollView
         className="flex-1 px-6"
-        contentContainerStyle={{ paddingBottom: 40, paddingTop: 24 }}
+        contentContainerClassName="pb-10 pt-6"
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
@@ -138,7 +134,27 @@ export default function SupportScreen() {
           </View>
         </View>
 
-        {/* Section 4: Problemas Técnicos */}
+        {/* Section 4: Performance Summary */}
+        <View className="relative mb-12">
+          <View className="absolute bottom-4 left-[7px] top-8 w-[1px] bg-gray-300 dark:bg-white/10" />
+          <SectionTitle icon="trending_up" title={t('support.faq.performance.title')} />
+          <View className="pl-1">
+            <FAQItem
+              question={t('support.faq.performance.cognitiveScore.question')}
+              answer={t('support.faq.performance.cognitiveScore.answer')}
+            />
+            <FAQItem
+              question={t('support.faq.performance.streak.question')}
+              answer={t('support.faq.performance.streak.answer')}
+            />
+            <FAQItem
+              question={t('support.faq.performance.data.question')}
+              answer={t('support.faq.performance.data.answer')}
+            />
+          </View>
+        </View>
+
+        {/* Section 5: Problemas Técnicos */}
         <View className="relative mb-12">
           <View className="absolute bottom-4 left-[7px] top-8 w-[1px] bg-gray-300 dark:bg-white/10" />
           <SectionTitle icon="bug_report" title={t('support.faq.technical.title')} />

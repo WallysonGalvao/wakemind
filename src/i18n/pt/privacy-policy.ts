@@ -18,7 +18,7 @@ export const privacyPolicyPT = {
     'Tema, idioma, tom de alarme e padrão de vibração para experiência personalizada.',
   'privacyPolicy.dataCollected.localData.performanceTitle': 'Métricas de Performance',
   'privacyPolicy.dataCollected.localData.performance':
-    'Dados de desafios cognitivos (tempo de resposta, taxa de acerto) para calibração do algoritmo.',
+    'Dados de desafios cognitivos incluindo: tempos de resposta, taxas de sucesso, sequências, pontuações cognitivas (0-100), e estatísticas semanais. Usados apenas para feedback personalizado e calibração do algoritmo. Todos os dados permanecem no seu dispositivo.',
   'privacyPolicy.dataCollected.localData.settingsTitle': 'Configurações de Comportamento',
   'privacyPolicy.dataCollected.localData.settings':
     'Proteção de soneca e prevenção de bloqueio automático para despertar otimizado.',

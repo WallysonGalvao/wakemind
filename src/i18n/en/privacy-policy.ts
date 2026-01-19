@@ -18,7 +18,7 @@ export const privacyPolicyEN = {
     'Theme, language, alarm tone, and vibration pattern for personalized experience.',
   'privacyPolicy.dataCollected.localData.performanceTitle': 'Performance Metrics',
   'privacyPolicy.dataCollected.localData.performance':
-    'Cognitive challenge data (response time, success rate) for algorithm calibration.',
+    'Cognitive challenge data including: response times, success rates, streaks, cognitive scores (0-100), and weekly statistics. Used only for personalized feedback and algorithm calibration. All data stays on your device.',
   'privacyPolicy.dataCollected.localData.settingsTitle': 'Behavior Settings',
   'privacyPolicy.dataCollected.localData.settings':
     'Snooze protection and auto-lock prevention for optimal wake-up experience.',

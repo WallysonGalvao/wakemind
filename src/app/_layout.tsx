@@ -17,11 +17,12 @@ import { Platform, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { syncAlarmsWithScheduler } from '@/db/functions/alarms';
+import { useAlarms } from '@/hooks/use-alarms';
 import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { NotificationHandler } from '@/services/notification-handler';
-import { useAlarmsStore } from '@/stores/use-alarms-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,8 +34,7 @@ export const unstable_settings = {
 function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
-  const getAlarmById = useAlarmsStore((state) => state.getAlarmById);
-  const syncAlarmsWithScheduler = useAlarmsStore((state) => state.syncAlarmsWithScheduler);
+  const { getAlarmById } = useAlarms();
 
   const [fontsLoaded] = useFonts({
     MaterialSymbolsRoundedFilled: require('@/assets/fonts/MaterialSymbolsRounded-Filled.ttf'),
@@ -43,37 +43,46 @@ function RootLayout() {
   // Initialize notification services on native platforms
   useEffect(() => {
     if (Platform.OS === 'web') return;
+    if (!fontsLoaded) return; // Wait for fonts to load before initializing
 
-    // Add delay to ensure app is fully mounted before initializing services
-    const timeoutId = setTimeout(() => {
-      const initializeServices = async () => {
-        try {
-          await AlarmScheduler.initialize();
-          await NotificationHandler.initialize();
+    let isMounted = true;
 
-          // Set up callbacks for notification events
-          NotificationHandler.setCallbacks({
-            getAlarm: getAlarmById,
-            onAlarmTriggered: (_alarmId) => {},
-            onSnooze: (_alarmId) => {},
-            onDismiss: (_alarmId) => {},
-          });
+    const initializeServices = async () => {
+      try {
+        if (!isMounted) return;
+        await AlarmScheduler.initialize();
 
-          // Sync alarms with scheduler on app start
-          await syncAlarmsWithScheduler();
-        } catch (error) {
+        if (!isMounted) return;
+        await NotificationHandler.initialize();
+
+        if (!isMounted) return;
+        // Set up callbacks for notification events
+        NotificationHandler.setCallbacks({
+          getAlarm: getAlarmById,
+          onAlarmTriggered: (_alarmId) => {},
+          onSnooze: (_alarmId) => {},
+          onDismiss: (_alarmId) => {},
+        });
+
+        if (!isMounted) return;
+
+        if (!isMounted) return;
+        // Sync alarms with scheduler on app start
+        await syncAlarmsWithScheduler();
+      } catch (error) {
+        if (isMounted) {
           Sentry.captureException(error);
         }
-      };
+      }
+    };
 
-      initializeServices();
-    }, 1000); // Wait 1 second after mount
+    initializeServices();
 
     return () => {
-      clearTimeout(timeoutId);
+      isMounted = false;
       NotificationHandler.cleanup();
     };
-  }, [getAlarmById, syncAlarmsWithScheduler]);
+  }, [getAlarmById, fontsLoaded]);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -117,6 +126,15 @@ function RootLayout() {
               />
               <Stack.Screen
                 name="alarm/trigger"
+                options={{
+                  headerShown: false,
+                  presentation: 'fullScreenModal',
+                  animation: 'fade',
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="alarm/performance-summary"
                 options={{
                   headerShown: false,
                   presentation: 'fullScreenModal',
