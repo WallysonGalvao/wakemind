@@ -11,6 +11,8 @@ import i18n from 'i18next';
 
 import { Platform } from 'react-native';
 
+import { getToneFilename } from '@/constants/alarm-tones';
+import { useSettingsStore } from '@/stores/use-settings-store';
 import type { Alarm } from '@/types/alarm';
 import { BackupProtocolId } from '@/types/alarm-enums';
 import { getNextTriggerTimestamp, isRepeatingAlarm } from '@/utils/alarm-time-calculator';
@@ -231,7 +233,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         actions,
       },
       ios: {
-        sound: 'alarm_sound.wav',
+        sound: getToneFilename(useSettingsStore.getState().alarmToneId),
         critical: true,
         criticalVolume: 1.0,
         interruptionLevel: 'critical',
@@ -361,7 +363,7 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         ],
       },
       ios: {
-        sound: 'alarm_sound.wav',
+        sound: getToneFilename(useSettingsStore.getState().alarmToneId),
         critical: true,
         criticalVolume: 1.0,
         interruptionLevel: 'critical',
