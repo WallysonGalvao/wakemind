@@ -9,5 +9,9 @@ export const dashboardPT = {
   'dashboard.period.week': 'Semana',
   'dashboard.period.month': 'Mês',
   'dashboard.period.custom': 'Personalizado',
-  'dashboard.executionScore.title': 'Pontuação de Execução Diária',
+  'dashboard.executionScore.title.day': 'Pontuação de Execução Diária',
+  'dashboard.executionScore.title.week': 'Pontuação de Execução Semanal',
+  'dashboard.executionScore.title.month': 'Pontuação de Execução Mensal',
+  'dashboard.executionScore.title.custom': 'Pontuação de Execução Personalizada',
+  'dashboard.executionScore.comparisonPeriod': 'vs últimos 7 dias',
 };
