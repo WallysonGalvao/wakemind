@@ -1,3 +1,13 @@
+import { useEffect, useState } from 'react';
+
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
+
 import { View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
@@ -31,6 +41,59 @@ export function MetricCard({
 }: MetricCardProps) {
   const shadowStyle = useShadowStyle('sm');
 
+  // Animation values
+  const counterValue = useSharedValue(0);
+  const badgeScale = useSharedValue(0);
+
+  // State for displaying animated counter
+  const [displayCounter, setDisplayCounter] = useState(0);
+
+  // Check if value is a number for counter animation
+  const isNumericValue = typeof value === 'number';
+  const numericValue = isNumericValue ? value : 0;
+
+  // Start animations on mount
+  useEffect(() => {
+    if (isNumericValue) {
+      counterValue.value = withTiming(
+        numericValue,
+        {
+          duration: 1000,
+        },
+        () => {
+          // Ensure final value is set correctly
+          runOnJS(setDisplayCounter)(numericValue);
+        }
+      );
+    }
+
+    if (badge) {
+      badgeScale.value = withDelay(
+        100,
+        withTiming(1, {
+          duration: 400,
+        })
+      );
+    }
+  }, [isNumericValue, numericValue, badge, counterValue, badgeScale]);
+
+  // Update display counter during animation
+  useEffect(() => {
+    if (!isNumericValue) return;
+
+    const interval = setInterval(() => {
+      const current = Math.round(counterValue.value);
+      setDisplayCounter(current);
+    }, 16); // ~60fps
+
+    return () => clearInterval(interval);
+  }, [isNumericValue, counterValue]);
+
+  // Animated styles
+  const badgeAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: badgeScale.value }],
+  }));
+
   return (
     <View
       style={shadowStyle}
@@ -50,9 +113,12 @@ export function MetricCard({
           <MaterialSymbol name={icon} size={20} className={iconColor} />
         </View>
         {badge ? (
-          <View className="rounded-md border border-green-400/10 bg-green-400/5 px-2 py-1">
+          <Animated.View
+            style={badgeAnimatedStyle}
+            className="rounded-md border border-green-400/10 bg-green-400/5 px-2 py-1"
+          >
             <Text className={cn('text-xs font-bold', badge.color)}>{badge.text}</Text>
-          </View>
+          </Animated.View>
         ) : null}
       </View>
 
@@ -62,7 +128,7 @@ export function MetricCard({
           {title}
         </Text>
         <Text className="text-3xl font-black leading-none tracking-tight text-slate-900 dark:text-white">
-          {value}
+          {isNumericValue ? displayCounter : value}
         </Text>
         {subtitle ? (
           <Text className="mt-1 text-xs font-medium text-slate-400 dark:text-slate-500">
