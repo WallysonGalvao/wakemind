@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'WakeMind',
   slug: 'wakemind',
-  version: '1.0.0',
+  version: '1.1.0',
   owner: 'wallyson',
   updates: {
     url: 'https://u.expo.dev/45b9eb25-dff5-4cfe-9592-c8ea9c435316',
