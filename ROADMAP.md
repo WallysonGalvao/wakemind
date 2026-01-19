@@ -14,7 +14,10 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Seleção de dias da semana (Daily, Weekdays, Weekends, Custom)
 - [x] Validação de alarmes duplicados com excludeId
 - [x] UUID único para alarmes (expo-crypto)
-- [x] Persistência com Zustand + MMKV
+- [x] **Persistência com SQLite (drizzle-orm)** - migrado de Zustand/MMKV
+- [x] **Auto-refresh com useFocusEffect** (alarmes + performance)
+- [x] **Alarm tones customizados** (15 sons disponíveis)
+- [x] **Plugin iOS para sons customizados** (withSoundAssets.js)
 
 #### Notificações e Alarmes Reais
 
@@ -62,6 +65,9 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] Acessibilidade (accessibilityRole, labels, hints)
 - [x] Suite de testes (~1200+ linhas em 5 arquivos)
 - [x] TypeScript strict mode
+- [x] **Performance optimizations** (useMemo, useCallback)
+- [x] **Error handling** e fallback values
+- [x] **Code quality** (ESLint, Prettier, Husky hooks)
 
 #### Analytics & Tracking
 
@@ -73,6 +79,15 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [x] App lifecycle events (opened, backgrounded)
 - [x] Sentry error tracking (Session Replay disabled)
 
+#### Performance & Dados
+
+- [x] **SQLite database** com expo-sqlite + drizzle-orm
+- [x] **Performance metrics tracking** (streaks, scores, reaction times)
+- [x] **Morning Performance Summary** com trends e gráficos
+- [x] **Real-time data refresh** com useFocusEffect
+- [x] **Database migrations** (backward compatibility)
+- [x] **7-day performance history** com visualização de tendências
+
 #### Estabilidade iOS
 
 - [x] iOS crash fix (Sentry Session Replay desabilitado)
@@ -83,7 +98,18 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 
 ## 🎯 O QUE FALTA PARA LANÇAMENTO NAS STORES
 
-### 🚨 CRÍTICO - Bloqueadores de Lançamento
+### � Tarefas Técnicas Pendentes (Antes de Submeter)
+
+| Item                       | Prioridade | Tempo Estimado | Descrição                                       |
+| -------------------------- | ---------- | -------------- | ----------------------------------------------- |
+| **Remover debug logs**     | Alta       | 2-3 horas      | Limpar console.logs de debugging                |
+| **Reescrever testes .skip** | Média      | 1-2 dias       | Converter testes para padrão async/SQLite       |
+| **Test coverage check**    | Média      | 2-3 horas      | Verificar cobertura atual e identificar gaps    |
+| **iOS sound testing**      | Alta       | 1 dia          | Testar custom sounds no device real iOS         |
+| **Android sound testing**  | Alta       | 1 dia          | Verificar alarm_sound.wav em devices reais      |
+| **Performance testing**    | Alta       | 1 dia          | Validar SQLite performance em low-end devices   |
+
+### �🚨 CRÍTICO - Bloqueadores de Lançamento
 
 | Item                                  | Status      | Prazo Estimado | Descrição                                                     |
 | ------------------------------------- | ----------- | -------------- | ------------------------------------------------------------- |
@@ -96,27 +122,31 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 | **App Store metadata**                | 🔴 Pendente | 2-3 horas      | Título, subtítulo, descrição, keywords, categorias            |
 | **Play Store metadata**               | 🔴 Pendente | 2-3 horas      | Título, descrição curta/longa, gráficos promocionais          |
 
-**📍 Status atual:** 70% do MVP técnico completo. **Bloqueador principal:** Apple Critical Alerts Entitlement pode levar até 2 semanas.
+**📍 Status atual:** 85% do MVP técnico completo. **Bloqueador principal:** Apple Critical Alerts Entitlement pode levar até 2 semanas.
 
 ### ⚡ Importante (Alta prioridade, mas não bloqueante)
 
-| Item                    | Status          | Descrição                                            |
-| ----------------------- | --------------- | ---------------------------------------------------- |
-| Testes E2E              | 🔴 Não iniciado | Maestro ou Detox - pode ir depois do lançamento beta |
-| Coverage mínimo 70%     | 🟡 Parcial      | Medir e aumentar cobertura - unit tests existentes   |
-| README.md atualizado    | 🔴 Pendente     | Documentação para usuários/devs                      |
-| Beta testing real users | 🔴 Pendente     | TestFlight (iOS) + Play Console Beta (Android)       |
+| Item                    | Status          | Descrição                                                  |
+| ----------------------- | --------------- | ---------------------------------------------------------- |
+| Testes E2E              | 🔴 Não iniciado | Maestro ou Detox - pode ir depois do lançamento beta      |
+| Rewrite testes SQLite   | 🟡 Parcial      | Tests marcados .skip precisam rewrite para async patterns |
+| Coverage mínimo 70%     | 🟡 Parcial      | Medir e aumentar cobertura - unit tests existentes        |
+| README.md atualizado    | ✅ Completo     | Documentação atualizada com SQLite architecture            |
+| Beta testing real users | 🔴 Pendente     | TestFlight (iOS) + Play Console Beta (Android)             |
+| Remover debug logs      | 🟡 Pendente     | Limpar console.logs adicionados durante debugging          |
 
 ### Nice to Have (Pode ir depois do MVP)
 
-| Item                               | Status      | Descrição                        |
-| ---------------------------------- | ----------- | -------------------------------- |
-| Lógica próximo disparo             | 🔴 Pendente | Calcular e exibir próximo alarme |
-| Indicador visual próximo alarme    | 🔴 Pendente | Badge/highlight na lista         |
-| Filtros na lista (Ativos/Inativos) | 🔴 Pendente | Melhorar organização             |
-| Swipe to delete                    | 🔴 Pendente | UX alternativa para exclusão     |
-| Animação de criação (confetti)     | 🔴 Pendente | Celebração visual                |
-| Skeleton screens                   | 🔴 Pendente | Loading states melhorados        |
+| Item                               | Status      | Descrição                                 |
+| ---------------------------------- | ----------- | ----------------------------------------- |
+| Lógica próximo disparo             | 🔴 Pendente | Calcular e exibir próximo alarme         |
+| Indicador visual próximo alarme    | 🔴 Pendente | Badge/highlight na lista                  |
+| Filtros na lista (Ativos/Inativos) | 🔴 Pendente | Melhorar organização                      |
+| Swipe to delete                    | 🔴 Pendente | UX alternativa para exclusão              |
+| Animação de criação (confetti)     | 🔴 Pendente | Celebração visual                         |
+| Skeleton screens                   | 🔴 Pendente | Loading states melhorados                 |
+| Exportar dados performance         | 🔴 Pendente | CSV/JSON export de métricas               |
+| Performance insights/AI            | 🔴 Pendente | Recomendações baseadas em dados históricos |
 
 ---
 
@@ -124,14 +154,16 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 
 | Métrica                 | Valor  |
 | ----------------------- | ------ |
-| Arquivos TypeScript/TSX | ~60+   |
-| Linhas de código        | ~8000+ |
+| Arquivos TypeScript/TSX | ~65+   |
+| Linhas de código        | ~9000+ |
 | Arquivos de teste       | 5      |
 | Linhas de teste         | ~1200+ |
-| Componentes UI          | ~25+   |
-| Hooks customizados      | 7+     |
-| Stores Zustand          | 2      |
+| Componentes UI          | ~30+   |
+| Hooks customizados      | 10+    |
+| Stores Zustand          | 1      |
+| Tabelas SQLite          | 2      |
 | Idiomas suportados      | 3      |
+| Alarm tones disponíveis | 15     |
 
 ---
 
@@ -140,17 +172,18 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 ### Fase 1 - Polimento
 
 - [ ] Barcode Scan protocol (requer câmera)
-- [ ] Estatísticas de uso e gráficos
-- [ ] Insights e recomendações
-- [ ] Exportar dados (CSV/JSON)
+- [ ] Exportar dados completo (CSV/JSON com todos os dados)
+- [ ] Import/restore de backup
+- [ ] Widget iOS/Android (próximo alarme)
+- [ ] Siri/Google Assistant shortcuts
 
 ### Fase 2 - Avançado
 
 - [ ] Difficulty Adaptive (ML/histórico)
-- [ ] Widget iOS/Android
-- [ ] Siri/Google Assistant shortcuts
+- [ ] Insights e recomendações baseadas em IA
 - [ ] Spotify/Apple Music integration
-- [ ] Sunrise simulation
+- [ ] Sunrise simulation (gradual brightness)
+- [ ] Sleep tracking integration (HealthKit/Google Fit)
 
 ### Fase 3 - Social & Gamification
 
@@ -173,7 +206,7 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 
 ```
 MVP FUNCIONAL:
-├── [✅] Sistema de alarmes completo (CRUD + agendamento)
+├── [✅] Sistema de alarmes completo (CRUD + agendamento + SQLite)
 ├── [✅] 3 desafios cognitivos (Math, Memory, Logic)
 ├── [✅] Backup protocols (Snooze, Wake Check)
 ├── [✅] Onboarding flow
@@ -182,9 +215,12 @@ MVP FUNCIONAL:
 ├── [✅] Internacionalização (EN, PT-BR, ES)
 ├── [✅] Dark mode completo
 ├── [✅] iOS stability (crashes resolvidos)
-└── [✅] Suite de testes unitários
+├── [✅] Suite de testes unitários
+├── [✅] Performance tracking (SQLite + charts)
+├── [✅] Custom alarm tones (15 sons + iOS plugin)
+└── [✅] Auto-refresh data on screen focus
 
-TOTAL: 10/10 ✅ COMPLETO
+TOTAL: 13/13 ✅ COMPLETO
 ```
 
 ### 🚀 CHECKLIST DE PUBLICAÇÃO
@@ -198,26 +234,30 @@ REQUISITOS APPLE:
 │       └── Justificativa: Alarme deve despertar usuário mesmo em DND
 ## 📊 RESUMO EXECUTIVO
 
-**Status do MVP:** ✅ **70% COMPLETO**
-- ✅ Core funcional 100% pronto (alarmes, desafios, settings, analytics)
-- ⏳ Falta apenas: assets de publicação + aprovações das stores
+**Status do MVP:** ✅ **85% COMPLETO**
+- ✅ Core funcional 100% pronto (alarmes, desafios, settings, analytics, performance tracking)
+- ✅ SQLite migration completa (alarms + performance data)
+- ✅ Custom alarm tones com plugin iOS
+- ⏳ Falta apenas: assets de publicação + aprovações das stores + cleanup (debug logs)
 - 🚨 Bloqueador: Apple Critical Alerts Entitlement (1-2 semanas)
 
 **Próximos Passos Imediatos:**
-1. Solicitar Apple Critical Alerts Entitlement HOJE
-2. Criar Privacy Policy hospedada (GitHub Pages)
-3. Gerar builds de produção e testar em devices reais
-4. Criar screenshots e assets gráficos
-5. Preencher metadata das stores
-6. Submeter para review (~2-7 dias)
+1. **Limpar debug logs** de development
+2. **Reescrever testes** marcados com .skip para padrão async/SQLite
+3. Solicitar Apple Critical Alerts Entitlement
+4. Criar Privacy Policy hospedada (GitHub Pages)
+5. Gerar builds de produção e testar em devices reais
+6. Criar screenshots e assets gráficos
+7. Preencher metadata das stores
+8. Submeter para review (~2-7 dias)
 
 **Previsão de Lançamento:** 🎯 **3-4 semanas**
 
 ---
 
-**Última atualização:** 2026-01-12
-**Versão do Roadmap:** 4.0 (Analytics Complete + Store Prep)
-**Branch atual:** feat/analyticsarme, som, vibração, DND)
+**Última atualização:** 2026-01-19
+**Versão do Roadmap:** 5.0 (SQLite Migration + Custom Sounds Complete)
+**Branch atual:** main (SQLite migration merged)
 ├── [ ] Screenshots obrigatórios:
 │       ├── 6.5" (iPhone 14 Pro Max) - mínimo 3 screens
 │       ├── 5.5" (iPhone 8 Plus) - mínimo 3 screens
@@ -294,3 +334,5 @@ OBRIGATÓRIO:
 **Última atualização:** 2026-01-10
 **Versão do Roadmap:** 3.0 (MVP Ready)
 **Branch atual:** feat/onboarding
+
+https://docs.expo.dev/versions/latest/sdk/storereview/
