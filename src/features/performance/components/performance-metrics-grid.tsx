@@ -28,7 +28,7 @@ export function PerformanceMetricsGrid({
     streakGain > 0
       ? {
           text: t('performance.daysGain', { count: streakGain }),
-          color: 'text-success-500' as const,
+          color: 'text-green-400' as const,
         }
       : undefined;
 
@@ -36,7 +36,7 @@ export function PerformanceMetricsGrid({
     scoreGain !== 0
       ? {
           text: t('performance.pointsGain', { count: scoreGain }),
-          color: scoreGain > 0 ? ('text-success-500' as const) : ('text-red-500' as const),
+          color: scoreGain > 0 ? ('text-green-400' as const) : ('text-red-500' as const),
         }
       : undefined;
 

@@ -3,6 +3,8 @@
  * Contains CTA button and motivational quote
  */
 
+import { useMemo } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import { Pressable, View } from 'react-native';
@@ -20,6 +22,12 @@ export function PerformanceFooter({ onStartDay, bottomInset }: PerformanceFooter
   const { t } = useTranslation();
   const shadowStyleLg = useShadowStyle('lg');
 
+  // Select a random motivational quote
+  const randomQuote = useMemo(() => {
+    const quotes = t('performance.quotes', { returnObjects: true }) as string[];
+    return quotes[Math.floor(Math.random() * quotes.length)];
+  }, [t]);
+
   return (
     <View
       className="z-10 bg-gradient-to-t from-background-light via-background-light to-transparent p-5 dark:from-background-dark dark:via-background-dark"
@@ -36,7 +44,7 @@ export function PerformanceFooter({ onStartDay, bottomInset }: PerformanceFooter
       </Pressable>
 
       <Text className="mt-4 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400 opacity-70">
-        "{t('performance.quote')}"
+        "{randomQuote}"
       </Text>
     </View>
   );

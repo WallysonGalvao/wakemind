@@ -72,7 +72,7 @@ export function ProgressBarCard({
           </Text>
           <View className="flex-row items-center gap-1">
             {isTrendingUp ? (
-              <MaterialSymbol name="trending_up" size={14} className="text-success-500" />
+              <MaterialSymbol name="trending_up" size={14} className="text-green-500" />
             ) : null}
             {isTrendingDown ? (
               <MaterialSymbol name="trending_down" size={14} className="text-red-500" />
@@ -80,7 +80,7 @@ export function ProgressBarCard({
             <Text
               className={cn(
                 'text-[11px] font-semibold tracking-wide',
-                isTrendingUp && 'text-success-500',
+                isTrendingUp && 'text-green-500',
                 isTrendingDown && 'text-red-500',
                 !isTrendingUp && !isTrendingDown && 'text-slate-400'
               )}
