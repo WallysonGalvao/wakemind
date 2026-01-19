@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Animated, {
   FadeIn,
@@ -67,6 +67,13 @@ export default function AlarmsScreen() {
 
   // Calculate header height (title + safe area + padding)
   const headerHeight = useMemo(() => insets.top + 12 + 40 + 30, [insets.top]); // paddingTop + title height + bottom padding
+
+  // Refetch alarms when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const handleToggleAlarm = useCallback(
     async (id: string) => {

@@ -3,7 +3,7 @@
  * Provides a clean, testable interface for performance metrics
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import * as performanceService from '@/db/functions/performance';
 
@@ -58,7 +58,10 @@ const DEFAULT_METRICS: PerformanceMetrics = {
  * Hook to get all performance-related data in a structured format
  * Loads data asynchronously from SQLite database
  */
-export function usePerformanceData(): PerformanceMetrics & { isLoading: boolean } {
+export function usePerformanceData(): PerformanceMetrics & {
+  isLoading: boolean;
+  refetch: () => Promise<void>;
+} {
   const [metrics, setMetrics] = useState<PerformanceMetrics>(DEFAULT_METRICS);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -92,9 +95,9 @@ export function usePerformanceData(): PerformanceMetrics & { isLoading: boolean 
 
         // Calculate reaction time metrics
         const hasReactionTimes = recentReactionTimes.length > 0;
-        const currentReactionTime = hasReactionTimes
-          ? recentReactionTimes[recentReactionTimes.length - 1]
-          : DEFAULT_FALLBACK_VALUES.currentReactionTime;
+        // Get the last non-zero reaction time (most recent completion)
+        const lastNonZeroTime = [...recentReactionTimes].reverse().find((time) => time > 0);
+        const currentReactionTime = lastNonZeroTime || DEFAULT_FALLBACK_VALUES.currentReactionTime;
 
         const averageReactionTimeValue = hasReactionTimes
           ? Math.round(
@@ -140,5 +143,70 @@ export function usePerformanceData(): PerformanceMetrics & { isLoading: boolean 
     };
   }, []);
 
-  return { ...metrics, isLoading };
+  // Refetch function for manual updates
+  const refetch = useCallback(async () => {
+    console.log('[usePerformanceData] refetch called');
+    try {
+      setIsLoading(true);
+
+      const [
+        currentStreak,
+        averageCognitiveScore,
+        weeklyStats,
+        previousWeekExecutionRate,
+        recentReactionTimes,
+        streakGain,
+        scoreGain,
+      ] = await Promise.all([
+        performanceService.getCurrentStreak(),
+        performanceService.getAverageCognitiveScore(),
+        performanceService.getWeeklyStats(),
+        performanceService.getPreviousWeekExecutionRate(),
+        performanceService.getRecentReactionTimes(7),
+        performanceService.getStreakGain(),
+        performanceService.getScoreGain(),
+      ]);
+
+      const hasReactionTimes = recentReactionTimes.length > 0;
+      // Get the last non-zero reaction time (most recent completion)
+      const lastNonZeroTime = [...recentReactionTimes].reverse().find((time) => time > 0);
+      const currentReactionTime = lastNonZeroTime || DEFAULT_FALLBACK_VALUES.currentReactionTime;
+
+      console.log('[usePerformanceData] refetch - recentReactionTimes:', recentReactionTimes);
+      console.log('[usePerformanceData] refetch - currentReactionTime:', currentReactionTime);
+
+      const averageReactionTimeValue = hasReactionTimes
+        ? Math.round(
+            recentReactionTimes.reduce((a: number, b: number) => a + b, 0) /
+              recentReactionTimes.length
+          )
+        : DEFAULT_FALLBACK_VALUES.averageReactionTime;
+
+      const isBestReactionTime = currentReactionTime <= Math.min(...recentReactionTimes, 999);
+
+      setMetrics({
+        currentStreak,
+        streakGain,
+        averageCognitiveScore,
+        scoreGain,
+        weeklyExecutionRate: weeklyStats.executionRate,
+        previousWeekExecutionRate,
+        currentReactionTime,
+        averageReactionTime: averageReactionTimeValue,
+        isBestReactionTime,
+        recentReactionTimes: hasReactionTimes
+          ? recentReactionTimes
+          : Array.from(DEFAULT_FALLBACK_VALUES.recentReactionTimes),
+        targetTime: DEFAULT_FALLBACK_VALUES.targetTime,
+        actualTime: DEFAULT_FALLBACK_VALUES.actualTime,
+      });
+    } catch (error) {
+      console.error('[usePerformanceData] Error refetching metrics:', error);
+      setMetrics(DEFAULT_METRICS);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { ...metrics, isLoading, refetch };
 }

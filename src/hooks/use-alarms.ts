@@ -13,7 +13,49 @@ export function useAlarms() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const loadAlarms = useCallback(async () => {
+  // Load alarms on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadAlarms() {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await alarmsDb.getAlarms();
+        if (isMounted) {
+          setAlarms(data);
+          setIsLoading(false);
+        }
+      } catch (err) {
+        console.error('[useAlarms] Error loading alarms:', err);
+        if (isMounted) {
+          setError(err as Error);
+          setAlarms([]);
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadAlarms();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Sorted alarms (memoized via sortAlarmsByTime)
+  const sortedAlarms = sortAlarmsByTime(alarms);
+
+  // Get alarm by ID
+  const getAlarmById = useCallback(
+    (id: string) => {
+      return alarms.find((alarm) => alarm.id === id);
+    },
+    [alarms]
+  );
+
+  // Refetch function for manual updates
+  const refetch = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -28,28 +70,12 @@ export function useAlarms() {
     }
   }, []);
 
-  // Load alarms on mount
-  useEffect(() => {
-    loadAlarms();
-  }, [loadAlarms]);
-
-  // Sorted alarms (memoized via sortAlarmsByTime)
-  const sortedAlarms = sortAlarmsByTime(alarms);
-
-  // Get alarm by ID
-  const getAlarmById = useCallback(
-    (id: string) => {
-      return alarms.find((alarm) => alarm.id === id);
-    },
-    [alarms]
-  );
-
   return {
     alarms,
     sortedAlarms,
     isLoading,
     error,
     getAlarmById,
-    refetch: loadAlarms,
+    refetch,
   };
 }

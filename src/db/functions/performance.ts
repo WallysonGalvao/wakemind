@@ -218,13 +218,17 @@ export async function getRecentReactionTimes(days = 7): Promise<number[]> {
     .from(alarmCompletions)
     .where(gte(alarmCompletions.date, weekStart.toISOString()));
 
+  console.log('[getRecentReactionTimes] weekRecords:', weekRecords);
+
   // Generate array for Monday through Sunday of current week
   for (let i = 0; i < days; i++) {
     const targetDate = weekStart.add(i, 'day').format('YYYY-MM-DD');
     const record = weekRecords.find((r) => dayjs(r.date).format('YYYY-MM-DD') === targetDate);
+    console.log(`[getRecentReactionTimes] Day ${i} (${targetDate}):`, record?.reactionTime || 0);
     result.push(record?.reactionTime || 0);
   }
 
+  console.log('[getRecentReactionTimes] result:', result);
   return result;
 }
 
