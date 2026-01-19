@@ -100,14 +100,14 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 
 ### � Tarefas Técnicas Pendentes (Antes de Submeter)
 
-| Item                       | Prioridade | Tempo Estimado | Descrição                                       |
-| -------------------------- | ---------- | -------------- | ----------------------------------------------- |
-| **Remover debug logs**     | Alta       | 2-3 horas      | Limpar console.logs de debugging                |
-| **Reescrever testes .skip** | Média      | 1-2 dias       | Converter testes para padrão async/SQLite       |
-| **Test coverage check**    | Média      | 2-3 horas      | Verificar cobertura atual e identificar gaps    |
-| **iOS sound testing**      | Alta       | 1 dia          | Testar custom sounds no device real iOS         |
-| **Android sound testing**  | Alta       | 1 dia          | Verificar alarm_sound.wav em devices reais      |
-| **Performance testing**    | Alta       | 1 dia          | Validar SQLite performance em low-end devices   |
+| Item                        | Prioridade | Tempo Estimado | Descrição                                     |
+| --------------------------- | ---------- | -------------- | --------------------------------------------- |
+| **Remover debug logs**      | Alta       | 2-3 horas      | Limpar console.logs de debugging              |
+| **Reescrever testes .skip** | Média      | 1-2 dias       | Converter testes para padrão async/SQLite     |
+| **Test coverage check**     | Média      | 2-3 horas      | Verificar cobertura atual e identificar gaps  |
+| **iOS sound testing**       | Alta       | 1 dia          | Testar custom sounds no device real iOS       |
+| **Android sound testing**   | Alta       | 1 dia          | Verificar alarm_sound.wav em devices reais    |
+| **Performance testing**     | Alta       | 1 dia          | Validar SQLite performance em low-end devices |
 
 ### �🚨 CRÍTICO - Bloqueadores de Lançamento
 
@@ -126,26 +126,26 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 
 ### ⚡ Importante (Alta prioridade, mas não bloqueante)
 
-| Item                    | Status          | Descrição                                                  |
-| ----------------------- | --------------- | ---------------------------------------------------------- |
+| Item                    | Status          | Descrição                                                 |
+| ----------------------- | --------------- | --------------------------------------------------------- |
 | Testes E2E              | 🔴 Não iniciado | Maestro ou Detox - pode ir depois do lançamento beta      |
 | Rewrite testes SQLite   | 🟡 Parcial      | Tests marcados .skip precisam rewrite para async patterns |
 | Coverage mínimo 70%     | 🟡 Parcial      | Medir e aumentar cobertura - unit tests existentes        |
-| README.md atualizado    | ✅ Completo     | Documentação atualizada com SQLite architecture            |
-| Beta testing real users | 🔴 Pendente     | TestFlight (iOS) + Play Console Beta (Android)             |
-| Remover debug logs      | 🟡 Pendente     | Limpar console.logs adicionados durante debugging          |
+| README.md atualizado    | ✅ Completo     | Documentação atualizada com SQLite architecture           |
+| Beta testing real users | 🔴 Pendente     | TestFlight (iOS) + Play Console Beta (Android)            |
+| Remover debug logs      | 🟡 Pendente     | Limpar console.logs adicionados durante debugging         |
 
 ### Nice to Have (Pode ir depois do MVP)
 
-| Item                               | Status      | Descrição                                 |
-| ---------------------------------- | ----------- | ----------------------------------------- |
-| Lógica próximo disparo             | 🔴 Pendente | Calcular e exibir próximo alarme         |
-| Indicador visual próximo alarme    | 🔴 Pendente | Badge/highlight na lista                  |
-| Filtros na lista (Ativos/Inativos) | 🔴 Pendente | Melhorar organização                      |
-| Swipe to delete                    | 🔴 Pendente | UX alternativa para exclusão              |
-| Animação de criação (confetti)     | 🔴 Pendente | Celebração visual                         |
-| Skeleton screens                   | 🔴 Pendente | Loading states melhorados                 |
-| Exportar dados performance         | 🔴 Pendente | CSV/JSON export de métricas               |
+| Item                               | Status      | Descrição                                  |
+| ---------------------------------- | ----------- | ------------------------------------------ |
+| Lógica próximo disparo             | 🔴 Pendente | Calcular e exibir próximo alarme           |
+| Indicador visual próximo alarme    | 🔴 Pendente | Badge/highlight na lista                   |
+| Filtros na lista (Ativos/Inativos) | 🔴 Pendente | Melhorar organização                       |
+| Swipe to delete                    | 🔴 Pendente | UX alternativa para exclusão               |
+| Animação de criação (confetti)     | 🔴 Pendente | Celebração visual                          |
+| Skeleton screens                   | 🔴 Pendente | Loading states melhorados                  |
+| Exportar dados performance         | 🔴 Pendente | CSV/JSON export de métricas                |
 | Performance insights/AI            | 🔴 Pendente | Recomendações baseadas em dados históricos |
 
 ---
