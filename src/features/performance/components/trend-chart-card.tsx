@@ -1,10 +1,19 @@
+import { useEffect } from 'react';
+
 import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
 import { BarChart } from 'react-native-chart-kit';
 import type { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { Dimensions, View } from 'react-native';
 
+import { AnimatedCounter } from '@/components/animated-counter';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -37,6 +46,22 @@ export function TrendChartCard({
   const shadowStyle = useShadowStyle('sm');
 
   const screenWidth = Dimensions.get('window').width;
+
+  // Extract numeric value from currentValue (e.g., "450ms" -> 450)
+  const numericValue = parseInt(currentValue.replace('ms', ''), 10) || 0;
+
+  // Badge scale animation
+  const badgeScale = useSharedValue(0);
+
+  useEffect(() => {
+    if (isBestScore) {
+      badgeScale.value = withDelay(100, withTiming(1, { duration: 400 }));
+    }
+  }, [isBestScore, badgeScale]);
+
+  const animatedBadgeStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: badgeScale.value }],
+  }));
   const chartWidth = screenWidth - 80; // Account for padding
 
   const chartStyles = { borderRadius: 8 };
@@ -108,27 +133,39 @@ export function TrendChartCard({
             <Text className="text-sm font-bold text-slate-900 dark:text-white">{title}</Text>
           </View>
           {averageValue !== undefined && (
-            <Text className="pl-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-              {t('performance.dailyAvg')}:{' '}
-              <Text className="font-bold text-slate-900 dark:text-white">{averageValue}ms</Text>
-            </Text>
+            <View className="flex-row items-baseline gap-0.5 pl-1">
+              <Text className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                {t('performance.dailyAvg')}:{' '}
+              </Text>
+              <AnimatedCounter
+                value={averageValue}
+                duration={1000}
+                className="text-xs font-bold text-slate-900 dark:text-white"
+              />
+              <Text className="text-xs font-bold text-slate-900 dark:text-white">ms</Text>
+            </View>
           )}
         </View>
 
         <View className="items-end">
           <View className="flex-row items-baseline gap-1">
-            <Text className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-              {currentValue.replace('ms', '')}
-            </Text>
+            <AnimatedCounter
+              value={numericValue}
+              duration={1000}
+              className="text-3xl font-black tracking-tight text-slate-900 dark:text-white"
+            />
             <Text className="text-xs font-bold uppercase text-slate-400">ms</Text>
           </View>
           {isBestScore ? (
-            <View className="mt-1 flex-row items-center gap-1 rounded-full border border-success-500/10 bg-success-500/10 px-2 py-0.5">
+            <Animated.View
+              style={animatedBadgeStyle}
+              className="mt-1 flex-row items-center gap-1 rounded-full border border-success-500/10 bg-success-500/10 px-2 py-0.5"
+            >
               <MaterialSymbol name="emoji_events" size={12} className="text-success-500" />
               <Text className="text-[10px] font-bold text-success-500">
                 {t('performance.best')}
               </Text>
-            </View>
+            </Animated.View>
           ) : null}
         </View>
       </View>
