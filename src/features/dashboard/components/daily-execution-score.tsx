@@ -13,14 +13,14 @@ interface DailyExecutionScoreProps {
   score: number;
   maxScore?: number;
   percentageChange?: number;
-  comparisonPeriod?: string;
+  period?: 'day' | 'week' | 'month' | 'custom';
 }
 
 export function DailyExecutionScore({
   score,
   maxScore = 100,
   percentageChange = 0,
-  comparisonPeriod = 'vs last 7 days',
+  period = 'day',
 }: DailyExecutionScoreProps) {
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('sm');
@@ -35,7 +35,7 @@ export function DailyExecutionScore({
       <View className="mb-2 flex-row items-start justify-between">
         <View>
           <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {t('dashboard.executionScore.title')}
+            {t(`dashboard.executionScore.title.${period}`)}
           </Text>
           <View className="flex-row items-baseline gap-2">
             <Text className="text-5xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
@@ -76,7 +76,9 @@ export function DailyExecutionScore({
             {percentageChange.toFixed(1)}%
           </Text>
         </View>
-        <Text className="text-sm text-slate-500 dark:text-slate-400">{comparisonPeriod}</Text>
+        <Text className="text-sm text-slate-500 dark:text-slate-400">
+          {t('dashboard.executionScore.comparisonPeriod')}
+        </Text>
       </View>
     </View>
   );

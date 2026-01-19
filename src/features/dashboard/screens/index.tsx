@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,22 @@ export default function DashboardScreen() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
 
   useAnalyticsScreen('Dashboard');
+
+  // Mock data based on selected period
+  const executionData = useMemo(() => {
+    switch (selectedPeriod) {
+      case 'day':
+        return { score: 94, percentageChange: 2.3 };
+      case 'week':
+        return { score: 88, percentageChange: 5.1 };
+      case 'month':
+        return { score: 91, percentageChange: -1.2 };
+      case 'custom':
+        return { score: 85, percentageChange: 0 };
+      default:
+        return { score: 94, percentageChange: 2.3 };
+    }
+  }, [selectedPeriod]);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
@@ -42,7 +58,11 @@ export default function DashboardScreen() {
       {/* Content */}
       <ScrollView className="flex-1" contentContainerClassName="p-4">
         {/* Daily Execution Score */}
-        <DailyExecutionScore score={94} percentageChange={2.3} comparisonPeriod="vs last 7 days" />
+        <DailyExecutionScore
+          score={executionData.score}
+          percentageChange={executionData.percentageChange}
+          period={selectedPeriod}
+        />
       </ScrollView>
     </View>
   );

@@ -9,5 +9,9 @@ export const dashboardEN = {
   'dashboard.period.week': 'Week',
   'dashboard.period.month': 'Month',
   'dashboard.period.custom': 'Custom',
-  'dashboard.executionScore.title': 'Daily Execution Score',
+  'dashboard.executionScore.title.day': 'Daily Execution Score',
+  'dashboard.executionScore.title.week': 'Weekly Execution Score',
+  'dashboard.executionScore.title.month': 'Monthly Execution Score',
+  'dashboard.executionScore.title.custom': 'Custom Execution Score',
+  'dashboard.executionScore.comparisonPeriod': 'vs last 7 days',
 };
