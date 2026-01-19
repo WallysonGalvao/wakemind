@@ -314,7 +314,7 @@ export default function AlarmTriggerScreen() {
     }
 
     // Navigate to performance summary
-    router.replace('/alarm/performance-summary');
+    router.push('/alarm/performance-summary');
   }, [
     challengeType,
     difficulty,
