@@ -22,7 +22,7 @@ export default function MorningPerformanceSummaryScreen() {
   useAnalyticsScreen('Performance Summary');
 
   // Get all performance data through custom hook
-  const metrics = usePerformanceData();
+  const { isLoading, ...metrics } = usePerformanceData();
 
   // Get action handlers
   const { handleStartDay } = usePerformanceActions({

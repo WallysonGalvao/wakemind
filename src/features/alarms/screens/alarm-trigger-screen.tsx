@@ -28,11 +28,11 @@ import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { getToneAudioSource } from '@/constants/alarm-tones';
+import { recordAlarmCompletion } from '@/db/performance';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { VibrationService } from '@/services/vibration-service';
 import { useAlarmsStore } from '@/stores/use-alarms-store';
-import { usePerformanceStore } from '@/stores/use-performance-store';
 import { useSettingsStore } from '@/stores/use-settings-store';
 import { BackupProtocolId, ChallengeType, DifficultyLevel } from '@/types/alarm-enums';
 import { calculateCognitiveScore } from '@/utils/cognitive-score';
@@ -64,7 +64,6 @@ export default function AlarmTriggerScreen() {
   const vibrationPattern = useSettingsStore((state) => state.vibrationPattern);
   const preventAutoLock = useSettingsStore((state) => state.preventAutoLock);
   const snoozeProtection = useSettingsStore((state) => state.snoozeProtection);
-  const recordAlarmCompletion = usePerformanceStore((state) => state.recordAlarmCompletion);
 
   // Track challenge start time for performance metrics
   const [challengeStartTime] = useState(() => Date.now());
@@ -292,7 +291,7 @@ export default function AlarmTriggerScreen() {
       const targetTime = `${params.time || alarm.time}`;
       const actualTime = dayjs().toISOString();
 
-      recordAlarmCompletion({
+      await recordAlarmCompletion({
         targetTime,
         actualTime,
         cognitiveScore,
@@ -323,7 +322,6 @@ export default function AlarmTriggerScreen() {
     maxAttempts,
     alarm,
     params.time,
-    recordAlarmCompletion,
     stopAlarm,
     isWakeCheckEnabled,
   ]);
