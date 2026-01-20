@@ -27,4 +27,21 @@ export const dashboardES = {
   'dashboard.wakeConsistency.period.week': 'Últimos 7 Días',
   'dashboard.wakeConsistency.period.month': 'Últimos 30 Días',
   'dashboard.wakeConsistency.period.custom': 'Últimos 7 Días',
+  'dashboard.currentStreak.title': 'Racha Actual',
+  'dashboard.currentStreak.daysOnTarget': 'Días en el objetivo',
+  'dashboard.avgLatency.title': 'Latencia Promedio',
+  'dashboard.avgLatency.timeToStandUp': 'Tiempo para levantarse',
+  'dashboard.dailyInsight.label': 'Perspectiva',
+  'dashboard.dailyInsight.insights.wakeVariance':
+    'El tiempo de reacción se degrada en un 15% cuando la variación del horario de despertar excede los 10 minutos.',
+  'dashboard.dailyInsight.insights.streakMilestone':
+    '¡Impresionante! Has mantenido la consistencia durante {{days}} días. ¡Sigue así!',
+  'dashboard.dailyInsight.insights.lowScore':
+    'Tus puntuaciones son más bajas en este período. Intenta dormir mejor o aumentar la dificultad de los desafíos.',
+  'dashboard.dailyInsight.insights.excellentConsistency':
+    '¡Excelente consistencia en el horario de despertar! Tu variación está por debajo de 5 minutos.',
+  'dashboard.dailyInsight.insights.buildingMomentum':
+    '¡Gran impulso! {{days}} días fuerte. Sigue construyendo tu hábito.',
+  'dashboard.dailyInsight.insights.keepItUp':
+    '¡Rendimiento excepcional! Tu puntuación de ejecución es excelente.',
 };

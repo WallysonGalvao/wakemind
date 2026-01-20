@@ -89,4 +89,17 @@ export const dashboardPT = {
   'dashboard.currentStreak.daysOnTarget': 'Dias na meta',
   'dashboard.avgLatency.title': 'Latência Média',
   'dashboard.avgLatency.timeToStandUp': 'Tempo para levantar',
+  'dashboard.dailyInsight.label': 'Insight',
+  'dashboard.dailyInsight.insights.wakeVariance':
+    'O tempo de reação se degrada em 15% quando a variação do horário de despertar excede 10 minutos.',
+  'dashboard.dailyInsight.insights.streakMilestone':
+    'Impressionante! Você manteve a consistência por {{days}} dias. Continue assim!',
+  'dashboard.dailyInsight.insights.lowScore':
+    'Suas pontuações estão mais baixas neste período. Tente dormir melhor ou aumentar a dificuldade dos desafios.',
+  'dashboard.dailyInsight.insights.excellentConsistency':
+    'Excelente consistência no horário de despertar! Sua variação está abaixo de 5 minutos.',
+  'dashboard.dailyInsight.insights.buildingMomentum':
+    'Ótimo momento! {{days}} dias firme. Continue construindo seu hábito.',
+  'dashboard.dailyInsight.insights.keepItUp':
+    'Desempenho excepcional! Sua pontuação de execução está excelente.',
 };
