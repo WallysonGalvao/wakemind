@@ -36,7 +36,7 @@ export const appPT = {
   'newAlarm.cognitiveActivation.required': 'Obrigatório',
   'newAlarm.challenges.math.title': 'Desafio de Matemática',
   'newAlarm.challenges.math.description': 'Resolva 5 equações aritméticas para desligar o alarme.',
-  'newAlarm.challenges.memory.title': 'Matriz de Memória',
+  'newAlarm.challenges.memory.title': 'Jogo da Memória',
   'newAlarm.challenges.memory.description': 'Memorize e recorde um padrão de blocos iluminados.',
   'newAlarm.challenges.logic.title': 'Quebra-cabeça Lógico',
   'newAlarm.challenges.logic.description': 'Complete a sequência para provar que está acordado.',
