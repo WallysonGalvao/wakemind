@@ -1,0 +1,60 @@
+export default {
+  // Paywall
+  'paywall.loading': 'Loading subscription plans...',
+  'paywall.title': 'Unlock WakeMind Pro',
+  'paywall.subtitle': 'Get unlimited access to all premium features',
+  'paywall.features.title': "What's Included",
+  'paywall.features.unlimitedAlarms.title': 'Unlimited Alarms',
+  'paywall.features.unlimitedAlarms.description': 'Create as many alarms as you need, no limits',
+  'paywall.features.allDifficulties.title': 'All Difficulty Levels',
+  'paywall.features.allDifficulties.description': 'Access Hard mode and Adaptive AI difficulty',
+  'paywall.features.advancedStats.title': 'Advanced Statistics',
+  'paywall.features.advancedStats.description': 'Detailed analytics with 365-day history',
+  'paywall.features.streakFreeze.title': 'Streak Freeze',
+  'paywall.features.streakFreeze.description': 'Protect your streak with 3 freeze tokens per month',
+  'paywall.features.customThemes.title': 'Custom Themes',
+  'paywall.features.customThemes.description': 'Personalize your app with exclusive themes',
+  'paywall.features.premiumSounds.title': 'Premium Alarm Sounds',
+  'paywall.features.premiumSounds.description': 'Unlock exclusive high-quality alarm tones',
+  'paywall.features.cloudBackup.title': 'Cloud Backup',
+  'paywall.features.cloudBackup.description': 'Sync your data across devices securely',
+  'paywall.features.prioritySupport.title': 'Priority Support',
+  'paywall.features.prioritySupport.description': 'Get faster responses from our support team',
+
+  'paywall.plans.title': 'Choose Your Plan',
+  'paywall.plans.bestValue': 'Best Value',
+  'paywall.plans.oneTime': 'One-Time',
+  'paywall.plans.period': 'per {{period}}',
+
+  'paywall.cta.subscribe': 'Start Free Trial',
+  'paywall.cta.restore': 'Restore Purchases',
+  'paywall.disclaimer': 'Cancel anytime. Subscriptions auto-renew unless cancelled.',
+
+  'paywall.success.title': 'Welcome to Pro! 🎉',
+  'paywall.success.message': 'You now have access to all premium features.',
+
+  'paywall.restore.success': 'Purchases Restored! ✅',
+  'paywall.restore.message': 'Your subscription has been successfully restored.',
+  'paywall.restore.failed': 'Restore Failed',
+  'paywall.restore.notFound': 'No previous purchases found for this account.',
+
+  // Feature Gates
+  'featureGate.unlimitedAlarms': 'Unlock Unlimited Alarms',
+  'featureGate.hardDifficulty': 'Unlock Hard Difficulty',
+  'featureGate.adaptiveDifficulty': 'Unlock Adaptive AI',
+  'featureGate.advancedStats': 'Unlock Advanced Statistics',
+  'featureGate.customThemes': 'Unlock Custom Themes',
+  'featureGate.premiumSounds': 'Unlock Premium Sounds',
+  'featureGate.streakFreeze': 'Unlock Streak Freeze',
+  'featureGate.cloudBackup': 'Unlock Cloud Backup',
+
+  // Settings - Subscription
+  'settings.subscription.title': 'Subscription',
+  'settings.subscription.status': 'Status',
+  'settings.subscription.free': 'Free',
+  'settings.subscription.pro': 'Pro',
+  'settings.subscription.manage': 'Manage Subscription',
+  'settings.subscription.upgrade': 'Upgrade to Pro',
+  'settings.subscription.expires': 'Expires on {{date}}',
+  'settings.subscription.renews': 'Renews on {{date}}',
+};
