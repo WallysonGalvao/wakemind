@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScrollView, View } from 'react-native';
 
+import { AddWidget } from '../components/add-widget';
 import { useExecutionScore } from '../hooks/use-execution-score';
 import { useWakeConsistency } from '../hooks/use-wake-consistency';
 
@@ -66,6 +67,8 @@ export default function DashboardScreen() {
           period={wakeConsistencyData.period}
           chartData={wakeConsistencyData.chartData}
         />
+
+        <AddWidget />
       </ScrollView>
     </View>
   );
