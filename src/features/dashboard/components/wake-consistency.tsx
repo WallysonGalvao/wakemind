@@ -45,6 +45,23 @@ export function WakeConsistency({
   const validChartData =
     sanitizedChartData.length >= 2 ? sanitizedChartData : [0, 0, 0, 0, 0, 0, 0];
 
+  // Generate labels based on actual data length
+  const generateLabels = (dataLength: number): string[] => {
+    if (dataLength <= 7) {
+      // Show all days
+      return Array.from({ length: dataLength }, (_, i) => (i + 1).toString());
+    }
+    // Show 7 evenly spaced labels
+    const labelCount = 7;
+    const step = Math.floor((dataLength - 1) / (labelCount - 1));
+    return Array.from({ length: labelCount }, (_, i) => {
+      if (i === labelCount - 1) return dataLength.toString();
+      return (i * step + 1).toString();
+    });
+  };
+
+  const chartLabels = generateLabels(validChartData.length);
+
   // Format variance text
   const varianceText = variance > 0 ? `+${variance}m` : `${variance}m`;
   const varianceColor = variance > 0 ? 'text-red-500' : 'text-green-500';
@@ -103,21 +120,21 @@ export function WakeConsistency({
         <View className="overflow-hidden rounded-lg">
           <LineChart
             data={{
-              labels: ['1', '5', '10', '15', '20', '25', '30'],
+              labels: chartLabels,
               datasets: [
                 {
                   data: validChartData,
                 },
               ],
             }}
-            width={screenWidth - 40} // Adjust for card padding
+            width={screenWidth}
             height={180}
             withVerticalLabels
             withHorizontalLabels={false}
-            withInnerLines
+            withInnerLines={false}
             withOuterLines={false}
             withVerticalLines={false}
-            withHorizontalLines
+            withHorizontalLines={false}
             withDots={false}
             bezier
             chartConfig={{
@@ -150,7 +167,9 @@ export function WakeConsistency({
 
 const styles = StyleSheet.create({
   chart: {
-    marginLeft: -15,
+    marginLeft: -16,
+    marginRight: -16,
     paddingRight: 0,
+    borderRadius: 8,
   },
 });

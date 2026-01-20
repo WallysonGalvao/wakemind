@@ -48,10 +48,10 @@ export function useExecutionScore(period: PeriodType): ExecutionScoreData {
           previousEndDate = now.subtract(30, 'day').endOf('day');
           break;
         case 'custom':
-          // Default to last 7 days for custom
-          startDate = now.subtract(6, 'day').startOf('day');
-          previousStartDate = now.subtract(13, 'day').startOf('day');
-          previousEndDate = now.subtract(7, 'day').endOf('day');
+          // 14 days for custom
+          startDate = now.subtract(13, 'day').startOf('day');
+          previousStartDate = now.subtract(27, 'day').startOf('day');
+          previousEndDate = now.subtract(14, 'day').endOf('day');
           break;
         default:
           startDate = now.startOf('day');
@@ -63,7 +63,7 @@ export function useExecutionScore(period: PeriodType): ExecutionScoreData {
       const currentRecords = await db
         .select()
         .from(alarmCompletions)
-        .where(gte(alarmCompletions.date, startDate.toISOString()))
+        .where(gte(alarmCompletions.date, startDate.format('YYYY-MM-DD')))
         .orderBy(desc(alarmCompletions.date));
 
       // Fetch previous period records for comparison
@@ -72,8 +72,8 @@ export function useExecutionScore(period: PeriodType): ExecutionScoreData {
         .from(alarmCompletions)
         .where(
           and(
-            gte(alarmCompletions.date, previousStartDate.toISOString()),
-            lte(alarmCompletions.date, previousEndDate.toISOString())
+            gte(alarmCompletions.date, previousStartDate.format('YYYY-MM-DD')),
+            lte(alarmCompletions.date, previousEndDate.format('YYYY-MM-DD'))
           )
         );
 

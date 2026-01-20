@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
@@ -15,6 +15,7 @@ import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
+import { seedDatabase } from '@/db/seed';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -84,8 +85,9 @@ function SettingRow({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-        }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -110,8 +112,9 @@ function SettingToggleRow({
 }: SettingToggleRowProps) {
   return (
     <View
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-        }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -142,8 +145,9 @@ function VolumeSliderRow({ title, value, onValueChange, isLast = false }: Volume
 
   return (
     <View
-      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-        }`}
+      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-base font-medium text-gray-900 dark:text-white">{title}</Text>
@@ -225,6 +229,31 @@ export default function SettingsScreen() {
     const newTheme = value ? ThemeMode.DARK : ThemeMode.LIGHT;
     setTheme(newTheme);
     AnalyticsEvents.themeChanged(newTheme);
+  };
+
+  const handleSeedDatabase = async () => {
+    Alert.alert(
+      'Seed Database',
+      'This will clear all existing data and populate with sample alarms and completions. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Seed',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await seedDatabase();
+              Alert.alert(
+                'Success',
+                'Database seeded successfully! Restart the app to see changes.'
+              );
+            } catch (error) {
+              Alert.alert('Error', 'Failed to seed database. Check console for details.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -350,6 +379,13 @@ export default function SettingsScreen() {
                 title={t('settings.reviewOnboarding')}
                 onPress={() => router.push('/onboarding')}
                 isFirst
+              />
+              <SettingRow
+                icon="database"
+                iconBgColor="bg-amber-100 dark:bg-amber-900/30"
+                iconColor={COLORS.blue[500]}
+                title="Seed Database (Dev)"
+                onPress={handleSeedDatabase}
                 isLast
               />
             </SectionCard>
