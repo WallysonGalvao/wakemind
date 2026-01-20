@@ -70,7 +70,18 @@ export function useCognitiveActivation(): CognitiveActivationData[] {
     };
 
     fetchData();
-  }, []); // Only fetch once when component mounts
+
+    // Refresh data when month changes
+    const interval = setInterval(() => {
+      const newMonth = dayjs().format('YYYY-MM');
+      const currentMonth = dayjs().startOf('month').format('YYYY-MM');
+      if (newMonth !== currentMonth) {
+        fetchData();
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   return data;
 }

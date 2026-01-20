@@ -2,26 +2,29 @@ import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import type { PeriodType } from '../types';
-import { useCurrentStreak } from './use-current-streak';
-import { useExecutionScore } from './use-execution-score';
-import { useWakeConsistency } from './use-wake-consistency';
+interface DailyInsightParams {
+  variance: number;
+  executionScore: number;
+  streak: number;
+}
 
 /**
  * Hook to get contextual insight based on user's performance metrics
  * Returns a relevant insight message or null
+ * Receives pre-computed metrics to avoid redundant database queries
  */
-export function useDailyInsight(period: PeriodType): string | null {
+export function useDailyInsight({
+  variance,
+  executionScore,
+  streak,
+}: DailyInsightParams): string | null {
   const { t } = useTranslation();
-  const wakeConsistency = useWakeConsistency(period);
-  const executionScore = useExecutionScore(period);
-  const streak = useCurrentStreak(period);
 
   const insight = useMemo(() => {
-    // Insight: Wake time variance affects reaction time
-    if (wakeConsistency.variance && wakeConsistency.variance > 10) {
+    // Insight: Wake time variance affects reaction time (use absolute value)
+    if (variance && Math.abs(variance) > 10) {
       return t('dashboard.dailyInsight.insights.wakeVariance', {
-        variance: Math.round(wakeConsistency.variance),
+        variance: Math.round(Math.abs(variance)),
       });
     }
 
@@ -31,12 +34,12 @@ export function useDailyInsight(period: PeriodType): string | null {
     }
 
     // Insight: Low execution score
-    if (executionScore.score < 70) {
+    if (executionScore < 70) {
       return t('dashboard.dailyInsight.insights.lowScore');
     }
 
-    // Insight: Excellent consistency
-    if (wakeConsistency.variance && wakeConsistency.variance < 5) {
+    // Insight: Excellent consistency (use absolute value)
+    if (variance && Math.abs(variance) < 5) {
       return t('dashboard.dailyInsight.insights.excellentConsistency');
     }
 
@@ -46,12 +49,12 @@ export function useDailyInsight(period: PeriodType): string | null {
     }
 
     // Default positive insight
-    if (executionScore.score >= 85) {
+    if (executionScore >= 85) {
       return t('dashboard.dailyInsight.insights.keepItUp');
     }
 
     return null;
-  }, [wakeConsistency.variance, executionScore.score, streak, t]);
+  }, [variance, executionScore, streak, t]);
 
   return insight;
 }

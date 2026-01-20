@@ -45,11 +45,15 @@ export default function DashboardScreen() {
   const cognitiveActivationData = useCognitiveActivation();
 
   // Get current streak and latency data
-  const currentStreak = useCurrentStreak(selectedPeriod);
+  const currentStreak = useCurrentStreak();
   const avgLatency = useAvgLatency(selectedPeriod);
 
   // Get daily insight based on metrics
-  const dailyInsight = useDailyInsight(selectedPeriod);
+  const dailyInsight = useDailyInsight({
+    variance: wakeConsistencyData.variance,
+    executionScore: executionData.score,
+    streak: currentStreak,
+  });
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
