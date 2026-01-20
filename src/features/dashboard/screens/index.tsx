@@ -6,11 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScrollView, View } from 'react-native';
 
 import { AddWidget } from '../components/add-widget';
+import { useCognitiveActivation } from '../hooks/use-cognitive-activation';
 import { useExecutionScore } from '../hooks/use-execution-score';
 import { useWakeConsistency } from '../hooks/use-wake-consistency';
 
 import { Header } from '@/components/header';
 import { SegmentedControl } from '@/components/segmented-control';
+import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
 import { DailyExecutionScore } from '@/features/dashboard/components/widgets/daily-execution-score';
 import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
 import type { PeriodType } from '@/features/dashboard/types';
@@ -33,6 +35,9 @@ export default function DashboardScreen() {
   // Get real wake consistency data from database
   const wakeConsistencyData = useWakeConsistency(selectedPeriod);
 
+  // Get cognitive activation data based on selected period
+  const cognitiveActivationData = useCognitiveActivation(selectedPeriod);
+
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
@@ -46,7 +51,7 @@ export default function DashboardScreen() {
           { value: 'day', label: t('dashboard.period.day') },
           { value: 'week', label: t('dashboard.period.week') },
           { value: 'month', label: t('dashboard.period.month') },
-          { value: 'custom', label: t('dashboard.period.custom') },
+          // { value: 'custom', label: t('dashboard.period.custom') },
         ]}
         selectedValue={selectedPeriod}
         onValueChange={setSelectedPeriod}
@@ -75,12 +80,13 @@ export default function DashboardScreen() {
           />
         )}
 
+        {/* Cognitive Activation */}
+        {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
+          <CognitiveActivation data={cognitiveActivationData} period={selectedPeriod} />
+        )}
+
         <AddWidget />
       </ScrollView>
     </View>
   );
 }
-
-// WakeConsistency tem que integrar com o valor selecionado de SegmentedControl, certo ?
-
-// Os arquivos precisam ser internacionalizados, migrar para o padrão i18n do projeto
