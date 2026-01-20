@@ -17,6 +17,26 @@ export const dashboardEN = {
   'dashboard.executionScore.comparisonPeriod.week': 'vs last 7 days',
   'dashboard.executionScore.comparisonPeriod.month': 'vs last 30 days',
   'dashboard.executionScore.comparisonPeriod.custom': 'vs previous period',
+  'dashboard.executionScore.infoModal.title': 'Execution Score',
+  'dashboard.executionScore.infoModal.missionParameters': 'Mission Parameters',
+  'dashboard.executionScore.infoModal.description':
+    'Your morning performance is quantified through three critical vectors. Precision is mandatory.',
+  'dashboard.executionScore.infoModal.targetSync': 'Target Sync',
+  'dashboard.executionScore.infoModal.cognitiveIgnition': 'Cognitive Ignition',
+  'dashboard.executionScore.infoModal.immediateExecution': 'Immediate Execution',
+  'dashboard.executionScore.infoModal.alarmCompletion.title': 'Challenge Completion',
+  'dashboard.executionScore.infoModal.alarmCompletion.description':
+    'Mental acuity verification via puzzles. Success rate determines ignition status.',
+  'dashboard.executionScore.infoModal.wakeConsistency.title': 'Wake Consistency',
+  'dashboard.executionScore.infoModal.wakeConsistency.description':
+    'Aligning actual wake time with target. Maximum score requires <5 min variance.',
+  'dashboard.executionScore.infoModal.snoozePenalty.title': 'Snooze Avoidance',
+  'dashboard.executionScore.infoModal.snoozePenalty.description':
+    'Zero latency required. Any snoozing activity degrades the execution multiplier.',
+  'dashboard.executionScore.infoModal.systemOutput': 'System Output',
+  'dashboard.executionScore.infoModal.systemOutputDescription':
+    'The aggregated score serves as your daily performance benchmark. Consistency over 90 establishes a high-performance baseline.',
+  'dashboard.executionScore.infoModal.targetBenchmark': 'Target Benchmark',
   'dashboard.wakeConsistency.title': 'Wake Consistency',
   'dashboard.wakeConsistency.details': 'Details',
   'dashboard.wakeConsistency.target': 'Target',

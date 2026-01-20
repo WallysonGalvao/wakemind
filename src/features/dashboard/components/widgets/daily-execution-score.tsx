@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import type { PeriodType } from '../../types';
 
@@ -30,6 +31,7 @@ export function DailyExecutionScore({
   sparklineData = [],
 }: DailyExecutionScoreProps) {
   const { t } = useTranslation();
+  const router = useRouter();
   const shadowStyle = useShadowStyle('sm');
   const isPositive = percentageChange >= 0;
 
@@ -74,13 +76,26 @@ export function DailyExecutionScore({
   // Dynamic stroke color based on trend
   const strokeColor = isPositive ? '#135bec' : '#ef4444'; // green-500 : red-500
 
+  const handleInfoPress = () => {
+    router.push('/dashboard/modals/execution-score-info');
+  };
+
   return (
     <View className="flex-col gap-4">
       {/* Header */}
-      <View className="flex-row items-center justify-between px-1">
+      <View className="flex-row items-center gap-2 px-1">
         <Text className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
           {t(`dashboard.executionScore.title.${period}`)}
         </Text>
+        <Pressable
+          onPress={handleInfoPress}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.info')}
+          accessibilityHint={t('common.infoModal.accessibilityHint')}
+        >
+          <MaterialSymbol name="info" size={20} className="text-slate-400 dark:text-slate-500" />
+        </Pressable>
       </View>
 
       {/* Card */}
