@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 import { View } from 'react-native';
@@ -10,6 +11,8 @@ import type { PeriodType } from '../types';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface DailyExecutionScoreProps {
   score: number;
@@ -29,6 +32,15 @@ export function DailyExecutionScore({
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('sm');
   const isPositive = percentageChange >= 0;
+
+  // Animation values
+  const pathProgress = useSharedValue(0);
+
+  // Trigger animation when component mounts or data changes
+  useEffect(() => {
+    pathProgress.value = 0;
+    pathProgress.value = withTiming(1, { duration: 1000 });
+  }, [sparklineData, pathProgress]);
 
   // Generate dynamic SVG path from sparkline data
   const generateSparklinePath = () => {
@@ -52,6 +64,16 @@ export function DailyExecutionScore({
       .join(' ');
   };
 
+  const sparklinePath = generateSparklinePath();
+
+  // Animated props for the path
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: (1 - pathProgress.value) * 500,
+  }));
+
+  // Dynamic stroke color based on trend
+  const strokeColor = isPositive ? '#135bec' : '#ef4444'; // green-500 : red-500
+
   return (
     <View
       className="rounded-xl border border-slate-200 bg-white p-6 dark:border-transparent dark:bg-surface-dark"
@@ -74,12 +96,16 @@ export function DailyExecutionScore({
         {/* Mini Sparkline */}
         <View className="h-12 w-24">
           <Svg width="100%" height="100%" viewBox="0 0 100 50">
-            <Path
-              d={generateSparklinePath()}
+            <AnimatedPath
+              d={sparklinePath}
               fill="none"
-              stroke="#135bec"
-              strokeWidth="2"
+              stroke={strokeColor}
+              strokeWidth="2.5"
+              strokeDasharray="500"
+              animatedProps={animatedProps}
               vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </Svg>
         </View>
