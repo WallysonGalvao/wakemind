@@ -47,4 +47,42 @@ export const dashboardPT = {
   'dashboard.wakeConsistency.infoModal.consistencyGoalDescription':
     'Manter uma variação abaixo de 5 minutos demonstra excelente consistência no horário de despertar e ajuda a construir fortes hábitos matinais.',
   'dashboard.wakeConsistency.infoModal.optimalVariance': 'Variação Alvo',
+  'dashboard.cognitiveActivation.title': 'Ativação Cognitiva',
+  'dashboard.cognitiveActivation.lastDays': 'Últimos {{days}} Dias',
+  'dashboard.cognitiveActivation.lastWeeks': 'Intensidade das Últimas {{weeks}} Semanas',
+  'dashboard.cognitiveActivation.activeDays': 'dias ativos',
+  'dashboard.cognitiveActivation.total': 'Total',
+  'dashboard.cognitiveActivation.avgScore': 'Média',
+  'dashboard.cognitiveActivation.legend.less': 'Menos',
+  'dashboard.cognitiveActivation.legend.more': 'Mais',
+  'dashboard.cognitiveActivation.period.day': 'Últimos 7 Dias',
+  'dashboard.cognitiveActivation.period.week': 'Últimos 30 Dias',
+  'dashboard.cognitiveActivation.period.month': 'Últimos 90 Dias',
+  'dashboard.cognitiveActivation.dayLabels.sunday': 'D',
+  'dashboard.cognitiveActivation.dayLabels.monday': 'S',
+  'dashboard.cognitiveActivation.dayLabels.tuesday': 'T',
+  'dashboard.cognitiveActivation.dayLabels.wednesday': 'Q',
+  'dashboard.cognitiveActivation.dayLabels.thursday': 'Q',
+  'dashboard.cognitiveActivation.dayLabels.friday': 'S',
+  'dashboard.cognitiveActivation.dayLabels.saturday': 'S',
+  'dashboard.cognitiveActivation.infoModal.title': 'Ativação Cognitiva',
+  'dashboard.cognitiveActivation.infoModal.activityTracking': 'Rastreamento de Atividade',
+  'dashboard.cognitiveActivation.infoModal.description':
+    'O mapa de calor de Ativação Cognitiva visualiza sua atividade de conclusão de alarmes e desempenho cognitivo nos últimos 90 dias, similar ao gráfico de contribuições do GitHub.',
+  'dashboard.cognitiveActivation.infoModal.heatmapLabel': 'Mapeamento Visual',
+  'dashboard.cognitiveActivation.infoModal.intensityLabel': 'Intensidade de Cor',
+  'dashboard.cognitiveActivation.infoModal.patternsLabel': 'Reconhecimento de Padrões',
+  'dashboard.cognitiveActivation.infoModal.heatmap.title': 'Mapa de Calor de Atividade',
+  'dashboard.cognitiveActivation.infoModal.heatmap.description':
+    'Cada quadrado representa um dia. A visualização mostra sua consistência em completar desafios de alarme durante um período de 90 dias.',
+  'dashboard.cognitiveActivation.infoModal.intensity.title': 'Cores Baseadas em Pontuação',
+  'dashboard.cognitiveActivation.infoModal.intensity.description':
+    'Cores mais escuras indicam pontuações cognitivas médias mais altas naquele dia. Dias sem conclusões aparecem em cinza claro.',
+  'dashboard.cognitiveActivation.infoModal.patterns.title': 'Identificar Tendências',
+  'dashboard.cognitiveActivation.infoModal.patterns.description':
+    'Identifique padrões em sua rotina matinal, reconheça semanas fortes e descubra quando seu desempenho cognitivo atinge o pico.',
+  'dashboard.cognitiveActivation.infoModal.trackingPeriod': 'Visão Histórica',
+  'dashboard.cognitiveActivation.infoModal.trackingPeriodDescription':
+    'O mapa de calor exibe 90 dias de dados históricos, oferecendo uma visão abrangente das tendências de desempenho matinal a longo prazo.',
+  'dashboard.cognitiveActivation.infoModal.historyLength': 'Intervalo de Dados',
 };

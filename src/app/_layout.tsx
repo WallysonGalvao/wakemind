@@ -176,6 +176,13 @@ function RootLayout() {
                   headerShown: true,
                 }}
               />
+              <Stack.Screen
+                name="dashboard/modals/cognitive-activation-info"
+                options={{
+                  presentation: 'modal',
+                  headerShown: true,
+                }}
+              />
 
               {/* Settings */}
               <Stack.Screen

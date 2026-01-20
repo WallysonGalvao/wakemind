@@ -67,4 +67,42 @@ export const dashboardEN = {
   'dashboard.wakeConsistency.infoModal.consistencyGoalDescription':
     'Maintaining a variance below 5 minutes demonstrates excellent wake time consistency and helps build strong morning habits.',
   'dashboard.wakeConsistency.infoModal.optimalVariance': 'Target Variance',
+  'dashboard.cognitiveActivation.title': 'Cognitive Activation',
+  'dashboard.cognitiveActivation.lastDays': 'Last {{days}} Days',
+  'dashboard.cognitiveActivation.lastWeeks': 'Last {{weeks}} Weeks Intensity',
+  'dashboard.cognitiveActivation.activeDays': 'active days',
+  'dashboard.cognitiveActivation.total': 'Total',
+  'dashboard.cognitiveActivation.avgScore': 'Avg Score',
+  'dashboard.cognitiveActivation.legend.less': 'Less',
+  'dashboard.cognitiveActivation.legend.more': 'More',
+  'dashboard.cognitiveActivation.period.day': 'Last 7 Days',
+  'dashboard.cognitiveActivation.period.week': 'Last 30 Days',
+  'dashboard.cognitiveActivation.period.month': 'Last 90 Days',
+  'dashboard.cognitiveActivation.dayLabels.sunday': 'S',
+  'dashboard.cognitiveActivation.dayLabels.monday': 'M',
+  'dashboard.cognitiveActivation.dayLabels.tuesday': 'T',
+  'dashboard.cognitiveActivation.dayLabels.wednesday': 'W',
+  'dashboard.cognitiveActivation.dayLabels.thursday': 'T',
+  'dashboard.cognitiveActivation.dayLabels.friday': 'F',
+  'dashboard.cognitiveActivation.dayLabels.saturday': 'S',
+  'dashboard.cognitiveActivation.infoModal.title': 'Cognitive Activation',
+  'dashboard.cognitiveActivation.infoModal.activityTracking': 'Activity Tracking',
+  'dashboard.cognitiveActivation.infoModal.description':
+    'The Cognitive Activation heatmap visualizes your alarm completion activity and cognitive performance over the last 90 days, similar to a GitHub contribution graph.',
+  'dashboard.cognitiveActivation.infoModal.heatmapLabel': 'Visual Mapping',
+  'dashboard.cognitiveActivation.infoModal.intensityLabel': 'Color Intensity',
+  'dashboard.cognitiveActivation.infoModal.patternsLabel': 'Pattern Recognition',
+  'dashboard.cognitiveActivation.infoModal.heatmap.title': 'Activity Heatmap',
+  'dashboard.cognitiveActivation.infoModal.heatmap.description':
+    'Each square represents a day. The visualization shows your consistency in completing alarm challenges over a 90-day period.',
+  'dashboard.cognitiveActivation.infoModal.intensity.title': 'Score-Based Colors',
+  'dashboard.cognitiveActivation.infoModal.intensity.description':
+    'Darker colors indicate higher average cognitive scores for that day. Days without completions appear in light gray.',
+  'dashboard.cognitiveActivation.infoModal.patterns.title': 'Identify Trends',
+  'dashboard.cognitiveActivation.infoModal.patterns.description':
+    'Spot patterns in your morning routine, identify strong weeks, and recognize when your cognitive performance peaks.',
+  'dashboard.cognitiveActivation.infoModal.trackingPeriod': 'Historical View',
+  'dashboard.cognitiveActivation.infoModal.trackingPeriodDescription':
+    'The heatmap displays 90 days of historical data, giving you a comprehensive view of your long-term morning performance trends.',
+  'dashboard.cognitiveActivation.infoModal.historyLength': 'Data Range',
 };

@@ -1,18 +1,20 @@
 /**
  * Database Seed for Development
  * Run this inside the app to populate with sample data
+ *
  * **O que o seed faz:**
-- ✅ Limpa dados existentes (alarms e completions)
-- ✅ Cria 3 alarmes de exemplo (Math, Memory, Logic)
-- ✅ Gera 30 dias de dados históricos realistas
-- ✅ Simula variações naturais:
-  - Acordar entre -15min (cedo) e +30min (atrasado)
-  - Cognitive scores entre 60-100 (melhores quando acorda cedo)
-  - Reaction time entre 10-60s (mais rápido quando acorda no horário)
-- ✅ Respeita o schedule de cada alarme (Daily, Weekdays, etc.)
-- ✅ Mostra resumo com estatísticas ao final
-
-Os dados gerados são perfeitos para testar o dashboard em todos os períodos (Day/Week/Month).
+ * - ✅ Limpa dados existentes (alarms e completions)
+ * - ✅ Cria 3 alarmes de exemplo (Math, Memory, Logic)
+ * - ✅ Gera 90 dias de dados históricos realistas para o Cognitive Activation heatmap
+ * - ✅ Simula variações naturais:
+ *   - Acordar entre -15min (cedo) e +30min (atrasado)
+ *   - Cognitive scores entre 60-100 (melhores quando acorda cedo)
+ *   - Reaction time entre 10-60s (mais rápido quando acorda no horário)
+ * - ✅ Respeita o schedule de cada alarme (Daily, Weekdays, etc.)
+ * - ✅ Mostra resumo com estatísticas ao final
+ *
+ * Os dados gerados são perfeitos para testar o dashboard em todos os períodos (Day/Week/Month)
+ * e visualizar o heatmap de Cognitive Activation com 90 dias de histórico.
  */
 
 import dayjs from 'dayjs';
@@ -56,7 +58,7 @@ const SAMPLE_ALARMS = [
   },
 ];
 
-const DAYS_TO_GENERATE = 30;
+const DAYS_TO_GENERATE = 90; // Generate 90 days for the Cognitive Activation heatmap
 
 // ============================================================================
 // Helper Functions
