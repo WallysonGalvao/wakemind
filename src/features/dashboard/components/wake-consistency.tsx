@@ -131,10 +131,10 @@ export function WakeConsistency({
             height={180}
             withVerticalLabels
             withHorizontalLabels={false}
-            withInnerLines={false}
+            withInnerLines
             withOuterLines={false}
             withVerticalLines={false}
-            withHorizontalLines={false}
+            withHorizontalLines
             withDots={false}
             bezier
             chartConfig={{
@@ -152,9 +152,10 @@ export function WakeConsistency({
                 r: '0',
               },
               propsForBackgroundLines: {
-                strokeDasharray: '',
-                stroke: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                strokeDasharray: '4 4 ',
+                stroke: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
                 strokeWidth: 1,
+                strokeOpacity: 0.5,
               },
             }}
             style={styles.chart}
