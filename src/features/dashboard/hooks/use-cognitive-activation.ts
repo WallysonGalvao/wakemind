@@ -5,7 +5,6 @@ import { gte } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { alarmCompletions } from '@/db/schema';
-import type { PeriodType } from '@/features/dashboard/types';
 
 interface CognitiveActivationData {
   date: string; // YYYY-MM-DD
@@ -13,38 +12,24 @@ interface CognitiveActivationData {
   avgScore: number; // Average cognitive score for the day
 }
 
-// Get number of days based on period
-function getDaysForPeriod(period: PeriodType): number {
-  switch (period) {
-    case 'day':
-      return 7; // Last 7 days (1 week)
-    case 'week':
-      return 30; // Last 30 days
-    case 'month':
-    case 'custom':
-    default:
-      return 90; // Last 90 days
-  }
-}
-
 /**
- * Custom hook to fetch cognitive activation data for contribution graph
- * Returns data based on the selected period
+ * Custom hook to fetch cognitive activation data for current month
+ * Returns data for all days in the current month
  */
-export function useCognitiveActivation(period: PeriodType = 'month'): CognitiveActivationData[] {
+export function useCognitiveActivation(): CognitiveActivationData[] {
   const [data, setData] = useState<CognitiveActivationData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const now = dayjs();
-      const numDays = getDaysForPeriod(period);
-      const startDate = now.subtract(numDays - 1, 'day').startOf('day');
+      const startOfMonth = now.startOf('month');
+      const endOfMonth = now.endOf('month');
 
-      // Fetch all completions in the period
+      // Fetch all completions in the current month
       const records = await db
         .select()
         .from(alarmCompletions)
-        .where(gte(alarmCompletions.date, startDate.format('YYYY-MM-DD')));
+        .where(gte(alarmCompletions.date, startOfMonth.format('YYYY-MM-DD')));
 
       // Group by date and calculate average score
       const groupedData = new Map<string, { scores: number[]; count: number }>();
@@ -57,10 +42,12 @@ export function useCognitiveActivation(period: PeriodType = 'month'): CognitiveA
         groupedData.set(dateKey, existing);
       });
 
-      // Convert to array format
+      // Convert to array format for all days in month
       const result: CognitiveActivationData[] = [];
-      for (let i = 0; i < numDays; i++) {
-        const date = startDate.add(i, 'day').format('YYYY-MM-DD');
+      const daysInMonth = endOfMonth.date();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = dayjs(startOfMonth).date(day).format('YYYY-MM-DD');
         const dayData = groupedData.get(date);
 
         if (dayData && dayData.scores.length > 0) {
@@ -83,7 +70,7 @@ export function useCognitiveActivation(period: PeriodType = 'month'): CognitiveA
     };
 
     fetchData();
-  }, [period]);
+  }, []); // Only fetch once when component mounts
 
   return data;
 }

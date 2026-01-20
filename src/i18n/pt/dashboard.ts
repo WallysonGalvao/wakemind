@@ -68,21 +68,21 @@ export const dashboardPT = {
   'dashboard.cognitiveActivation.infoModal.title': 'Ativação Cognitiva',
   'dashboard.cognitiveActivation.infoModal.activityTracking': 'Rastreamento de Atividade',
   'dashboard.cognitiveActivation.infoModal.description':
-    'O mapa de calor de Ativação Cognitiva visualiza sua atividade de conclusão de alarmes e desempenho cognitivo nos últimos 90 dias, similar ao gráfico de contribuições do GitHub.',
+    'O calendário de Ativação Cognitiva visualiza sua atividade de conclusão de alarmes e desempenho cognitivo do mês atual em uma visualização de calendário mensal.',
   'dashboard.cognitiveActivation.infoModal.heatmapLabel': 'Mapeamento Visual',
   'dashboard.cognitiveActivation.infoModal.intensityLabel': 'Intensidade de Cor',
   'dashboard.cognitiveActivation.infoModal.patternsLabel': 'Reconhecimento de Padrões',
   'dashboard.cognitiveActivation.infoModal.heatmap.title': 'Mapa de Calor de Atividade',
   'dashboard.cognitiveActivation.infoModal.heatmap.description':
-    'Cada quadrado representa um dia. A visualização mostra sua consistência em completar desafios de alarme durante um período de 90 dias.',
+    'Cada quadrado representa um dia. O calendário mostra sua consistência em completar desafios de alarme durante o mês atual.',
   'dashboard.cognitiveActivation.infoModal.intensity.title': 'Cores Baseadas em Pontuação',
   'dashboard.cognitiveActivation.infoModal.intensity.description':
     'Cores mais escuras indicam pontuações cognitivas médias mais altas naquele dia. Dias sem conclusões aparecem em cinza claro.',
   'dashboard.cognitiveActivation.infoModal.patterns.title': 'Identificar Tendências',
   'dashboard.cognitiveActivation.infoModal.patterns.description':
     'Identifique padrões em sua rotina matinal, reconheça semanas fortes e descubra quando seu desempenho cognitivo atinge o pico.',
-  'dashboard.cognitiveActivation.infoModal.trackingPeriod': 'Visão Histórica',
+  'dashboard.cognitiveActivation.infoModal.trackingPeriod': 'Visão do Mês Atual',
   'dashboard.cognitiveActivation.infoModal.trackingPeriodDescription':
-    'O mapa de calor exibe 90 dias de dados históricos, oferecendo uma visão abrangente das tendências de desempenho matinal a longo prazo.',
+    'O calendário exibe o mês atual, oferecendo uma visão clara do seu desempenho matinal diário ao longo do mês.',
   'dashboard.cognitiveActivation.infoModal.historyLength': 'Intervalo de Dados',
 };

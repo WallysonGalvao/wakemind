@@ -35,8 +35,8 @@ export default function DashboardScreen() {
   // Get real wake consistency data from database
   const wakeConsistencyData = useWakeConsistency(selectedPeriod);
 
-  // Get cognitive activation data based on selected period
-  const cognitiveActivationData = useCognitiveActivation(selectedPeriod);
+  // Get cognitive activation data for current month
+  const cognitiveActivationData = useCognitiveActivation();
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
@@ -82,7 +82,7 @@ export default function DashboardScreen() {
 
         {/* Cognitive Activation */}
         {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
-          <CognitiveActivation data={cognitiveActivationData} period={selectedPeriod} />
+          <CognitiveActivation data={cognitiveActivationData} />
         )}
 
         <AddWidget />

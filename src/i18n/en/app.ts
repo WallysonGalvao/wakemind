@@ -167,6 +167,7 @@ export const appEN = {
   'permissions.openSettings': 'Open Settings',
 
   // Common
+  'common.locale': 'en-US',
   'common.am': 'AM',
   'common.pm': 'PM',
   'common.save': 'Save',

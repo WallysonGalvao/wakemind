@@ -3,17 +3,16 @@ import React, { useMemo } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
-import type { PeriodType } from '@/features/dashboard/types';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 
 interface CognitiveActivationProps {
   data: Array<{ date: string; count: number; avgScore: number }>;
-  period: PeriodType;
 }
 
 // Get opacity class based on score (0-100)
@@ -26,12 +25,13 @@ function getOpacityClass(score: number): string {
   return 'bg-primary-600 dark:bg-primary-400';
 }
 
-// Day labels (S = Sunday, M = Monday, etc.)
-const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+// Day labels starting from Monday (M = Monday, T = Tuesday, etc.)
+const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-export function CognitiveActivation({ data, period }: CognitiveActivationProps) {
+export function CognitiveActivation({ data }: CognitiveActivationProps) {
   const { t } = useTranslation();
   const router = useRouter();
+  const shadowStyle = useShadowStyle('sm');
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -39,23 +39,11 @@ export function CognitiveActivation({ data, period }: CognitiveActivationProps) 
     router.push('/dashboard/modals/cognitive-activation-info');
   };
 
-  // Calculate number of weeks based on data length
-  const numWeeks = Math.max(1, Math.ceil(data.length / 7));
-
-  // Get the period description based on period type
-  const periodDescription = useMemo(() => {
-    switch (period) {
-      case 'day':
-        return t('dashboard.cognitiveActivation.period.day');
-      case 'week':
-        return t('dashboard.cognitiveActivation.period.week');
-      case 'month':
-        return t('dashboard.cognitiveActivation.period.month');
-      case 'custom':
-      default:
-        return t('dashboard.cognitiveActivation.lastWeeks', { weeks: numWeeks });
-    }
-  }, [period, numWeeks, t]);
+  // Get current month name
+  const currentMonthName = useMemo(() => {
+    const now = new Date();
+    return new Intl.DateTimeFormat(t('common.locale'), { month: 'long' }).format(now);
+  }, [t]);
 
   // Create a map of date -> score for quick lookup
   const scoreMap = useMemo(() => {
@@ -66,51 +54,40 @@ export function CognitiveActivation({ data, period }: CognitiveActivationProps) 
     return map;
   }, [data]);
 
-  // Build the grid: rows = days of week (0-6), columns = weeks
-  const gridData = useMemo(() => {
-    if (data.length === 0) {
-      return { rows: [], totalWeeks: 0 };
+  // Build the grid for current month only
+  const monthGrid = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    // Get first day of month and total days in month
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
+    // Convert to Monday-based week (Monday = 0, Sunday = 6)
+    const mondayBasedStart = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
+
+    // Build array of all days in month with their scores
+    const days: Array<{ date: string; score: number; dayOfWeek: number } | null> = [];
+
+    // Add empty cells for days before month starts (Monday-based)
+    for (let i = 0; i < mondayBasedStart; i++) {
+      days.push(null);
     }
 
-    // Get the first and last date in data
-    const firstDate = new Date(data[0].date);
-    const lastDate = new Date(data[data.length - 1].date);
+    // Add all days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dateStr = date.toISOString().split('T')[0];
+      const score = scoreMap.get(dateStr) || 0;
+      const dayOfWeek = date.getDay();
 
-    // Get day of week of first date (0 = Sunday)
-    const startDayOfWeek = firstDate.getDay();
-
-    // Calculate total days to display
-    const totalDays =
-      Math.ceil((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    const totalWeeks = Math.ceil((totalDays + startDayOfWeek) / 7);
-
-    // Build grid - each row is a day of week (0-6), each column is a week
-    const rows: Array<Array<{ date: string; score: number } | null>> = [];
-
-    for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-      const row: Array<{ date: string; score: number } | null> = [];
-
-      for (let week = 0; week < totalWeeks; week++) {
-        // Calculate the date for this cell
-        const dayOffset = week * 7 + dayOfWeek - startDayOfWeek;
-        const cellDate = new Date(firstDate);
-        cellDate.setDate(firstDate.getDate() + dayOffset);
-        const dateStr = cellDate.toISOString().split('T')[0];
-
-        // Check if this date is in our data range
-        if (cellDate >= firstDate && cellDate <= lastDate) {
-          const score = scoreMap.get(dateStr) || 0;
-          row.push({ date: dateStr, score });
-        } else {
-          row.push(null); // Empty cell for dates outside range
-        }
-      }
-
-      rows.push(row);
+      days.push({ date: dateStr, score, dayOfWeek });
     }
 
-    return { rows, totalWeeks };
-  }, [data, scoreMap]);
+    return days;
+  }, [scoreMap]);
 
   return (
     <View className="flex-col gap-4">
@@ -135,11 +112,15 @@ export function CognitiveActivation({ data, period }: CognitiveActivationProps) 
       </View>
 
       {/* Card */}
-      <View className="dark:border-surface-border rounded-xl border border-gray-200 bg-white p-5 dark:bg-surface-dark">
+      {/* <View className="flex-1 bg-background-light dark:bg-background-dark"></View> */}
+      <View
+        className="rounded-xl border border-slate-200 bg-white p-6 dark:border-transparent dark:bg-surface-dark"
+        style={shadowStyle}
+      >
         {/* Stats Header */}
         <View className="mb-4 flex-row items-center justify-between">
           <View>
-            <Text className="text-xs font-medium text-gray-400">{periodDescription}</Text>
+            <Text className="text-xs font-medium capitalize text-gray-400">{currentMonthName}</Text>
           </View>
 
           {/* Legend */}
@@ -158,44 +139,60 @@ export function CognitiveActivation({ data, period }: CognitiveActivationProps) 
         </View>
 
         {/* Custom Grid Heatmap */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerClassName="flex-row gap-1"
-        >
-          {/* Day Labels Column */}
-          <View className="mr-1 flex-col gap-1">
+        <View className="flex-col items-center gap-1 ">
+          {/* Day Labels - Horizontal */}
+          <View className="flex-row gap-0.5">
             {DAY_LABELS.map((label, index) => (
-              <View key={index} className="h-6 w-6 items-center justify-center">
+              <View key={index} className="h-8 w-8 items-center justify-center">
                 <Text className="text-[10px] text-gray-500">{label}</Text>
               </View>
             ))}
           </View>
 
-          {/* Grid Columns (each column is a week) */}
-          {gridData.totalWeeks > 0 &&
-            Array.from({ length: gridData.totalWeeks }).map((_, weekIndex) => (
-              <View key={weekIndex} className="flex-col gap-1">
-                {gridData.rows.map((row, dayIndex) => {
-                  const cell = row[weekIndex];
-                  if (cell === null) {
+          {/* Calendar Grid - Horizontal rows */}
+          <View className="flex-col gap-0.5">
+            {/* Split days into weeks (rows of 7) */}
+            {Array.from({ length: Math.ceil(monthGrid.length / 7) }).map((_, weekIndex) => (
+              <View key={weekIndex} className="flex-row gap-0.5">
+                {Array.from({ length: 7 }).map((_, dayIndex) => {
+                  const cellIndex = weekIndex * 7 + dayIndex;
+                  const cell = monthGrid[cellIndex];
+
+                  if (!cell) {
                     return (
                       <View
                         key={`${weekIndex}-${dayIndex}`}
-                        className="h-6 w-6 rounded-sm bg-transparent"
+                        className="h-8 w-8 rounded-md bg-transparent"
                       />
                     );
                   }
+
+                  // Check if this is today
+                  const today = new Date().toISOString().split('T')[0];
+                  const isToday = cell.date === today;
+
+                  if (isToday) {
+                    return (
+                      <View
+                        key={`${weekIndex}-${dayIndex}`}
+                        className="h-8 w-8 items-center justify-center rounded-md border-2 border-brand-primary bg-transparent"
+                      >
+                        <View className={`h-2 w-2 rounded-full ${getOpacityClass(cell.score)}`} />
+                      </View>
+                    );
+                  }
+
                   return (
                     <View
                       key={`${weekIndex}-${dayIndex}`}
-                      className={`h-6 w-6 rounded-sm ${getOpacityClass(cell.score)}`}
+                      className={`h-8 w-8 rounded-md ${getOpacityClass(cell.score)}`}
                     />
                   );
                 })}
               </View>
             ))}
-        </ScrollView>
+          </View>
+        </View>
       </View>
     </View>
   );

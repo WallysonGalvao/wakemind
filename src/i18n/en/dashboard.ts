@@ -88,21 +88,21 @@ export const dashboardEN = {
   'dashboard.cognitiveActivation.infoModal.title': 'Cognitive Activation',
   'dashboard.cognitiveActivation.infoModal.activityTracking': 'Activity Tracking',
   'dashboard.cognitiveActivation.infoModal.description':
-    'The Cognitive Activation heatmap visualizes your alarm completion activity and cognitive performance over the last 90 days, similar to a GitHub contribution graph.',
+    'The Cognitive Activation calendar visualizes your alarm completion activity and cognitive performance for the current month in a monthly calendar view.',
   'dashboard.cognitiveActivation.infoModal.heatmapLabel': 'Visual Mapping',
   'dashboard.cognitiveActivation.infoModal.intensityLabel': 'Color Intensity',
   'dashboard.cognitiveActivation.infoModal.patternsLabel': 'Pattern Recognition',
   'dashboard.cognitiveActivation.infoModal.heatmap.title': 'Activity Heatmap',
   'dashboard.cognitiveActivation.infoModal.heatmap.description':
-    'Each square represents a day. The visualization shows your consistency in completing alarm challenges over a 90-day period.',
+    'Each square represents a day. The calendar shows your consistency in completing alarm challenges throughout the current month.',
   'dashboard.cognitiveActivation.infoModal.intensity.title': 'Score-Based Colors',
   'dashboard.cognitiveActivation.infoModal.intensity.description':
     'Darker colors indicate higher average cognitive scores for that day. Days without completions appear in light gray.',
   'dashboard.cognitiveActivation.infoModal.patterns.title': 'Identify Trends',
   'dashboard.cognitiveActivation.infoModal.patterns.description':
     'Spot patterns in your morning routine, identify strong weeks, and recognize when your cognitive performance peaks.',
-  'dashboard.cognitiveActivation.infoModal.trackingPeriod': 'Historical View',
+  'dashboard.cognitiveActivation.infoModal.trackingPeriod': 'Current Month View',
   'dashboard.cognitiveActivation.infoModal.trackingPeriodDescription':
-    'The heatmap displays 90 days of historical data, giving you a comprehensive view of your long-term morning performance trends.',
+    'The calendar displays the current month, giving you a clear view of your daily morning performance throughout the month.',
   'dashboard.cognitiveActivation.infoModal.historyLength': 'Data Range',
 };

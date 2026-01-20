@@ -169,6 +169,7 @@ export const appPT = {
   'permissions.openSettings': 'Abrir Configurações',
 
   // Common
+  'common.locale': 'pt-BR',
   'common.am': 'AM',
   'common.pm': 'PM',
   'common.save': 'Salvar',

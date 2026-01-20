@@ -1,5 +1,6 @@
 import React, { useCallback, useLayoutEffect } from 'react';
 
+import dayjs from 'dayjs';
 import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -50,6 +51,11 @@ export default function CognitiveActivationInfoScreen() {
   const handleClose = useCallback(() => {
     router.back();
   }, [router]);
+
+  // Get current month name
+  const currentMonthName = new Intl.DateTimeFormat(t('common.locale'), {
+    month: 'long',
+  }).format(dayjs().toDate());
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -128,7 +134,9 @@ export default function CognitiveActivationInfoScreen() {
                 <Text className="text-[10px] font-bold uppercase text-slate-400">
                   {t('dashboard.cognitiveActivation.infoModal.historyLength')}
                 </Text>
-                <Text className="text-xl font-bold tabular-nums text-white">90 days</Text>
+                <Text className="text-xl font-bold capitalize tabular-nums text-white">
+                  {currentMonthName}
+                </Text>
               </View>
             </View>
           </View>
