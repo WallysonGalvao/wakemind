@@ -6,13 +6,11 @@ import Svg, { Path } from 'react-native-svg';
 
 import { View } from 'react-native';
 
-import type { PeriodType } from '../types';
+import type { PeriodType } from '../../types';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
-
-const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface DailyExecutionScoreProps {
   score: number;
@@ -21,6 +19,8 @@ interface DailyExecutionScoreProps {
   period?: PeriodType;
   sparklineData?: number[];
 }
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 export function DailyExecutionScore({
   score,
@@ -75,62 +75,67 @@ export function DailyExecutionScore({
   const strokeColor = isPositive ? '#135bec' : '#ef4444'; // green-500 : red-500
 
   return (
-    <View
-      className="rounded-xl border border-slate-200 bg-white p-6 dark:border-transparent dark:bg-surface-dark"
-      style={shadowStyle}
-    >
-      {/* Header with score and mini chart */}
-      <View className="mb-2 flex-row items-start justify-between">
-        <View>
-          <Text className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {t(`dashboard.executionScore.title.${period}`)}
-          </Text>
+    <View className="flex-col gap-4">
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-1">
+        <Text className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+          {t(`dashboard.executionScore.title.${period}`)}
+        </Text>
+      </View>
+
+      {/* Card */}
+      <View
+        className="rounded-xl border border-slate-200 bg-white p-6 dark:border-transparent dark:bg-surface-dark"
+        style={shadowStyle}
+      >
+        {/* Score and mini chart */}
+        <View className="mb-2 flex-row items-start justify-between">
           <View className="flex-row items-baseline gap-2">
             <Text className="text-5xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
               {score}
             </Text>
             <Text className="text-lg font-medium text-slate-400">/{maxScore}</Text>
           </View>
+
+          {/* Mini Sparkline */}
+          <View className="h-12 w-24">
+            <Svg width="100%" height="100%" viewBox="0 0 100 50">
+              <AnimatedPath
+                d={sparklinePath}
+                fill="none"
+                stroke={strokeColor}
+                strokeWidth="2.5"
+                strokeDasharray="500"
+                animatedProps={animatedProps}
+                vectorEffect="non-scaling-stroke"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </Svg>
+          </View>
         </View>
 
-        {/* Mini Sparkline */}
-        <View className="h-12 w-24">
-          <Svg width="100%" height="100%" viewBox="0 0 100 50">
-            <AnimatedPath
-              d={sparklinePath}
-              fill="none"
-              stroke={strokeColor}
-              strokeWidth="2.5"
-              strokeDasharray="500"
-              animatedProps={animatedProps}
-              vectorEffect="non-scaling-stroke"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {/* Trend indicator */}
+        <View className="mt-2 flex-row items-center gap-2">
+          <View
+            className={`flex-row items-center rounded px-2 py-0.5 ${
+              isPositive ? 'bg-green-500/10' : 'bg-red-500/10'
+            }`}
+          >
+            <MaterialSymbol
+              name={isPositive ? 'trending_up' : 'trending_down'}
+              size={14}
+              className={`mr-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}
             />
-          </Svg>
-        </View>
-      </View>
-
-      {/* Trend indicator */}
-      <View className="mt-2 flex-row items-center gap-2">
-        <View
-          className={`flex-row items-center rounded px-2 py-0.5 ${
-            isPositive ? 'bg-green-500/10' : 'bg-red-500/10'
-          }`}
-        >
-          <MaterialSymbol
-            name={isPositive ? 'trending_up' : 'trending_down'}
-            size={14}
-            className={`mr-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}
-          />
-          <Text className={`text-sm font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-            {isPositive ? '+' : ''}
-            {percentageChange.toFixed(1)}%
+            <Text className={`text-sm font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+              {isPositive ? '+' : ''}
+              {percentageChange.toFixed(1)}%
+            </Text>
+          </View>
+          <Text className="text-sm text-slate-500 dark:text-slate-400">
+            {t(`dashboard.executionScore.comparisonPeriod.${period}`)}
           </Text>
         </View>
-        <Text className="text-sm text-slate-500 dark:text-slate-400">
-          {t(`dashboard.executionScore.comparisonPeriod.${period}`)}
-        </Text>
       </View>
     </View>
   );

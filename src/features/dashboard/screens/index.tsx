@@ -11,8 +11,8 @@ import { useWakeConsistency } from '../hooks/use-wake-consistency';
 
 import { Header } from '@/components/header';
 import { SegmentedControl } from '@/components/segmented-control';
-import { DailyExecutionScore } from '@/features/dashboard/components/daily-execution-score';
-import { WakeConsistency } from '@/features/dashboard/components/wake-consistency';
+import { DailyExecutionScore } from '@/features/dashboard/components/widgets/daily-execution-score';
+import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
 import type { PeriodType } from '@/features/dashboard/types';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useWidgetStore } from '@/stores/use-widget-store';
@@ -21,7 +21,7 @@ import { WidgetType } from '@/types/widgets';
 export default function DashboardScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { isWidgetEnabled } = useWidgetStore();
+  const enabledWidgets = useWidgetStore((state) => state.enabledWidgets);
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
 
@@ -55,7 +55,7 @@ export default function DashboardScreen() {
       {/* Content */}
       <ScrollView className="flex-1" contentContainerClassName="p-4 gap-6">
         {/* Daily Execution Score */}
-        {isWidgetEnabled(WidgetType.EXECUTION_SCORE) && (
+        {enabledWidgets.has(WidgetType.EXECUTION_SCORE) && (
           <DailyExecutionScore
             score={executionData.score}
             percentageChange={executionData.percentageChange}
@@ -65,7 +65,7 @@ export default function DashboardScreen() {
         )}
 
         {/* Wake Consistency */}
-        {isWidgetEnabled(WidgetType.WAKE_CONSISTENCY) && (
+        {enabledWidgets.has(WidgetType.WAKE_CONSISTENCY) && (
           <WakeConsistency
             targetTime={wakeConsistencyData.targetTime}
             averageTime={wakeConsistencyData.averageTime}
@@ -80,3 +80,7 @@ export default function DashboardScreen() {
     </View>
   );
 }
+
+// WakeConsistency tem que integrar com o valor selecionado de SegmentedControl, certo ?
+
+// Os arquivos precisam ser internacionalizados, migrar para o padrão i18n do projeto

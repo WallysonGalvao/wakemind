@@ -35,7 +35,7 @@ export const appEN = {
   'newAlarm.cognitiveActivation.title': 'Cognitive Activation',
   'newAlarm.cognitiveActivation.required': 'Required',
   'newAlarm.challenges.math.title': 'Math Challenge',
-  'newAlarm.challenges.math.description': 'Solve 5 arithmetic equations to stop the alarm.',
+  'newAlarm.challenges.math.description': 'Solve arithmetic equations to stop the alarm.',
   'newAlarm.challenges.memory.title': 'Memory Matrix',
   'newAlarm.challenges.memory.description': 'Memorize and recall a pattern of illuminated tiles.',
   'newAlarm.challenges.logic.title': 'Logic Puzzle',

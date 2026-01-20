@@ -63,7 +63,7 @@ export function getDefaultAlarmFormValues(): AlarmFormData {
     difficulty: DifficultyLevel.EASY,
     protocols: [
       { id: BackupProtocolId.SNOOZE, enabled: false },
-      { id: BackupProtocolId.WAKE_CHECK, enabled: true },
+      { id: BackupProtocolId.WAKE_CHECK, enabled: false },
       { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
     ],
   };
@@ -80,7 +80,7 @@ export const DEFAULT_ALARM_FORM_VALUES: AlarmFormData = {
   difficulty: DifficultyLevel.EASY,
   protocols: [
     { id: BackupProtocolId.SNOOZE, enabled: false },
-    { id: BackupProtocolId.WAKE_CHECK, enabled: true },
+    { id: BackupProtocolId.WAKE_CHECK, enabled: false },
     { id: BackupProtocolId.BARCODE_SCAN, enabled: false },
   ],
 };

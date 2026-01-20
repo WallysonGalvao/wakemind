@@ -1,6 +1,18 @@
 /**
  * Database Seed for Development
  * Run this inside the app to populate with sample data
+ * **O que o seed faz:**
+- ✅ Limpa dados existentes (alarms e completions)
+- ✅ Cria 3 alarmes de exemplo (Math, Memory, Logic)
+- ✅ Gera 30 dias de dados históricos realistas
+- ✅ Simula variações naturais:
+  - Acordar entre -15min (cedo) e +30min (atrasado)
+  - Cognitive scores entre 60-100 (melhores quando acorda cedo)
+  - Reaction time entre 10-60s (mais rápido quando acorda no horário)
+- ✅ Respeita o schedule de cada alarme (Daily, Weekdays, etc.)
+- ✅ Mostra resumo com estatísticas ao final
+
+Os dados gerados são perfeitos para testar o dashboard em todos os períodos (Day/Week/Month).
  */
 
 import dayjs from 'dayjs';

@@ -55,7 +55,7 @@ export default function WidgetsScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView className="flex-1" contentContainerClassName="p-4 gap-6 max-w-md mx-auto w-full">
+      <ScrollView className="flex-1" contentContainerClassName="gap-6 max-w-md mx-auto w-full">
         {/* Introduction */}
         <View className="mt-2 px-1">
           <Text className="mb-1 text-2xl font-bold text-[#0F1621]">
