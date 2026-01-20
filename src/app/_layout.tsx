@@ -120,6 +120,8 @@ function RootLayout() {
               />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="alarm/create-alarm" options={{ headerShown: false }} />
+
+              {/* Alarm */}
               <Stack.Screen
                 name="alarm/edit-alarm"
                 options={{
@@ -152,6 +154,16 @@ function RootLayout() {
                   gestureEnabled: false,
                 }}
               />
+
+              {/* Dashboard */}
+              <Stack.Screen
+                name="dashboard/widgets"
+                options={{
+                  headerShown: false,
+                }}
+              />
+
+              {/* Settings */}
               <Stack.Screen
                 name="settings/alarm-tone"
                 options={{

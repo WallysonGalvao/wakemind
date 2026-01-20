@@ -12,6 +12,7 @@ import { settingsPT } from './settings';
 import { sportsPT } from './sports';
 import { supportPT } from './support';
 import { tabsPT } from './tabs';
+import { widgetsPT } from './widgets';
 
 export default {
   ...appPT,
@@ -28,4 +29,5 @@ export default {
   ...privacyPolicyPT,
   ...supportPT,
   ...alarmSchedulerPT,
+  ...widgetsPT,
 };
