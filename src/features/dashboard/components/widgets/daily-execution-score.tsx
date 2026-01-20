@@ -9,6 +9,7 @@ import { Pressable, View } from 'react-native';
 
 import type { PeriodType } from '../../types';
 
+import { AnimatedCounter } from '@/components/animated-counter';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -106,9 +107,10 @@ export function DailyExecutionScore({
         {/* Score and mini chart */}
         <View className="mb-2 flex-row items-start justify-between">
           <View className="flex-row items-baseline gap-2">
-            <Text className="text-5xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white">
-              {score}
-            </Text>
+            <AnimatedCounter
+              value={score}
+              className="text-5xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-white"
+            />
             <Text className="text-lg font-medium text-slate-400">/{maxScore}</Text>
           </View>
 
@@ -133,9 +135,8 @@ export function DailyExecutionScore({
         {/* Trend indicator */}
         <View className="mt-2 flex-row items-center gap-2">
           <View
-            className={`flex-row items-center rounded px-2 py-0.5 ${
-              isPositive ? 'bg-green-500/10' : 'bg-red-500/10'
-            }`}
+            className={`flex-row items-center rounded px-2 py-0.5 ${isPositive ? 'bg-green-500/10' : 'bg-red-500/10'
+              }`}
           >
             <MaterialSymbol
               name={isPositive ? 'trending_up' : 'trending_down'}

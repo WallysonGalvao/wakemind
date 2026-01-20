@@ -109,4 +109,17 @@ export const dashboardEN = {
   'dashboard.currentStreak.daysOnTarget': 'Days on target',
   'dashboard.avgLatency.title': 'Avg Latency',
   'dashboard.avgLatency.timeToStandUp': 'Time to stand up',
+  'dashboard.dailyInsight.label': 'Insight',
+  'dashboard.dailyInsight.insights.wakeVariance':
+    'Reaction time degrades by 15% when wake time variance exceeds 10 minutes.',
+  'dashboard.dailyInsight.insights.streakMilestone':
+    "Impressive! You've maintained consistency for {{days}} days. Keep it up!",
+  'dashboard.dailyInsight.insights.lowScore':
+    'Your scores are lower this period. Try getting better sleep or increasing challenge difficulty.',
+  'dashboard.dailyInsight.insights.excellentConsistency':
+    'Excellent wake time consistency! Your variance is below 5 minutes.',
+  'dashboard.dailyInsight.insights.buildingMomentum':
+    'Great momentum! {{days}} days strong. Keep building your habit.',
+  'dashboard.dailyInsight.insights.keepItUp':
+    'Outstanding performance! Your execution score is excellent.',
 };

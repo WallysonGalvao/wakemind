@@ -9,6 +9,7 @@ import { AddWidget } from '../components/add-widget';
 import { useAvgLatency } from '../hooks/use-avg-latency';
 import { useCognitiveActivation } from '../hooks/use-cognitive-activation';
 import { useCurrentStreak } from '../hooks/use-current-streak';
+import { useDailyInsight } from '../hooks/use-daily-insight';
 import { useExecutionScore } from '../hooks/use-execution-score';
 import { useWakeConsistency } from '../hooks/use-wake-consistency';
 
@@ -18,6 +19,7 @@ import { AvgLatency } from '@/features/dashboard/components/widgets/avg-latency'
 import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
 import { CurrentStreak } from '@/features/dashboard/components/widgets/current-streak';
 import { DailyExecutionScore } from '@/features/dashboard/components/widgets/daily-execution-score';
+import { DailyInsight } from '@/features/dashboard/components/widgets/daily-insight';
 import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
 import type { PeriodType } from '@/features/dashboard/types';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
@@ -45,6 +47,9 @@ export default function DashboardScreen() {
   // Get current streak and latency data
   const currentStreak = useCurrentStreak(selectedPeriod);
   const avgLatency = useAvgLatency(selectedPeriod);
+
+  // Get daily insight based on metrics
+  const dailyInsight = useDailyInsight(selectedPeriod);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
@@ -77,6 +82,9 @@ export default function DashboardScreen() {
           />
         )}
 
+        {/* Daily Insight */}
+        {enabledWidgets.has(WidgetType.DAILY_INSIGHT) && <DailyInsight insight={dailyInsight} />}
+
         {/* Wake Consistency */}
         {enabledWidgets.has(WidgetType.WAKE_CONSISTENCY) && (
           <WakeConsistency
@@ -91,15 +99,15 @@ export default function DashboardScreen() {
         {/* Current Streak and Avg Latency Grid */}
         {(enabledWidgets.has(WidgetType.CURRENT_STREAK) ||
           enabledWidgets.has(WidgetType.AVG_LATENCY)) && (
-            <View className="flex-row gap-4">
-              {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
-                <CurrentStreak streak={currentStreak} />
-              )}
-              {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
-                <AvgLatency latencyMinutes={avgLatency} />
-              )}
-            </View>
-          )}
+          <View className="flex-row gap-4">
+            {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
+              <CurrentStreak streak={currentStreak} />
+            )}
+            {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
+              <AvgLatency latencyMinutes={avgLatency} />
+            )}
+          </View>
+        )}
 
         {/* Cognitive Activation */}
         {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
