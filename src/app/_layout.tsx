@@ -162,6 +162,13 @@ function RootLayout() {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen
+                name="dashboard/modals/execution-score-info"
+                options={{
+                  presentation: 'modal',
+                  headerShown: true,
+                }}
+              />
 
               {/* Settings */}
               <Stack.Screen
