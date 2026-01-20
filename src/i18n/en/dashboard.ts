@@ -18,25 +18,25 @@ export const dashboardEN = {
   'dashboard.executionScore.comparisonPeriod.month': 'vs last 30 days',
   'dashboard.executionScore.comparisonPeriod.custom': 'vs previous period',
   'dashboard.executionScore.infoModal.title': 'Execution Score',
-  'dashboard.executionScore.infoModal.missionParameters': 'Mission Parameters',
+  'dashboard.executionScore.infoModal.missionParameters': 'Performance Metrics',
   'dashboard.executionScore.infoModal.description':
-    'Your morning performance is quantified through three critical vectors. Precision is mandatory.',
-  'dashboard.executionScore.infoModal.targetSync': 'Target Sync',
-  'dashboard.executionScore.infoModal.cognitiveIgnition': 'Cognitive Ignition',
-  'dashboard.executionScore.infoModal.immediateExecution': 'Immediate Execution',
-  'dashboard.executionScore.infoModal.alarmCompletion.title': 'Challenge Completion',
+    'Your Execution Score represents the average of all cognitive scores from your completed alarm challenges during the selected period.',
+  'dashboard.executionScore.infoModal.challengeDifficulty': 'Challenge Difficulty',
+  'dashboard.executionScore.infoModal.completionSpeed': 'Completion Speed',
+  'dashboard.executionScore.infoModal.attempts': 'Number of Attempts',
+  'dashboard.executionScore.infoModal.alarmCompletion.title': 'Base Points',
   'dashboard.executionScore.infoModal.alarmCompletion.description':
-    'Mental acuity verification via puzzles. Success rate determines ignition status.',
-  'dashboard.executionScore.infoModal.wakeConsistency.title': 'Wake Consistency',
+    'Points vary by challenge difficulty: Easy challenges award 60pts, Medium 75pts, and Hard 90pts as your base score.',
+  'dashboard.executionScore.infoModal.wakeConsistency.title': 'Speed Bonus',
   'dashboard.executionScore.infoModal.wakeConsistency.description':
-    'Aligning actual wake time with target. Maximum score requires <5 min variance.',
-  'dashboard.executionScore.infoModal.snoozePenalty.title': 'Snooze Avoidance',
+    'Complete challenges quickly to earn bonus points. Solving in under 10 seconds can add up to +15pts to your score.',
+  'dashboard.executionScore.infoModal.snoozePenalty.title': 'Attempt Penalty',
   'dashboard.executionScore.infoModal.snoozePenalty.description':
-    'Zero latency required. Any snoozing activity degrades the execution multiplier.',
-  'dashboard.executionScore.infoModal.systemOutput': 'System Output',
+    'Each failed attempt deducts 10pts from your score. Additionally, taking more than 2 minutes results in a -10pts penalty.',
+  'dashboard.executionScore.infoModal.systemOutput': 'Performance Target',
   'dashboard.executionScore.infoModal.systemOutputDescription':
-    'The aggregated score serves as your daily performance benchmark. Consistency over 90 establishes a high-performance baseline.',
-  'dashboard.executionScore.infoModal.targetBenchmark': 'Target Benchmark',
+    'Your score ranges from 0-100. Maintaining an average above 90 indicates excellent morning performance and mental acuity.',
+  'dashboard.executionScore.infoModal.targetBenchmark': 'Excellence Threshold',
   'dashboard.wakeConsistency.title': 'Wake Consistency',
   'dashboard.wakeConsistency.details': 'Details',
   'dashboard.wakeConsistency.target': 'Target',
@@ -47,4 +47,24 @@ export const dashboardEN = {
   'dashboard.wakeConsistency.period.week': 'Last 7 Days',
   'dashboard.wakeConsistency.period.month': 'Last 30 Days',
   'dashboard.wakeConsistency.period.custom': 'Last 7 Days',
+  'dashboard.wakeConsistency.infoModal.title': 'Wake Consistency',
+  'dashboard.wakeConsistency.infoModal.performanceMetrics': 'Performance Tracking',
+  'dashboard.wakeConsistency.infoModal.description':
+    'Wake Consistency tracks how closely your actual wake times align with your target wake time across your completed alarms.',
+  'dashboard.wakeConsistency.infoModal.targetTimeLabel': 'Target Reference',
+  'dashboard.wakeConsistency.infoModal.averageTimeLabel': 'Actual Performance',
+  'dashboard.wakeConsistency.infoModal.varianceLabel': 'Deviation Analysis',
+  'dashboard.wakeConsistency.infoModal.targetTime.title': 'Target Time',
+  'dashboard.wakeConsistency.infoModal.targetTime.description':
+    'The most common alarm time from your completed alarms. This serves as your baseline reference point.',
+  'dashboard.wakeConsistency.infoModal.averageTime.title': 'Average Wake Time',
+  'dashboard.wakeConsistency.infoModal.averageTime.description':
+    'The average time you actually woke up and dismissed your alarms during the selected period.',
+  'dashboard.wakeConsistency.infoModal.variance.title': 'Variance',
+  'dashboard.wakeConsistency.infoModal.variance.description':
+    'The difference between your target and average wake time. Positive values indicate waking later, negative values indicate waking earlier.',
+  'dashboard.wakeConsistency.infoModal.consistencyGoal': 'Optimal Consistency',
+  'dashboard.wakeConsistency.infoModal.consistencyGoalDescription':
+    'Maintaining a variance below 5 minutes demonstrates excellent wake time consistency and helps build strong morning habits.',
+  'dashboard.wakeConsistency.infoModal.optimalVariance': 'Target Variance',
 };

@@ -1,10 +1,12 @@
 import React from 'react';
 
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { LineChart } from 'react-native-chart-kit';
 
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 
+import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -27,9 +29,14 @@ export function WakeConsistency({
   onDetailsPress,
 }: WakeConsistencyProps) {
   const { t } = useTranslation();
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const shadowStyle = useShadowStyle('sm');
   const isDark = colorScheme === 'dark';
+
+  const handleInfoPress = () => {
+    router.push('/dashboard/modals/wake-consistency-info');
+  };
 
   const screenWidth = Dimensions.get('window').width - 32; // padding
 
@@ -69,17 +76,19 @@ export function WakeConsistency({
   return (
     <View className="flex-col gap-4">
       {/* Header */}
-      <View className="flex-row items-center justify-between px-1">
+      <View className="flex-row items-center gap-2 px-1">
         <Text className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
           {t('dashboard.wakeConsistency.title')}
         </Text>
-        {onDetailsPress ? (
-          <Pressable accessibilityRole="button" onPress={onDetailsPress}>
-            <Text className="hover:text-brand-primary-dark text-xs font-semibold text-brand-primary">
-              {t('dashboard.wakeConsistency.details')}
-            </Text>
-          </Pressable>
-        ) : null}
+        <Pressable
+          onPress={handleInfoPress}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.info')}
+          accessibilityHint={t('common.infoModal.accessibilityHint')}
+        >
+          <MaterialSymbol name="info" size={20} className="text-slate-400 dark:text-slate-500" />
+        </Pressable>
       </View>
 
       {/* Card */}
