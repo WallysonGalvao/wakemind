@@ -39,11 +39,24 @@ function withSoundAssets(config) {
 
       // Add files to Xcode project
       const project = config.modResults;
+      const target = project.getFirstTarget();
+
+      if (!target) {
+        console.warn('[withSoundAssets] No target found in Xcode project');
+        return config;
+      }
+
       soundFiles.forEach((file) => {
-        // Add file reference if it doesn't exist
-        const fileRef = project.addResourceFile(file, { target: project.getFirstTarget().uuid });
-        if (fileRef) {
-          console.log(`[withSoundAssets] Added ${file} to Xcode project`);
+        try {
+          // Add file reference with proper path and target
+          const fileRef = project.addResourceFile(file, {
+            target: target.uuid,
+          });
+          if (fileRef) {
+            console.log(`[withSoundAssets] Added ${file} to Xcode project`);
+          }
+        } catch (error) {
+          console.error(`[withSoundAssets] Error adding ${file} to Xcode:`, error.message);
         }
       });
     }
