@@ -27,4 +27,24 @@ export const dashboardPT = {
   'dashboard.wakeConsistency.period.week': 'Últimos 7 Dias',
   'dashboard.wakeConsistency.period.month': 'Últimos 30 Dias',
   'dashboard.wakeConsistency.period.custom': 'Últimos 7 Dias',
+  'dashboard.wakeConsistency.infoModal.title': 'Consistência de Despertar',
+  'dashboard.wakeConsistency.infoModal.performanceMetrics': 'Acompanhamento de Desempenho',
+  'dashboard.wakeConsistency.infoModal.description':
+    'A Consistência de Despertar rastreia o quão próximos seus horários reais de despertar estão do seu horário alvo nos alarmes completados.',
+  'dashboard.wakeConsistency.infoModal.targetTimeLabel': 'Referência Alvo',
+  'dashboard.wakeConsistency.infoModal.averageTimeLabel': 'Desempenho Real',
+  'dashboard.wakeConsistency.infoModal.varianceLabel': 'Análise de Desvio',
+  'dashboard.wakeConsistency.infoModal.targetTime.title': 'Horário Alvo',
+  'dashboard.wakeConsistency.infoModal.targetTime.description':
+    'O horário de alarme mais comum dos seus alarmes completados. Serve como seu ponto de referência base.',
+  'dashboard.wakeConsistency.infoModal.averageTime.title': 'Horário Médio de Despertar',
+  'dashboard.wakeConsistency.infoModal.averageTime.description':
+    'O horário médio em que você realmente acordou e dispensou seus alarmes durante o período selecionado.',
+  'dashboard.wakeConsistency.infoModal.variance.title': 'Variação',
+  'dashboard.wakeConsistency.infoModal.variance.description':
+    'A diferença entre seu horário alvo e médio de despertar. Valores positivos indicam acordar mais tarde, valores negativos indicam acordar mais cedo.',
+  'dashboard.wakeConsistency.infoModal.consistencyGoal': 'Consistência Ótima',
+  'dashboard.wakeConsistency.infoModal.consistencyGoalDescription':
+    'Manter uma variação abaixo de 5 minutos demonstra excelente consistência no horário de despertar e ajuda a construir fortes hábitos matinais.',
+  'dashboard.wakeConsistency.infoModal.optimalVariance': 'Variação Alvo',
 };

@@ -169,6 +169,13 @@ function RootLayout() {
                   headerShown: true,
                 }}
               />
+              <Stack.Screen
+                name="dashboard/modals/wake-consistency-info"
+                options={{
+                  presentation: 'modal',
+                  headerShown: true,
+                }}
+              />
 
               {/* Settings */}
               <Stack.Screen

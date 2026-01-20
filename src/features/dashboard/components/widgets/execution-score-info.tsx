@@ -14,23 +14,14 @@ interface MetricCardProps {
   label: string;
   title: string;
   description: string;
-  weight: number;
   isLast?: boolean;
 }
 
-function MetricCard({
-  index,
-  icon,
-  label,
-  title,
-  description,
-  weight,
-  isLast = false,
-}: MetricCardProps) {
+function MetricCard({ index, icon, label, title, description, isLast = false }: MetricCardProps) {
   return (
     <View className={`flex-row gap-6 ${!isLast ? 'pb-10' : ''} relative`}>
-      <View className="relative shrink-0">
-        <View className="size-10 shrink-0 rounded-full border-2 border-brand-primary bg-white shadow-sm">
+      <View className="relative left-[5px] shrink-0">
+        <View className="size-10 shrink-0 rounded-full border-2 border-brand-primary bg-white shadow-sm dark:border-brand-primary dark:bg-slate-800">
           <View className="flex size-full items-center justify-center">
             <MaterialSymbol name={icon} size={20} className="text-brand-primary" />
           </View>
@@ -43,23 +34,9 @@ function MetricCard({
         <Text className="mb-2 text-lg font-bold leading-tight text-slate-900 dark:text-white">
           {title}
         </Text>
-        <Text className="mb-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+        <Text className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
           {description}
         </Text>
-        <View className="mb-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-transparent dark:bg-surface-dark">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-xs font-medium text-slate-900 dark:text-white">
-              Impact Weight
-            </Text>
-            <Text className="text-xs font-bold text-slate-900 dark:text-white">{weight}%</Text>
-          </View>
-          <View className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-            <View
-              className="h-full rounded-full bg-slate-900 dark:bg-white"
-              style={{ width: `${weight}%` }}
-            />
-          </View>
-        </View>
       </View>
     </View>
   );
@@ -109,29 +86,26 @@ export default function ExecutionScoreInfoScreen() {
           <View className="relative z-10 flex flex-col">
             <MetricCard
               index={1}
-              icon="alarm_on"
-              label={t('dashboard.executionScore.infoModal.targetSync')}
-              title={t('dashboard.executionScore.infoModal.wakeConsistency.title')}
-              description={t('dashboard.executionScore.infoModal.wakeConsistency.description')}
-              weight={40}
+              icon="stars"
+              label={t('dashboard.executionScore.infoModal.challengeDifficulty')}
+              title={t('dashboard.executionScore.infoModal.alarmCompletion.title')}
+              description={t('dashboard.executionScore.infoModal.alarmCompletion.description')}
             />
 
             <MetricCard
               index={2}
-              icon="psychology"
-              label={t('dashboard.executionScore.infoModal.cognitiveIgnition')}
-              title={t('dashboard.executionScore.infoModal.alarmCompletion.title')}
-              description={t('dashboard.executionScore.infoModal.alarmCompletion.description')}
-              weight={35}
+              icon="speed"
+              label={t('dashboard.executionScore.infoModal.completionSpeed')}
+              title={t('dashboard.executionScore.infoModal.wakeConsistency.title')}
+              description={t('dashboard.executionScore.infoModal.wakeConsistency.description')}
             />
 
             <MetricCard
               index={3}
-              icon="bolt"
-              label={t('dashboard.executionScore.infoModal.immediateExecution')}
+              icon="replay"
+              label={t('dashboard.executionScore.infoModal.attempts')}
               title={t('dashboard.executionScore.infoModal.snoozePenalty.title')}
               description={t('dashboard.executionScore.infoModal.snoozePenalty.description')}
-              weight={25}
               isLast
             />
           </View>
@@ -140,7 +114,7 @@ export default function ExecutionScoreInfoScreen() {
         {/* Bottom Info Card */}
         <View className="mx-6 mt-10 overflow-hidden rounded-2xl bg-slate-900 p-5 dark:bg-slate-800">
           <View className="absolute right-0 top-0 p-4 opacity-10">
-            <MaterialSymbol name="verified" size={64} className="text-white" />
+            <MaterialSymbol name="emoji_events" size={64} className="text-white" />
           </View>
           <View className="relative z-10">
             <Text className="mb-2 text-sm font-bold uppercase tracking-widest text-brand-primary">
@@ -154,7 +128,7 @@ export default function ExecutionScoreInfoScreen() {
                 <Text className="text-[10px] font-bold uppercase text-slate-400">
                   {t('dashboard.executionScore.infoModal.targetBenchmark')}
                 </Text>
-                <Text className="text-xl font-bold tabular-nums text-white">95.0</Text>
+                <Text className="text-xl font-bold tabular-nums text-white">90+</Text>
               </View>
             </View>
           </View>
