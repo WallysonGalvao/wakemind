@@ -54,8 +54,8 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
           periodText = t('dashboard.wakeConsistency.period.month');
           break;
         case 'custom':
-          startDate = now.subtract(6, 'day').startOf('day');
-          days = 7;
+          startDate = now.subtract(13, 'day').startOf('day');
+          days = 14;
           periodText = t('dashboard.wakeConsistency.period.custom');
           break;
         default:
@@ -68,7 +68,7 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
       const records = await db
         .select()
         .from(alarmCompletions)
-        .where(gte(alarmCompletions.date, startDate.toISOString()));
+        .where(gte(alarmCompletions.date, startDate.format('YYYY-MM-DD')));
 
       if (records.length === 0) {
         setData({
@@ -81,8 +81,9 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
         return;
       }
 
-      // Get the most common target time
-      const targetTime = records[0]?.targetTime || '06:00';
+      // Get the most common target time (extract HH:mm from ISO string)
+      const firstTarget = records[0]?.targetTime || '06:00';
+      const targetTime = dayjs(firstTarget).format('HH:mm');
 
       // Calculate average actual wake time
       const actualTimes = records.map((r) => dayjs(r.actualTime));
@@ -109,7 +110,7 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
       const averageTime = `${avgHours.toString().padStart(2, '0')}:${avgMinutes.toString().padStart(2, '0')}`;
 
       // Calculate variance (difference from target in minutes)
-      const [targetHour, targetMin] = targetTime.split(':').map(Number);
+      const [targetHour = 6, targetMin = 0] = targetTime.split(':').map(Number);
       const targetMinutes = targetHour * 60 + targetMin;
       const variance =
         Number.isFinite(averageMinutes) && Number.isFinite(targetMinutes)
