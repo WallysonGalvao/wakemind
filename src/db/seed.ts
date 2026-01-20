@@ -18,28 +18,28 @@ const SAMPLE_ALARMS = [
   {
     time: '06:00',
     period: 'AM' as const,
-    challenge: 'Math Challenge',
+    challenge: 'challenge.math', // i18n key
     challengeType: 'math' as const,
     challengeIcon: 'calculate',
-    schedule: 'Daily',
+    schedule: 'Daily', // Literal value for logic
     difficulty: 'medium' as const,
   },
   {
     time: '07:30',
     period: 'AM' as const,
-    challenge: 'Memory Challenge',
+    challenge: 'challenge.memory', // i18n key
     challengeType: 'memory' as const,
     challengeIcon: 'psychology',
-    schedule: 'Mon, Wed, Fri',
+    schedule: 'Mon, Wed, Fri', // Literal value for logic
     difficulty: 'hard' as const,
   },
   {
     time: '05:30',
     period: 'AM' as const,
-    challenge: 'Logic Challenge',
+    challenge: 'newAlarm.challenges.logic.title', // i18n key
     challengeType: 'logic' as const,
     challengeIcon: 'lightbulb',
-    schedule: 'Weekdays',
+    schedule: 'Weekdays', // Literal value for logic
     difficulty: 'easy' as const,
   },
 ];
