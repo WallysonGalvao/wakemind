@@ -171,7 +171,7 @@ export function AlarmCard({
     <Pressable accessibilityRole="button" onPress={handlePress}>
       <Animated.View
         entering={enteringAnimation}
-        style={[animatedStyle, shadowStyle]}
+        style={[animatedStyle, isActive ? shadowStyle : undefined]}
         className={`rounded-2xl border p-5 ${
           isActive
             ? colorScheme === 'dark'
