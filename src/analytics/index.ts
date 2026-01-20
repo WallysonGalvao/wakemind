@@ -196,6 +196,26 @@ export const AnalyticsEvents = {
 
   performanceSummaryShared: () => logEvent('performance_summary_shared'),
 
+  // Subscription events
+  paywallViewed: (source: string) => logEvent('paywall_viewed', { source }),
+
+  subscriptionPurchased: (productId: string, price: string, period: string) =>
+    logEvent('subscription_purchased', { product_id: productId, price, period }),
+
+  subscriptionFailed: (productId: string, error: string) =>
+    logEvent('subscription_failed', { product_id: productId, error }),
+
+  subscriptionRestored: () => logEvent('subscription_restored'),
+
+  subscriptionCancelled: (productId: string) =>
+    logEvent('subscription_cancelled', { product_id: productId }),
+
+  freeTrialStarted: (productId: string) =>
+    logEvent('free_trial_started', { product_id: productId }),
+
+  featureGated: (featureName: string, isPro: boolean) =>
+    logEvent('feature_gated', { feature_name: featureName, is_pro: isPro }),
+
   // App lifecycle
   appOpened: () => {
     logEvent('app_opened');
