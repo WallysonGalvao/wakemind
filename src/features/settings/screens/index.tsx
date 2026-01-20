@@ -7,6 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Alert, Pressable, ScrollView, View } from 'react-native';
 
+import { SubscriptionCard } from '../components/subscription-card';
+
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
@@ -85,9 +87,8 @@ function SettingRow({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
-        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-      }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+        }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -112,9 +113,8 @@ function SettingToggleRow({
 }: SettingToggleRowProps) {
   return (
     <View
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
-        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-      }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+        }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -145,9 +145,8 @@ function VolumeSliderRow({ title, value, onValueChange, isLast = false }: Volume
 
   return (
     <View
-      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${
-        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-      }`}
+      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+        }`}
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-base font-medium text-gray-900 dark:text-white">{title}</Text>
@@ -247,7 +246,7 @@ export default function SettingsScreen() {
                 'Success',
                 'Database seeded successfully! Restart the app to see changes.'
               );
-            } catch (error) {
+            } catch (_error) {
               Alert.alert('Error', 'Failed to seed database. Check console for details.');
             }
           },
@@ -269,6 +268,9 @@ export default function SettingsScreen() {
         contentContainerStyle={{ paddingBottom: 40, paddingTop: 24 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Subscription Section */}
+        <SubscriptionCard />
+
         {/* Appearance Section */}
         <View className="mb-2">
           <SectionHeader title={t('settings.appearance')} />
