@@ -97,18 +97,26 @@ export function useExecutionScore(period: PeriodType): ExecutionScoreData {
       const percentageChange =
         previousScore > 0 ? ((currentScore - previousScore) / previousScore) * 100 : 0;
 
-      // Generate sparkline data (last 10 points)
+      // Generate sparkline data (distributed across period)
       const sparklinePoints = 10;
       const sparklineData: number[] = [];
 
       if (currentRecords.length > 0) {
-        // Take up to last 10 records and get their cognitive scores
-        const recentRecords = currentRecords.slice(0, sparklinePoints);
-        sparklineData.push(...recentRecords.map((r) => r.cognitiveScore).reverse());
-
-        // Fill with zeros if less than 10 points
-        while (sparklineData.length < sparklinePoints) {
-          sparklineData.unshift(0);
+        if (currentRecords.length <= sparklinePoints) {
+          // If we have fewer records than points, use all records
+          sparklineData.push(...currentRecords.map((r) => r.cognitiveScore).reverse());
+          // Fill remaining with zeros at the start
+          while (sparklineData.length < sparklinePoints) {
+            sparklineData.unshift(0);
+          }
+        } else {
+          // Distribute points evenly across the dataset
+          const step = currentRecords.length / sparklinePoints;
+          for (let i = 0; i < sparklinePoints; i++) {
+            const index = Math.floor(i * step);
+            sparklineData.push(currentRecords[currentRecords.length - 1 - index].cognitiveScore);
+          }
+          sparklineData.reverse();
         }
       } else {
         // No data, fill with zeros

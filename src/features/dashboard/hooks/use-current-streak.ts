@@ -5,13 +5,13 @@ import { desc, gte } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { alarmCompletions } from '@/db/schema';
-import type { PeriodType } from '@/features/dashboard/types';
 
 /**
  * Calculate current streak of consecutive days meeting wake time target
  * A day is "on target" if the user woke up within acceptable variance
+ * Note: Always looks back 90 days regardless of period parameter
  */
-export function useCurrentStreak(period: PeriodType = 'month'): number {
+export function useCurrentStreak(): number {
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
@@ -36,11 +36,28 @@ export function useCurrentStreak(period: PeriodType = 'month'): number {
 
       records.forEach((record) => {
         const date = record.date;
-        const target = dayjs(record.targetTime, 'HH:mm');
-        const actual = dayjs(record.actualTime, 'HH:mm');
 
-        // Calculate variance in minutes (acceptable: within 10 minutes)
-        const variance = Math.abs(actual.diff(target, 'minute'));
+        // Parse times with fallback for different formats
+        let target = dayjs(record.targetTime);
+        if (!target.isValid()) {
+          target = dayjs(record.targetTime, 'HH:mm');
+        }
+
+        let actual = dayjs(record.actualTime);
+        if (!actual.isValid()) {
+          actual = dayjs(record.actualTime, 'HH:mm');
+        }
+
+        // Calculate variance in minutes
+        // Handle time wrapping (e.g., target 23:00, actual 00:30 should be 90min, not 1350min)
+        let varianceMinutes = actual.diff(target, 'minute');
+
+        // If difference is more than 12 hours, it likely wrapped around midnight
+        if (Math.abs(varianceMinutes) > 720) {
+          varianceMinutes = varianceMinutes > 0 ? varianceMinutes - 1440 : varianceMinutes + 1440;
+        }
+
+        const variance = Math.abs(varianceMinutes);
         const onTarget = variance <= 10;
 
         // Mark day as on target if ANY completion that day was on target
@@ -82,7 +99,7 @@ export function useCurrentStreak(period: PeriodType = 'month'): number {
     };
 
     calculateStreak();
-  }, [period]);
+  }, []);
 
   return streak;
 }

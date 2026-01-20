@@ -25,11 +25,19 @@ function getOpacityClass(score: number): string {
   return 'bg-primary-600 dark:bg-primary-400';
 }
 
-// Day labels starting from Monday (M = Monday, T = Tuesday, etc.)
-const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-
 export function CognitiveActivation({ data }: CognitiveActivationProps) {
   const { t } = useTranslation();
+
+  // Day labels starting from Monday (using i18n translations)
+  const dayLabels = [
+    t('dashboard.cognitiveActivation.dayLabels.monday'),
+    t('dashboard.cognitiveActivation.dayLabels.tuesday'),
+    t('dashboard.cognitiveActivation.dayLabels.wednesday'),
+    t('dashboard.cognitiveActivation.dayLabels.thursday'),
+    t('dashboard.cognitiveActivation.dayLabels.friday'),
+    t('dashboard.cognitiveActivation.dayLabels.saturday'),
+    t('dashboard.cognitiveActivation.dayLabels.sunday'),
+  ];
   const router = useRouter();
   const shadowStyle = useShadowStyle('sm');
   const colorScheme = useColorScheme();
@@ -142,7 +150,7 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
         <View className="flex-col items-center gap-1 ">
           {/* Day Labels - Horizontal */}
           <View className="flex-row gap-0.5">
-            {DAY_LABELS.map((label, index) => (
+            {dayLabels.map((label, index) => (
               <View key={index} className="h-8 w-8 items-center justify-center">
                 <Text className="text-[10px] text-gray-500">{label}</Text>
               </View>

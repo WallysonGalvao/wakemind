@@ -109,7 +109,7 @@ export default function WidgetsScreen() {
         </View>
 
         {/* System Monitoring Section */}
-        <View>
+        {/* <View>
           <Text className="mb-3 px-1 text-xs font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-gray-500">
             {t('widgets.category.systemMonitoring')}
           </Text>
@@ -125,10 +125,7 @@ export default function WidgetsScreen() {
               />
             ))}
           </View>
-        </View>
-
-        {/* Bottom padding for FAB */}
-        <View className="h-20" />
+        </View> */}
       </ScrollView>
     </View>
   );

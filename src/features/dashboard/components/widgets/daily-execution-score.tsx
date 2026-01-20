@@ -48,7 +48,8 @@ export function DailyExecutionScore({
   // Generate dynamic SVG path from sparkline data
   const generateSparklinePath = () => {
     if (sparklineData.length === 0) {
-      return 'M0 40 L10 35 L20 38 L30 25 L40 30 L50 20 L60 25 L70 15 L80 18 L90 5 L100 10';
+      // Return flat line when no data
+      return 'M0 25 L100 25';
     }
 
     const maxValue = Math.max(...sparklineData, 1);
@@ -135,8 +136,9 @@ export function DailyExecutionScore({
         {/* Trend indicator */}
         <View className="mt-2 flex-row items-center gap-2">
           <View
-            className={`flex-row items-center rounded px-2 py-0.5 ${isPositive ? 'bg-green-500/10' : 'bg-red-500/10'
-              }`}
+            className={`flex-row items-center rounded px-2 py-0.5 ${
+              isPositive ? 'bg-green-500/10' : 'bg-red-500/10'
+            }`}
           >
             <MaterialSymbol
               name={isPositive ? 'trending_up' : 'trending_down'}

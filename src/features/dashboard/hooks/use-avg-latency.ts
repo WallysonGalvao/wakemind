@@ -11,13 +11,14 @@ import type { PeriodType } from '@/features/dashboard/types';
 function getDaysForPeriod(period: PeriodType): number {
   switch (period) {
     case 'day':
-      return 7; // Last 7 days (1 week)
+      return 1; // Current day only
     case 'week':
-      return 30; // Last 30 days
+      return 7; // Last 7 days
     case 'month':
+      return 30; // Last 30 days
     case 'custom':
     default:
-      return 90; // Last 90 days
+      return 14; // Last 14 days for custom
   }
 }
 
@@ -45,9 +46,9 @@ export function useAvgLatency(period: PeriodType = 'month'): number {
         return;
       }
 
-      // Calculate latency for each completion
-      // Latency = reactionTime in milliseconds (stored in DB)
-      // Convert to minutes and average
+      // Calculate average reaction time for challenge completion
+      // Note: reactionTime represents time to complete the cognitive challenge,
+      // not the time to stand up from bed (which is not currently tracked)
       const latencies = records
         .map((record) => {
           // reactionTime is in milliseconds

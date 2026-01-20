@@ -22,8 +22,8 @@ interface WakeConsistencyData {
 export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
   const { t } = useTranslation();
   const [data, setData] = useState<WakeConsistencyData>({
-    targetTime: '06:00',
-    averageTime: '00:00',
+    targetTime: '--:--',
+    averageTime: '--:--',
     variance: 0,
     period: 'Last 30 Days',
     chartData: [],
@@ -72,8 +72,8 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
 
       if (records.length === 0) {
         setData({
-          targetTime: '06:00',
-          averageTime: '00:00',
+          targetTime: '--:--',
+          averageTime: '--:--',
           variance: 0,
           period: periodText,
           chartData: Array(Math.min(days, 30)).fill(0),
@@ -81,12 +81,50 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
         return;
       }
 
-      // Get the most common target time (extract HH:mm from ISO string)
-      const firstTarget = records[0]?.targetTime || '06:00';
-      const targetTime = dayjs(firstTarget).format('HH:mm');
+      // Get the most common target time
+      // targetTime can be stored as ISO string or HH:mm format
+      const firstTarget = records[0]?.targetTime;
+      if (!firstTarget) {
+        setData({
+          targetTime: '--:--',
+          averageTime: '--:--',
+          variance: 0,
+          period: periodText,
+          chartData: Array(Math.min(days, 30)).fill(0),
+        });
+        return;
+      }
+
+      // Try to parse as ISO string first, then as HH:mm
+      let targetTimeParsed = dayjs(firstTarget);
+      if (!targetTimeParsed.isValid()) {
+        targetTimeParsed = dayjs(firstTarget, 'HH:mm');
+      }
+      const targetTime = targetTimeParsed.format('HH:mm');
 
       // Calculate average actual wake time
-      const actualTimes = records.map((r) => dayjs(r.actualTime));
+      // Parse actualTime with fallback for different formats
+      const actualTimes = records
+        .map((r) => {
+          let parsed = dayjs(r.actualTime);
+          if (!parsed.isValid()) {
+            parsed = dayjs(r.actualTime, 'HH:mm');
+          }
+          return parsed;
+        })
+        .filter((time) => time.isValid()); // Filter out invalid times
+
+      if (actualTimes.length === 0) {
+        setData({
+          targetTime: targetTime,
+          averageTime: '--:--',
+          variance: 0,
+          period: periodText,
+          chartData: Array(Math.min(days, 30)).fill(0),
+        });
+        return;
+      }
+
       const totalMinutes = actualTimes.reduce(
         (sum, time) => sum + time.hour() * 60 + time.minute(),
         0
@@ -96,8 +134,8 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
       // Validate averageMinutes
       if (!Number.isFinite(averageMinutes) || averageMinutes < 0) {
         setData({
-          targetTime: '06:00',
-          averageTime: '00:00',
+          targetTime: '--:--',
+          averageTime: '--:--',
           variance: 0,
           period: periodText,
           chartData: Array(Math.min(days, 30)).fill(0),
