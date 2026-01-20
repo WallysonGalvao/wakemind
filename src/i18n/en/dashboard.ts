@@ -105,4 +105,8 @@ export const dashboardEN = {
   'dashboard.cognitiveActivation.infoModal.trackingPeriodDescription':
     'The calendar displays the current month, giving you a clear view of your daily morning performance throughout the month.',
   'dashboard.cognitiveActivation.infoModal.historyLength': 'Data Range',
+  'dashboard.currentStreak.title': 'Current Streak',
+  'dashboard.currentStreak.daysOnTarget': 'Days on target',
+  'dashboard.avgLatency.title': 'Avg Latency',
+  'dashboard.avgLatency.timeToStandUp': 'Time to stand up',
 };

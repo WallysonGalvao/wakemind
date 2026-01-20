@@ -85,4 +85,8 @@ export const dashboardPT = {
   'dashboard.cognitiveActivation.infoModal.trackingPeriodDescription':
     'O calendário exibe o mês atual, oferecendo uma visão clara do seu desempenho matinal diário ao longo do mês.',
   'dashboard.cognitiveActivation.infoModal.historyLength': 'Intervalo de Dados',
+  'dashboard.currentStreak.title': 'Sequência Atual',
+  'dashboard.currentStreak.daysOnTarget': 'Dias na meta',
+  'dashboard.avgLatency.title': 'Latência Média',
+  'dashboard.avgLatency.timeToStandUp': 'Tempo para levantar',
 };

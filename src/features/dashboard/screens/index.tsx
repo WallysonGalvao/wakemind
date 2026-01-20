@@ -6,13 +6,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScrollView, View } from 'react-native';
 
 import { AddWidget } from '../components/add-widget';
+import { useAvgLatency } from '../hooks/use-avg-latency';
 import { useCognitiveActivation } from '../hooks/use-cognitive-activation';
+import { useCurrentStreak } from '../hooks/use-current-streak';
 import { useExecutionScore } from '../hooks/use-execution-score';
 import { useWakeConsistency } from '../hooks/use-wake-consistency';
 
 import { Header } from '@/components/header';
 import { SegmentedControl } from '@/components/segmented-control';
+import { AvgLatency } from '@/features/dashboard/components/widgets/avg-latency';
 import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
+import { CurrentStreak } from '@/features/dashboard/components/widgets/current-streak';
 import { DailyExecutionScore } from '@/features/dashboard/components/widgets/daily-execution-score';
 import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
 import type { PeriodType } from '@/features/dashboard/types';
@@ -37,6 +41,10 @@ export default function DashboardScreen() {
 
   // Get cognitive activation data for current month
   const cognitiveActivationData = useCognitiveActivation();
+
+  // Get current streak and latency data
+  const currentStreak = useCurrentStreak(selectedPeriod);
+  const avgLatency = useAvgLatency(selectedPeriod);
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
@@ -79,6 +87,19 @@ export default function DashboardScreen() {
             chartData={wakeConsistencyData.chartData}
           />
         )}
+
+        {/* Current Streak and Avg Latency Grid */}
+        {(enabledWidgets.has(WidgetType.CURRENT_STREAK) ||
+          enabledWidgets.has(WidgetType.AVG_LATENCY)) && (
+            <View className="flex-row gap-4">
+              {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
+                <CurrentStreak streak={currentStreak} />
+              )}
+              {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
+                <AvgLatency latencyMinutes={avgLatency} />
+              )}
+            </View>
+          )}
 
         {/* Cognitive Activation */}
         {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
