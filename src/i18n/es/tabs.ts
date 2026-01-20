@@ -1,5 +1,5 @@
 export const tabsES = {
   'tabs.alarms': 'Alarmas',
-  'tabs.dashboard': 'Panel',
+  'tabs.dashboard': 'Dashboard',
   'tabs.settings': 'Configuración',
 };
