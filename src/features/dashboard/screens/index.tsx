@@ -15,10 +15,13 @@ import { DailyExecutionScore } from '@/features/dashboard/components/daily-execu
 import { WakeConsistency } from '@/features/dashboard/components/wake-consistency';
 import type { PeriodType } from '@/features/dashboard/types';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
+import { useWidgetStore } from '@/stores/use-widget-store';
+import { WidgetType } from '@/types/widgets';
 
 export default function DashboardScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { isWidgetEnabled } = useWidgetStore();
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
 
@@ -52,21 +55,25 @@ export default function DashboardScreen() {
       {/* Content */}
       <ScrollView className="flex-1" contentContainerClassName="p-4 gap-6">
         {/* Daily Execution Score */}
-        <DailyExecutionScore
-          score={executionData.score}
-          percentageChange={executionData.percentageChange}
-          period={selectedPeriod}
-          sparklineData={executionData.sparklineData}
-        />
+        {isWidgetEnabled(WidgetType.EXECUTION_SCORE) && (
+          <DailyExecutionScore
+            score={executionData.score}
+            percentageChange={executionData.percentageChange}
+            period={selectedPeriod}
+            sparklineData={executionData.sparklineData}
+          />
+        )}
 
         {/* Wake Consistency */}
-        <WakeConsistency
-          targetTime={wakeConsistencyData.targetTime}
-          averageTime={wakeConsistencyData.averageTime}
-          variance={wakeConsistencyData.variance}
-          period={wakeConsistencyData.period}
-          chartData={wakeConsistencyData.chartData}
-        />
+        {isWidgetEnabled(WidgetType.WAKE_CONSISTENCY) && (
+          <WakeConsistency
+            targetTime={wakeConsistencyData.targetTime}
+            averageTime={wakeConsistencyData.averageTime}
+            variance={wakeConsistencyData.variance}
+            period={wakeConsistencyData.period}
+            chartData={wakeConsistencyData.chartData}
+          />
+        )}
 
         <AddWidget />
       </ScrollView>

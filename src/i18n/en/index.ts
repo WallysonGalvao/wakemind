@@ -12,6 +12,7 @@ import { settingsEN } from './settings';
 import { sportsEN } from './sports';
 import { supportEN } from './support';
 import { tabsEN } from './tabs';
+import { widgetsEN } from './widgets';
 
 export default {
   ...appEN,
@@ -28,4 +29,5 @@ export default {
   ...privacyPolicyEN,
   ...supportEN,
   ...alarmSchedulerEN,
+  ...widgetsEN,
 };

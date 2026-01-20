@@ -12,6 +12,7 @@ import { settingsES } from './settings';
 import { sportsES } from './sports';
 import { supportES } from './support';
 import { tabsES } from './tabs';
+import { widgetsES } from './widgets';
 
 export default {
   ...appES,
@@ -28,4 +29,5 @@ export default {
   ...privacyPolicyES,
   ...supportES,
   ...alarmSchedulerES,
+  ...widgetsES,
 };
