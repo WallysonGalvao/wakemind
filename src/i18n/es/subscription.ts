@@ -76,6 +76,8 @@ export default {
   'settings.subscription.free': 'Gratis',
   'settings.subscription.pro': 'Pro',
   'settings.subscription.manage': 'Gestionar Suscripción',
+  'settings.subscription.manageDescription':
+    'Gestiona tu suscripción a través de la configuración del sistema.',
   'settings.subscription.upgrade': 'Actualizar a Pro',
   'settings.subscription.expires': 'Expira el {{date}}',
   'settings.subscription.renews': 'Renueva el {{date}}',
@@ -83,4 +85,19 @@ export default {
   // Subscription Card
   'subscription.card.title': 'Desbloquea WakeMind Pro',
   'subscription.card.subtitle': 'Alarmas ilimitadas, desafíos avanzados e insights detallados.',
+  'subscription.card.active.title': '¡Eres Pro!',
+  'subscription.card.active.subtitle': 'Disfruta de todas las funciones premium',
+
+  // Account Screen
+  'account.title': 'Suscripción',
+  'account.currentPlan': 'Plan Actual',
+  'account.active': 'Activo',
+  'account.includedFeatures': 'Incluido en tu plan',
+  'account.changePlan': 'Cambiar Plan',
+  'account.cancelSubscription': 'Cancelar Suscripción',
+  'account.restorePurchases': 'Restaurar Compras',
+  'account.planYearly': 'PRO ANUAL',
+  'account.planMonthly': 'PRO MENSUAL',
+  'account.perYear': '/ año',
+  'account.perMonth': '/ mes',
 };

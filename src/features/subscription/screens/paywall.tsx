@@ -9,6 +9,7 @@ import { FeatureRow, ProBadge } from '../components/paywall-features';
 import { PaywallFooter } from '../components/paywall-footer';
 import { usePaywallHeader } from '../components/paywall-header';
 import { MonthlyPricingCard, YearlyPricingCard } from '../components/paywall-pricing-cards';
+import { PRO_FEATURES } from '../constants/pro-features';
 import type { PlanType } from '../hooks/use-paywall-actions';
 import { usePaywallActions } from '../hooks/use-paywall-actions';
 import { usePaywallPackages } from '../hooks/use-paywall-packages';
@@ -74,26 +75,14 @@ export default function PaywallScreen() {
         {/* Features Section */}
         <View className="py-6">
           <View className="gap-4">
-            <FeatureRow
-              icon="all_inclusive"
-              title={t('paywall.features.unlimitedAlarms.title')}
-              description={t('paywall.features.unlimitedAlarms.description')}
-            />
-            <FeatureRow
-              icon="psychology"
-              title={t('paywall.features.allDifficulties.title')}
-              description={t('paywall.features.allDifficulties.description')}
-            />
-            <FeatureRow
-              icon="timeline"
-              title={t('paywall.features.advancedStats.title')}
-              description={t('paywall.features.advancedStats.description')}
-            />
-            <FeatureRow
-              icon="extension"
-              title={t('paywall.features.premiumChallenges.title')}
-              description={t('paywall.features.premiumChallenges.description')}
-            />
+            {PRO_FEATURES.map((feature) => (
+              <FeatureRow
+                key={feature.titleKey}
+                icon={feature.icon}
+                title={t(feature.titleKey)}
+                description={t(feature.descriptionKey)}
+              />
+            ))}
           </View>
         </View>
       </ScrollView>
