@@ -3,6 +3,9 @@ export default {
   'paywall.loading': 'Loading subscription plans...',
   'paywall.title': 'Unlock WakeMind Pro',
   'paywall.subtitle': 'Get unlimited access to all premium features',
+  'paywall.hero.title': 'Unlock Your\nFull Potential',
+  'paywall.hero.subtitle':
+    'Unlimited alarms, advanced challenges, and powerful insights for peak morning performance.',
   'paywall.features.title': "What's Included",
   'paywall.features.unlimitedAlarms.title': 'Unlimited Alarms',
   'paywall.features.unlimitedAlarms.description': 'Create as many alarms as you need, no limits',
@@ -23,12 +26,25 @@ export default {
 
   'paywall.plans.title': 'Choose Your Plan',
   'paywall.plans.bestValue': 'Best Value',
+  'paywall.plans.save': 'Save {{percent}}',
   'paywall.plans.oneTime': 'One-Time',
   'paywall.plans.period': 'per {{period}}',
+  'paywall.plans.yearly.title': 'Yearly Access',
+  'paywall.plans.yearly.period': '/ year',
+  'paywall.plans.monthly.title': 'Monthly Plan',
+  'paywall.plans.monthly.period': '/ mo',
+  'paywall.plans.monthly.subtitle': 'Flexible commitment',
+  'paywall.plans.trial': '7-Day Free Trial included',
 
   'paywall.cta.subscribe': 'Start Free Trial',
+  'paywall.cta.trial': 'Start 7-Day Free Trial',
+  'paywall.cta.processing': 'Processing...',
   'paywall.cta.restore': 'Restore Purchases',
   'paywall.disclaimer': 'Cancel anytime. Subscriptions auto-renew unless cancelled.',
+  'paywall.footer.disclaimer':
+    'Subscription automatically renews. Cancel anytime via Account Settings.',
+  'paywall.footer.terms': 'Terms of Service',
+  'paywall.footer.privacy': 'Privacy Policy',
 
   'paywall.success.title': 'Welcome to Pro! 🎉',
   'paywall.success.message': 'You now have access to all premium features.',
@@ -57,4 +73,8 @@ export default {
   'settings.subscription.upgrade': 'Upgrade to Pro',
   'settings.subscription.expires': 'Expires on {{date}}',
   'settings.subscription.renews': 'Renews on {{date}}',
+
+  // Subscription Card
+  'subscription.card.title': 'Unlock WakeMind Pro',
+  'subscription.card.subtitle': 'Unlimited alarms, advanced challenges, and detailed insights.',
 };
