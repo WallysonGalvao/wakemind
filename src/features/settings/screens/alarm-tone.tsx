@@ -23,6 +23,7 @@ import { ALARM_TONES, getToneAudioSource } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useFeatureAccess } from '@/hooks/use-feature-access';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
 // ============================================================================
@@ -94,13 +95,12 @@ function WaveformBar({
   return (
     <Animated.View
       style={animatedStyle}
-      className={`w-1 rounded-full ${
-        isPlaying
+      className={`w-1 rounded-full ${isPlaying
           ? 'bg-brand-primary'
           : isActive
             ? 'bg-brand-primary/40'
             : 'bg-gray-300 dark:bg-gray-600'
-      }`}
+        }`}
     />
   );
 }
@@ -109,31 +109,35 @@ function ToneItem({
   tone,
   isActive,
   isPlaying,
+  isPremiumUser,
   onPlay,
   onSelect,
 }: {
   tone: AlarmTone;
   isActive: boolean;
   isPlaying: boolean;
+  isPremiumUser: boolean;
   onPlay: () => void;
   onSelect: () => void;
 }) {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const toneName = t(tone.nameKey);
+  const isLocked = tone.isPremium && !isPremiumUser;
 
   return (
     <Pressable
       onPress={onSelect}
       accessibilityRole="button"
       accessibilityLabel={toneName}
-      accessibilityHint={`Select ${toneName} as alarm tone`}
+      accessibilityHint={
+        isLocked ? 'Premium tone - upgrade required' : `Select ${toneName} as alarm tone`
+      }
       accessibilityState={{ selected: isActive }}
-      className={`mx-4 mb-3 overflow-hidden rounded-xl border p-4 ${
-        isActive
+      className={`mx-4 mb-3 overflow-hidden rounded-xl border p-4 ${isActive
           ? 'border-brand-primary ring-1 ring-brand-primary/20'
           : 'border-gray-100 dark:border-white/5'
-      } bg-white shadow-sm dark:bg-surface-dark`}
+        } bg-white shadow-sm dark:bg-surface-dark`}
     >
       <View className="flex-row items-center gap-3">
         <Pressable
@@ -144,26 +148,25 @@ function ToneItem({
           accessibilityRole="button"
           accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
           accessibilityHint={`${isPlaying ? 'Pause' : 'Play'} ${toneName} preview`}
-          className={`h-12 w-12 items-center justify-center rounded-full ${
-            isPlaying
+          className={`h-12 w-12 items-center justify-center rounded-full ${isPlaying
               ? 'bg-brand-primary'
               : isActive
                 ? 'bg-brand-primary/20'
                 : 'bg-gray-100 dark:bg-gray-800'
-          }`}
+            }`}
           /* eslint-disable react-native/no-inline-styles, react-native/no-color-literals -- shadow-* in conditional className causes navigation context error with NativeWind + Expo Router + React 19 */
           style={
             isPlaying
               ? {
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 4,
-                }
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 4,
+              }
               : undefined
           }
-          /* eslint-enable react-native/no-inline-styles, react-native/no-color-literals */
+        /* eslint-enable react-native/no-inline-styles, react-native/no-color-literals */
         >
           <MaterialSymbol
             name={isPlaying ? 'pause' : 'play_arrow'}
@@ -186,6 +189,14 @@ function ToneItem({
               <View className="rounded bg-brand-primary/20 px-1.5 py-0.5">
                 <Text className="text-[9px] font-bold text-brand-primary">
                   {t('common.active')}
+                </Text>
+              </View>
+            ) : null}
+            {isLocked ? (
+              <View className="flex-row items-center gap-1 rounded bg-yellow-500/20 px-1.5 py-0.5">
+                <MaterialSymbol name="lock" size={10} color="#EAB308" />
+                <Text className="text-[9px] font-bold text-yellow-600 dark:text-yellow-400">
+                  PRO
                 </Text>
               </View>
             ) : null}
@@ -213,6 +224,9 @@ export default function AlarmToneScreen() {
   // Analytics tracking
   useAnalyticsScreen('Alarm Tone Settings');
 
+  // Feature access for premium sounds
+  const { isPro, requirePremiumAccess } = useFeatureAccess();
+
   const { alarmToneId, setAlarmToneId } = useSettingsStore();
   const [playingToneId, setPlayingToneId] = useState<string | null>(null);
   const playerRef = useRef<{ player: AudioPlayer; toneId: string } | null>(null);
@@ -223,7 +237,7 @@ export default function AlarmToneScreen() {
       if (playerRef.current?.player) {
         try {
           playerRef.current.player.pause();
-        } catch (error) {
+        } catch (_error) {
           // Player might already be destroyed, ignore the error
         }
       }
@@ -234,7 +248,7 @@ export default function AlarmToneScreen() {
     if (playerRef.current?.player) {
       try {
         playerRef.current.player.pause();
-      } catch (error) {
+      } catch (_error) {
         // Player might already be destroyed, ignore the error
       }
       playerRef.current = null;
@@ -275,9 +289,14 @@ export default function AlarmToneScreen() {
     [playingToneId, stopCurrentSound, dummyPlayer]
   );
 
-  const handleSelect = (toneId: string) => {
-    setAlarmToneId(toneId);
-    AnalyticsEvents.alarmToneChanged(toneId);
+  const handleSelect = async (tone: AlarmTone) => {
+    // Check if premium tone and user is not premium
+    if (tone.isPremium && !isPro) {
+      await requirePremiumAccess('premium_sounds');
+      return;
+    }
+    setAlarmToneId(tone.id);
+    AnalyticsEvents.alarmToneChanged(tone.id);
   };
 
   return (
@@ -319,8 +338,9 @@ export default function AlarmToneScreen() {
               tone={tone}
               isActive={tone.id === alarmToneId}
               isPlaying={tone.id === playingToneId}
+              isPremiumUser={isPro}
               onPlay={() => handlePlay(tone.id)}
-              onSelect={() => handleSelect(tone.id)}
+              onSelect={() => handleSelect(tone)}
             />
           ))}
         </View>
