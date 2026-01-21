@@ -112,6 +112,18 @@ export async function requestPermissions(): Promise<boolean> {
       alert: true,
       badge: true,
     });
+
+    // On Android, also check for full screen intent permission
+    if (Platform.OS === 'android') {
+      console.log('[AlarmScheduler] Notification permission granted');
+      console.log(
+        '[AlarmScheduler] Note: Full screen intent may need manual enabling in system settings'
+      );
+      console.log(
+        '[AlarmScheduler] Path: Settings > Apps > WakeMind > Notifications > Full screen intent'
+      );
+    }
+
     return settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED;
   } catch (error) {
     console.error('[AlarmScheduler] Error requesting permissions:', error);
@@ -219,18 +231,24 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         category: AndroidCategory.ALARM,
         importance: AndroidImportance.HIGH,
         visibility: AndroidVisibility.PUBLIC,
+        showTimestamp: true,
+        timestamp: triggerTimestamp,
+        showChronometer: false,
         fullScreenAction: {
           id: 'alarm-triggered',
+          launchActivity: 'default',
+          mainComponent: 'default',
         },
         sound: 'alarm_sound',
         loopSound: true,
         ongoing: true,
         autoCancel: false,
         pressAction: {
-          id: 'default',
+          id: 'alarm-triggered',
           launchActivity: 'default',
         },
         actions,
+        lightUpScreen: true,
       },
       ios: {
         sound: getToneFilename(useSettingsStore.getState().alarmToneId),

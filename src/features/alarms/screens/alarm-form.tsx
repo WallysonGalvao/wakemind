@@ -245,6 +245,11 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     defaultValues,
   });
 
+  // Reset form when defaultValues change (important for edit mode)
+  useLayoutEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
   // Watch all form values
   const hour = watch('hour');
   const minute = watch('minute');
