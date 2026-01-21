@@ -37,7 +37,7 @@ export const appEN = {
   'newAlarm.challenges.math.title': 'Math Challenge',
   'newAlarm.challenges.math.description': 'Solve arithmetic equations to stop the alarm.',
   'newAlarm.challenges.memory.title': 'Memory Matrix',
-  'newAlarm.challenges.memory.description': 'Memorize and recall a pattern of illuminated tiles.',
+  'newAlarm.challenges.memory.description': 'Memorize a pattern of illuminated tiles.',
   'newAlarm.challenges.logic.title': 'Logic Puzzle',
   'newAlarm.challenges.logic.description': 'Complete the sequence to prove wakefulness.',
   'newAlarm.difficulty.label': 'Difficulty Level',
