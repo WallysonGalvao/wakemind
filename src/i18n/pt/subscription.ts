@@ -55,7 +55,7 @@ export default {
   'paywall.restore.notFound': 'Nenhuma compra anterior encontrada para esta conta.',
 
   // Hero Section
-  'paywall.hero.title': 'Desbloqueie Seu\\nPotencial Total',
+  'paywall.hero.title': 'Desbloqueie Seu Potencial Total',
   'paywall.hero.subtitle':
     'Alarmes ilimitados, desafios avançados e insights poderosos para performance matinal máxima.',
 

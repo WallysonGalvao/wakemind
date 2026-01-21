@@ -39,8 +39,6 @@ export enum ProductId {
   MONTHLY = 'monthly',
   // Yearly subscription (discounted)
   YEARLY = 'yearly',
-  // Lifetime purchase (one-time)
-  LIFETIME = 'lifetime',
 }
 
 /**
@@ -116,16 +114,12 @@ export const getFeatureAccess = (isPro: boolean) => ({
  */
 export const PRICING = {
   [ProductId.MONTHLY]: {
-    displayPrice: '$2.99',
+    displayPrice: '$4.99',
     period: 'month',
   },
   [ProductId.YEARLY]: {
-    displayPrice: '$19.99',
+    displayPrice: '$29.99',
     period: 'year',
-    savings: '44%', // vs monthly
-  },
-  [ProductId.LIFETIME]: {
-    displayPrice: '$49.99',
-    period: 'lifetime',
+    savings: '50%', // vs monthly
   },
 };
