@@ -22,9 +22,9 @@ export function SubscriptionCard() {
           <MaterialSymbol name="crown" size={24} color="#ffffff" />
         </View>
         <View className="flex-1">
-          <Text className="text-lg font-bold leading-tight text-white">Unlock Pro Performance</Text>
+          <Text className="text-lg font-bold leading-tight text-white">Unlock WakeMind Pro</Text>
           <Text className="mt-1 text-xs font-medium text-blue-100">
-            Access advanced metrics and reliability controls.
+            Unlimited alarms, advanced challenges, and detailed insights.
           </Text>
         </View>
         <MaterialSymbol name="chevron_right" size={24} color="rgba(255, 255, 255, 0.9)" />
