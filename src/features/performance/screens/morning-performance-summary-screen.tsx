@@ -14,6 +14,7 @@ import { PerformanceMetricsGrid } from '@/features/performance/components/perfor
 import { PerformanceTrends } from '@/features/performance/components/performance-trends';
 import { usePerformanceActions } from '@/features/performance/hooks/use-performance-actions';
 import { usePerformanceData } from '@/features/performance/hooks/use-performance-data';
+import { FeatureGate } from '@/features/subscription/components';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 
 export default function MorningPerformanceSummaryScreen() {
@@ -65,29 +66,7 @@ export default function MorningPerformanceSummaryScreen() {
       className="flex-1 bg-background-light dark:bg-background-dark"
       style={{ paddingTop: insets.top }}
     >
-      <Header
-        title={t('performance.summary')}
-        // leftIcons={[
-        //   {
-        //     icon: (
-        //       <MaterialSymbol name="close" size={28} className="text-slate-900 dark:text-white" />
-        //     ),
-        //     onPress: handleClose,
-        //     accessibilityLabel: t('common.close'),
-        //     accessibilityHint: t('performance.a11y.closeHint'),
-        //   },
-        // ]}
-        // rightIcons={[
-        //   {
-        //     icon: (
-        //       <MaterialSymbol name="share" size={24} className="text-slate-900 dark:text-white" />
-        //     ),
-        //     onPress: handleShare,
-        //     accessibilityLabel: t('common.share'),
-        //     accessibilityHint: t('performance.a11y.shareHint'),
-        //   },
-        // ]}
-      />
+      <Header title={t('performance.summary')} />
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="flex-1 px-5 pb-8 pt-4">
@@ -100,14 +79,17 @@ export default function MorningPerformanceSummaryScreen() {
             scoreGain={metrics.scoreGain}
           />
 
-          <PerformanceTrends
-            weeklyExecutionRate={metrics.weeklyExecutionRate}
-            previousWeekExecutionRate={metrics.previousWeekExecutionRate}
-            currentReactionTime={metrics.currentReactionTime}
-            recentReactionTimes={metrics.recentReactionTimes}
-            averageReactionTime={metrics.averageReactionTime}
-            isBestReactionTime={metrics.isBestReactionTime}
-          />
+          {/* Performance Trends - Premium Feature */}
+          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+            <PerformanceTrends
+              weeklyExecutionRate={metrics.weeklyExecutionRate}
+              previousWeekExecutionRate={metrics.previousWeekExecutionRate}
+              currentReactionTime={metrics.currentReactionTime}
+              recentReactionTimes={metrics.recentReactionTimes}
+              averageReactionTime={metrics.averageReactionTime}
+              isBestReactionTime={metrics.isBestReactionTime}
+            />
+          </FeatureGate>
         </View>
       </ScrollView>
 

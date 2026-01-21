@@ -24,6 +24,8 @@ export interface AlarmTone {
   duration: number;
   /** Waveform visualization pattern (9 values between 0-1) */
   waveformPattern: number[];
+  /** Whether this tone requires premium subscription */
+  isPremium?: boolean;
 }
 
 /**
@@ -90,6 +92,7 @@ export const ALARM_TONES: AlarmTone[] = [
     filename: 'retro-game-alarm.wav',
     duration: 25,
     waveformPattern: [0.5, 1.0, 0.3, 0.8, 0.5, 1.0, 0.3, 0.8, 0.5], // 8-bit game pattern
+    isPremium: true,
   },
   {
     id: 'vintage-warning',
@@ -108,6 +111,7 @@ export const ALARM_TONES: AlarmTone[] = [
     filename: 'spaceship-alarm.wav',
     duration: 25,
     waveformPattern: [0.4, 0.6, 0.9, 0.6, 0.4, 0.6, 0.9, 0.6, 0.4], // Spaceship pulse
+    isPremium: true,
   },
   {
     id: 'critical-alert',
@@ -126,6 +130,7 @@ export const ALARM_TONES: AlarmTone[] = [
     filename: 'scanning-sci-fi-alarm.wav',
     duration: 10,
     waveformPattern: [0.2, 0.4, 0.6, 0.8, 1.0, 0.8, 0.6, 0.4, 0.2], // Scanning sweep
+    isPremium: true,
   },
   {
     id: 'hint-notification',
@@ -162,6 +167,7 @@ export const ALARM_TONES: AlarmTone[] = [
     filename: 'casino-payout.wav',
     duration: 10,
     waveformPattern: [0.5, 0.7, 0.9, 0.7, 0.9, 0.7, 0.9, 0.7, 0.5], // Celebratory jingle
+    isPremium: true,
   },
   {
     id: 'hall-alert',
@@ -171,6 +177,7 @@ export const ALARM_TONES: AlarmTone[] = [
     filename: 'hall-alert.wav',
     duration: 13,
     waveformPattern: [0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6], // Reverberating echo
+    isPremium: true,
   },
 ];
 

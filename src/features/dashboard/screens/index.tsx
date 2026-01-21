@@ -22,6 +22,7 @@ import { DailyExecutionScore } from '@/features/dashboard/components/widgets/dai
 import { DailyInsight } from '@/features/dashboard/components/widgets/daily-insight';
 import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
 import type { PeriodType } from '@/features/dashboard/types';
+import { FeatureGate } from '@/features/subscription/components';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useWidgetStore } from '@/stores/use-widget-store';
 import { WidgetType } from '@/types/widgets';
@@ -103,19 +104,21 @@ export default function DashboardScreen() {
         {/* Current Streak and Avg Latency Grid */}
         {(enabledWidgets.has(WidgetType.CURRENT_STREAK) ||
           enabledWidgets.has(WidgetType.AVG_LATENCY)) && (
-          <View className="flex-row gap-4">
-            {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
-              <CurrentStreak streak={currentStreak} />
-            )}
-            {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
-              <AvgLatency latencyMinutes={avgLatency} />
-            )}
-          </View>
-        )}
+            <View className="flex-row gap-4">
+              {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
+                <CurrentStreak streak={currentStreak} />
+              )}
+              {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
+                <AvgLatency latencyMinutes={avgLatency} />
+              )}
+            </View>
+          )}
 
-        {/* Cognitive Activation */}
+        {/* Cognitive Activation - Premium Feature */}
         {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
-          <CognitiveActivation data={cognitiveActivationData} />
+          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+            <CognitiveActivation data={cognitiveActivationData} />
+          </FeatureGate>
         )}
 
         <AddWidget />
