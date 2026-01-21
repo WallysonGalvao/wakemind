@@ -90,9 +90,9 @@ export default function PaywallScreen() {
               description={t('paywall.features.advancedStats.description')}
             />
             <FeatureRow
-              icon="ac_unit"
-              title={t('paywall.features.streakFreeze.title')}
-              description={t('paywall.features.streakFreeze.description')}
+              icon="extension"
+              title={t('paywall.features.premiumChallenges.title')}
+              description={t('paywall.features.premiumChallenges.description')}
             />
           </View>
         </View>

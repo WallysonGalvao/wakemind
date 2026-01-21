@@ -69,10 +69,9 @@ export const FREE_TIER_LIMITS = {
  */
 export const PREMIUM_FEATURES = {
   unlimitedAlarms: true,
-  maxHistoryDays: 365,
-  availableDifficulties: ['easy', 'medium', 'hard', 'adaptive'] as const,
+  maxHistoryDays: Infinity, // Unlimited history for Pro users
+  availableDifficulties: ['easy', 'medium', 'hard'] as const,
   availableChallenges: ['math', 'memory', 'logic'] as const,
-  streakFreeze: 3, // Number of freeze tokens per month
   advancedStats: true,
   customThemes: true,
   premiumSounds: true,
@@ -97,9 +96,6 @@ export const getFeatureAccess = (isPro: boolean) => ({
 
   // History access
   historyDays: isPro ? PREMIUM_FEATURES.maxHistoryDays : FREE_TIER_LIMITS.maxHistoryDays,
-
-  // Streak freeze
-  streakFreezeTokens: isPro ? PREMIUM_FEATURES.streakFreeze : FREE_TIER_LIMITS.streakFreeze,
 
   // Advanced features
   advancedStats: isPro && PREMIUM_FEATURES.advancedStats,
