@@ -26,12 +26,25 @@ export default {
 
   'paywall.plans.title': 'Escolha Seu Plano',
   'paywall.plans.bestValue': 'Melhor Valor',
+  'paywall.plans.save': 'Economize {{percent}}',
   'paywall.plans.oneTime': 'Única',
   'paywall.plans.period': 'por {{period}}',
+  'paywall.plans.yearly.title': 'Acesso Anual',
+  'paywall.plans.yearly.period': '/ ano',
+  'paywall.plans.monthly.title': 'Plano Mensal',
+  'paywall.plans.monthly.period': '/ mês',
+  'paywall.plans.monthly.subtitle': 'Compromisso flexível',
+  'paywall.plans.trial': '7 dias de teste grátis incluídos',
 
   'paywall.cta.subscribe': 'Iniciar Teste Grátis',
+  'paywall.cta.trial': 'Iniciar 7 Dias Grátis',
+  'paywall.cta.processing': 'Processando...',
   'paywall.cta.restore': 'Restaurar Compras',
   'paywall.disclaimer': 'Cancele a qualquer momento. Assinaturas renovam automaticamente.',
+  'paywall.footer.disclaimer':
+    'Assinatura renova automaticamente. Cancele a qualquer momento nas Configurações.',
+  'paywall.footer.terms': 'Termos de Serviço',
+  'paywall.footer.privacy': 'Política de Privacidade',
 
   'paywall.success.title': 'Bem-vindo ao Pro! 🎉',
   'paywall.success.message': 'Você agora tem acesso a todos os recursos premium.',
@@ -40,6 +53,11 @@ export default {
   'paywall.restore.message': 'Sua assinatura foi restaurada com sucesso.',
   'paywall.restore.failed': 'Falha na Restauração',
   'paywall.restore.notFound': 'Nenhuma compra anterior encontrada para esta conta.',
+
+  // Hero Section
+  'paywall.hero.title': 'Desbloqueie Seu\\nPotencial Total',
+  'paywall.hero.subtitle':
+    'Alarmes ilimitados, desafios avançados e insights poderosos para performance matinal máxima.',
 
   // Feature Gates
   'featureGate.unlimitedAlarms': 'Desbloquear Alarmes Ilimitados',
@@ -60,4 +78,8 @@ export default {
   'settings.subscription.upgrade': 'Atualizar para Pro',
   'settings.subscription.expires': 'Expira em {{date}}',
   'settings.subscription.renews': 'Renova em {{date}}',
+
+  // Subscription Card
+  'subscription.card.title': 'Desbloqueie o WakeMind Pro',
+  'subscription.card.subtitle': 'Alarmes ilimitados, desafios avançados e insights detalhados.',
 };

@@ -26,13 +26,26 @@ export default {
 
   'paywall.plans.title': 'Elige tu Plan',
   'paywall.plans.bestValue': 'Mejor Valor',
+  'paywall.plans.save': 'Ahorra {{percent}}',
   'paywall.plans.oneTime': 'Única',
   'paywall.plans.period': 'por {{period}}',
+  'paywall.plans.yearly.title': 'Acceso Anual',
+  'paywall.plans.yearly.period': '/ año',
+  'paywall.plans.monthly.title': 'Plan Mensual',
+  'paywall.plans.monthly.period': '/ mes',
+  'paywall.plans.monthly.subtitle': 'Compromiso flexible',
+  'paywall.plans.trial': '7 días de prueba gratis incluidos',
 
   'paywall.cta.subscribe': 'Iniciar Prueba Gratis',
+  'paywall.cta.trial': 'Iniciar 7 Días Gratis',
+  'paywall.cta.processing': 'Procesando...',
   'paywall.cta.restore': 'Restaurar Compras',
   'paywall.disclaimer':
     'Cancela en cualquier momento. Las suscripciones se renuevan automáticamente.',
+  'paywall.footer.disclaimer':
+    'La suscripción se renueva automáticamente. Cancela en cualquier momento en Configuración.',
+  'paywall.footer.terms': 'Términos de Servicio',
+  'paywall.footer.privacy': 'Política de Privacidad',
 
   'paywall.success.title': '¡Bienvenido a Pro! 🎉',
   'paywall.success.message': 'Ahora tienes acceso a todas las funciones premium.',
@@ -41,6 +54,11 @@ export default {
   'paywall.restore.message': 'Tu suscripción ha sido restaurada exitosamente.',
   'paywall.restore.failed': 'Restauración Fallida',
   'paywall.restore.notFound': 'No se encontraron compras anteriores para esta cuenta.',
+
+  // Hero Section
+  'paywall.hero.title': 'Desbloquea Tu\\nPotencial Total',
+  'paywall.hero.subtitle':
+    'Alarmas ilimitadas, desafíos avanzados e insights poderosos para máximo rendimiento matutino.',
 
   // Feature Gates
   'featureGate.unlimitedAlarms': 'Desbloquear Alarmas Ilimitadas',
@@ -61,4 +79,8 @@ export default {
   'settings.subscription.upgrade': 'Actualizar a Pro',
   'settings.subscription.expires': 'Expira el {{date}}',
   'settings.subscription.renews': 'Renueva el {{date}}',
+
+  // Subscription Card
+  'subscription.card.title': 'Desbloquea WakeMind Pro',
+  'subscription.card.subtitle': 'Alarmas ilimitadas, desafíos avanzados e insights detallados.',
 };
