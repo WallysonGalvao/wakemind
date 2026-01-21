@@ -4,12 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Alert, Linking, Pressable, ScrollView, View } from 'react-native';
 
+import { FeatureRow, ProBadge } from '../components/paywall-features';
 import { PRO_FEATURES } from '../constants/pro-features';
 
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
-import { COLORS } from '@/constants/colors';
 import { getManageSubscriptionURL, restorePurchases } from '@/services/revenue-cat-service';
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
@@ -18,7 +18,7 @@ export default function AccountScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const { customerInfo, isLoading } = useSubscriptionStore();
+  const { customerInfo } = useSubscriptionStore();
 
   // Get active entitlement info
   const proEntitlement = customerInfo?.entitlements.active['pro'];
@@ -35,7 +35,6 @@ export default function AccountScreen() {
 
   // Get price from active subscription
   const getFormattedPrice = () => {
-    // Try to get price from store product if available
     const priceString = proEntitlement?.latestPurchaseDate ? '$--' : '--';
     return priceString;
   };
@@ -76,129 +75,109 @@ export default function AccountScreen() {
       style={{ paddingBottom: insets.bottom }}
     >
       {/* Header */}
-      <Header
-        title={t('account.title')}
-        leftIcons={[
-          {
-            icon: <MaterialSymbol name="arrow_back_ios_new" size={20} color={COLORS.gray[900]} />,
-            onPress: handleBack,
-            accessibilityLabel: t('back.label'),
-          },
-        ]}
-      />
+      <View style={{ paddingTop: insets.top }}>
+        <Header
+          title={t('account.title')}
+          leftIcons={[
+            {
+              icon: (
+                <MaterialSymbol
+                  name="arrow_back_ios_new"
+                  size={20}
+                  className="text-gray-900 dark:text-white"
+                />
+              ),
+              onPress: handleBack,
+              accessibilityLabel: t('back.label'),
+            },
+          ]}
+          rightIcons={[
+            {
+              label: (
+                <Text className="text-sm font-semibold text-primary-500">
+                  {t('account.restorePurchases')}
+                </Text>
+              ),
+              onPress: handleRestorePurchases,
+              accessibilityLabel: t('account.restorePurchases'),
+            },
+          ]}
+        />
+      </View>
 
       <ScrollView
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
       >
-        {/* Current Plan Card */}
-        <View className="relative mb-8 overflow-hidden rounded-2xl border border-white/10 bg-[#0b1f32] p-6">
-          {/* Decorative accent line */}
-          <View className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-cyan-400/50 to-transparent opacity-50" />
-
-          {/* Plan Header */}
-          <View className="mb-6 flex-row items-start justify-between">
-            <Text className="text-[11px] font-bold uppercase tracking-[0.15em] text-cyan-400 opacity-90">
-              {t('account.currentPlan')}
-            </Text>
-            <View className="rounded-full bg-cyan-400 px-3 py-1 shadow-lg shadow-cyan-400/30">
-              <Text className="text-[10px] font-bold uppercase tracking-widest text-[#0b1f32]">
-                {t('account.active')}
-              </Text>
-            </View>
-          </View>
-
-          {/* Plan Details */}
-          <Text className="mb-2 text-3xl font-bold leading-none tracking-tight text-white">
+        {/* Title Section - Same as Paywall */}
+        <View className="pb-2 pt-4">
+          <ProBadge />
+          <Text className="mb-2 text-[2.5rem] font-bold leading-[1.1] tracking-tight text-gray-900 dark:text-white">
             {planName}
           </Text>
-          {expirationDate ? (
-            <Text className="mt-2 text-sm font-normal tracking-wide text-gray-400">
-              {willRenew
+          <Text className="text-base font-normal leading-relaxed text-gray-500 dark:text-gray-400">
+            {expirationDate
+              ? willRenew
                 ? t('settings.subscription.renews', {
                     date: expirationDate.toLocaleDateString(),
                   })
                 : t('settings.subscription.expires', {
                     date: expirationDate.toLocaleDateString(),
-                  })}
-            </Text>
-          ) : null}
+                  })
+              : t('subscription.card.active.subtitle')}
+          </Text>
           <View className="mt-4 flex-row items-baseline gap-1">
-            <Text className="text-xl font-bold text-white">{getFormattedPrice()}</Text>
+            <Text className="text-xl font-bold text-gray-900 dark:text-white">
+              {getFormattedPrice()}
+            </Text>
             <Text className="text-sm text-gray-400">{planPeriod}</Text>
           </View>
         </View>
 
-        {/* Features Section */}
-        <View className="mb-8">
-          <Text className="mb-3 px-1 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-500 dark:text-gray-400">
+        {/* Features Section - Same as Paywall */}
+        <View className="py-6">
+          <Text className="mb-4 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-500 dark:text-gray-400">
             {t('account.includedFeatures')}
           </Text>
-          <View className="rounded-2xl border border-white/5 bg-[#0b1f32] p-1">
-            {PRO_FEATURES.map((feature, index) => (
-              <View
+          <View className="gap-4">
+            {PRO_FEATURES.map((feature) => (
+              <FeatureRow
                 key={feature.titleKey}
-                className={`flex-row items-center gap-4 p-4 ${
-                  index < PRO_FEATURES.length - 1 ? 'border-b border-white/5' : ''
-                }`}
-              >
-                <View className="h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                  <MaterialSymbol name={feature.icon} size={20} color="#ffffff" />
-                </View>
-                <Text className="text-base font-medium text-white/90">{t(feature.titleKey)}</Text>
-              </View>
+                icon={feature.icon}
+                title={t(feature.titleKey)}
+                description={t(feature.descriptionKey)}
+              />
             ))}
           </View>
         </View>
       </ScrollView>
 
       {/* Action Buttons - Fixed at bottom */}
-      <View className="gap-3 px-6 pb-8">
-        {/* Change Plan */}
+      <View className="gap-4 px-6 pb-4">
+        {/* Change Plan Button - Same style as Paywall CTA */}
         <Pressable
           onPress={handleChangePlan}
-          className="w-full overflow-hidden rounded-xl bg-[#2E2E2E] active:scale-[0.99]"
           accessibilityRole="button"
           accessibilityLabel={t('account.changePlan')}
           accessibilityHint={t('account.changePlan')}
+          className="h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-4 shadow-lg shadow-primary-500/20 active:scale-[0.98]"
         >
-          <View className="flex-row items-center justify-between p-4 px-5">
-            <Text className="text-[15px] font-semibold tracking-wide text-white">
-              {t('account.changePlan')}
-            </Text>
-            <MaterialSymbol name="arrow_forward_ios" size={20} color="rgba(255, 255, 255, 0.4)" />
-          </View>
+          <Text className="text-base font-bold uppercase tracking-wide text-white">
+            {t('account.changePlan')}
+          </Text>
         </Pressable>
 
-        {/* Cancel Subscription */}
-        <Pressable
-          onPress={handleCancelSubscription}
-          className="w-full overflow-hidden rounded-xl bg-[#2E2E2E] active:scale-[0.99]"
-          accessibilityRole="button"
-          accessibilityLabel={t('account.cancelSubscription')}
-          accessibilityHint={t('account.cancelSubscription')}
-        >
-          <View className="flex-row items-center justify-between p-4 px-5">
-            <Text className="text-[15px] font-semibold tracking-wide text-white">
-              {t('account.cancelSubscription')}
-            </Text>
-            <MaterialSymbol name="arrow_forward_ios" size={20} color="rgba(255, 255, 255, 0.4)" />
-          </View>
-        </Pressable>
-
-        {/* Restore Purchases */}
-        <View className="mt-6 items-center">
+        {/* Cancel Subscription - Text link */}
+        <View className="items-center">
           <Pressable
-            onPress={handleRestorePurchases}
-            disabled={isLoading}
-            className="rounded-lg px-4 py-2"
+            onPress={handleCancelSubscription}
             accessibilityRole="button"
-            accessibilityLabel={t('account.restorePurchases')}
-            accessibilityHint={t('account.restorePurchases')}
+            accessibilityLabel={t('account.cancelSubscription')}
+            accessibilityHint={t('account.cancelSubscription')}
           >
-            <Text className="text-sm font-semibold tracking-wide text-cyan-400">
-              {t('account.restorePurchases')}
+            <Text className="text-sm font-semibold text-red-500 underline">
+              {t('account.cancelSubscription')}
             </Text>
           </Pressable>
         </View>
