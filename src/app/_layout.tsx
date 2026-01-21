@@ -74,9 +74,9 @@ function RootLayout() {
         // Set up callbacks for notification events
         NotificationHandler.setCallbacks({
           getAlarm: getAlarmById,
-          onAlarmTriggered: (_alarmId) => {},
-          onSnooze: (_alarmId) => {},
-          onDismiss: (_alarmId) => {},
+          onAlarmTriggered: (_alarmId) => { },
+          onSnooze: (_alarmId) => { },
+          onDismiss: (_alarmId) => { },
         });
 
         if (!isMounted) return;
@@ -97,7 +97,7 @@ function RootLayout() {
       isMounted = false;
       NotificationHandler.cleanup();
     };
-  }, [getAlarmById, fontsLoaded]);
+  }, [getAlarmById, fontsLoaded, initializeSubscription]);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -229,7 +229,7 @@ function RootLayout() {
                 name="subscription/paywall"
                 options={{
                   presentation: 'modal',
-                  headerShown: false,
+                  headerShown: true,
                 }}
               />
             </Stack>
