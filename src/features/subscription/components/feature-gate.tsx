@@ -6,6 +6,7 @@
 import type { ReactNode } from 'react';
 
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import { Pressable, View } from 'react-native';
 
@@ -13,7 +14,7 @@ import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
-import { useSubscriptionStore } from '@/stores/use-subscription-store';
+import { useFeatureAccess } from '@/hooks/use-feature-access';
 
 interface FeatureGateProps {
   featureName: string;
@@ -26,6 +27,11 @@ interface FeatureGateProps {
 /**
  * Feature Gate Component
  * Wraps premium features and shows upgrade prompt for free users
+ *
+ * @example
+ * <FeatureGate featureName="advanced_stats" upgradeMessage="Unlock advanced statistics">
+ *   <AdvancedStatsComponent />
+ * </FeatureGate>
  */
 export function FeatureGate({
   featureName,
@@ -34,15 +40,18 @@ export function FeatureGate({
   showUpgradePrompt = true,
   upgradeMessage,
 }: FeatureGateProps) {
-  const { isPro } = useSubscriptionStore();
+  const { isPro, hasFeature } = useFeatureAccess();
 
-  // Track feature gate hit
-  if (!isPro) {
-    AnalyticsEvents.featureGated(featureName, false);
+  // Check if user has access to this specific feature
+  const hasAccess = hasFeature(featureName);
+
+  // Track feature gate hit for analytics
+  if (!hasAccess) {
+    AnalyticsEvents.featureGated(featureName, isPro);
   }
 
-  // If user is pro, show the feature
-  if (isPro) {
+  // If user has access, show the feature
+  if (hasAccess) {
     return <>{children}</>;
   }
 
@@ -64,6 +73,8 @@ export function FeatureGate({
  * Upgrade Prompt Component
  */
 function UpgradePrompt({ message, featureName }: { message?: string; featureName: string }) {
+  const { t } = useTranslation();
+
   const handleUpgrade = () => {
     AnalyticsEvents.paywallViewed(featureName);
     router.push('/subscription/paywall');
@@ -76,61 +87,25 @@ function UpgradePrompt({ message, featureName }: { message?: string; featureName
       </View>
 
       <Text className="mb-2 text-center text-lg font-bold text-gray-900 dark:text-white">
-        {message || 'Premium Feature'}
+        {message || t('paywall.title')}
       </Text>
 
       <Text className="mb-6 text-center text-sm text-gray-600 dark:text-gray-400">
-        Upgrade to unlock this feature and more
+        {t('paywall.subtitle')}
       </Text>
 
       <Pressable
         onPress={handleUpgrade}
         className="rounded-xl bg-primary-500 px-6 py-3"
         accessibilityRole="button"
-        accessibilityLabel="Upgrade to Pro"
+        accessibilityLabel={t('settings.subscription.upgrade')}
+        accessibilityHint={t('paywall.subtitle')}
       >
         <View className="flex-row items-center">
           <MaterialSymbol name="arrow_upward" size={20} color="#fff" />
-          <Text className="ml-2 font-bold text-white">Upgrade to Pro</Text>
+          <Text className="ml-2 font-bold text-white">{t('settings.subscription.upgrade')}</Text>
         </View>
       </Pressable>
     </View>
   );
-}
-
-/**
- * Hook to check feature access
- */
-export function useFeatureAccess(featureName: string): boolean {
-  const { isPro, featureAccess } = useSubscriptionStore();
-
-  // Map feature names to access checks
-  const hasAccess = (() => {
-    switch (featureName) {
-      case 'unlimited_alarms':
-        return featureAccess.canCreateAlarm(999); // Arbitrary high number
-      case 'hard_difficulty':
-        return featureAccess.canUseDifficulty('hard');
-      case 'adaptive_difficulty':
-        return featureAccess.canUseDifficulty('adaptive');
-      case 'advanced_stats':
-        return featureAccess.advancedStats;
-      case 'custom_themes':
-        return featureAccess.customThemes;
-      case 'premium_sounds':
-        return featureAccess.premiumSounds;
-      case 'cloud_backup':
-        return featureAccess.cloudBackup;
-      case 'streak_freeze':
-        return featureAccess.streakFreezeTokens > 0;
-      default:
-        return isPro;
-    }
-  })();
-
-  if (!hasAccess) {
-    AnalyticsEvents.featureGated(featureName, isPro);
-  }
-
-  return hasAccess;
 }

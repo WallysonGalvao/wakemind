@@ -21,7 +21,7 @@ export function SubscriptionCard() {
   const shadowStyle = useShadowStyle('md');
   const isDark = colorScheme === 'dark';
 
-  const { isPro, isLoading, customerInfo } = useSubscriptionStore();
+  const { isPro, isLoading } = useSubscriptionStore();
 
   const handleManageSubscription = () => {
     // TODO: Open platform-specific subscription management
@@ -68,43 +68,45 @@ export function SubscriptionCard() {
           </View>
         </View>
 
-        {isPro && (
+        {isPro ? (
           <View className="rounded-full bg-green-500/10 px-3 py-1">
-            <Te? </View>
-        )}
-      </View>:null
+            <Text className="text-xs font-semibold text-green-500">Active</Text>
+          </View>
+        ) : null}
+      </View>
+
       {/* Pro Features Summary */}
       {isPro ? (
         <View className="mb-4 rounded-xl bg-yellow-50/50 p-4 dark:bg-yellow-900/10">
           <Text className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-            ✨ Premium Benefits Active
+            ✨ {t('paywall.features.title')}
           </Text>
           <View className="space-y-1">
             <Text className="text-xs text-gray-600 dark:text-gray-400">
-              • Unlimited alarms & all difficulties
+              • {t('paywall.features.unlimitedAlarms.title')}
             </Text>
             <Text className="text-xs text-gray-600 dark:text-gray-400">
-              • Advanced statistics & 365-day history
+              • {t('paywall.features.advancedStats.title')}
             </Text>
             <Text className="text-xs text-gray-600 dark:text-gray-400">
-              • Custom themes & premium sounds
+              • {t('paywall.features.streakFreeze.title')}
             </Text>
           </View>
         </View>
       ) : (
         <View className="mb-4 rounded-xl bg-blue-50/50 p-4 dark:bg-blue-900/10">
           <Text className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-            🎁 Upgrade to unlock:
+            🎁 {t('settings.subscription.upgrade')}:
           </Text>
           <View className="space-y-1">
             <Text className="text-xs text-gray-600 dark:text-gray-400">
-              • Unlimited alarms (currently 3/3)
+              • {t('paywall.features.unlimitedAlarms.description')}
             </Text>
             <Text className="text-xs text-gray-600 dark:text-gray-400">
-              • Hard & Adaptive difficulty
+              • {t('paywall.features.allDifficulties.title')}
             </Text>
             <Text className="text-xs text-gray-600 dark:text-gray-400">
-              • Advanced stats & cloud backup
+              • {t('paywall.features.advancedStats.title')}
             </Text>
           </View>
         </View>
@@ -113,11 +115,10 @@ export function SubscriptionCard() {
       {/* CTA Button */}
       <Pressable
         onPress={isPro ? handleManageSubscription : handleUpgrade}
-        className={`rounded-xl px-4 py-3 ${
-          isPro
+        className={`rounded-xl px-4 py-3 ${isPro
             ? 'border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
             : 'bg-primary-500'
-        }`}
+          }`}
         accessibilityRole="button"
         accessibilityLabel={
           isPro ? t('settings.subscription.manage') : t('settings.subscription.upgrade')
@@ -136,15 +137,6 @@ export function SubscriptionCard() {
           </Text>
         </View>
       </Pressable>
-
-      {/* Subscription details for Pro users */}
-      {isPro && customerInfo && (
-        <View className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
-          <Text className="text-xs text-gray-500 dark:text-gray-400">
-            {/* You can add expiration/renewal date here if available */}
-            Managed through  ?   </Text>
-        </View>
-      )}
     </View>
   );
-}:null
+}
