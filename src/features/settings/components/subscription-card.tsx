@@ -5,22 +5,19 @@ import { Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
-import { useShadowStyle } from '@/hooks/use-shadow-style';
+import { COLORS } from '@/constants/colors';
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
 export function SubscriptionCard() {
   const { t } = useTranslation();
   const router = useRouter();
-  const shadowStyle = useShadowStyle('lg', 'rgba(19, 91, 236, 0.25)');
 
   const { isPro, customerInfo } = useSubscriptionStore();
 
   const handlePress = async () => {
     if (isPro) {
-      // User is Pro - navigate to account screen
       router.push('/subscription/account');
     } else {
-      // User is Free - show paywall
       router.push('/subscription/paywall');
     }
   };
@@ -46,41 +43,49 @@ export function SubscriptionCard() {
   const subscriptionDate = getSubscriptionDate();
 
   if (isPro) {
-    // Pro User Card
+    // Pro User Card - Similar to YearlyPricingCard
     return (
       <Pressable
         onPress={handlePress}
         accessibilityRole="button"
         accessibilityLabel={t('settings.subscription.manage')}
         accessibilityHint={t('settings.subscription.manageDescription')}
-        style={shadowStyle}
-        className="relative mb-8 justify-center overflow-hidden rounded-xl bg-brand-primary"
       >
-        <View className="p-5">
-          {/* Header */}
-          <View className="mb-3 flex-row items-center justify-between">
-            <View className="flex-row items-center gap-2">
-              <View className="h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                <MaterialSymbol name="verified" size={18} color="#ffffff" />
-              </View>
-              <Text className="text-sm font-bold uppercase tracking-wider text-white">
-                {t('settings.subscription.pro')}
-              </Text>
-            </View>
-            <MaterialSymbol name="settings" size={20} color="rgba(255, 255, 255, 0.9)" />
+        <View className="relative mb-8 w-full overflow-hidden rounded-2xl border border-primary-500 bg-white p-5 shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]">
+          {/* Badge */}
+          <View className="absolute right-3 top-3 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
+            <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
+              {t('account.active')}
+            </Text>
           </View>
 
-          {/* Content */}
-          <Text className="mb-1 text-lg font-bold text-white">
-            {t('subscription.card.active.title')}
-          </Text>
-          <Text className="text-xs text-blue-100">{t('subscription.card.active.subtitle')}</Text>
+          {/* Header Section */}
+          <View className="mb-2 flex-row items-end justify-between">
+            <View>
+              <Text className="mb-1 text-sm font-semibold uppercase tracking-widest text-primary-500">
+                {t('settings.subscription.pro')}
+              </Text>
+              <Text className="text-3xl font-bold text-gray-900 dark:text-white">
+                {t('subscription.card.active.title')}
+              </Text>
+            </View>
+          </View>
 
-          {/* Subscription Info */}
+          <View className="my-4 h-px bg-gray-200 dark:bg-gray-800" />
+
+          {/* Content Section */}
+          <View className="flex-row items-center gap-2">
+            <MaterialSymbol name="check_circle" size={18} color={COLORS.brandPrimary} />
+            <Text className="text-sm font-medium text-gray-900 dark:text-white">
+              {t('subscription.card.active.subtitle')}
+            </Text>
+          </View>
+
+          {/* Subscription Date */}
           {subscriptionDate ? (
-            <View className="mt-3 flex-row items-center gap-1.5">
-              <MaterialSymbol name="event" size={14} color="rgba(255, 255, 255, 0.8)" />
-              <Text className="text-xs text-white/80">
+            <View className="mt-3 flex-row items-center gap-2">
+              <MaterialSymbol name="event" size={18} color={COLORS.brandPrimary} />
+              <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 {subscriptionDate.willRenew
                   ? t('settings.subscription.renews', { date: subscriptionDate.date })
                   : t('settings.subscription.expires', { date: subscriptionDate.date })}
@@ -92,29 +97,57 @@ export function SubscriptionCard() {
     );
   }
 
-  // Free User Card
+  // Free User Card - Similar to MonthlyPricingCard with CTA style
   return (
     <Pressable
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={t('subscription.card.title')}
       accessibilityHint={t('subscription.card.subtitle')}
-      style={shadowStyle}
-      className="relative mb-8 h-24 justify-center overflow-hidden rounded-xl bg-brand-primary"
     >
-      <View className="flex-row items-center gap-4 p-5">
-        <View className="h-11 w-11 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30">
-          <MaterialSymbol name="crown" size={24} color="#ffffff" />
+      <View className="relative mb-8 w-full overflow-hidden rounded-2xl border border-primary-500 bg-white p-5 shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]">
+        {/* Badge */}
+        <View className="absolute right-3 top-3 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
+          <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
+            {t('paywall.plans.trial')}
+          </Text>
         </View>
-        <View className="flex-1">
-          <Text className="text-lg font-bold leading-tight text-white">
+
+        {/* Header Section */}
+        <View className="mb-2">
+          <Text className="mb-1 text-sm font-semibold uppercase tracking-widest text-primary-500">
+            WakeMind Pro
+          </Text>
+          <Text className="text-2xl font-bold text-gray-900 dark:text-white">
             {t('subscription.card.title')}
           </Text>
-          <Text className="mt-1 text-xs font-medium text-blue-100">
-            {t('subscription.card.subtitle')}
-          </Text>
         </View>
-        <MaterialSymbol name="chevron_right" size={24} color="rgba(255, 255, 255, 0.9)" />
+
+        <View className="my-4 h-px bg-gray-200 dark:bg-gray-800" />
+
+        {/* Features Preview */}
+        <View className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <MaterialSymbol name="check_circle" size={18} color={COLORS.brandPrimary} />
+            <Text className="text-sm font-medium text-gray-900 dark:text-white">
+              {t('paywall.features.unlimitedAlarms.title')}
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-2">
+            <MaterialSymbol name="check_circle" size={18} color={COLORS.brandPrimary} />
+            <Text className="text-sm font-medium text-gray-900 dark:text-white">
+              {t('paywall.features.advancedStats.title')}
+            </Text>
+          </View>
+        </View>
+
+        {/* CTA Arrow */}
+        <View className="mt-4 flex-row items-center justify-end">
+          <Text className="text-sm font-semibold text-primary-500">
+            {t('settings.subscription.upgrade')}
+          </Text>
+          <MaterialSymbol name="arrow_forward" size={18} color={COLORS.brandPrimary} />
+        </View>
       </View>
     </Pressable>
   );

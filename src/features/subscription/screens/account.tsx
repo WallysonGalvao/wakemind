@@ -44,7 +44,17 @@ export default function AccountScreen() {
   };
 
   const handleChangePlan = () => {
-    router.push('/subscription/paywall');
+    // Determine mode based on subscription status:
+    // - No active subscription: show full paywall
+    // - Yearly subscription: show only monthly option (downgrade)
+    // - Monthly subscription: show only yearly option (upgrade)
+    let mode: 'full' | 'yearly-only' | 'monthly-only' = 'full';
+
+    if (proEntitlement) {
+      mode = isYearly ? 'monthly-only' : 'yearly-only';
+    }
+
+    router.push(`/subscription/paywall?mode=${mode}`);
   };
 
   const handleCancelSubscription = async () => {

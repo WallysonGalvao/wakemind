@@ -24,6 +24,9 @@ export default {
   'paywall.features.prioritySupport.title': 'Soporte Prioritario',
   'paywall.features.prioritySupport.description': 'Respuestas más rápidas de nuestro equipo',
 
+  'paywall.upgrade.yearlyTitle': 'Cambia a Anual',
+  'paywall.upgrade.monthlyTitle': 'Cambia a Mensual',
+
   'paywall.plans.title': 'Elige tu Plan',
   'paywall.plans.bestValue': 'Mejor Valor',
   'paywall.plans.save': 'Ahorra {{percent}}',
