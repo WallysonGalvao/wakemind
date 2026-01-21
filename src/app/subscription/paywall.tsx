@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
-import { router, Stack } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import type { PurchasesPackage } from 'react-native-purchases';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import { Linking, Pressable, ScrollView, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { COLORS } from '@/constants/colors';
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
 // ============================================================================
@@ -16,9 +17,9 @@ import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
 function ProBadge() {
   return (
-    <View className="mb-4 flex-row items-center self-start rounded-full border border-cyan-500/20 bg-[#0e1a2b] px-3 py-1.5">
-      <View className="mr-2 h-2 w-2 rounded-full bg-cyan-400" />
-      <Text className="text-[10px] font-bold uppercase tracking-widest text-cyan-400">
+    <View className="mb-4 flex-row items-center self-start rounded-full border border-primary-500/20 bg-gray-100 px-3 py-1.5 dark:bg-[#1a2233]">
+      <View className="mr-2 h-2 w-2 rounded-full bg-primary-500" />
+      <Text className="text-[10px] font-bold uppercase tracking-widest text-primary-500">
         WakeMind Pro
       </Text>
     </View>
@@ -34,12 +35,14 @@ interface FeatureRowProps {
 function FeatureRow({ icon, title, description }: FeatureRowProps) {
   return (
     <View className="flex-row items-start gap-4 rounded-lg p-3">
-      <View className="mt-1 h-8 w-8 items-center justify-center rounded bg-cyan-400/10">
-        <MaterialSymbol name={icon} size={20} color="#22d3ee" />
+      <View className="mt-1 h-8 w-8 items-center justify-center rounded bg-primary-500/10">
+        <MaterialSymbol name={icon} size={20} color={COLORS.brandPrimary} />
       </View>
       <View className="flex-1">
-        <Text className="text-base font-bold text-white">{title}</Text>
-        <Text className="mt-0.5 text-sm leading-snug text-gray-400">{description}</Text>
+        <Text className="text-base font-bold text-gray-900 dark:text-white">{title}</Text>
+        <Text className="mt-0.5 text-sm leading-snug text-gray-500 dark:text-gray-400">
+          {description}
+        </Text>
       </View>
     </View>
   );
@@ -70,12 +73,16 @@ function YearlyPricingCard({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className={isSelected ? 'bg-gradient-to-b from-cyan-400 via-cyan-400/50 to-transparent' : ''}
+      className={
+        isSelected
+          ? 'rounded-2xl bg-gradient-to-b from-primary-500 via-primary-500/50 to-transparent p-[1px]'
+          : ''
+      }
     >
-      <View className="relative w-full overflow-hidden rounded-2xl bg-[#0e1a2b] p-5">
+      <View className="relative w-full overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#1a2233]">
         {badge ? (
-          <View className="absolute right-3 top-3 rounded bg-cyan-400 px-2 py-1 shadow-lg shadow-cyan-400/40">
-            <Text className="text-[10px] font-bold uppercase tracking-wider text-[#0a192f]">
+          <View className="absolute right-3 top-3 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
+            <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
               {badge}
             </Text>
           </View>
@@ -83,25 +90,29 @@ function YearlyPricingCard({
 
         <View className="mb-2 flex-row items-end justify-between">
           <View>
-            <Text className="mb-1 text-sm font-semibold uppercase tracking-widest text-cyan-400">
+            <Text className="mb-1 text-sm font-semibold uppercase tracking-widest text-primary-500">
               {title}
             </Text>
-            <Text className="text-3xl font-bold text-white">{price}</Text>
+            <Text className="text-3xl font-bold text-gray-900 dark:text-white">{price}</Text>
           </View>
           <View className="mb-1 items-end">
             {originalPrice ? (
-              <Text className="text-sm text-gray-500 line-through">{originalPrice}</Text>
+              <Text className="text-sm text-gray-400 line-through dark:text-gray-500">
+                {originalPrice}
+              </Text>
             ) : null}
-            <Text className="text-xs text-gray-400">{period}</Text>
+            <Text className="text-xs text-gray-500 dark:text-gray-400">{period}</Text>
           </View>
         </View>
 
-        <View className="my-4 h-px bg-gray-800" />
+        <View className="my-4 h-px bg-gray-200 dark:bg-gray-800" />
 
         {hasTrial ? (
           <View className="flex-row items-center gap-2">
-            <MaterialSymbol name="check_circle" size={18} color="#22d3ee" />
-            <Text className="text-sm font-medium text-white">7-Day Free Trial included</Text>
+            <MaterialSymbol name="check_circle" size={18} color={COLORS.brandPrimary} />
+            <Text className="text-sm font-medium text-gray-900 dark:text-white">
+              7-Day Free Trial included
+            </Text>
           </View>
         ) : null}
       </View>
@@ -120,17 +131,19 @@ function MonthlyPricingCard({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className={`flex-row items-center justify-between rounded-xl border p-4 ${isSelected ? 'border-cyan-400 bg-[#0e1a2b]' : 'border-gray-800 bg-[#0e1a2b]'}`}
+      className={`flex-row items-center justify-between rounded-xl border p-4 ${isSelected ? 'border-primary-500 bg-white dark:bg-[#1a2233]' : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-[#1a2233]'}`}
     >
       <View>
-        <Text className={`text-sm font-medium ${isSelected ? 'text-cyan-400' : 'text-white'}`}>
+        <Text
+          className={`text-sm font-medium ${isSelected ? 'text-primary-500' : 'text-gray-900 dark:text-white'}`}
+        >
           {title}
         </Text>
-        <Text className="text-xs text-gray-500">Flexible commitment</Text>
+        <Text className="text-xs text-gray-400 dark:text-gray-500">Flexible commitment</Text>
       </View>
       <View className="flex-row items-center gap-1">
-        <Text className="text-lg font-bold text-white">{price}</Text>
-        <Text className="text-xs text-gray-500">{period}</Text>
+        <Text className="text-lg font-bold text-gray-900 dark:text-white">{price}</Text>
+        <Text className="text-xs text-gray-400 dark:text-gray-500">{period}</Text>
       </View>
     </Pressable>
   );
@@ -138,10 +151,47 @@ function MonthlyPricingCard({
 
 export default function PaywallScreen() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const router = useRouter();
+
   const { offerings, purchase, restore, isLoading, loadOfferings, refreshStatus } =
     useSubscriptionStore();
 
   const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
+
+  const handleClose = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  const handleRestore = useCallback(async () => {
+    const success = await restore();
+    if (success) {
+      await refreshStatus();
+      router.back();
+    }
+  }, [restore, refreshStatus, router]);
+
+  // Configure header with useLayoutEffect
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'WakeMind Pro',
+      headerLeft: () => (
+        <Pressable accessibilityRole="button" onPress={handleClose} className="p-2">
+          <MaterialSymbol name="close" size={24} className="text-gray-900 dark:text-white" />
+        </Pressable>
+      ),
+      headerRight: () => (
+        <Pressable
+          accessibilityRole="button"
+          onPress={handleRestore}
+          disabled={isLoading}
+          className="p-2"
+        >
+          <Text className="text-sm font-semibold text-primary-500">Restore</Text>
+        </Pressable>
+      ),
+    });
+  }, [navigation, handleClose, handleRestore, isLoading]);
 
   // Load offerings on mount
   useEffect(() => {
@@ -167,14 +217,6 @@ export default function PaywallScreen() {
     }
   };
 
-  const handleRestore = async () => {
-    const success = await restore();
-    if (success) {
-      await refreshStatus();
-      router.back();
-    }
-  };
-
   const handleTermsPress = () => {
     Linking.openURL('https://wakemind.app/terms');
   };
@@ -190,113 +232,98 @@ export default function PaywallScreen() {
   };
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          presentation: 'modal',
-          headerShown: false,
-        }}
-      />
-      <View
-        className="flex-1 bg-[#050a12]"
-        style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+    <View
+      className="flex-1 bg-background-light dark:bg-background-dark"
+      style={{ paddingBottom: insets.bottom }}
+    >
+      <ScrollView
+        className="flex-1 px-6"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
       >
-        {/* Header */}
-        <View className="z-10 flex-row items-center justify-between px-4 py-3">
-          <Pressable onPress={() => router.back()} accessibilityRole="button" className="w-10">
-            <MaterialSymbol name="close" size={24} color="#9ca3af" />
-          </Pressable>
-          <View className="h-1 w-12 rounded-full bg-gray-800" />
-          <Pressable onPress={handleRestore} accessibilityRole="button" disabled={isLoading}>
-            <Text className="text-sm font-semibold tracking-wide text-gray-400">Restore</Text>
-          </Pressable>
+        {/* Title Section */}
+        <View className="pb-2 pt-4">
+          <ProBadge />
+          <Text className="mb-4 text-[2.5rem] font-bold leading-[1.1] tracking-tight text-gray-900 dark:text-white">
+            Peak{'\n'}Performance
+          </Text>
+          <Text className="max-w-[300px] text-base font-normal leading-relaxed text-gray-500 dark:text-gray-400">
+            Unlock the complete toolkit for absolute reliability and cognitive optimization.
+          </Text>
         </View>
 
-        <ScrollView
-          className="flex-1 px-6"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+        {/* Features Section */}
+        <View className="py-6">
+          <View className="gap-4">
+            <FeatureRow
+              icon="shield"
+              title="Absolute Reliability"
+              description="Advanced alarm protocols that guarantee you wake up, no matter what."
+            />
+            <FeatureRow
+              icon="monitoring"
+              title="Performance Insights"
+              description="Deep analytics on wake-up times, sleep inertia, and cognitive readiness."
+            />
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Pricing Section - Fixed at bottom */}
+      <View className="gap-4 px-6 pb-4">
+        {/* Yearly Card */}
+        <YearlyPricingCard
+          title="Yearly Access"
+          price={formatPrice(yearlyPackage)}
+          period="/ year"
+          originalPrice="$119.99"
+          badge="Best Value"
+          hasTrial
+          isSelected={selectedPlan === 'yearly'}
+          onPress={() => setSelectedPlan('yearly')}
+        />
+
+        {/* Monthly Card */}
+        <MonthlyPricingCard
+          title="Monthly Plan"
+          price={formatPrice(monthlyPackage)}
+          period="/ mo"
+          isSelected={selectedPlan === 'monthly'}
+          onPress={() => setSelectedPlan('monthly')}
+        />
+
+        {/* CTA Button */}
+        <Pressable
+          onPress={handlePurchase}
+          disabled={isLoading}
+          accessibilityRole="button"
+          className="mt-2 h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-4 shadow-lg shadow-primary-500/20 active:scale-[0.98]"
         >
-          {/* Title Section */}
-          <View className="pb-2 pt-4">
-            <ProBadge />
-            <Text className="mb-4 text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
-              Peak{'\n'}Performance
-            </Text>
-            <Text className="max-w-[300px] text-base font-normal leading-relaxed text-gray-400">
-              Unlock the complete toolkit for absolute reliability and cognitive optimization.
-            </Text>
-          </View>
+          <Text className="text-base font-bold uppercase tracking-wide text-white">
+            {isLoading ? 'Processing...' : 'Start 7-Day Free Trial'}
+          </Text>
+        </Pressable>
 
-          {/* Features Section */}
-          <View className="py-6">
-            <View className="gap-4">
-              <FeatureRow
-                icon="shield"
-                title="Absolute Reliability"
-                description="Advanced alarm protocols that guarantee you wake up, no matter what."
-              />
-              <FeatureRow
-                icon="monitoring"
-                title="Performance Insights"
-                description="Deep analytics on wake-up times, sleep inertia, and cognitive readiness."
-              />
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* Pricing Section - Fixed at bottom */}
-        <View className="gap-4 px-6 pb-4">
-          {/* Yearly Card */}
-          <YearlyPricingCard
-            title="Yearly Access"
-            price={formatPrice(yearlyPackage)}
-            period="/ year"
-            originalPrice="$119.99"
-            badge="Best Value"
-            hasTrial
-            isSelected={selectedPlan === 'yearly'}
-            onPress={() => setSelectedPlan('yearly')}
-          />
-
-          {/* Monthly Card */}
-          <MonthlyPricingCard
-            title="Monthly Plan"
-            price={formatPrice(monthlyPackage)}
-            period="/ mo"
-            isSelected={selectedPlan === 'monthly'}
-            onPress={() => setSelectedPlan('monthly')}
-          />
-
-          {/* CTA Button */}
-          <Pressable
-            onPress={handlePurchase}
-            disabled={isLoading}
-            accessibilityRole="button"
-            className="mt-2 h-14 w-full items-center justify-center rounded-xl bg-cyan-400 px-4 shadow-lg shadow-cyan-400/20 active:scale-[0.98]"
-          >
-            <Text className="text-base font-bold uppercase tracking-wide text-[#0a192f]">
-              {isLoading ? 'Processing...' : 'Start 7-Day Free Trial'}
-            </Text>
-          </Pressable>
-
-          {/* Footer */}
-          <View className="mt-2 items-center gap-3">
-            <Text className="max-w-xs text-center text-[10px] leading-relaxed text-gray-600">
-              Subscription automatically renews. Cancel anytime via Account Settings.
-            </Text>
-            <View className="flex-row items-center gap-4">
-              <Pressable onPress={handleTermsPress} accessibilityRole="link">
-                <Text className="text-[10px] font-medium text-gray-400">Terms of Service</Text>
-              </Pressable>
-              <Text className="text-[10px] text-gray-700">•</Text>
-              <Pressable onPress={handlePrivacyPress} accessibilityRole="link">
-                <Text className="text-[10px] font-medium text-gray-400">Privacy Policy</Text>
-              </Pressable>
-            </View>
+        {/* Footer */}
+        <View className="mt-2 items-center gap-3">
+          <Text className="max-w-xs text-center text-[10px] leading-relaxed text-gray-400 dark:text-gray-600">
+            Subscription automatically renews. Cancel anytime via Account Settings.
+          </Text>
+          <View className="flex-row items-center gap-4">
+            <Pressable onPress={handleTermsPress} accessibilityRole="link">
+              <Text className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+                Terms of Service
+              </Text>
+            </Pressable>
+            <Text className="text-[10px] text-gray-300 dark:text-gray-700">•</Text>
+            <Pressable onPress={handlePrivacyPress} accessibilityRole="link">
+              <Text className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+                Privacy Policy
+              </Text>
+            </Pressable>
           </View>
         </View>
       </View>
-    </>
+    </View>
   );
 }
