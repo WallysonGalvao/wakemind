@@ -49,13 +49,14 @@ export function YearlyPricingCard({
       accessibilityLabel={`${title}, ${price} ${period}, ${badge}`}
       accessibilityHint={trialText}
       accessibilityState={{ selected: isSelected }}
-      className={
-        isSelected
-          ? 'rounded-2xl bg-gradient-to-b from-primary-500 via-primary-500/50 to-transparent p-[1px]'
-          : ''
-      }
     >
-      <View className="relative w-full overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#1a2233]">
+      <View
+        className={`relative w-full overflow-hidden rounded-2xl border p-5 ${
+          isSelected
+            ? 'border-primary-500 bg-white shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]'
+            : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-[#1a2233]'
+        }`}
+      >
         {/* Badge */}
         {badge ? (
           <View className="absolute right-3 top-3 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
