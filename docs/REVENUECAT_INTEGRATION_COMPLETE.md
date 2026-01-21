@@ -40,7 +40,6 @@ REVENUECAT_GOOGLE_API_KEY=goog_your_key_here
 | ---------- | --------------------------- | -------------------------------- |
 | `monthly`  | Auto-Renewable Subscription | Monthly subscription             |
 | `yearly`   | Auto-Renewable Subscription | Yearly subscription (discounted) |
-| `lifetime` | Non-Consumable              | One-time lifetime purchase       |
 
 **Entitlement:** `WakeMind Pro`
 
@@ -152,7 +151,7 @@ Once configured in the dashboard, calling `showPaywall()` will display your cust
 
 - [ ] Create project at [app.revenuecat.com](https://app.revenuecat.com)
 - [ ] Create entitlement: "WakeMind Pro"
-- [ ] Create products: monthly, yearly, lifetime
+- [ ] Create products: monthly, yearly
 - [ ] Create default offering
 - [ ] Design your paywall
 - [ ] Get API keys
@@ -164,13 +163,11 @@ Once configured in the dashboard, calling `showPaywall()` will display your cust
 - [ ] Create subscription group
 - [ ] Add monthly subscription
 - [ ] Add yearly subscription
-- [ ] Add lifetime IAP
 
 **Google Play Console (Android)**:
 
 - [ ] Create monthly subscription
 - [ ] Create yearly subscription
-- [ ] Create lifetime in-app product
 
 ### 3. Test Everything (30 minutes)
 
@@ -322,7 +319,6 @@ import {
 4. **Modern Product IDs**
    - `monthly` instead of `wakemind_pro_monthly`
    - `yearly` instead of `wakemind_pro_annual`
-   - `lifetime` instead of `wakemind_pro_lifetime`
 
 5. **Test API Key**
    - Pre-configured for development
@@ -348,7 +344,7 @@ import {
 ### Purchases fail
 
 1. Ensure products exist in App Store Connect / Google Play
-2. Product IDs must match exactly: `monthly`, `yearly`, `lifetime`
+2. Product IDs must match exactly: `monthly`, `yearly`
 3. Check sandbox account (iOS) or test license (Android)
 
 ---
@@ -368,7 +364,7 @@ import {
 
 - [ ] Create RevenueCat project
 - [ ] Create entitlement: "WakeMind Pro"
-- [ ] Create products: monthly, yearly, lifetime
+- [ ] Create products: monthly, yearly
 - [ ] Create default offering
 - [ ] Design paywall
 - [ ] Get production API keys

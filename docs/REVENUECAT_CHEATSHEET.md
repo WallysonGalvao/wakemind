@@ -163,7 +163,7 @@ import { getActiveSubscription } from '@/services/revenue-cat-service';
 
 const subscription = await getActiveSubscription();
 
-subscription.productId; // 'monthly' | 'yearly' | 'lifetime'
+subscription.productId; // 'monthly' | 'yearly'
 subscription.expirationDate; // '2026-02-20'
 subscription.willRenew; // true | false
 subscription.periodType; // 'monthly' | 'yearly' | null
@@ -285,7 +285,6 @@ const fallbackURL = Platform.select({
 // These are your product IDs
 'monthly'; // Monthly subscription
 'yearly'; // Yearly subscription
-'lifetime'; // Lifetime purchase
 
 // Entitlement
 'WakeMind Pro';
@@ -344,7 +343,6 @@ Location: `src/configs/revenue-cat.ts`
 export enum ProductId {
   MONTHLY = 'monthly',
   YEARLY = 'yearly',
-  LIFETIME = 'lifetime',
 }
 ```
 

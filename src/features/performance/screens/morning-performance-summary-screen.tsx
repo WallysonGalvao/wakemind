@@ -14,7 +14,7 @@ import { PerformanceMetricsGrid } from '@/features/performance/components/perfor
 import { PerformanceTrends } from '@/features/performance/components/performance-trends';
 import { usePerformanceActions } from '@/features/performance/hooks/use-performance-actions';
 import { usePerformanceData } from '@/features/performance/hooks/use-performance-data';
-import { FeatureGate } from '@/features/subscription/components';
+import { FeatureGate } from '@/features/subscription/components/feature-gate';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 
 export default function MorningPerformanceSummaryScreen() {

@@ -3,7 +3,7 @@ export default {
   'paywall.loading': 'Loading subscription plans...',
   'paywall.title': 'Unlock WakeMind Pro',
   'paywall.subtitle': 'Get unlimited access to all premium features',
-  'paywall.hero.title': 'Unlock Your\nFull Potential',
+  'paywall.hero.title': 'Unlock Your Full Potential',
   'paywall.hero.subtitle':
     'Unlimited alarms, advanced challenges, and powerful insights for peak morning performance.',
   'paywall.features.title': "What's Included",

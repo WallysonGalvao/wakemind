@@ -20,9 +20,8 @@
 
 ```typescript
 enum ProductId {
-  PRO_MONTHLY = 'wakemind_pro_monthly', // $2.99/mês
-  PRO_ANNUAL = 'wakemind_pro_annual', // $19.99/ano (44% off)
-  PRO_LIFETIME = 'wakemind_pro_lifetime', // $49.99 (compra única)
+  MONTHLY = 'monthly', // $4.99/mês
+  YEARLY = 'yearly', // $29.99/ano (50% off)
 }
 ```
 
@@ -86,9 +85,8 @@ REVENUECAT_GOOGLE_API_KEY=goog_your_key_here
 
 **App Store Connect:**
 
-- `wakemind_pro_monthly` - Auto-Renewable Subscription - $2.99/month
-- `wakemind_pro_annual` - Auto-Renewable Subscription - $19.99/year
-- `wakemind_pro_lifetime` - Non-Consumable - $49.99
+- `monthly` - Auto-Renewable Subscription - $4.99/month
+- `yearly` - Auto-Renewable Subscription - $29.99/year
 
 **Google Play Console:**
 

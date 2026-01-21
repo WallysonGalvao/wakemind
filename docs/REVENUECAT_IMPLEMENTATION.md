@@ -64,11 +64,10 @@ subscription/
 
 ### Subscription Plans
 
-| Product ID              | Type           | Price      | Description                |
-| ----------------------- | -------------- | ---------- | -------------------------- |
-| `wakemind_pro_monthly`  | Auto-Renewable | $2.99/mês  | Assinatura mensal          |
-| `wakemind_pro_annual`   | Auto-Renewable | $19.99/ano | Assinatura anual (44% off) |
-| `wakemind_pro_lifetime` | Non-Consumable | $49.99     | Compra única (lifetime)    |
+| Product ID | Tipo           | Preço      | Descrição                  |
+| ---------- | -------------- | ---------- | -------------------------- |
+| `monthly`  | Auto-Renewable | $4.99/mês  | Assinatura mensal          |
+| `yearly`   | Auto-Renewable | $29.99/ano | Assinatura anual (50% off) |
 
 ### Entitlement
 
@@ -263,7 +262,7 @@ Siga: [docs/REVENUECAT_SETUP.md](./REVENUECAT_SETUP.md)
 
 - Criar subscription group
 - Adicionar 2 subscriptions (monthly, annual)
-- Adicionar 1 non-consumable (lifetime)
+- Adicionar 2 subscriptions (`monthly`, `yearly`)
 
 **Google Play Console:**
 
@@ -534,7 +533,7 @@ console.log('[RevenueCat] Active Entitlements:', info?.entitlements.active);
 
 ### Médio Prazo (Próximos 3 Meses)
 
-- [ ] A/B test preços ($1.99 vs $2.99 vs $3.99)
+- [ ] A/B test preços ($4.99 vs $5.99 vs $6.99)
 - [ ] A/B test trial duration (3d vs 7d vs 14d)
 - [ ] Implementar promotional offers
 - [ ] Criar onboarding paywall
@@ -543,7 +542,7 @@ console.log('[RevenueCat] Active Entitlements:', info?.entitlements.active);
 ### Longo Prazo (6+ Meses)
 
 - [ ] Referral program (invite friends, get free month)
-- [ ] Lifetime deal campaigns
+- [ ] Annual subscription campaigns
 - [ ] Corporate/Team plans
 - [ ] Seasonal promotions (Black Friday, etc)
 - [ ] Partner integrations (bundles)
