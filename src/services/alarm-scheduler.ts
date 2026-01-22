@@ -215,7 +215,8 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
       body: i18n.t('alarmScheduler.notification.body', {
         time: alarm.time,
         period: alarm.period,
-        challenge: alarm.challenge,
+        // Translate the challenge text if it's an i18n key, otherwise use as-is
+        challenge: alarm.challenge?.includes('.') ? i18n.t(alarm.challenge) : alarm.challenge || '',
       }),
       data: {
         alarmId: alarm.id,
