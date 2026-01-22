@@ -16,7 +16,7 @@ interface ExecutionScoreData {
 /**
  * Custom hook to calculate execution score based on alarm completions
  */
-export function useExecutionScore(period: PeriodType): ExecutionScoreData {
+export function useExecutionScore(period: PeriodType, refreshKey?: number): ExecutionScoreData {
   const [data, setData] = useState<ExecutionScoreData>({
     score: 0,
     percentageChange: 0,
@@ -131,7 +131,7 @@ export function useExecutionScore(period: PeriodType): ExecutionScoreData {
     };
 
     calculateScore();
-  }, [period]);
+  }, [period, refreshKey]);
 
   return data;
 }

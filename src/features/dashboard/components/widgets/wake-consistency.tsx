@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,6 @@ export function WakeConsistency({
   variance,
   period,
   chartData,
-  onDetailsPress,
 }: WakeConsistencyProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -40,17 +39,42 @@ export function WakeConsistency({
 
   const screenWidth = Dimensions.get('window').width - 32; // padding
 
+  // Debug logs
+  if (__DEV__) {
+    console.log('[WakeConsistency] Rendering with:', {
+      targetTime,
+      averageTime,
+      variance,
+      chartDataLength: chartData.length,
+      chartData: chartData.slice(0, 5), // First 5 values
+    });
+  }
+
   // Sanitize chart data - ensure all values are valid numbers
-  const sanitizedChartData = chartData
-    .map((value) => {
-      const num = Number(value);
-      return Number.isFinite(num) ? Math.max(0, Math.min(num, 180)) : 0;
-    })
-    .slice(0, 30); // Max 30 points
+  const sanitizedChartData = useMemo(
+    () =>
+      chartData
+        .map((value) => {
+          const num = Number(value);
+          return Number.isFinite(num) ? Math.max(0, Math.min(num, 180)) : 0;
+        })
+        .slice(0, 30), // Max 30 points
+    [chartData]
+  );
 
   // Ensure we have at least 2 data points for the chart
-  const validChartData =
-    sanitizedChartData.length >= 2 ? sanitizedChartData : [0, 0, 0, 0, 0, 0, 0];
+  // Add a small value (0.01) to first point to prevent chart rendering issues with all-zero data
+  const validChartData = useMemo(() => {
+    if (sanitizedChartData.length >= 2) {
+      return sanitizedChartData;
+    }
+    // For single data point or empty, create a minimal dataset
+    const fallbackData = [0.01, 0, 0, 0, 0, 0, 0];
+    if (sanitizedChartData.length === 1) {
+      fallbackData[0] = Math.max(0.01, sanitizedChartData[0]);
+    }
+    return fallbackData;
+  }, [sanitizedChartData]);
 
   // Generate labels based on actual data length
   const generateLabels = (dataLength: number): string[] => {
@@ -67,11 +91,24 @@ export function WakeConsistency({
     });
   };
 
-  const chartLabels = generateLabels(validChartData.length);
+  const chartLabels = useMemo(() => generateLabels(validChartData.length), [validChartData.length]);
 
   // Format variance text
   const varianceText = variance > 0 ? `+${variance}m` : `${variance}m`;
   const varianceColor = variance > 0 ? 'text-red-500' : 'text-green-500';
+
+  // Ensure averageTime has a valid value
+  const displayAverageTime = averageTime && averageTime !== '--:--' ? averageTime : '--:--';
+  const displayTargetTime = targetTime && targetTime !== '--:--' ? targetTime : '--:--';
+
+  if (__DEV__) {
+    console.log('[WakeConsistency] Display values:', {
+      displayTargetTime,
+      displayAverageTime,
+      variance,
+      varianceText,
+    });
+  }
 
   return (
     <View className="flex-col gap-4">
@@ -98,18 +135,18 @@ export function WakeConsistency({
       >
         {/* Stats Header */}
         <View className="mb-6 flex-row items-end justify-between">
-          <View>
+          <View className="flex-1 pr-4">
             <Text className="text-xs font-medium text-slate-500 dark:text-slate-400">
               {t('dashboard.wakeConsistency.targetVsActual')}
             </Text>
             <View className="flex-row items-baseline gap-2">
               <Text className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                {targetTime}
+                {displayTargetTime}
               </Text>
               <Text className="text-xs text-slate-400">→</Text>
               <View className="flex-row items-baseline gap-1">
                 <Text className="text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                  {averageTime}
+                  {displayAverageTime}
                 </Text>
                 <Text className="text-sm font-normal text-slate-400">
                   {t('dashboard.wakeConsistency.amAvg')}
@@ -117,7 +154,7 @@ export function WakeConsistency({
               </View>
             </View>
           </View>
-          <View className="text-right">
+          <View className="shrink-0 items-end">
             <Text className={`text-sm font-bold ${varianceColor}`}>
               {varianceText} {t('dashboard.wakeConsistency.variance')}
             </Text>
@@ -127,48 +164,62 @@ export function WakeConsistency({
 
         {/* Chart */}
         <View className="overflow-hidden rounded-lg">
-          <LineChart
-            data={{
-              labels: chartLabels,
-              datasets: [
-                {
-                  data: validChartData,
+          {chartData.length > 0 ? (
+            <LineChart
+              key={`${averageTime}-${validChartData.length}-${validChartData[0]}`}
+              data={{
+                labels: chartLabels,
+                datasets: [
+                  {
+                    data: validChartData,
+                  },
+                ],
+              }}
+              width={screenWidth}
+              height={180}
+              withVerticalLabels
+              withHorizontalLabels={false}
+              withInnerLines
+              withOuterLines={false}
+              withVerticalLines={false}
+              withHorizontalLines
+              withDots={false}
+              bezier
+              chartConfig={{
+                backgroundColor: isDark ? '#1a2230' : '#ffffff',
+                backgroundGradientFrom: isDark ? '#1a2230' : '#ffffff',
+                backgroundGradientTo: isDark ? '#1a2230' : '#ffffff',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(19, 91, 236, ${opacity})`,
+                labelColor: (opacity = 1) =>
+                  isDark ? `rgba(148, 163, 184, ${opacity})` : `rgba(100, 116, 139, ${opacity})`,
+                style: {
+                  borderRadius: 8,
                 },
-              ],
-            }}
-            width={screenWidth}
-            height={180}
-            withVerticalLabels
-            withHorizontalLabels={false}
-            withInnerLines
-            withOuterLines={false}
-            withVerticalLines={false}
-            withHorizontalLines
-            withDots={false}
-            bezier
-            chartConfig={{
-              backgroundColor: isDark ? '#1a2230' : '#ffffff',
-              backgroundGradientFrom: isDark ? '#1a2230' : '#ffffff',
-              backgroundGradientTo: isDark ? '#1a2230' : '#ffffff',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(19, 91, 236, ${opacity})`,
-              labelColor: (opacity = 1) =>
-                isDark ? `rgba(148, 163, 184, ${opacity})` : `rgba(100, 116, 139, ${opacity})`,
-              style: {
-                borderRadius: 8,
-              },
-              propsForDots: {
-                r: '0',
-              },
-              propsForBackgroundLines: {
-                strokeDasharray: '4 4 ',
-                stroke: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
-                strokeWidth: 1,
-                strokeOpacity: 0.5,
-              },
-            }}
-            style={styles.chart}
-          />
+                propsForDots: {
+                  r: '0',
+                },
+                propsForBackgroundLines: {
+                  strokeDasharray: '4 4 ',
+                  stroke: isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+                  strokeWidth: 1,
+                  strokeOpacity: 0.5,
+                },
+              }}
+              style={styles.chart}
+            />
+          ) : (
+            <View className="h-[180px] items-center justify-center">
+              <MaterialSymbol
+                name="show_chart"
+                size={48}
+                className="mb-2 text-slate-300 dark:text-slate-700"
+              />
+              <Text className="text-sm text-slate-400 dark:text-slate-500">
+                {t('dashboard.wakeConsistency.noData')}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </View>
