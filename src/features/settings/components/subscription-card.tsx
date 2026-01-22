@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +32,7 @@ export function SubscriptionCard() {
 
     if (!expirationDate) return null;
 
-    const date = new Date(expirationDate);
+    const date = dayjs(expirationDate).toDate();
     const formattedDate = date.toLocaleDateString();
 
     return {

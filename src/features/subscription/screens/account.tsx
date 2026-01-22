@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,7 +24,7 @@ export default function AccountScreen() {
   // Get active entitlement info
   const proEntitlement = customerInfo?.entitlements.active['pro'];
   const expirationDate = proEntitlement?.expirationDate
-    ? new Date(proEntitlement.expirationDate)
+    ? dayjs(proEntitlement.expirationDate).toDate()
     : null;
   const willRenew = proEntitlement?.willRenew ?? false;
 

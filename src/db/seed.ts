@@ -109,7 +109,7 @@ async function clearDatabase() {
 async function seedAlarms() {
   console.log('⏰ Seeding alarms...');
 
-  const now = new Date().toISOString();
+  const now = dayjs().toISOString();
   const alarmRecords = SAMPLE_ALARMS.map((alarm) => ({
     id: nanoid(),
     time: alarm.time,
