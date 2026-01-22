@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,9 @@ import { BackHandler, ScrollView, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
+import * as achievementService from '@/db/functions/achievements';
+import { AchievementUnlockModal } from '@/features/achievements/components/achievement-unlock-modal';
+import { useAchievementCheck } from '@/features/achievements/hooks/use-achievement-check';
 import { PerformanceFooter } from '@/features/performance/components/performance-footer';
 import { PerformanceHero } from '@/features/performance/components/performance-hero';
 import { PerformanceMetricsGrid } from '@/features/performance/components/performance-metrics-grid';
@@ -26,11 +29,42 @@ export default function MorningPerformanceSummaryScreen() {
   // Get all performance data through custom hook
   const { isLoading, refetch, ...metrics } = usePerformanceData();
 
+  // Achievement unlock state
+  const { checkAllAchievements } = useAchievementCheck();
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [unlockedAchievement, setUnlockedAchievement] = useState<{
+    id: string;
+    tier: string;
+    icon: string;
+  } | null>(null);
+
   // Refetch data when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [refetch])
+
+      // Check for achievement unlocks
+      void checkAllAchievements()
+        .then(async (newUnlocks) => {
+          if (newUnlocks.length > 0) {
+            const firstUnlock = newUnlocks[0];
+            const achievement = await achievementService.getAchievementById(firstUnlock);
+            if (achievement) {
+              setUnlockedAchievement({
+                id: achievement.id,
+                tier: achievement.tier,
+                icon: achievement.icon,
+              });
+              setShowUnlockModal(true);
+              AnalyticsEvents.achievementUnlocked(achievement.id, achievement.tier);
+            }
+          }
+          return;
+        })
+        .catch((error) => {
+          console.error('[MorningPerformanceSummary] Failed to check achievements:', error);
+        });
+    }, [refetch, checkAllAchievements])
   );
 
   // Get action handlers
@@ -94,6 +128,17 @@ export default function MorningPerformanceSummaryScreen() {
       </ScrollView>
 
       <PerformanceFooter onStartDay={handleStartDay} bottomInset={insets.bottom} />
+
+      {/* Achievement Unlock Modal */}
+      {unlockedAchievement ? (
+        <AchievementUnlockModal
+          visible={showUnlockModal}
+          achievementId={unlockedAchievement.id}
+          tier={unlockedAchievement.tier}
+          icon={unlockedAchievement.icon}
+          onClose={() => setShowUnlockModal(false)}
+        />
+      ) : null}
     </View>
   );
 }

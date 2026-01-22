@@ -74,9 +74,9 @@ function RootLayout() {
         // Set up callbacks for notification events
         NotificationHandler.setCallbacks({
           getAlarm: getAlarmById,
-          onAlarmTriggered: (_alarmId) => { },
-          onSnooze: (_alarmId) => { },
-          onDismiss: (_alarmId) => { },
+          onAlarmTriggered: (_alarmId) => {},
+          onSnooze: (_alarmId) => {},
+          onDismiss: (_alarmId) => {},
         });
 
         if (!isMounted) return;
@@ -194,6 +194,14 @@ function RootLayout() {
                 options={{
                   presentation: 'modal',
                   headerShown: true,
+                }}
+              />
+
+              {/* Achievements */}
+              <Stack.Screen
+                name="achievements"
+                options={{
+                  headerShown: false,
                 }}
               />
 

@@ -43,3 +43,36 @@ export const alarmCompletions = sqliteTable('alarm_completions', {
 
 export type AlarmCompletion = typeof alarmCompletions.$inferSelect;
 export type NewAlarmCompletion = typeof alarmCompletions.$inferInsert;
+
+// ============================================================================
+// Achievements Table (Master Data)
+// ============================================================================
+
+export const achievements = sqliteTable('achievements', {
+  id: text('id').primaryKey(),
+  category: text('category').notNull(), // "progression" | "consistency" | "mastery" | "exploration" | "secret"
+  tier: text('tier').notNull(), // "bronze" | "silver" | "gold" | "platinum"
+  icon: text('icon').notNull(), // Material symbol name
+  isSecret: integer('is_secret', { mode: 'boolean' }).notNull().default(false),
+  target: integer('target').notNull(), // Target value for achievement
+  createdAt: text('created_at').notNull(),
+});
+
+export type Achievement = typeof achievements.$inferSelect;
+export type NewAchievement = typeof achievements.$inferInsert;
+
+// ============================================================================
+// User Achievements Table (Unlock State)
+// ============================================================================
+
+export const userAchievements = sqliteTable('user_achievements', {
+  id: text('id').primaryKey(),
+  achievementId: text('achievement_id').notNull(), // FK to achievements.id
+  unlockedAt: text('unlocked_at'), // ISO timestamp when unlocked (null if not unlocked)
+  progress: integer('progress').notNull().default(0), // Current progress towards target
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export type UserAchievement = typeof userAchievements.$inferSelect;
+export type NewUserAchievement = typeof userAchievements.$inferInsert;

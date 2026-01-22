@@ -86,6 +86,40 @@ export function initializeDatabase() {
       ON alarm_completions(alarm_id);
     `);
 
+    // Create achievements table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS achievements (
+        id TEXT PRIMARY KEY,
+        category TEXT NOT NULL,
+        tier TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        is_secret INTEGER NOT NULL DEFAULT 0,
+        target INTEGER NOT NULL,
+        created_at TEXT NOT NULL
+      );
+    `);
+
+    // Create user_achievements table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS user_achievements (
+        id TEXT PRIMARY KEY,
+        achievement_id TEXT NOT NULL,
+        unlocked_at TEXT,
+        progress INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `);
+
+    // Create indexes for user_achievements
+    expoDb.execSync(`
+      CREATE INDEX IF NOT EXISTS idx_user_achievements_achievement_id 
+      ON user_achievements(achievement_id);
+      
+      CREATE INDEX IF NOT EXISTS idx_user_achievements_unlocked 
+      ON user_achievements(unlocked_at);
+    `);
+
     console.log('[Database] Tables initialized successfully');
   } catch (error) {
     console.error('[Database] Failed to initialize tables:', error);

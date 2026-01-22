@@ -1,28 +1,41 @@
-/**
- * Achievements Screen
- * Main screen for viewing all achievements
- */
+import React, { useMemo, useState } from 'react';
 
-import React, { useState } from 'react';
-
-import { Stack } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScrollView, Text, View } from 'react-native';
 
 import { AchievementGrid } from '../components/achievement-grid';
-import { TierFilterTabs } from '../components/tier-filter-tabs';
 import { useAchievements } from '../hooks/use-achievements';
-import type { AchievementTier } from '../types/achievement.types';
+import { AchievementTier } from '../types/achievement.types';
+
+import type { IconButton } from '@/components/header';
+import { Header } from '@/components/header';
+import { MaterialSymbol } from '@/components/material-symbol';
+import type { SegmentedControlItem } from '@/components/segmented-control';
+import { SegmentedControl } from '@/components/segmented-control';
 
 export default function AchievementsScreen() {
+  const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+
   const { achievements, loading } = useAchievements();
-  const [tierFilter, setTierFilter] = useState<AchievementTier | null>(null);
+  const [tierFilter, setTierFilter] = useState<AchievementTier | 'all'>('all');
+
+  // Tier filter items
+  const tierItems: SegmentedControlItem<AchievementTier | 'all'>[] = [
+    { value: 'all', label: t('achievements.tiers.all') },
+    { value: AchievementTier.BRONZE, label: t('achievements.tiers.bronze') },
+    { value: AchievementTier.SILVER, label: t('achievements.tiers.silver') },
+    { value: AchievementTier.GOLD, label: t('achievements.tiers.gold') },
+    { value: AchievementTier.PLATINUM, label: t('achievements.tiers.platinum') },
+  ];
 
   // Filter achievements by tier
   const filteredAchievements = achievements.filter((a) => {
-    if (!tierFilter) return true;
+    if (tierFilter === 'all') return true;
     return a.achievement.tier === tierFilter;
   });
 
@@ -30,23 +43,29 @@ export default function AchievementsScreen() {
   const unlockedCount = achievements.filter((a) => a.isUnlocked).length;
   const totalCount = achievements.length;
 
+  const leftIcons = useMemo(
+    () => [
+      {
+        icon: (
+          <MaterialSymbol name="arrow_back" size={24} className="text-slate-900 dark:text-white" />
+        ),
+        onPress: () => router.back(),
+        accessibilityLabel: t('common.back'),
+      } as IconButton,
+    ],
+    [router, t]
+  );
+
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: t('achievements.milestones', 'MILESTONES'),
-          headerTitleStyle: {
-            fontSize: 14,
-            fontWeight: 'bold',
-            letterSpacing: 2.1, // 0.15em tracking
-            textTransform: 'uppercase',
-          },
-        }}
-      />
-
       <View className="flex-1 bg-white dark:bg-slate-950">
+        {/* Header */}
+        <View style={{ paddingTop: insets.top }}>
+          <Header title={t('achievements.milestones')} leftIcons={leftIcons} />
+        </View>
+
         {/* Sticky Header with Tier Filter */}
-        <View className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-4 py-4">
+        <View className="border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-950">
           {/* Unlocked Count */}
           <View className="mb-3">
             <Text className="text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -54,8 +73,12 @@ export default function AchievementsScreen() {
             </Text>
           </View>
 
-          {/* Tier Filter Tabs */}
-          <TierFilterTabs selected={tierFilter} onChange={setTierFilter} />
+          {/* Tier Filter */}
+          <SegmentedControl
+            items={tierItems}
+            selectedValue={tierFilter}
+            onValueChange={setTierFilter}
+          />
         </View>
 
         {/* Achievement Grid */}
