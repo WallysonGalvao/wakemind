@@ -41,7 +41,7 @@ export default function MorningPerformanceSummaryScreen() {
   // Refetch data when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      refetch();
+      void refetch();
 
       // Check for achievement unlocks
       void checkAllAchievements()
@@ -64,7 +64,8 @@ export default function MorningPerformanceSummaryScreen() {
         .catch((error) => {
           console.error('[MorningPerformanceSummary] Failed to check achievements:', error);
         });
-    }, [refetch, checkAllAchievements])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
   );
 
   // Get action handlers
