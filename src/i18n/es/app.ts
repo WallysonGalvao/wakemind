@@ -37,7 +37,7 @@ export const appES = {
   'newAlarm.challenges.math.title': 'Desafío de Matemáticas',
   'newAlarm.challenges.math.description': 'Resuelve ecuaciones aritméticas para detener la alarma.',
   'newAlarm.challenges.memory.title': 'Jogo da Memoria',
-  'newAlarm.challenges.memory.description': 'Memoriza y recuerda un patrón de bloques iluminados.',
+  'newAlarm.challenges.memory.description': 'Memoriza un patrón de bloques iluminados.',
   'newAlarm.challenges.logic.title': 'Rompecabezas Lógico',
   'newAlarm.challenges.logic.description':
     'Completa la secuencia para demostrar que estás despierto.',
@@ -234,10 +234,10 @@ export const appES = {
   'performance.trendingUp': 'Tendencia Creciente',
   'performance.trendingDown': 'Tendencia Decreciente',
   'performance.stable': 'Estable',
-  'performance.daysGain': '+{{count}} día',
-  'performance.daysGain_other': '+{{count}} días',
-  'performance.pointsGain': '+{{count}} pt',
-  'performance.pointsGain_other': '+{{count}} pts',
+  'performance.daysGain': '{{count}} día',
+  'performance.daysGain_other': '{{count}} días',
+  'performance.pointsGain': '{{count}} pt',
+  'performance.pointsGain_other': '{{count}} pts',
   'performance.a11y.closeHint': 'Cierra el resumen de rendimiento y vuelve a la pantalla de inicio',
   'performance.a11y.shareHint': 'Compartir tu resumen de rendimiento',
 };

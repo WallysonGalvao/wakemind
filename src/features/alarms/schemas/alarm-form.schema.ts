@@ -48,16 +48,15 @@ export const alarmFormSchema = z.object({
 export type AlarmFormData = z.infer<typeof alarmFormSchema>;
 
 /**
- * Get default alarm form values with dynamic time (current time + 1 hour)
+ * Get default alarm form values with dynamic time (current time + 1 minute)
  */
 export function getDefaultAlarmFormValues(): AlarmFormData {
   const now = dayjs();
-  const nextHour = (now.hour() + 1) % 24;
-  const currentMinute = now.minute();
+  const nextMinute = now.add(1, 'minute');
 
   return {
-    hour: nextHour,
-    minute: currentMinute,
+    hour: nextMinute.hour(),
+    minute: nextMinute.minute(),
     selectedDays: [], // Will be overridden with current day in form
     challenge: ChallengeType.MATH,
     difficulty: DifficultyLevel.EASY,

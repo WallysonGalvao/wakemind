@@ -19,7 +19,7 @@ interface WakeConsistencyData {
 /**
  * Custom hook to calculate wake consistency based on alarm completions
  */
-export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
+export function useWakeConsistency(period: PeriodType, refreshKey?: number): WakeConsistencyData {
   const { t } = useTranslation();
   const [data, setData] = useState<WakeConsistencyData>({
     targetTime: '--:--',
@@ -70,6 +70,16 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
         .from(alarmCompletions)
         .where(gte(alarmCompletions.date, startDate.format('YYYY-MM-DD')));
 
+      // Debug log for first-time users
+      if (__DEV__ && records.length > 0) {
+        console.log('[WakeConsistency] Records found:', records.length);
+        console.log('[WakeConsistency] Sample record:', {
+          targetTime: records[0].targetTime,
+          actualTime: records[0].actualTime,
+          date: records[0].date,
+        });
+      }
+
       if (records.length === 0) {
         setData({
           targetTime: '--:--',
@@ -82,7 +92,7 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
       }
 
       // Get the most common target time
-      // targetTime can be stored as ISO string or HH:mm format
+      // targetTime is stored in HH:mm format (e.g., "06:30")
       const firstTarget = records[0]?.targetTime;
       if (!firstTarget) {
         setData({
@@ -95,24 +105,26 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
         return;
       }
 
-      // Try to parse as ISO string first, then as HH:mm
-      let targetTimeParsed = dayjs(firstTarget);
-      if (!targetTimeParsed.isValid()) {
-        targetTimeParsed = dayjs(firstTarget, 'HH:mm');
-      }
-      const targetTime = targetTimeParsed.format('HH:mm');
+      // targetTime is already in HH:mm format, just validate it
+      const targetTime = firstTarget.includes(':') ? firstTarget : '--:--';
 
       // Calculate average actual wake time
-      // Parse actualTime with fallback for different formats
+      // actualTime is stored as ISO string
       const actualTimes = records
         .map((r) => {
-          let parsed = dayjs(r.actualTime);
-          if (!parsed.isValid()) {
-            parsed = dayjs(r.actualTime, 'HH:mm');
+          const parsed = dayjs(r.actualTime);
+          if (__DEV__) {
+            console.log('[WakeConsistency Hook] Parsing actualTime:', {
+              raw: r.actualTime,
+              parsed: parsed.format('YYYY-MM-DD HH:mm:ss'),
+              hour: parsed.hour(),
+              minute: parsed.minute(),
+              totalMinutes: parsed.hour() * 60 + parsed.minute(),
+            });
           }
-          return parsed;
+          return parsed.isValid() ? parsed : null;
         })
-        .filter((time) => time.isValid()); // Filter out invalid times
+        .filter((time): time is dayjs.Dayjs => time !== null);
 
       if (actualTimes.length === 0) {
         setData({
@@ -125,6 +137,7 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
         return;
       }
 
+      // Calculate total minutes (only hour and minute components, ignore date)
       const totalMinutes = actualTimes.reduce(
         (sum, time) => sum + time.hour() * 60 + time.minute(),
         0
@@ -147,6 +160,15 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
       const avgMinutes = Math.round(averageMinutes % 60);
       const averageTime = `${avgHours.toString().padStart(2, '0')}:${avgMinutes.toString().padStart(2, '0')}`;
 
+      if (__DEV__) {
+        console.log('[WakeConsistency Hook] Calculated averageTime:', {
+          averageMinutes,
+          avgHours,
+          avgMinutes,
+          averageTime,
+        });
+      }
+
       // Calculate variance (difference from target in minutes)
       const [targetHour = 6, targetMin = 0] = targetTime.split(':').map(Number);
       const targetMinutes = targetHour * 60 + targetMin;
@@ -155,31 +177,64 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
           ? Math.round(averageMinutes - targetMinutes)
           : 0;
 
+      if (__DEV__) {
+        console.log('[WakeConsistency Hook] Variance calculation:', {
+          targetTime,
+          targetHour,
+          targetMin,
+          targetMinutes,
+          averageMinutes,
+          rawVariance: averageMinutes - targetMinutes,
+          variance,
+        });
+      }
+
       // Generate chart data for the period
       const chartData: number[] = [];
       const dataPoints = Math.min(days, 30); // Maximum 30 data points
 
       for (let i = 0; i < dataPoints; i++) {
         const targetDate = startDate.add(i, 'day');
-        const dayRecords = records.filter(
-          (r) => dayjs(r.date).format('YYYY-MM-DD') === targetDate.format('YYYY-MM-DD')
-        );
+        const dayRecords = records.filter((r) => {
+          const recordDate = dayjs(r.date);
+          return (
+            recordDate.isValid() &&
+            recordDate.format('YYYY-MM-DD') === targetDate.format('YYYY-MM-DD')
+          );
+        });
 
         if (dayRecords.length > 0) {
-          // Calculate average variance for this day
-          const dayVariances = dayRecords.map((r) => {
-            const actualTime = dayjs(r.actualTime);
-            const actualMinutes = actualTime.hour() * 60 + actualTime.minute();
-            return actualMinutes - targetMinutes;
-          });
-          const dayAvgVariance = dayVariances.reduce((sum, v) => sum + v, 0) / dayVariances.length;
+          // Calculate average variance for this day (only using time components)
+          const dayVariances = dayRecords
+            .map((r) => {
+              const actualTime = dayjs(r.actualTime);
+              if (!actualTime.isValid()) return null;
+              const actualMinutes = actualTime.hour() * 60 + actualTime.minute();
+              return actualMinutes - targetMinutes;
+            })
+            .filter((v): v is number => v !== null);
 
-          // Ensure the value is finite and valid
-          const validVariance = Number.isFinite(dayAvgVariance) ? Math.abs(dayAvgVariance) : 0;
-          chartData.push(Math.min(validVariance, 180)); // Cap at 3 hours (180 minutes)
+          if (dayVariances.length > 0) {
+            const dayAvgVariance =
+              dayVariances.reduce((sum, v) => sum + v, 0) / dayVariances.length;
+            const validVariance = Number.isFinite(dayAvgVariance) ? Math.abs(dayAvgVariance) : 0;
+            chartData.push(Math.min(validVariance, 180)); // Cap at 3 hours (180 minutes)
+          } else {
+            chartData.push(0);
+          }
         } else {
           chartData.push(0);
         }
+      }
+
+      if (__DEV__) {
+        console.log('[WakeConsistency Hook] Final data:', {
+          targetTime,
+          averageTime,
+          variance,
+          chartDataLength: chartData.length,
+          chartData: chartData.slice(0, 5),
+        });
       }
 
       setData({
@@ -192,7 +247,7 @@ export function useWakeConsistency(period: PeriodType): WakeConsistencyData {
     };
 
     calculateConsistency();
-  }, [period, t]);
+  }, [period, t, refreshKey]);
 
   return data;
 }
