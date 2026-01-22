@@ -3,6 +3,8 @@
  * Displays individual achievement with tier-specific styling
  */
 
+import { useMemo } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -70,7 +72,25 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
   const colors = getTierColors();
   const shadowStyle = useShadowStyle('md', colors.shadowColor);
   const isPlatinum = def.tier === 'platinum';
-  const isLocked = !isUnlocked;
+  const isLocked = isUnlocked;
+
+  const touchableStyle = useMemo(
+    () => ({
+      borderColor: isLocked ? 'rgba(100, 116, 139, 0.2)' : colors.borderColor,
+    }),
+    [isLocked, colors.borderColor]
+  );
+
+  const getDotStyle = (row: number, col: number) => ({
+    top: 8 + row * 16,
+    left: 8 + col * 26,
+    opacity: 0.3,
+  });
+
+  const progressBarStyle = useMemo(
+    () => ({ width: `${(progress / target) * 100}%` }),
+    [progress, target]
+  );
 
   // Display name and description
   const achievementName = t(`achievements.${def.id}.name`);
@@ -85,9 +105,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
         accessibilityRole="button"
         onPress={onPress}
         disabled={!onPress}
-        style={{
-          borderColor: isLocked ? 'rgba(100, 116, 139, 0.2)' : colors.borderColor,
-        }}
+        style={touchableStyle}
         className={`
         group relative flex flex-col overflow-hidden rounded-2xl border
         bg-white shadow-sm transition-all duration-300 dark:bg-slate-900
@@ -95,6 +113,20 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
         active:scale-[0.98]
       `}
       >
+        {/* Decorative dots grid */}
+        {[0, 1, 2, 3, 4, 5].map((row) =>
+          [0, 1, 2, 3, 4, 5, 6, 7, 8].map((col) => (
+            <View
+              key={`dot-${row}-${col}`}
+              className="absolute h-1 w-1 rounded-full"
+              style={[
+                { ...getDotStyle(row, col) },
+                { backgroundColor: colors.shadowColor, opacity: 0.1 },
+              ]}
+            />
+          ))
+        )}
+
         {/* Platinum top accent */}
         {isPlatinum && isUnlocked ? (
           <View className="absolute left-0 top-0 h-0.5 w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
@@ -153,7 +185,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
               <View className="h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
                 <View
                   className="h-full rounded-full bg-blue-500 dark:bg-blue-600"
-                  style={{ width: `${(progress / target) * 100}%` }}
+                  style={progressBarStyle}
                 />
               </View>
             </View>
