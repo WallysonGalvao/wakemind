@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -49,8 +50,8 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
 
   // Get current month name
   const currentMonthName = useMemo(() => {
-    const now = new Date();
-    return new Intl.DateTimeFormat(t('common.locale'), { month: 'long' }).format(now);
+    const now = dayjs();
+    return new Intl.DateTimeFormat(t('common.locale'), { month: 'long' }).format(now.toDate());
   }, [t]);
 
   // Create a map of date -> score for quick lookup
@@ -64,13 +65,17 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
 
   // Build the grid for current month only
   const monthGrid = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    const now = dayjs();
+    const year = now.year();
+    const month = now.month();
 
     // Get first day of month and total days in month
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
+    const firstDay = dayjs().year(year).month(month).date(1).toDate();
+    const lastDay = dayjs()
+      .year(year)
+      .month(month + 1)
+      .date(0)
+      .toDate();
     const daysInMonth = lastDay.getDate();
     const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
     // Convert to Monday-based week (Monday = 0, Sunday = 6)
@@ -86,7 +91,7 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
 
     // Add all days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
+      const date = dayjs().year(year).month(month).date(day).toDate();
       const dateStr = date.toISOString().split('T')[0];
       const score = scoreMap.get(dateStr) || 0;
       const dayOfWeek = date.getDay();
@@ -176,7 +181,7 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
                   }
 
                   // Check if this is today
-                  const today = new Date().toISOString().split('T')[0];
+                  const today = dayjs().toISOString().split('T')[0];
                   const isToday = cell.date === today;
 
                   if (isToday) {

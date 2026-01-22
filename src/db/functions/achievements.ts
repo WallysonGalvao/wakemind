@@ -3,6 +3,7 @@
  * CRUD operations for achievements and user_achievements tables
  */
 
+import dayjs from 'dayjs';
 import { eq, sql } from 'drizzle-orm';
 
 import { db } from '@/db';
@@ -20,7 +21,7 @@ import { ACHIEVEMENT_REGISTRY } from '@/features/achievements/utils/achievement-
  * This should be called once on app initialization
  */
 export async function seedAchievements(): Promise<void> {
-  const now = new Date().toISOString();
+  const now = dayjs().toISOString();
 
   // Check if already seeded
   const existing = await db.select().from(achievements);
@@ -117,7 +118,7 @@ export async function unlockAchievement(achievementId: string): Promise<void> {
     return;
   }
 
-  const now = new Date().toISOString();
+  const now = dayjs().toISOString();
 
   if (existing) {
     // Update existing record
@@ -151,7 +152,7 @@ export async function updateAchievementProgress(
   progress: number
 ): Promise<void> {
   const existing = await getUserAchievementById(achievementId);
-  const now = new Date().toISOString();
+  const now = dayjs().toISOString();
 
   if (existing) {
     // Don't update if already unlocked
