@@ -27,9 +27,6 @@ export function MPBalanceCard({
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('md', '#3FA9F5');
 
-  // #3FA9F5
-  // #0ea5e9
-
   return (
     <View className="flex flex-col gap-4 px-4 pt-4">
       {/* Balance Card */}
