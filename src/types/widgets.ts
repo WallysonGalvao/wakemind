@@ -5,6 +5,7 @@ export enum WidgetType {
   AVG_LATENCY = 'avgLatency',
   COGNITIVE_MAP = 'cognitiveMap',
   DAILY_INSIGHT = 'dailyInsight',
+  ACHIEVEMENTS = 'achievements',
   FALSE_STARTS = 'falseStarts',
   SLEEP_ENVIRONMENT = 'sleepEnvironment',
 }
@@ -73,6 +74,14 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'lightbulb',
     titleKey: 'widgets.dailyInsight.title',
     descriptionKey: 'widgets.dailyInsight.description',
+    defaultEnabled: true,
+  },
+  {
+    id: WidgetType.ACHIEVEMENTS,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'emoji_events',
+    titleKey: 'widgets.achievements.title',
+    descriptionKey: 'widgets.achievements.description',
     defaultEnabled: true,
   },
   // System Monitoring

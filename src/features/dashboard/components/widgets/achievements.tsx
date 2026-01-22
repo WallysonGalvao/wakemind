@@ -1,5 +1,5 @@
 /**
- * Achievement Quick Card
+ * Achievements Widget
  * Dashboard widget showing achievement progress
  */
 
@@ -8,30 +8,28 @@ import React from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
+import { useAchievements } from '@/features/achievements/hooks/use-achievements';
 
-interface AchievementQuickCardProps {
-  unlockedCount: number;
-  totalCount: number;
-}
-
-export function AchievementQuickCard({ unlockedCount, totalCount }: AchievementQuickCardProps) {
+export function Achievements() {
   const { t } = useTranslation();
+  const { achievements } = useAchievements();
 
-  const percentage = Math.round((unlockedCount / totalCount) * 100);
+  const unlockedCount = achievements.filter((a) => a.isUnlocked).length;
+  const totalCount = achievements.length;
+  const percentage = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
 
   return (
     <TouchableOpacity
       accessibilityRole="button"
       onPress={() => router.push('/achievements')}
-      className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 active:scale-[0.98]"
+      className="rounded-2xl border border-slate-200 bg-white p-4 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900"
     >
-      <View className="flex-row items-center justify-between mb-3">
+      <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <View className="w-10 h-10 bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full items-center justify-center">
+          <View className="h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 dark:bg-cyan-500/20">
             <MaterialSymbol name="emoji_events" size={24} color="#3FA9F5" />
           </View>
           <View>
@@ -47,9 +45,9 @@ export function AchievementQuickCard({ unlockedCount, totalCount }: AchievementQ
       </View>
 
       {/* Progress Bar */}
-      <View className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+      <View className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
         <View
-          className="h-full bg-cyan-500 dark:bg-cyan-600 rounded-full"
+          className="h-full rounded-full bg-cyan-500 dark:bg-cyan-600"
           style={{ width: `${percentage}%` }}
         />
       </View>

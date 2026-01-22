@@ -18,6 +18,7 @@ import type { IconButton } from '@/components/header';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { SegmentedControl } from '@/components/segmented-control';
+import { Achievements } from '@/features/dashboard/components/widgets/achievements';
 import { AvgLatency } from '@/features/dashboard/components/widgets/avg-latency';
 import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
 import { CurrentStreak } from '@/features/dashboard/components/widgets/current-streak';
@@ -158,6 +159,9 @@ export default function DashboardScreen() {
             <CognitiveActivation data={cognitiveActivationData} />
           </FeatureGate>
         )}
+
+        {/* Achievements */}
+        {enabledWidgets.has(WidgetType.ACHIEVEMENTS) && <Achievements />}
 
         <AddWidget />
       </ScrollView>

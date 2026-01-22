@@ -34,6 +34,10 @@ export const widgetsES = {
       title: 'Perspectiva Diaria',
       description: 'Consejos de rendimiento',
     },
+    achievements: {
+      title: 'Logros',
+      description: 'Hitos desbloqueados',
+    },
     falseStarts: {
       title: 'Inicios Falsos',
       description: 'Seguimiento de actividad de repetición',

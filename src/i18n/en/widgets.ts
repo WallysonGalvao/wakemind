@@ -34,6 +34,10 @@ export const widgetsEN = {
       title: 'Daily Insight',
       description: 'Performance tips',
     },
+    achievements: {
+      title: 'Achievements',
+      description: 'Unlocked milestones',
+    },
     falseStarts: {
       title: 'False Starts',
       description: 'Snooze activity tracking',
