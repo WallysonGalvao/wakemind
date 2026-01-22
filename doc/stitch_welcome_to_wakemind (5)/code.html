@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Execution Milestones Light Mode</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a83df5",
+                        "background-light": "#F5F7FA", 
+                        "navy-blue": "#0f172a", // Deep Navy
+                        "electric-cyan-light": "#E0F2FE",
+                        "electric-cyan-text": "#0088CC", // Readable Cyan
+                        "graphite": "#2E2E2E",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
+                        'glow-purple': '0 0 15px rgba(168, 61, 245, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        body {
+             min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light font-display text-navy-blue antialiased overflow-hidden h-screen flex flex-col">
+<header class="flex items-center px-4 pt-12 pb-4 bg-background-light/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+<button class="text-navy-blue flex size-12 shrink-0 items-center justify-center hover:bg-gray-200 rounded-full transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h2 class="text-navy-blue text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center uppercase">Milestones</h2>
+<button class="flex items-center justify-end hover:opacity-80 transition-opacity">
+<p class="text-primary text-sm font-bold leading-normal tracking-[0.05em] shrink-0 uppercase">History</p>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto no-scrollbar pb-24">
+<section class="p-4 flex flex-col gap-6">
+<div class="relative overflow-hidden rounded-xl bg-electric-cyan-light border border-blue-100 shadow-sm p-6">
+<div class="absolute top-0 right-0 p-4 opacity-[0.08]"> 
+<span class="material-symbols-outlined text-[120px] text-navy-blue">bolt</span>
+</div>
+<div class="relative z-10 flex flex-col items-start gap-1">
+<p class="text-navy-blue/70 text-sm font-medium tracking-widest uppercase">Current Balance</p>
+<div class="flex items-baseline gap-2">
+<h1 class="text-navy-blue text-5xl font-bold tracking-tight">4,250</h1>
+<span class="text-navy-blue/60 text-lg font-bold">MP</span>
+</div>
+<p class="text-navy-blue/50 text-xs mt-2 font-mono">Lifetime Total: 12,450 MP</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<p class="text-navy-blue text-sm font-bold tracking-wide uppercase">Next Rank: <span class="text-primary">Platinum</span></p>
+<p class="text-primary text-xs font-mono font-medium">85%</p>
+</div>
+<div class="relative h-2 w-full rounded-full bg-gray-200 overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-primary w-[85%] rounded-full shadow-[0_0_10px_rgba(168,61,245,0.4)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-gray-400 font-mono uppercase tracking-wider">
+<span>Gold III</span>
+<span>750 MP to upgrade</span>
+</div>
+</div>
+</section>
+<section class="px-4">
+<h2 class="text-navy-blue text-xl font-bold tracking-tight uppercase mb-4 border-l-4 border-primary pl-3 py-1">Execution Medals</h2>
+<div class="grid grid-cols-2 gap-3 pb-8">
+<div class="group relative flex flex-col items-center gap-4 rounded-lg bg-white border border-gray-100 p-5 shadow-soft transition-all active:scale-95 hover:border-primary/30">
+<div class="absolute top-3 right-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+</div>
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 border border-gray-200 shadow-inner group-hover:shadow-[0_0_15px_rgba(168,61,245,0.2)] transition-all">
+<span class="material-symbols-outlined text-3xl text-gray-700 group-hover:text-primary transition-colors">wb_twilight</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-center">
+<h3 class="text-navy-blue text-sm font-bold uppercase tracking-wide">Early Riser</h3>
+<p class="text-electric-cyan-text text-xs font-mono font-bold">+50 MP</p>
+</div>
+</div>
+<div class="group relative flex flex-col items-center gap-4 rounded-lg bg-white border border-gray-100 p-5 shadow-soft transition-all active:scale-95 hover:border-primary/30">
+<div class="absolute top-3 right-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+</div>
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 border border-gray-200 shadow-inner group-hover:shadow-[0_0_15px_rgba(168,61,245,0.2)] transition-all">
+<span class="material-symbols-outlined text-3xl text-gray-700 group-hover:text-primary transition-colors">psychology</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-center">
+<h3 class="text-navy-blue text-sm font-bold uppercase tracking-wide">Deep Focus</h3>
+<p class="text-electric-cyan-text text-xs font-mono font-bold">+100 MP</p>
+</div>
+</div>
+<div class="group relative flex flex-col items-center gap-4 rounded-lg bg-white border border-gray-100 p-5 shadow-soft transition-all active:scale-95 hover:border-primary/30">
+<div class="absolute top-3 right-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+</div>
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 border border-gray-200 shadow-inner group-hover:shadow-[0_0_15px_rgba(168,61,245,0.2)] transition-all">
+<span class="material-symbols-outlined text-3xl text-gray-700 group-hover:text-primary transition-colors">fitness_center</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-center">
+<h3 class="text-navy-blue text-sm font-bold uppercase tracking-wide">Physiology</h3>
+<p class="text-electric-cyan-text text-xs font-mono font-bold">+75 MP</p>
+</div>
+</div>
+<div class="group relative flex flex-col items-center gap-4 rounded-lg bg-white border border-gray-100 p-5 shadow-none opacity-50">
+<div class="absolute top-3 right-3">
+<span class="material-symbols-outlined text-gray-400 text-lg">lock</span>
+</div>
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 border border-gray-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl text-gray-400">military_tech</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-center">
+<h3 class="text-gray-500 text-sm font-bold uppercase tracking-wide">Classified</h3>
+<p class="text-gray-400 text-xs font-mono font-medium">??? MP</p>
+</div>
+</div>
+<div class="group relative flex flex-col items-center gap-4 rounded-lg bg-white border border-gray-100 p-5 shadow-none opacity-50">
+<div class="absolute top-3 right-3">
+<span class="material-symbols-outlined text-gray-400 text-lg">lock</span>
+</div>
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 border border-gray-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl text-gray-400">verified_user</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-center">
+<h3 class="text-gray-500 text-sm font-bold uppercase tracking-wide">Elite Guard</h3>
+<p class="text-gray-400 text-xs font-mono font-medium">??? MP</p>
+</div>
+</div>
+<div class="group relative flex flex-col items-center gap-4 rounded-lg bg-white border border-gray-100 p-5 shadow-none opacity-50">
+<div class="absolute top-3 right-3">
+<span class="material-symbols-outlined text-gray-400 text-lg">lock</span>
+</div>
+<div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 border border-gray-200 shadow-inner">
+<span class="material-symbols-outlined text-3xl text-gray-400">diamond</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-center">
+<h3 class="text-gray-500 text-sm font-bold uppercase tracking-wide">Ascension</h3>
+<p class="text-gray-400 text-xs font-mono font-medium">??? MP</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur border-t border-gray-100 z-50 pb-6">
+<div class="flex justify-between items-center px-6 h-20">
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-navy-blue transition-colors">
+<span class="material-symbols-outlined text-2xl">home</span>
+<span class="text-[10px] uppercase font-bold tracking-widest">Base</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-navy-blue transition-colors">
+<span class="material-symbols-outlined text-2xl">timer</span>
+<span class="text-[10px] uppercase font-bold tracking-widest">Focus</span>
+</button>
+<button class="flex flex-col items-center gap-1 relative">
+<div class="absolute -top-12 bg-primary rounded-full p-3 shadow-glow-purple border-4 border-white">
+<span class="material-symbols-outlined text-2xl text-white">trophy</span>
+</div>
+<div class="h-6"></div>
+<span class="text-[10px] uppercase font-bold text-primary tracking-widest">Rank</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-navy-blue transition-colors">
+<span class="material-symbols-outlined text-2xl">bar_chart</span>
+<span class="text-[10px] uppercase font-bold tracking-widest">Stats</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-navy-blue transition-colors">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[10px] uppercase font-bold tracking-widest">Profile</span>
+</button>
+</div>
+</nav>
+
+</body></html>
