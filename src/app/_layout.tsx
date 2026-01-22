@@ -74,12 +74,17 @@ function RootLayout() {
         // Set up callbacks for notification events
         NotificationHandler.setCallbacks({
           getAlarm: getAlarmById,
-          onAlarmTriggered: (_alarmId) => {},
-          onSnooze: (_alarmId) => {},
-          onDismiss: (_alarmId) => {},
+          onAlarmTriggered: (_alarmId) => { },
+          onSnooze: (_alarmId) => { },
+          onDismiss: (_alarmId) => { },
         });
 
         if (!isMounted) return;
+
+        if (!isMounted) return;
+        // Seed achievements on first launch
+        const { seedAchievements } = await import('@/db/functions/achievements');
+        await seedAchievements();
 
         if (!isMounted) return;
         // Sync alarms with scheduler on app start
