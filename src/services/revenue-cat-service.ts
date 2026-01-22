@@ -86,12 +86,24 @@ export async function isProUser(): Promise<boolean> {
  * Get available offerings (subscription packages)
  */
 export async function getOfferings(): Promise<PurchasesOfferings | null> {
+  const startTime = Date.now();
   try {
     const offerings = await Purchases.getOfferings();
+    const loadTime = Date.now() - startTime;
     console.log('[RevenueCat] Offerings fetched:', offerings);
+
+    // Track successful load
+    const offeringsCount = offerings.current?.availablePackages.length ?? 0;
+    AnalyticsEvents.offeringsLoaded(offeringsCount, loadTime);
+
     return offerings;
   } catch (error) {
     console.error('[RevenueCat] Error fetching offerings:', error);
+
+    // Track failed load
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    AnalyticsEvents.offeringsLoadFailed(errorMessage);
+
     return null;
   }
 }
@@ -141,14 +153,21 @@ export async function getCurrentOffering(): Promise<PurchasesPackage[] | null> {
 export async function purchasePackage(
   pkg: PurchasesPackage
 ): Promise<{ success: boolean; customerInfo?: CustomerInfo; error?: string }> {
+  const startTime = Date.now();
+
   try {
     console.log('[RevenueCat] Attempting purchase:', pkg.identifier);
 
+    // Track purchase start
+    AnalyticsEvents.purchaseStarted(pkg.identifier);
+
     const { customerInfo } = await Purchases.purchasePackage(pkg);
+    const duration = Date.now() - startTime;
 
     console.log('[RevenueCat] Purchase successful:', customerInfo);
 
-    // Track purchase event
+    // Track successful purchase
+    AnalyticsEvents.purchaseCompleted(pkg.identifier, duration);
     AnalyticsEvents.subscriptionPurchased(
       pkg.identifier,
       pkg.product.priceString,
@@ -157,6 +176,7 @@ export async function purchasePackage(
 
     return { success: true, customerInfo };
   } catch (error) {
+    const duration = Date.now() - startTime;
     console.error('[RevenueCat] Purchase error:', error);
 
     const purchaseError = error as { userCancelled?: boolean; message?: string };
@@ -164,13 +184,19 @@ export async function purchasePackage(
     // Handle user cancellation (not a real error)
     if (purchaseError.userCancelled) {
       console.log('[RevenueCat] User cancelled purchase');
+      AnalyticsEvents.purchaseCancelled(pkg.identifier);
       return { success: false, error: 'cancelled' };
     }
 
     // Track failed purchase
-    AnalyticsEvents.subscriptionFailed(pkg.identifier, purchaseError.message || 'Unknown error');
+    const errorMessage = purchaseError.message || 'Unknown error';
+    AnalyticsEvents.subscriptionFailed(pkg.identifier, errorMessage);
+    AnalyticsEvents.subscriptionError('purchase', errorMessage, {
+      package_id: pkg.identifier,
+      duration_ms: duration,
+    });
 
-    return { success: false, error: purchaseError.message || 'Purchase failed' };
+    return { success: false, error: errorMessage || 'Purchase failed' };
   }
 }
 
@@ -183,15 +209,24 @@ export async function restorePurchases(): Promise<{
   customerInfo?: CustomerInfo;
   error?: string;
 }> {
+  const startTime = Date.now();
+
   try {
     console.log('[RevenueCat] Restoring purchases...');
 
+    // Track restore start
+    AnalyticsEvents.restoreStarted();
+
     const customerInfo = await Purchases.restorePurchases();
+    const duration = Date.now() - startTime;
 
     console.log('[RevenueCat] Restore successful:', customerInfo);
 
     // Check if any active entitlements were restored
     const hasActiveEntitlements = Object.keys(customerInfo.entitlements.active).length > 0;
+
+    // Track successful restore
+    AnalyticsEvents.restoreCompleted(duration, hasActiveEntitlements);
 
     if (hasActiveEntitlements) {
       AnalyticsEvents.subscriptionRestored();
@@ -199,9 +234,19 @@ export async function restorePurchases(): Promise<{
 
     return { success: true, customerInfo };
   } catch (error) {
+    const duration = Date.now() - startTime;
     console.error('[RevenueCat] Restore error:', error);
+
     const restoreError = error as { message?: string };
-    return { success: false, error: restoreError.message || 'Restore failed' };
+    const errorMessage = restoreError.message || 'Restore failed';
+
+    // Track failed restore
+    AnalyticsEvents.subscriptionRestoreFailed(errorMessage);
+    AnalyticsEvents.subscriptionError('restore', errorMessage, {
+      duration_ms: duration,
+    });
+
+    return { success: false, error: errorMessage };
   }
 }
 
@@ -347,7 +392,7 @@ export async function presentPaywallUI(options?: {
     console.log('[RevenueCat Paywall] Presenting paywall...', options);
 
     const result = await RevenueCatUI.presentPaywall({
-      offering: options?.offering || undefined,
+      offering: options?.offering?.current ?? undefined,
       displayCloseButton: options?.displayCloseButton ?? true,
     });
 
@@ -383,7 +428,7 @@ export async function presentPaywallUI(options?: {
  *   return;
  * }
  */
-export async function presentPaywallIfUserNeedsPro(options?: {
+export async function presentPaywallIfUserNeedsPro(_options?: {
   offering?: PurchasesOfferings | null;
 }): Promise<PAYWALL_RESULT | null> {
   try {
@@ -415,7 +460,7 @@ export async function showPaywallIfNeeded(options?: {
   try {
     const result = await RevenueCatUI.presentPaywallIfNeeded({
       requiredEntitlementIdentifier: options?.requiredEntitlement || Entitlement.PRO,
-      offering: options?.offering || undefined,
+      offering: options?.offering?.current ?? undefined,
     });
 
     console.log('[RevenueCat Paywall] Result:', result);

@@ -4,7 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 
 import { FeatureRow, ProBadge } from '../components/paywall-features';
 import { PaywallFooter } from '../components/paywall-footer';
@@ -16,6 +16,7 @@ import { usePaywallActions } from '../hooks/use-paywall-actions';
 import { usePaywallPackages } from '../hooks/use-paywall-packages';
 import { formatPackagePrice, usePricingSavings } from '../hooks/use-pricing-calculations';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Text } from '@/components/ui/text';
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
@@ -28,12 +29,16 @@ export type PaywallMode = 'full' | 'yearly-only' | 'monthly-only';
 export default function PaywallScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ mode?: PaywallMode }>();
+  const params = useLocalSearchParams<{ mode?: PaywallMode; source?: string }>();
 
   // Determine display mode from params (default to 'full')
   const mode: PaywallMode = params.mode || 'full';
+  const source = params.source || 'unknown';
 
-  const { offerings, isLoading, loadOfferings } = useSubscriptionStore();
+  const { offerings, isLoading, loadingState, error, loadOfferings } = useSubscriptionStore();
+
+  // Track paywall view time for analytics
+  const [viewStartTime] = useState(Date.now());
 
   // Set initial selected plan based on mode
   const getInitialPlan = (): PlanType => {
@@ -42,6 +47,17 @@ export default function PaywallScreen() {
   };
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>(getInitialPlan);
+
+  // Handle plan selection with analytics
+  const handlePlanSelect = (plan: PlanType) => {
+    setSelectedPlan(plan);
+
+    // Track package selection
+    const pkg = plan === 'yearly' ? yearlyPackage : monthlyPackage;
+    if (pkg) {
+      AnalyticsEvents.packageSelected(pkg.identifier, plan);
+    }
+  };
 
   // Extract packages from offerings (memoized)
   const { monthly: monthlyPackage, yearly: yearlyPackage } = usePaywallPackages(offerings);
@@ -66,7 +82,16 @@ export default function PaywallScreen() {
   // Load offerings on mount
   useEffect(() => {
     loadOfferings();
-  }, [loadOfferings]);
+
+    // Track paywall view
+    AnalyticsEvents.paywallViewed(source);
+
+    // Track paywall dismissal on unmount
+    return () => {
+      const duration = Math.floor((Date.now() - viewStartTime) / 1000);
+      AnalyticsEvents.paywallDismissed(source, duration);
+    };
+  }, [loadOfferings, source, viewStartTime]);
 
   // Determine which cards to show based on mode
   const showYearlyCard = mode === 'full' || mode === 'yearly-only';
@@ -93,7 +118,7 @@ export default function PaywallScreen() {
       <ScrollView
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerClassName="pb-5"
       >
         {/* Title Section */}
         <View className="pb-2 pt-4">
@@ -136,7 +161,7 @@ export default function PaywallScreen() {
             hasTrial={mode === 'full'}
             trialText={t('paywall.plans.trial')}
             isSelected={selectedPlan === 'yearly'}
-            onPress={() => setSelectedPlan('yearly')}
+            onPress={() => handlePlanSelect('yearly')}
           />
         ) : null}
 
@@ -148,21 +173,49 @@ export default function PaywallScreen() {
             period={t('paywall.plans.monthly.period')}
             subtitle={t('paywall.plans.monthly.subtitle')}
             isSelected={selectedPlan === 'monthly'}
-            onPress={() => setSelectedPlan('monthly')}
+            onPress={() => handlePlanSelect('monthly')}
           />
         ) : null}
 
         {/* CTA Button */}
         <Pressable
           onPress={handlePurchase}
-          disabled={isLoading}
+          disabled={isLoading || !monthlyPackage || !yearlyPackage}
           accessibilityRole="button"
-          className="mt-2 h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-4 shadow-lg shadow-primary-500/20 active:scale-[0.98]"
+          className="mt-2 h-14 w-full items-center justify-center rounded-xl bg-primary-500 px-4 shadow-lg shadow-primary-500/20 active:scale-[0.98] disabled:opacity-50"
         >
-          <Text className="text-base font-bold uppercase tracking-wide text-white">
-            {isLoading ? t('paywall.cta.processing') : t('paywall.cta.trial')}
-          </Text>
+          {isLoading ? (
+            <View className="flex-row items-center gap-2">
+              <ActivityIndicator color="white" size="small" />
+              <Text className="text-base font-bold uppercase tracking-wide text-white">
+                {loadingState === 'purchasing'
+                  ? t('paywall.cta.processing')
+                  : t('paywall.cta.loading')}
+              </Text>
+            </View>
+          ) : (
+            <Text className="text-base font-bold uppercase tracking-wide text-white">
+              {t('paywall.cta.trial')}
+            </Text>
+          )}
         </Pressable>
+
+        {/* Error Message */}
+        {error && !isLoading ? (
+          <View className="rounded-lg bg-red-50 p-3 dark:bg-red-900/20">
+            <Text className="text-center text-sm text-red-600 dark:text-red-400">{error}</Text>
+          </View>
+        ) : null}
+
+        {/* Loading Overlay for Offerings */}
+        {isLoading && loadingState === 'loading' && !offerings ? (
+          <View className="absolute inset-0 items-center justify-center bg-background-light/80 dark:bg-background-dark/80">
+            <ActivityIndicator size="large" color="#6366f1" />
+            <Text className="text-text-muted-light dark:text-text-muted-dark mt-4 text-sm">
+              {t('paywall.loading')}
+            </Text>
+          </View>
+        ) : null}
 
         {/* Footer */}
         <PaywallFooter />
