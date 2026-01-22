@@ -39,11 +39,24 @@ function withSoundAssets(config) {
 
       // Add files to Xcode project
       const project = config.modResults;
+
       soundFiles.forEach((file) => {
-        // Add file reference if it doesn't exist
-        const fileRef = project.addResourceFile(file, { target: project.getFirstTarget().uuid });
-        if (fileRef) {
+        try {
+          // Add file to Resources group in Xcode project
+          const filePath = path.join(config.modRequest.projectName || 'WakeMind', file);
+
+          // Check if file already exists in project
+          const existingFile = project.hasFile(filePath);
+          if (existingFile) {
+            console.log(`[withSoundAssets] ${file} already exists in Xcode project`);
+            return;
+          }
+
+          // Add resource file
+          project.addResourceFile(filePath);
           console.log(`[withSoundAssets] Added ${file} to Xcode project`);
+        } catch (error) {
+          console.error(`[withSoundAssets] Error adding ${file} to Xcode:`, error.message);
         }
       });
     }

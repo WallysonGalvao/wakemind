@@ -112,6 +112,18 @@ export async function requestPermissions(): Promise<boolean> {
       alert: true,
       badge: true,
     });
+
+    // On Android, also check for full screen intent permission
+    if (Platform.OS === 'android') {
+      console.log('[AlarmScheduler] Notification permission granted');
+      console.log(
+        '[AlarmScheduler] Note: Full screen intent may need manual enabling in system settings'
+      );
+      console.log(
+        '[AlarmScheduler] Path: Settings > Apps > WakeMind > Notifications > Full screen intent'
+      );
+    }
+
     return settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED;
   } catch (error) {
     console.error('[AlarmScheduler] Error requesting permissions:', error);
@@ -203,7 +215,8 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
       body: i18n.t('alarmScheduler.notification.body', {
         time: alarm.time,
         period: alarm.period,
-        challenge: alarm.challenge,
+        // Translate the challenge text if it's an i18n key, otherwise use as-is
+        challenge: alarm.challenge?.includes('.') ? i18n.t(alarm.challenge) : alarm.challenge || '',
       }),
       data: {
         alarmId: alarm.id,
@@ -219,18 +232,24 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         category: AndroidCategory.ALARM,
         importance: AndroidImportance.HIGH,
         visibility: AndroidVisibility.PUBLIC,
+        showTimestamp: true,
+        timestamp: triggerTimestamp,
+        showChronometer: false,
         fullScreenAction: {
           id: 'alarm-triggered',
+          launchActivity: 'default',
+          mainComponent: 'default',
         },
         sound: 'alarm_sound',
         loopSound: true,
         ongoing: true,
         autoCancel: false,
         pressAction: {
-          id: 'default',
+          id: 'alarm-triggered',
           launchActivity: 'default',
         },
         actions,
+        lightUpScreen: true,
       },
       ios: {
         sound: getToneFilename(useSettingsStore.getState().alarmToneId),

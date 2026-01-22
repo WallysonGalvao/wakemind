@@ -56,6 +56,6 @@ export const privacyPolicyES = {
 
   // Footer
   'privacyPolicy.footer.description':
-    'Para ejercer tus derechos de privacidad (GDPR/LGPD), contacta a nuestro DPO.',
+    'Para ejercer tus derechos de privacidad (GDPR/LGPD) o aclarar dudas, contáctanos.',
   'privacyPolicy.footer.email': 'wallyson.galvao@gmail.com',
 };

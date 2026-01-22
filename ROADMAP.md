@@ -336,3 +336,4 @@ OBRIGATÓRIO:
 **Branch atual:** feat/onboarding
 
 https://docs.expo.dev/versions/latest/sdk/storereview/
+https://www.use-voltra.dev/getting-started/introduction
