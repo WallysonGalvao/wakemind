@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Text, TouchableOpacity, View } from 'react-native';
 
+import { getAchievementReward } from '../constants/achievement-rewards';
 import type { AchievementState } from '../types/achievement.types';
 
 import { MaterialSymbol } from '@/components/material-symbol';
@@ -72,7 +73,10 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
   const colors = getTierColors();
   const shadowStyle = useShadowStyle('md', colors.shadowColor);
   const isPlatinum = def.tier === 'platinum';
-  const isLocked = isUnlocked;
+  const isLocked = !isUnlocked;
+
+  // Calculate MP reward (uses custom reward if available, otherwise tier-based)
+  const mpReward = getAchievementReward(def as any);
 
   const touchableStyle = useMemo(
     () => ({
@@ -83,7 +87,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
 
   const getDotStyle = (row: number, col: number) => ({
     top: 8 + row * 16,
-    left: 8 + col * 26,
+    left: 8 + col * 24,
     opacity: 0.3,
   });
 
@@ -139,7 +143,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
           <Text
             className={`text-[10px] font-bold ${isPlatinum && isUnlocked ? 'text-white' : 'text-slate-900 dark:text-slate-100'}`}
           >
-            {isLocked && progress > 0 ? `${progress}/${target}` : '50 MP'}
+            {isLocked && progress > 0 ? `${progress}/${target}` : `${mpReward} MP`}
           </Text>
         </View>
 

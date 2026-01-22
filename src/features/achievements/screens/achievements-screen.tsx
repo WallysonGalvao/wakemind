@@ -8,6 +8,7 @@ import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 
 import { AchievementCard } from '../components/achievement-card';
 import { MPBalanceCard } from '../components/mp-balance-card';
+import { getAchievementReward } from '../constants/achievement-rewards';
 import { useAchievements } from '../hooks/use-achievements';
 import type { AchievementState } from '../types/achievement.types';
 import { AchievementTier } from '../types/achievement.types';
@@ -47,9 +48,14 @@ export default function AchievementsScreen() {
   const unlockedCount = achievements.filter((a) => a.isUnlocked).length;
   const totalCount = achievements.length;
 
-  // Calculate MP balance (50 MP per unlocked achievement)
-  const currentMP = unlockedCount * 50;
-  const lifetimeMP = totalCount * 50; // Simplified: could be based on historical data
+  // Calculate MP balance based on achievement tiers and custom rewards
+  const currentMP = achievements
+    .filter((a) => a.isUnlocked)
+    .reduce((sum, a) => sum + getAchievementReward(a.achievement as any), 0);
+  const lifetimeMP = achievements.reduce(
+    (sum, a) => sum + getAchievementReward(a.achievement as any),
+    0
+  );
 
   // Calculate next tier progression
   const tierThresholds = {
@@ -106,13 +112,12 @@ export default function AchievementsScreen() {
           </Text>
         ),
         onPress: () => {
-          // TODO: Navigate to achievements history screen
-          console.log('Navigate to history');
+          router.push('/achievements/history');
         },
         accessibilityLabel: t('achievements.history'),
       } as IconButton,
     ],
-    [t]
+    [router, t]
   );
 
   const keyExtractor = useCallback((item: AchievementState) => item.achievement.id, []);

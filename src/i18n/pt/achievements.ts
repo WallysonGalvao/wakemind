@@ -88,4 +88,14 @@ export const achievementsPT = {
   // Unlock Modal
   'achievements.unlock.title': 'Conquista Desbloqueada!',
   'achievements.unlock.button': 'Incrível!',
+
+  // History
+  'achievements.history.title': 'Histórico',
+  'achievements.history.thisWeek': 'Esta Semana',
+  'achievements.history.lastMonth': 'Mês Passado',
+  'achievements.history.archive': 'Arquivo',
+  'achievements.history.totalEarned': 'TOTAL GANHO: {{mp}} MP',
+  'achievements.history.done': 'Concluir',
+  'achievements.history.empty': 'Nenhuma conquista desbloqueada',
+  'achievements.history.emptyDescription': 'Complete desafios para desbloquear conquistas',
 };
