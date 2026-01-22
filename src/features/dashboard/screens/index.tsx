@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -33,21 +34,29 @@ export default function DashboardScreen() {
   const enabledWidgets = useWidgetStore((state) => state.enabledWidgets);
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useAnalyticsScreen('Dashboard');
 
+  // Refresh data when screen comes into focus (e.g., after completing an alarm)
+  useFocusEffect(
+    React.useCallback(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, [])
+  );
+
   // Get real execution score data from database
-  const executionData = useExecutionScore(selectedPeriod);
+  const executionData = useExecutionScore(selectedPeriod, refreshKey);
 
   // Get real wake consistency data from database
-  const wakeConsistencyData = useWakeConsistency(selectedPeriod);
+  const wakeConsistencyData = useWakeConsistency(selectedPeriod, refreshKey);
 
   // Get cognitive activation data for current month
-  const cognitiveActivationData = useCognitiveActivation();
+  const cognitiveActivationData = useCognitiveActivation(refreshKey);
 
   // Get current streak and latency data
-  const currentStreak = useCurrentStreak();
-  const avgLatency = useAvgLatency(selectedPeriod);
+  const currentStreak = useCurrentStreak(refreshKey);
+  const avgLatency = useAvgLatency(selectedPeriod, refreshKey);
 
   // Get daily insight based on metrics
   const dailyInsight = useDailyInsight({
@@ -55,6 +64,22 @@ export default function DashboardScreen() {
     executionScore: executionData.score,
     streak: currentStreak,
   });
+
+  // Debug logs
+  if (__DEV__) {
+    console.log('[Dashboard] Data for widgets:', {
+      refreshKey,
+      selectedPeriod,
+      wakeConsistency: {
+        targetTime: wakeConsistencyData.targetTime,
+        averageTime: wakeConsistencyData.averageTime,
+        variance: wakeConsistencyData.variance,
+        chartDataLength: wakeConsistencyData.chartData.length,
+      },
+      avgLatency,
+      currentStreak,
+    });
+  }
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">

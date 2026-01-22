@@ -43,6 +43,8 @@ export const dashboardEN = {
   'dashboard.wakeConsistency.targetVsActual': 'Target vs Actual',
   'dashboard.wakeConsistency.amAvg': 'AM avg',
   'dashboard.wakeConsistency.variance': 'variance',
+  'dashboard.wakeConsistency.noData': 'Complete more alarms to see the chart',
+  'dashboard.wakeConsistency.needMoreDays': 'Complete alarms on more days to see the chart',
   'dashboard.wakeConsistency.period.day': 'Today',
   'dashboard.wakeConsistency.period.week': 'Last 7 Days',
   'dashboard.wakeConsistency.period.month': 'Last 30 Days',

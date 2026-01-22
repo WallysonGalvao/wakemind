@@ -16,7 +16,7 @@ interface CognitiveActivationData {
  * Custom hook to fetch cognitive activation data for current month
  * Returns data for all days in the current month
  */
-export function useCognitiveActivation(): CognitiveActivationData[] {
+export function useCognitiveActivation(refreshKey?: number): CognitiveActivationData[] {
   const [data, setData] = useState<CognitiveActivationData[]>([]);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export function useCognitiveActivation(): CognitiveActivationData[] {
     }, 60000); // Check every minute
 
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshKey]);
 
   return data;
 }

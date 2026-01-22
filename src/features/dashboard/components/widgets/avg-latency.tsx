@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +18,20 @@ export function AvgLatency({ latencyMinutes }: AvgLatencyProps) {
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('sm');
 
+  // Debug log
+  if (__DEV__) {
+    console.log('[AvgLatency] Rendering with latencyMinutes:', latencyMinutes);
+  }
+
+  // Convert to seconds if less than 1 minute for better precision
+  const { value, unit } = useMemo(() => {
+    if (latencyMinutes < 1) {
+      const seconds = Math.round(latencyMinutes * 60);
+      return { value: seconds, unit: 's' };
+    }
+    return { value: latencyMinutes, unit: 'm' };
+  }, [latencyMinutes]);
+
   return (
     <View
       className="h-32 flex-1 flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark"
@@ -32,10 +46,12 @@ export function AvgLatency({ latencyMinutes }: AvgLatencyProps) {
       <View>
         <View className="flex-row items-baseline">
           <AnimatedCounter
-            value={latencyMinutes}
+            value={value}
             className="text-3xl font-bold tabular-nums text-slate-900 dark:text-white"
           />
-          <Text className="text-3xl font-bold tabular-nums text-slate-900 dark:text-white">m</Text>
+          <Text className="text-3xl font-bold tabular-nums text-slate-900 dark:text-white">
+            {unit}
+          </Text>
         </View>
         <Text className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           {t('dashboard.avgLatency.timeToStandUp')}
