@@ -199,6 +199,9 @@ export const AnalyticsEvents = {
   // Subscription events
   paywallViewed: (source: string) => logEvent('paywall_viewed', { source }),
 
+  paywallDismissed: (source: string, duration: number) =>
+    logEvent('paywall_dismissed', { source, duration_seconds: duration }),
+
   subscriptionPurchased: (productId: string, price: string, period: string) =>
     logEvent('subscription_purchased', { product_id: productId, price, period }),
 
@@ -206,6 +209,8 @@ export const AnalyticsEvents = {
     logEvent('subscription_failed', { product_id: productId, error }),
 
   subscriptionRestored: () => logEvent('subscription_restored'),
+
+  subscriptionRestoreFailed: (error: string) => logEvent('subscription_restore_failed', { error }),
 
   subscriptionCancelled: (productId: string) =>
     logEvent('subscription_cancelled', { product_id: productId }),
@@ -215,6 +220,41 @@ export const AnalyticsEvents = {
 
   featureGated: (featureName: string, isPro: boolean) =>
     logEvent('feature_gated', { feature_name: featureName, is_pro: isPro }),
+
+  // RevenueCat specific events
+  offeringsLoaded: (offeringsCount: number, loadTime: number) =>
+    logEvent('offerings_loaded', { count: offeringsCount, load_time_ms: loadTime }),
+
+  offeringsLoadFailed: (error: string, retryCount?: number) =>
+    logEvent('offerings_load_failed', { error, retry_count: retryCount }),
+
+  packageSelected: (packageId: string, packageType: string) =>
+    logEvent('package_selected', { package_id: packageId, package_type: packageType }),
+
+  purchaseStarted: (packageId: string) => logEvent('purchase_started', { package_id: packageId }),
+
+  purchaseCompleted: (packageId: string, duration: number) =>
+    logEvent('purchase_completed', { package_id: packageId, duration_ms: duration }),
+
+  purchaseCancelled: (packageId: string) =>
+    logEvent('purchase_cancelled', { package_id: packageId }),
+
+  restoreStarted: () => logEvent('restore_started'),
+
+  restoreCompleted: (duration: number, hasActiveEntitlements: boolean) =>
+    logEvent('restore_completed', {
+      duration_ms: duration,
+      has_entitlements: hasActiveEntitlements,
+    }),
+
+  customerInfoRefreshed: (isPro: boolean) => logEvent('customer_info_refreshed', { is_pro: isPro }),
+
+  // Error tracking
+  subscriptionError: (operation: string, error: string, metadata?: Record<string, unknown>) =>
+    logEvent('subscription_error', { operation, error, ...metadata }),
+
+  networkError: (operation: string, retryCount: number) =>
+    logEvent('network_error', { operation, retry_count: retryCount }),
 
   // App lifecycle
   appOpened: () => {
