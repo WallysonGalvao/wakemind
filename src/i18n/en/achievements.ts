@@ -4,6 +4,11 @@ export const achievementsEN = {
   'achievements.unlocked': '{{count}}/{{total}} Unlocked',
   'achievements.locked': 'Locked',
   'achievements.progress': '{{current}}/{{target}}',
+  'achievements.history': 'History',
+  'achievements.currentBalance': 'Current Balance',
+  'achievements.lifetimeTotal': 'Lifetime Total: {{total}} MP',
+  'achievements.nextRank': 'Next Rank: {{tier}}',
+  'achievements.mpToUpgrade': '{{mp}} MP to Upgrade',
 
   // Progression
   'achievements.first_wake.name': 'Early Bird',

@@ -1,7 +1,4 @@
-import React from 'react';
-
 import { View } from 'react-native';
-
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
