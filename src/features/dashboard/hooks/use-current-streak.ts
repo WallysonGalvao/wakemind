@@ -11,7 +11,7 @@ import { alarmCompletions } from '@/db/schema';
  * A day is "on target" if the user woke up within acceptable variance
  * Note: Always looks back 90 days regardless of period parameter
  */
-export function useCurrentStreak(): number {
+export function useCurrentStreak(refreshKey?: number): number {
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
@@ -26,6 +26,16 @@ export function useCurrentStreak(): number {
         .where(gte(alarmCompletions.date, startDate.format('YYYY-MM-DD')))
         .orderBy(desc(alarmCompletions.date));
 
+      // Debug log for troubleshooting
+      if (__DEV__ && records.length > 0) {
+        console.log('[CurrentStreak] Records found:', records.length);
+        console.log('[CurrentStreak] Sample record:', {
+          targetTime: records[0].targetTime,
+          actualTime: records[0].actualTime,
+          date: records[0].date,
+        });
+      }
+
       if (records.length === 0) {
         setStreak(0);
         return;
@@ -35,24 +45,27 @@ export function useCurrentStreak(): number {
       const dailyResults = new Map<string, boolean>();
 
       records.forEach((record) => {
-        const date = record.date;
+        // Normalize date to YYYY-MM-DD format
+        const recordDate = dayjs(record.date);
+        if (!recordDate.isValid()) return;
+        const dateStr = recordDate.format('YYYY-MM-DD');
 
-        // Parse times with fallback for different formats
-        let target = dayjs(record.targetTime);
-        if (!target.isValid()) {
-          target = dayjs(record.targetTime, 'HH:mm');
-        }
+        // Parse targetTime (HH:mm format like "06:30")
+        const targetMatch = record.targetTime.match(/(\d{1,2}):(\d{2})/);
+        if (!targetMatch) return;
+        const targetHour = parseInt(targetMatch[1], 10);
+        const targetMin = parseInt(targetMatch[2], 10);
+        const targetMinutes = targetHour * 60 + targetMin;
 
-        let actual = dayjs(record.actualTime);
-        if (!actual.isValid()) {
-          actual = dayjs(record.actualTime, 'HH:mm');
-        }
+        // Parse actualTime (ISO string)
+        const actual = dayjs(record.actualTime);
+        if (!actual.isValid()) return;
+        const actualMinutes = actual.hour() * 60 + actual.minute();
 
-        // Calculate variance in minutes
-        // Handle time wrapping (e.g., target 23:00, actual 00:30 should be 90min, not 1350min)
-        let varianceMinutes = actual.diff(target, 'minute');
+        // Calculate variance in minutes (using only time component)
+        let varianceMinutes = actualMinutes - targetMinutes;
 
-        // If difference is more than 12 hours, it likely wrapped around midnight
+        // Handle time wrapping around midnight
         if (Math.abs(varianceMinutes) > 720) {
           varianceMinutes = varianceMinutes > 0 ? varianceMinutes - 1440 : varianceMinutes + 1440;
         }
@@ -61,8 +74,8 @@ export function useCurrentStreak(): number {
         const onTarget = variance <= 10;
 
         // Mark day as on target if ANY completion that day was on target
-        if (!dailyResults.has(date) || onTarget) {
-          dailyResults.set(date, onTarget);
+        if (!dailyResults.has(dateStr) || onTarget) {
+          dailyResults.set(dateStr, onTarget);
         }
       });
 
@@ -70,15 +83,18 @@ export function useCurrentStreak(): number {
       let currentStreak = 0;
       let checkDate = now.startOf('day');
 
-      // Start from yesterday (today may not be complete yet)
-      checkDate = checkDate.subtract(1, 'day');
-
+      // Start from today (include today's completion if exists)
       while (true) {
         const dateStr = checkDate.format('YYYY-MM-DD');
         const wasOnTarget = dailyResults.get(dateStr);
 
         if (wasOnTarget === undefined) {
-          // No data for this day
+          // No data for this day - only break if we haven't started the streak yet
+          if (currentStreak === 0 && checkDate.isSame(now.startOf('day'), 'day')) {
+            // Today has no data yet, try yesterday
+            checkDate = checkDate.subtract(1, 'day');
+            continue;
+          }
           break;
         }
 
@@ -99,7 +115,7 @@ export function useCurrentStreak(): number {
     };
 
     calculateStreak();
-  }, []);
+  }, [refreshKey]);
 
   return streak;
 }

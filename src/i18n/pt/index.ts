@@ -10,6 +10,7 @@ import { privacyPolicyPT } from './privacy-policy';
 import { quickActionsPT } from './quick-actions';
 import { settingsPT } from './settings';
 import { sportsPT } from './sports';
+import subscriptionPT from './subscription';
 import { supportPT } from './support';
 import { tabsPT } from './tabs';
 import { widgetsPT } from './widgets';
@@ -24,6 +25,7 @@ export default {
   ...onboardingPT,
   ...quickActionsPT,
   ...settingsPT,
+  ...subscriptionPT,
   ...tabsPT,
   ...accessibilityPT,
   ...privacyPolicyPT,

@@ -32,6 +32,7 @@ import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { NotificationHandler } from '@/services/notification-handler';
+import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -44,6 +45,7 @@ function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
   const { getAlarmById } = useAlarms();
+  const { initialize: initializeSubscription } = useSubscriptionStore();
 
   const [fontsLoaded] = useFonts({
     MaterialSymbolsRoundedFilled: require('@/assets/fonts/MaterialSymbolsRounded-Filled.ttf'),
@@ -63,6 +65,10 @@ function RootLayout() {
 
         if (!isMounted) return;
         await NotificationHandler.initialize();
+
+        if (!isMounted) return;
+        // Initialize RevenueCat for in-app purchases
+        await initializeSubscription();
 
         if (!isMounted) return;
         // Set up callbacks for notification events
@@ -91,7 +97,7 @@ function RootLayout() {
       isMounted = false;
       NotificationHandler.cleanup();
     };
-  }, [getAlarmById, fontsLoaded]);
+  }, [getAlarmById, fontsLoaded, initializeSubscription]);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -143,6 +149,8 @@ function RootLayout() {
                   presentation: 'fullScreenModal',
                   animation: 'fade',
                   gestureEnabled: false,
+                  headerBackVisible: false,
+                  headerLeft: () => null,
                 }}
               />
               <Stack.Screen
@@ -212,6 +220,15 @@ function RootLayout() {
               />
               <Stack.Screen
                 name="settings/support"
+                options={{
+                  presentation: 'modal',
+                  headerShown: true,
+                }}
+              />
+
+              {/* Subscription */}
+              <Stack.Screen
+                name="subscription/paywall"
                 options={{
                   presentation: 'modal',
                   headerShown: true,

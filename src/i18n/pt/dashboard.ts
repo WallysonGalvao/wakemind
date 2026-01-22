@@ -23,6 +23,8 @@ export const dashboardPT = {
   'dashboard.wakeConsistency.targetVsActual': 'Meta vs Real',
   'dashboard.wakeConsistency.amAvg': 'média',
   'dashboard.wakeConsistency.variance': 'variação',
+  'dashboard.wakeConsistency.noData': 'Complete mais alarmes para ver o gráfico',
+  'dashboard.wakeConsistency.needMoreDays': 'Complete alarmes em mais dias para ver o gráfico',
   'dashboard.wakeConsistency.period.day': 'Hoje',
   'dashboard.wakeConsistency.period.week': 'Últimos 7 Dias',
   'dashboard.wakeConsistency.period.month': 'Últimos 30 Dias',

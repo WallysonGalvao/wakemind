@@ -10,6 +10,7 @@ import { privacyPolicyES } from './privacy-policy';
 import { quickActionsES } from './quick-actions';
 import { settingsES } from './settings';
 import { sportsES } from './sports';
+import subscriptionES from './subscription';
 import { supportES } from './support';
 import { tabsES } from './tabs';
 import { widgetsES } from './widgets';
@@ -24,6 +25,7 @@ export default {
   ...onboardingES,
   ...quickActionsES,
   ...settingsES,
+  ...subscriptionES,
   ...tabsES,
   ...accessibilityES,
   ...privacyPolicyES,

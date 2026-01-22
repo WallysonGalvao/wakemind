@@ -26,7 +26,7 @@ function getDaysForPeriod(period: PeriodType): number {
  * Calculate average latency (time to stand up) after alarm completion
  * Latency = time between alarm completion and actual wake time
  */
-export function useAvgLatency(period: PeriodType = 'month'): number {
+export function useAvgLatency(period: PeriodType = 'month', refreshKey?: number): number {
   const [latency, setLatency] = useState(0);
 
   useEffect(() => {
@@ -64,12 +64,21 @@ export function useAvgLatency(period: PeriodType = 'month'): number {
 
       const avgLatency = latencies.reduce((sum, l) => sum + l, 0) / latencies.length;
 
-      // Round to nearest minute
-      setLatency(Math.round(avgLatency));
+      if (__DEV__) {
+        console.log('[AvgLatency Hook] Calculated latency:', {
+          recordsCount: records.length,
+          latenciesCount: latencies.length,
+          avgLatency,
+          avgLatencyInSeconds: avgLatency * 60,
+        });
+      }
+
+      // Keep decimal precision - component will handle display format
+      setLatency(avgLatency);
     };
 
     calculateLatency();
-  }, [period]);
+  }, [period, refreshKey]);
 
   return latency;
 }
