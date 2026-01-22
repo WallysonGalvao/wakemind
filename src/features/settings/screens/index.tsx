@@ -5,7 +5,9 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
+
+import { SubscriptionCard } from '../components/subscription-card';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
@@ -15,6 +17,7 @@ import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
+import { seedDatabase } from '@/db/seed';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -227,6 +230,31 @@ export default function SettingsScreen() {
     AnalyticsEvents.themeChanged(newTheme);
   };
 
+  const handleSeedDatabase = async () => {
+    Alert.alert(
+      'Seed Database',
+      'This will clear all existing data and populate with sample alarms and completions. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Seed',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await seedDatabase();
+              Alert.alert(
+                'Success',
+                'Database seeded successfully! Restart the app to see changes.'
+              );
+            } catch (_error) {
+              Alert.alert('Error', 'Failed to seed database. Check console for details.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
@@ -240,6 +268,9 @@ export default function SettingsScreen() {
         contentContainerStyle={{ paddingBottom: 40, paddingTop: 24 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Subscription Section */}
+        <SubscriptionCard />
+
         {/* Appearance Section */}
         <View className="mb-2">
           <SectionHeader title={t('settings.appearance')} />
@@ -350,6 +381,13 @@ export default function SettingsScreen() {
                 title={t('settings.reviewOnboarding')}
                 onPress={() => router.push('/onboarding')}
                 isFirst
+              />
+              <SettingRow
+                icon="database"
+                iconBgColor="bg-amber-100 dark:bg-amber-900/30"
+                iconColor={COLORS.blue[500]}
+                title="Seed Database (Dev)"
+                onPress={handleSeedDatabase}
                 isLast
               />
             </SectionCard>

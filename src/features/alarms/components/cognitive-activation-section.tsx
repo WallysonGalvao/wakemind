@@ -124,9 +124,10 @@ export function CognitiveActivationSection({
   // Scroll to selected challenge on mount (for edit mode)
   useEffect(() => {
     const selectedIndex = challenges.findIndex((c) => c.type === selectedChallenge);
-    if (selectedIndex > 0 && scrollViewRef.current) {
+    if (selectedIndex !== -1 && scrollViewRef.current) {
       // Small delay to ensure layout is complete
       const timeoutId = setTimeout(() => {
+        isProgrammaticScroll.current = true;
         // Use type assertion for scrollTo method
         (
           scrollViewRef.current as unknown as {
@@ -137,11 +138,14 @@ export function CognitiveActivationSection({
           animated: false,
         });
         scrollX.value = selectedIndex * snapInterval;
+        // Reset flag after scroll completes
+        setTimeout(() => {
+          isProgrammaticScroll.current = false;
+        }, 50);
       }, 100);
       return () => clearTimeout(timeoutId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only on mount
+  }, [selectedChallenge, snapInterval, scrollX]);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {

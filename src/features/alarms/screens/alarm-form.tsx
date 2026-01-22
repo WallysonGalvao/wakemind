@@ -27,6 +27,7 @@ import * as alarmsDb from '@/db/functions/alarms';
 import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
 import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
+import { useFeatureAccess } from '@/hooks/use-feature-access';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import type { BackupProtocolId } from '@/types/alarm-enums';
 import { ChallengeType, Period } from '@/types/alarm-enums';
@@ -189,6 +190,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   // Get alarms from hook
   const { alarms, refetch } = useAlarms();
 
+  // Feature access for premium limits
+  const { canCreateAlarm, canUseDifficulty, requirePremiumAccess } = useFeatureAccess();
+
   // Determine mode
   const isEditMode = Boolean(alarmId);
 
@@ -240,6 +244,11 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     resolver: zodResolver(alarmFormSchema),
     defaultValues,
   });
+
+  // Reset form when defaultValues change (important for edit mode)
+  useLayoutEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   // Watch all form values
   const hour = watch('hour');
@@ -317,6 +326,42 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     const scheduleLabel = getScheduleLabel(data.selectedDays);
 
     try {
+      // Check if user can use selected difficulty (Pro only for hard/adaptive)
+      if (!canUseDifficulty(data.difficulty)) {
+        toast.show({
+          placement: 'top',
+          duration: 4000,
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+              <ToastTitle>{t('featureGate.hardDifficulty')}</ToastTitle>
+              <ToastDescription>
+                {t('paywall.features.allDifficulties.description')}
+              </ToastDescription>
+            </Toast>
+          ),
+        });
+        await requirePremiumAccess('difficulty_selection');
+        return;
+      }
+
+      // Check alarm creation limit (only for new alarms)
+      if (!isEditMode && !canCreateAlarm(alarms.length)) {
+        toast.show({
+          placement: 'top',
+          duration: 4000,
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+              <ToastTitle>{t('featureGate.unlimitedAlarms')}</ToastTitle>
+              <ToastDescription>
+                {t('paywall.features.unlimitedAlarms.description')}
+              </ToastDescription>
+            </Toast>
+          ),
+        });
+        await requirePremiumAccess('alarm_creation');
+        return;
+      }
+
       // Check permissions before creating/updating alarm
       if (!isAllGranted) {
         // Request notification permission first
