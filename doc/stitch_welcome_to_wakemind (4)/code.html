@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Milestone Reward Gallery V3</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "off-white": "#F5F7FA",
+                        "deep-blue": "#0B1F33",
+                        "graphite-grey": "#2E2E2E",
+                        "electric-cyan": "#3FA9F5",
+                        "insight-blue": "#EBF5FF",
+                        "border-grey": "#E2E8F0",
+                        "bronze": "#CD7F32",
+                        "silver": "#C0C0C0",
+                        "gold": "#FFD700",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "subtle": "0 2px 8px rgba(0,0,0,0.04)",
+                        "hover": "0 4px 12px rgba(63, 169, 245, 0.15)",
+                        "platinum": "0 0 15px -3px rgba(63, 169, 245, 0.25)",
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        body {
+            min-height: max(844px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white font-display text-deep-blue antialiased min-h-screen flex flex-col overflow-x-hidden selection:bg-electric-cyan selection:text-white">
+<header class="sticky top-0 z-50 flex flex-col bg-white/95 backdrop-blur-md border-b border-border-grey">
+<div class="flex items-center justify-between p-4 pb-2">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-off-white transition-colors text-deep-blue">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-deep-blue text-sm font-bold uppercase tracking-[0.15em]">Milestones</h1>
+<div class="size-10"></div>
+</div>
+<div class="px-4 pb-4">
+<div class="flex p-1 bg-off-white rounded-xl gap-1">
+<button class="flex-1 py-1.5 rounded-lg bg-white text-deep-blue shadow-sm text-[10px] font-bold uppercase tracking-wide text-center">Bronze</button>
+<button class="flex-1 py-1.5 rounded-lg text-graphite-grey/60 hover:text-deep-blue text-[10px] font-bold uppercase tracking-wide text-center transition-colors">Silver</button>
+<button class="flex-1 py-1.5 rounded-lg text-graphite-grey/60 hover:text-deep-blue text-[10px] font-bold uppercase tracking-wide text-center transition-colors">Gold</button>
+<button class="flex-1 py-1.5 rounded-lg text-graphite-grey/60 hover:text-deep-blue text-[10px] font-bold uppercase tracking-wide text-center transition-colors">Platinum</button>
+</div>
+</div>
+</header>
+<main class="flex-1 p-4 pb-24">
+<div class="grid grid-cols-2 gap-4">
+<div class="group relative flex flex-col rounded-2xl bg-white border border-border-grey shadow-subtle overflow-hidden hover:shadow-hover hover:border-electric-cyan/30 transition-all duration-300">
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-off-white border border-border-grey">
+<span class="text-[10px] font-bold text-deep-blue">50 MP</span>
+</div>
+<div class="h-28 bg-off-white/30 p-4 flex items-center justify-center">
+<div class="size-12 rounded-full bg-bronze/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-bronze text-3xl">wb_twilight</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Early Riser</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">Wake up before 6AM</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-border-grey shadow-subtle overflow-hidden hover:shadow-hover hover:border-electric-cyan/30 transition-all duration-300">
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-off-white border border-border-grey">
+<span class="text-[10px] font-bold text-deep-blue">50 MP</span>
+</div>
+<div class="h-28 bg-off-white/30 p-4 flex items-center justify-center">
+<div class="size-12 rounded-full bg-bronze/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-bronze text-3xl">check_circle</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">First Log</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">Complete 1st journal</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-border-grey shadow-subtle overflow-hidden hover:shadow-hover hover:border-electric-cyan/30 transition-all duration-300">
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-off-white border border-border-grey">
+<span class="text-[10px] font-bold text-deep-blue">150 MP</span>
+</div>
+<div class="h-28 bg-off-white/30 p-4 flex items-center justify-center">
+<div class="size-12 rounded-full bg-silver/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-3xl">water_drop</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Hydration Pro</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">7-day water goal</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-border-grey shadow-subtle overflow-hidden hover:shadow-hover hover:border-electric-cyan/30 transition-all duration-300">
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-off-white border border-border-grey">
+<span class="text-[10px] font-bold text-deep-blue">150 MP</span>
+</div>
+<div class="h-28 bg-off-white/30 p-4 flex items-center justify-center">
+<div class="size-12 rounded-full bg-silver/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-3xl">psychology</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Mental Clarity</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">10 cognitive tests</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-electric-cyan/40 shadow-platinum overflow-hidden hover:shadow-hover hover:border-electric-cyan transition-all duration-300">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-electric-cyan to-transparent opacity-50"></div>
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-electric-cyan text-white shadow-sm">
+<span class="text-[10px] font-bold">1000 MP</span>
+</div>
+<div class="h-28 bg-gradient-to-br from-electric-cyan/5 to-transparent p-4 flex items-center justify-center relative">
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiMzRkE5RjUiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-50"></div>
+<div class="size-14 rounded-full bg-gradient-to-tr from-white to-electric-cyan/20 border border-electric-cyan/20 flex items-center justify-center shadow-sm z-10">
+<span class="material-symbols-outlined text-electric-cyan text-3xl">diamond</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Titan Status</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">Top 1% Performer</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-electric-cyan/40 shadow-platinum overflow-hidden hover:shadow-hover hover:border-electric-cyan transition-all duration-300">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-electric-cyan to-transparent opacity-50"></div>
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-electric-cyan text-white shadow-sm">
+<span class="text-[10px] font-bold">5000 MP</span>
+</div>
+<div class="h-28 bg-gradient-to-br from-electric-cyan/5 to-transparent p-4 flex items-center justify-center relative">
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiMzRkE5RjUiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-50"></div>
+<div class="size-14 rounded-full bg-gradient-to-tr from-white to-electric-cyan/20 border border-electric-cyan/20 flex items-center justify-center shadow-sm z-10">
+<span class="material-symbols-outlined text-electric-cyan text-3xl">workspace_premium</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Year of Focus</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">365 day streak</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-border-grey shadow-subtle overflow-hidden hover:shadow-hover hover:border-electric-cyan/30 transition-all duration-300">
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-off-white border border-border-grey">
+<span class="text-[10px] font-bold text-deep-blue">300 MP</span>
+</div>
+<div class="h-28 bg-off-white/30 p-4 flex items-center justify-center">
+<div class="size-12 rounded-full bg-gold/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-600 text-3xl">fitness_center</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Iron Will</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">30 days discipline</p>
+</div>
+</div>
+<div class="group relative flex flex-col rounded-2xl bg-white border border-border-grey shadow-subtle overflow-hidden hover:shadow-hover hover:border-electric-cyan/30 transition-all duration-300">
+<div class="absolute top-3 right-3 z-10 flex items-center justify-center px-2 py-1 rounded-full bg-off-white border border-border-grey">
+<span class="text-[10px] font-bold text-deep-blue">300 MP</span>
+</div>
+<div class="h-28 bg-off-white/30 p-4 flex items-center justify-center">
+<div class="size-12 rounded-full bg-gold/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-600 text-3xl">self_improvement</span>
+</div>
+</div>
+<div class="p-3 bg-white border-t border-border-grey/50">
+<h3 class="text-xs font-bold text-deep-blue uppercase tracking-wide truncate">Mastery</h3>
+<p class="text-[10px] text-graphite-grey/60 mt-0.5 truncate">100 hours logged</p>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-6 left-0 right-0 px-4 pointer-events-none flex justify-center z-40">
+<button class="pointer-events-auto bg-deep-blue text-white shadow-lg shadow-deep-blue/20 rounded-full px-8 py-3.5 flex items-center gap-2 hover:scale-105 transition-transform">
+<span class="text-xs font-bold uppercase tracking-widest">Done</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</button>
+</div>
+</body></html>
