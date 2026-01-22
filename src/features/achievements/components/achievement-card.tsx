@@ -7,20 +7,19 @@ import { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { getAchievementReward } from '../constants/achievement-rewards';
-import type { AchievementState } from '../types/achievement.types';
+import type { AchievementDefinition, AchievementState } from '../types/achievement.types';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
 
 interface AchievementCardProps {
   achievement: AchievementState;
-  onPress?: () => void;
 }
 
-export function AchievementCard({ achievement, onPress }: AchievementCardProps) {
+export function AchievementCard({ achievement }: AchievementCardProps) {
   const { t } = useTranslation();
   const { achievement: def, isUnlocked, progress, target } = achievement;
 
@@ -76,7 +75,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
   const isLocked = !isUnlocked;
 
   // Calculate MP reward (uses custom reward if available, otherwise tier-based)
-  const mpReward = getAchievementReward(def as any);
+  const mpReward = getAchievementReward(def as AchievementDefinition);
 
   const touchableStyle = useMemo(
     () => ({
@@ -88,11 +87,10 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
   const getDotStyle = (row: number, col: number) => ({
     top: 8 + row * 16,
     left: 8 + col * 24,
-    opacity: 0.3,
   });
 
   const progressBarStyle = useMemo(
-    () => ({ width: `${(progress / target) * 100}%` }),
+    () => ({ width: `${(progress / target) * 100}%` as const }),
     [progress, target]
   );
 
@@ -105,16 +103,12 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
 
   return (
     <View style={isLocked ? undefined : shadowStyle}>
-      <TouchableOpacity
-        accessibilityRole="button"
-        onPress={onPress}
-        disabled={!onPress}
+      <View
         style={touchableStyle}
         className={`
         group relative flex flex-col overflow-hidden rounded-2xl border
         bg-white shadow-sm transition-all duration-300 dark:bg-slate-900
         ${isLocked ? 'opacity-60' : 'opacity-100'}
-        active:scale-[0.98]
       `}
       >
         {/* Decorative dots grid */}
@@ -122,11 +116,8 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
           [0, 1, 2, 3, 4, 5, 6, 7, 8].map((col) => (
             <View
               key={`dot-${row}-${col}`}
-              className="absolute h-1 w-1 rounded-full"
-              style={[
-                { ...getDotStyle(row, col) },
-                { backgroundColor: colors.shadowColor, opacity: 0.1 },
-              ]}
+              className="absolute h-1 w-1 rounded-full opacity-10"
+              style={[{ ...getDotStyle(row, col) }, { backgroundColor: colors.shadowColor }]}
             />
           ))
         )}
@@ -195,7 +186,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
             </View>
           ) : null}
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 }
