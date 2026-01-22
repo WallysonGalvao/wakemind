@@ -60,7 +60,11 @@ export default function AchievementsScreen() {
   const keyExtractor = useCallback((item: AchievementState) => item.achievement.id, []);
 
   const renderItem = useCallback(
-    ({ item }: { item: AchievementState }) => <AchievementCard achievement={item} />,
+    ({ item }: { item: AchievementState }) => (
+      <View className="mb-4 flex-1">
+        <AchievementCard achievement={item} />
+      </View>
+    ),
     []
   );
 
@@ -79,7 +83,7 @@ export default function AchievementsScreen() {
       <View className="flex-1 bg-white dark:bg-slate-950">
         {/* Header */}
         <View style={{ paddingTop: insets.top }}>
-          <Header title={t('achievements.milestones')} leftIcons={leftIcons} />
+          <Header title={t('achievements.title')} leftIcons={leftIcons} />
         </View>
 
         {/* Sticky Header with Tier Filter */}

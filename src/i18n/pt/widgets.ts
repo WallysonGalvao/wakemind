@@ -34,6 +34,10 @@ export const widgetsPT = {
       title: 'Insight Diário',
       description: 'Dicas de desempenho',
     },
+    achievements: {
+      title: 'Conquistas',
+      description: 'Marcos desbloqueados',
+    },
     falseStarts: {
       title: 'Falsos Inícios',
       description: 'Rastreamento de soneca',
