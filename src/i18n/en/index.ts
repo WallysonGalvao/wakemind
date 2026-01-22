@@ -1,4 +1,5 @@
 import accessibilityEN from './accessibility';
+import { achievementsEN } from './achievements';
 import { alarmSchedulerEN } from './alarm-scheduler';
 import { appEN } from './app';
 import { backEN } from './back';
@@ -32,4 +33,5 @@ export default {
   ...supportEN,
   ...alarmSchedulerEN,
   ...widgetsEN,
+  ...achievementsEN,
 };

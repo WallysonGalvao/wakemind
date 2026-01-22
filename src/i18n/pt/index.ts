@@ -1,4 +1,5 @@
 import accessibilityPT from './accessibility';
+import { achievementsPT } from './achievements';
 import { alarmSchedulerPT } from './alarm-scheduler';
 import { appPT } from './app';
 import { backPT } from './back';
@@ -32,4 +33,5 @@ export default {
   ...supportPT,
   ...alarmSchedulerPT,
   ...widgetsPT,
+  ...achievementsPT,
 };
