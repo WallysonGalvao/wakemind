@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
-import { MaterialIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
 import Animated, {
   Easing,
   FadeInDown,
@@ -44,6 +44,7 @@ export function AlarmCard({
   isEditMode = false,
   index = 0,
 }: AlarmCardProps) {
+  const { t } = useTranslation();
   const isActive = alarm.isEnabled;
   const colorScheme = useColorScheme();
   const scale = useSharedValue(1);
@@ -52,6 +53,45 @@ export function AlarmCard({
   // Shared values for edit mode animations
   const deleteButtonProgress = useSharedValue(isEditMode ? 1 : 0);
   const rightSideProgress = useSharedValue(isEditMode ? 1 : 0);
+
+  // Helper to translate schedule
+  const getTranslatedSchedule = (schedule: string): string => {
+    switch (schedule) {
+      case 'Daily':
+        return t('alarm.daily');
+      case 'Weekdays':
+        return t('alarm.weekdays');
+      case 'Weekends':
+        return t('alarm.weekends');
+      case 'Once':
+        return t('alarm.once');
+      default:
+        // For custom schedules like "Mon, Wed, Fri", translate each day
+        return schedule
+          .split(', ')
+          .map((day) => {
+            switch (day.trim()) {
+              case 'Mon':
+                return t('alarm.monday');
+              case 'Tue':
+                return t('alarm.tuesday');
+              case 'Wed':
+                return t('alarm.wednesday');
+              case 'Thu':
+                return t('alarm.thursday');
+              case 'Fri':
+                return t('alarm.friday');
+              case 'Sat':
+                return t('alarm.saturday');
+              case 'Sun':
+                return t('alarm.sunday');
+              default:
+                return day;
+            }
+          })
+          .join(', ');
+    }
+  };
 
   // Animate when isEditMode changes
   useEffect(() => {
@@ -131,7 +171,7 @@ export function AlarmCard({
     <Pressable accessibilityRole="button" onPress={handlePress}>
       <Animated.View
         entering={enteringAnimation}
-        style={[animatedStyle, shadowStyle]}
+        style={[animatedStyle, isActive ? shadowStyle : undefined]}
         className={`rounded-2xl border p-5 ${
           isActive
             ? colorScheme === 'dark'
@@ -192,11 +232,7 @@ export function AlarmCard({
 
             {/* Challenge and Schedule Info */}
             <View className="mt-1 flex-row items-center gap-2">
-              <MaterialIcons
-                name={alarm.challengeIcon as keyof typeof MaterialIcons.glyphMap}
-                size={20}
-                color={getIconColor()}
-              />
+              <MaterialSymbol name={alarm.challengeIcon} size={20} color={getIconColor()} />
               <Text
                 className={`text-sm font-medium ${
                   isActive
@@ -208,7 +244,7 @@ export function AlarmCard({
                       : 'text-slate-400'
                 }`}
               >
-                {alarm.challenge}
+                {t(alarm.challenge)}
                 <Text
                   className={
                     isActive
@@ -222,7 +258,7 @@ export function AlarmCard({
                 >
                   {' • '}
                 </Text>
-                {alarm.schedule}
+                {getTranslatedSchedule(alarm.schedule)}
               </Text>
             </View>
           </View>
