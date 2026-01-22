@@ -24,6 +24,7 @@ export interface AchievementDefinition {
   icon: string; // Material symbol name
   isSecret: boolean;
   target: number; // For progress tracking
+  reward?: number; // Optional custom MP reward (defaults to tier-based value)
   conditionFn: (target: number) => Promise<boolean>;
   progressFn?: (target: number) => Promise<number>; // Returns current progress
 }
@@ -36,6 +37,7 @@ export interface AchievementState {
     icon: string;
     isSecret: boolean;
     target: number;
+    reward?: number;
   };
   isUnlocked: boolean;
   unlockedAt?: string;

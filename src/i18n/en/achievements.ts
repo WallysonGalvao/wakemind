@@ -88,4 +88,14 @@ export const achievementsEN = {
   // Unlock Modal
   'achievements.unlock.title': 'Achievement Unlocked!',
   'achievements.unlock.button': 'Awesome!',
+
+  // History
+  'achievements.history.title': 'History',
+  'achievements.history.thisWeek': 'This Week',
+  'achievements.history.lastMonth': 'Last Month',
+  'achievements.history.archive': 'Archive',
+  'achievements.history.totalEarned': 'TOTAL EARNED: {{mp}} MP',
+  'achievements.history.done': 'Done',
+  'achievements.history.empty': 'No achievements unlocked yet',
+  'achievements.history.emptyDescription': 'Complete challenges to unlock achievements',
 };

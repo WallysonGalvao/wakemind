@@ -88,4 +88,14 @@ export const achievementsES = {
   // Unlock Modal
   'achievements.unlock.title': '¡Logro Desbloqueado!',
   'achievements.unlock.button': '¡Genial!',
+
+  // History
+  'achievements.history.title': 'Historial',
+  'achievements.history.thisWeek': 'Esta Semana',
+  'achievements.history.lastMonth': 'Mes Pasado',
+  'achievements.history.archive': 'Archivo',
+  'achievements.history.totalEarned': 'TOTAL GANADO: {{mp}} MP',
+  'achievements.history.done': 'Hecho',
+  'achievements.history.empty': 'No hay logros desbloqueados',
+  'achievements.history.emptyDescription': 'Completa desafíos para desbloquear logros',
 };
