@@ -31,7 +31,7 @@ export function PerformanceMetricsGrid({
   const streakBadge =
     streakGain > 0
       ? {
-          text: t('performance.daysGain', { count: streakGain }),
+          text: `+${t('performance.daysGain', { count: streakGain })}`,
           color: 'text-green-400' as const,
         }
       : undefined;
@@ -39,7 +39,7 @@ export function PerformanceMetricsGrid({
   const scoreBadge =
     scoreGain !== 0
       ? {
-          text: t('performance.pointsGain', { count: scoreGain }),
+          text: `${scoreGain > 0 ? '+' : ''}${t('performance.pointsGain', { count: Math.abs(scoreGain) })}`,
           color: scoreGain > 0 ? ('text-success-500' as const) : ('text-red-500' as const),
         }
       : undefined;
