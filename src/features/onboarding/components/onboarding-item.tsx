@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import type { SharedValue } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';

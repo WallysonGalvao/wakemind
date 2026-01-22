@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 
 import { Pressable } from 'react-native';

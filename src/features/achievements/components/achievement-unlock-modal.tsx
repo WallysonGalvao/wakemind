@@ -3,8 +3,6 @@
  * Celebratory modal displayed when achievement is unlocked
  */
 
-import React from 'react';
-
 import { useTranslation } from 'react-i18next';
 import Animated, { BounceIn } from 'react-native-reanimated';
 

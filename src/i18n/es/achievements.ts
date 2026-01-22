@@ -4,6 +4,11 @@ export const achievementsES = {
   'achievements.unlocked': '{{count}}/{{total}} Desbloqueados',
   'achievements.locked': 'Bloqueado',
   'achievements.progress': '{{current}}/{{target}}',
+  'achievements.history': 'Historial',
+  'achievements.currentBalance': 'Saldo Actual',
+  'achievements.lifetimeTotal': 'Total de por Vida: {{total}} MP',
+  'achievements.nextRank': 'Próximo Rango: {{tier}}',
+  'achievements.mpToUpgrade': '{{mp}} MP para Subir',
 
   // Progression
   'achievements.first_wake.name': 'Madrugador',
