@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import type { AchievementTier } from '../types/achievement.types';
 
 import { MaterialSymbol } from '@/components/material-symbol';
+import { useShadowStyle } from '@/hooks/use-shadow-style';
 
 interface MPBalanceCardProps {
   currentMP: number;
@@ -24,28 +25,36 @@ export function MPBalanceCard({
   mpToUpgrade,
 }: MPBalanceCardProps) {
   const { t } = useTranslation();
+  const shadowStyle = useShadowStyle('2xl', '#3FA9F5');
+
+  // #3FA9F5
+  // #0ea5e9
 
   return (
     <View className="flex flex-col gap-4 px-4 pt-4">
       {/* Balance Card */}
-      <View className="relative overflow-hidden rounded-xl border border-blue-100 bg-blue-50 p-6 shadow-sm dark:border-sky-500/30 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 dark:shadow-sky-500/15">
+      <View
+        className="relative overflow-hidden rounded-2xl border border-primary-500 bg-white p-5 shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]"
+        style={shadowStyle}
+      >
         {/* Decorative Icon */}
         <View className="absolute right-4 top-1.5 opacity-[0.08] dark:opacity-10">
-          <MaterialSymbol name="bolt" size={120} className="text-slate-900 dark:text-sky-500" />
+          <MaterialSymbol name="bolt" size={120} className="text-slate-900 dark:text-sky-500/50" />
         </View>
 
         {/* Content */}
         <View className="relative z-10 flex flex-col items-start gap-1">
-          <Text className="text-sm font-medium uppercase tracking-widest text-slate-700 opacity-90 dark:text-sky-500">
+          <Text className="mb-1 text-sm font-semibold uppercase tracking-widest text-primary-500">
             {t('achievements.currentBalance')}
           </Text>
           <View className="flex-row items-baseline gap-2">
-            <Text className="text-5xl font-bold tracking-tight text-slate-900 dark:text-sky-500">
+            <Text className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
               {currentMP.toLocaleString()}
             </Text>
-            <Text className="text-lg font-bold text-slate-600 dark:text-sky-500/60">MP</Text>
+            <Text className="text-lg font-bold text-gray-600 dark:text-gray-400">MP</Text>
           </View>
-          <Text className="font-mono mt-2 text-xs text-slate-500 dark:text-white/60">
+          <View className="my-4 h-px bg-gray-200 dark:bg-gray-800" />
+          <Text className="font-mono text-xs text-gray-500 dark:text-gray-400">
             {t('achievements.lifetimeTotal', { total: lifetimeMP.toLocaleString() })}
           </Text>
         </View>
