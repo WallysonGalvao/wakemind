@@ -112,6 +112,7 @@
       "secret": "Secret"
     },
     "tiers": {
+      "all": "All",
       "bronze": "Bronze",
       "silver": "Silver",
       "gold": "Gold",

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -14,7 +14,9 @@ import { useDailyInsight } from '../hooks/use-daily-insight';
 import { useExecutionScore } from '../hooks/use-execution-score';
 import { useWakeConsistency } from '../hooks/use-wake-consistency';
 
+import type { IconButton } from '@/components/header';
 import { Header } from '@/components/header';
+import { MaterialSymbol } from '@/components/material-symbol';
 import { SegmentedControl } from '@/components/segmented-control';
 import { AvgLatency } from '@/features/dashboard/components/widgets/avg-latency';
 import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
@@ -29,6 +31,8 @@ import { useWidgetStore } from '@/stores/use-widget-store';
 import { WidgetType } from '@/types/widgets';
 
 export default function DashboardScreen() {
+  const router = useRouter();
+
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const enabledWidgets = useWidgetStore((state) => state.enabledWidgets);
@@ -65,6 +69,15 @@ export default function DashboardScreen() {
     streak: currentStreak,
   });
 
+  const rightIcons = useMemo(() => {
+    return [
+      {
+        icon: <MaterialSymbol name="bolt" size={24} className="text-brand-primary" />,
+        onPress: () => router.push('/achievements'),
+      } as IconButton,
+    ];
+  }, [router]);
+
   // Debug logs
   if (__DEV__) {
     console.log('[Dashboard] Data for widgets:', {
@@ -85,7 +98,7 @@ export default function DashboardScreen() {
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
       <View style={{ paddingTop: insets.top }}>
-        <Header title={t('tabs.dashboard')} />
+        <Header title={t('tabs.dashboard')} rightIcons={rightIcons} />
       </View>
 
       {/* Period Selector */}
