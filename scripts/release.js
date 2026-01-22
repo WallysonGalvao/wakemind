@@ -6,8 +6,20 @@
  * Updates version across project files, commits changes, creates a git tag,
  * and pushes everything to trigger GitHub Actions release workflow.
  *
- * Usage: node scripts/release.js <version>
- * Example: node scripts/release.js 1.1.0
+ * Usage:
+ *   node scripts/release.js                    # Auto-determine version from git history
+ *   node scripts/release.js <version>          # Specify version manually
+ *   node scripts/release.js [version] --ios-build N --android-build N
+ *
+ * Version Auto-Detection (Conventional Commits):
+ *   - feat: commits -> minor bump (0.X.0)
+ *   - fix:, perf: commits -> patch bump (0.0.X)
+ *   - BREAKING CHANGE: or feat! -> major bump (X.0.0)
+ *
+ * Examples:
+ *   node scripts/release.js                    # 1.0.0 -> 1.0.1 (based on commits)
+ *   node scripts/release.js 1.1.0              # Force version to 1.1.0
+ *   node scripts/release.js --ios-build 5      # Auto version + custom iOS build
  */
 
 import { execSync } from 'child_process';
@@ -62,9 +74,12 @@ function run(command, silent = false) {
       stdio: silent ? 'pipe' : 'inherit',
       cwd: ROOT_DIR,
     });
-  } catch (_error) {
-    console.error(`\n✗ Command failed: ${command}`);
-    process.exit(1);
+  } catch (error) {
+    if (!silent) {
+      console.error(`\n✗ Command failed: ${command}`);
+      process.exit(1);
+    }
+    return null;
   }
 }
 
@@ -91,6 +106,135 @@ function checkGitStatus() {
     console.error(status);
     process.exit(1);
   }
+}
+
+/**
+ * Gets the current version from package.json
+ */
+function getCurrentVersion() {
+  const packagePath = resolve(ROOT_DIR, 'package.json');
+  const content = readFileSync(packagePath, 'utf-8');
+  const json = JSON.parse(content);
+  return json.version || '0.0.0';
+}
+
+/**
+ * Gets the latest git tag version
+ */
+function getLatestGitTag() {
+  const tag = run('git describe --tags --abbrev=0', true);
+  if (!tag) {
+    return null;
+  }
+  return tag.trim().replace(/^v/, ''); // Remove 'v' prefix if present
+}
+
+/**
+ * Gets commits since the last tag
+ */
+function getCommitsSinceLastTag() {
+  const lastTag = getLatestGitTag();
+  const range = lastTag ? `${lastTag}..HEAD` : '';
+  const commits = run(`git log ${range} --pretty=format:"%s"`, true);
+
+  if (!commits) {
+    return [];
+  }
+
+  return commits.trim().split('\n').filter(Boolean);
+}
+
+/**
+ * Analyzes commits to determine version bump type
+ * Uses Conventional Commits specification
+ */
+function analyzeCommits(commits) {
+  let hasMajor = false;
+  let hasMinor = false;
+  let hasPatch = false;
+
+  for (const commit of commits) {
+    // Check for breaking changes (major)
+    if (
+      commit.includes('BREAKING CHANGE:') ||
+      commit.match(/^[^:]+!:/) // feat!, fix!, etc.
+    ) {
+      hasMajor = true;
+      continue;
+    }
+
+    // Check for features (minor)
+    if (commit.match(/^feat(\([^)]+\))?:/)) {
+      hasMinor = true;
+      continue;
+    }
+
+    // Check for fixes, perf, etc. (patch)
+    if (commit.match(/^(fix|perf|refactor|docs|style|test|chore)(\([^)]+\))?:/)) {
+      hasPatch = true;
+    }
+  }
+
+  if (hasMajor) return 'major';
+  if (hasMinor) return 'minor';
+  if (hasPatch) return 'patch';
+  return 'patch'; // Default to patch if no conventional commits found
+}
+
+/**
+ * Increments version based on bump type
+ */
+function incrementVersion(version, bumpType) {
+  const [major, minor, patch] = version.split('.').map((n) => parseInt(n, 10));
+
+  switch (bumpType) {
+    case 'major':
+      return `${major + 1}.0.0`;
+    case 'minor':
+      return `${major}.${minor + 1}.0`;
+    case 'patch':
+    default:
+      return `${major}.${minor}.${patch + 1}`;
+  }
+}
+
+/**
+ * Automatically determines next version based on git history
+ */
+function determineNextVersion() {
+  console.log('\n🔍 Analyzing git history...');
+
+  const currentVersion = getCurrentVersion();
+  console.log(`   Current version: ${currentVersion}`);
+
+  const lastTag = getLatestGitTag();
+  if (!lastTag) {
+    console.log('   No tags found - analyzing all commits');
+  } else {
+    console.log(`   Last tag: v${lastTag}`);
+  }
+
+  const commits = getCommitsSinceLastTag();
+  if (commits.length === 0) {
+    console.log('\n⚠️  No commits since last tag. Version will not change.');
+    return currentVersion;
+  }
+
+  console.log(`   Found ${commits.length} commit(s)${lastTag ? ' since last tag' : ''}:`);
+  commits.slice(0, 5).forEach((commit) => {
+    console.log(`     • ${commit}`);
+  });
+  if (commits.length > 5) {
+    console.log(`     ... and ${commits.length - 5} more`);
+  }
+
+  const bumpType = analyzeCommits(commits);
+  const nextVersion = incrementVersion(currentVersion, bumpType);
+
+  console.log(`\n   Bump type: ${bumpType.toUpperCase()}`);
+  console.log(`   Next version: ${nextVersion}`);
+
+  return nextVersion;
 }
 
 /**
@@ -191,16 +335,20 @@ function release(version, options = {}) {
 // Parse CLI arguments
 const args = process.argv.slice(2);
 
-if (args.length === 0) {
-  console.error('\n✗ Missing version argument');
-  console.error('\nUsage: node scripts/release.js <version> [--ios-build N] [--android-build N]');
-  console.error('Example: node scripts/release.js 1.1.0');
-  console.error('Example: node scripts/release.js 1.1.0 --ios-build 5 --android-build 10');
-  console.error('\nNote: If build numbers are not specified, they will be auto-incremented.');
-  process.exit(1);
+// If no version provided, determine it automatically
+let version;
+if (args.length === 0 || args[0].startsWith('--')) {
+  version = determineNextVersion();
+  console.log(`\n✨ Auto-determined version: ${version}`);
+
+  // If user provided flags but no version, they should be at the start
+  if (args.length > 0) {
+    args.unshift(version);
+  }
+} else {
+  version = args[0];
 }
 
-const version = args[0];
 const options = {};
 
 // Parse optional build number flags

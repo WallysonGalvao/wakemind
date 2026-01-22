@@ -29,6 +29,7 @@ import * as alarmsDb from '@/db/functions/alarms';
 import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useFeatureAccess } from '@/hooks/use-feature-access';
 import type { Alarm } from '@/types/alarm';
 
 const AnimatedFlatList = Animated.FlatList<Alarm>;
@@ -47,7 +48,10 @@ export default function AlarmsScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
-  const { sortedAlarms, isLoading, refetch } = useAlarms();
+  const { sortedAlarms, refetch } = useAlarms();
+
+  // Feature access for premium limits
+  const { canCreateAlarm, requirePremiumAccess } = useFeatureAccess();
 
   // Analytics tracking
   useAnalyticsScreen('Alarms');
@@ -101,9 +105,14 @@ export default function AlarmsScreen() {
     [refetch, sortedAlarms.length]
   );
 
-  const handleNewAlarm = useCallback(() => {
+  const handleNewAlarm = useCallback(async () => {
+    // Check if user can create more alarms
+    if (!canCreateAlarm(sortedAlarms.length)) {
+      await requirePremiumAccess('alarm_creation');
+      return;
+    }
     router.push('/alarm/create-alarm');
-  }, [router]);
+  }, [router, canCreateAlarm, sortedAlarms.length, requirePremiumAccess]);
 
   const handleEditAlarm = useCallback(
     (id: string) => {
@@ -123,19 +132,19 @@ export default function AlarmsScreen() {
     const testAlarm = sortedAlarms[0];
     const mockParams = testAlarm
       ? {
-          alarmId: testAlarm.id,
-          time: testAlarm.time,
-          period: testAlarm.period,
-          challenge: testAlarm.challenge,
-          challengeIcon: testAlarm.challengeIcon,
-        }
+        alarmId: testAlarm.id,
+        time: testAlarm.time,
+        period: testAlarm.period,
+        challenge: testAlarm.challenge,
+        challengeIcon: testAlarm.challengeIcon,
+      }
       : {
-          alarmId: 'mock-alarm-id',
-          time: '07:30',
-          period: 'AM',
-          challenge: 'Math Challenge',
-          challengeIcon: 'calculate',
-        };
+        alarmId: 'mock-alarm-id',
+        time: '07:30',
+        period: 'AM',
+        challenge: 'Math Challenge',
+        challengeIcon: 'calculate',
+      };
 
     router.push({
       pathname: '/alarm/trigger',

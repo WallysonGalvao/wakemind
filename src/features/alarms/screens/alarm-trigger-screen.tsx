@@ -237,7 +237,11 @@ export default function AlarmTriggerScreen() {
 
   const stopAlarm = useCallback(async () => {
     VibrationService.stop();
-    player.pause();
+    try {
+      player.pause();
+    } catch (error) {
+      // Player might already be destroyed, ignore the error
+    }
   }, [player]);
 
   const handleSnooze = useCallback(async () => {
