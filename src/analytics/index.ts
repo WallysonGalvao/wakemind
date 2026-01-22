@@ -256,6 +256,28 @@ export const AnalyticsEvents = {
   networkError: (operation: string, retryCount: number) =>
     logEvent('network_error', { operation, retry_count: retryCount }),
 
+  // Achievement events
+  achievementUnlocked: (achievementId: string, tier: string) =>
+    logEvent('achievement_unlocked', { achievement_id: achievementId, tier }),
+
+  achievementProgressUpdated: (achievementId: string, progress: number, target: number) =>
+    logEvent('achievement_progress_updated', {
+      achievement_id: achievementId,
+      progress,
+      target,
+      percentage: Math.round((progress / target) * 100),
+    }),
+
+  achievementsScreenViewed: (unlockedCount: number, totalCount: number) =>
+    logEvent('achievements_screen_viewed', {
+      unlocked_count: unlockedCount,
+      total_count: totalCount,
+      percentage: Math.round((unlockedCount / totalCount) * 100),
+    }),
+
+  achievementShared: (achievementId: string) =>
+    logEvent('achievement_shared', { achievement_id: achievementId }),
+
   // App lifecycle
   appOpened: () => {
     logEvent('app_opened');
