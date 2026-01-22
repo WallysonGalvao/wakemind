@@ -50,7 +50,7 @@ export function AchievementCard({ achievement, onPress }: AchievementCardProps) 
         };
       case 'platinum':
         return {
-          iconBg: 'bg-gradient-to-br from-blue-500/5 to-transparent',
+          iconBg: 'bg-sky-500/10',
           iconColor: '#3B82F6',
           badgeBg: 'bg-blue-500 dark:bg-blue-600',
           shadowColor: '#3B82F6',
