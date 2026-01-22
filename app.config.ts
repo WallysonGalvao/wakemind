@@ -24,6 +24,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: 'com.wgsoftwares.wakemind',
     infoPlist: {
       UIBackgroundModes: ['audio', 'fetch'],
+      NSUserNotificationsUsageDescription:
+        'WakeMind needs notification permissions to schedule and trigger alarms to help you wake up.',
     },
     // Temporarily commented out - requires Apple approval
     // entitlements: {
@@ -47,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'WAKE_LOCK',
       'POST_NOTIFICATIONS',
       'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+      'BILLING',
     ],
   },
   web: {
