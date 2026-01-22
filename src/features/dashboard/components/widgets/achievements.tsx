@@ -29,8 +29,8 @@ export function Achievements() {
     >
       <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <View className="h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 dark:bg-cyan-500/20">
-            <MaterialSymbol name="emoji_events" size={24} color="#3FA9F5" />
+          <View className="h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 dark:bg-blue-500/20">
+            <MaterialSymbol name="emoji_events" size={24} color="#3B82F6" />
           </View>
           <View>
             <Text className="text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -47,7 +47,7 @@ export function Achievements() {
       {/* Progress Bar */}
       <View className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
         <View
-          className="h-full rounded-full bg-cyan-500 dark:bg-cyan-600"
+          className="h-full rounded-full bg-blue-500 dark:bg-blue-600"
           style={{ width: `${percentage}%` }}
         />
       </View>
