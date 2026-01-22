@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { Text, useColorScheme, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import type { AchievementTier } from '../types/achievement.types';
 
@@ -24,49 +24,28 @@ export function MPBalanceCard({
   mpToUpgrade,
 }: MPBalanceCardProps) {
   const { t } = useTranslation();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-
-  // Theme-aware colors
-  const colors = {
-    decorativeIcon: isDark ? '#3FA9F5' : '#0F172A',
-    balanceText: isDark ? '#3FA9F5' : '#334155',
-    balanceNumber: isDark ? '#3FA9F5' : '#0F172A',
-    balanceSuffix: isDark ? 'rgba(63, 169, 245, 0.6)' : '#64748B',
-    lifetimeText: isDark ? 'rgba(255, 255, 255, 0.6)' : '#64748B',
-    progressText: isDark ? '#FFFFFF' : '#0F172A',
-    progressLabel: isDark ? 'rgba(255, 255, 255, 0.4)' : '#94A3B8',
-  };
 
   return (
     <View className="flex flex-col gap-4 px-4 pt-4">
       {/* Balance Card */}
-      <View className="relative overflow-hidden rounded-xl border border-blue-100 bg-blue-50 p-6 shadow-sm dark:border-[#3FA9F5]/30 dark:bg-gradient-to-br dark:from-[#1a2e3b] dark:to-[#2E2E2E] dark:shadow-[0_0_15px_rgba(63,169,245,0.15)]">
+      <View className="relative overflow-hidden rounded-xl border border-blue-100 bg-blue-50 p-6 shadow-sm dark:border-sky-500/30 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 dark:shadow-sky-500/15">
         {/* Decorative Icon */}
-        <View className="absolute right-4 top-4 opacity-[0.08] dark:opacity-10">
-          <MaterialSymbol name="bolt" size={120} color={colors.decorativeIcon} />
+        <View className="absolute right-4 top-1.5 opacity-[0.08] dark:opacity-10">
+          <MaterialSymbol name="bolt" size={120} className="text-slate-900 dark:text-sky-500" />
         </View>
 
         {/* Content */}
         <View className="relative z-10 flex flex-col items-start gap-1">
-          <Text
-            className="text-sm font-medium uppercase tracking-widest opacity-90"
-            style={{ color: colors.balanceText }}
-          >
+          <Text className="text-sm font-medium uppercase tracking-widest text-slate-700 opacity-90 dark:text-sky-500">
             {t('achievements.currentBalance')}
           </Text>
           <View className="flex-row items-baseline gap-2">
-            <Text
-              className="text-5xl font-bold tracking-tight"
-              style={{ color: colors.balanceNumber }}
-            >
+            <Text className="text-5xl font-bold tracking-tight text-slate-900 dark:text-sky-500">
               {currentMP.toLocaleString()}
             </Text>
-            <Text className="text-lg font-bold" style={{ color: colors.balanceSuffix }}>
-              MP
-            </Text>
+            <Text className="text-lg font-bold text-slate-600 dark:text-sky-500/60">MP</Text>
           </View>
-          <Text className="font-mono mt-2 text-xs" style={{ color: colors.lifetimeText }}>
+          <Text className="font-mono mt-2 text-xs text-slate-500 dark:text-white/60">
             {t('achievements.lifetimeTotal', { total: lifetimeMP.toLocaleString() })}
           </Text>
         </View>
@@ -75,10 +54,7 @@ export function MPBalanceCard({
       {/* Progression */}
       <View className="flex flex-col gap-2">
         <View className="flex-row items-end justify-between">
-          <Text
-            className="text-sm font-bold uppercase tracking-wide"
-            style={{ color: colors.progressText }}
-          >
+          <Text className="text-sm font-bold uppercase tracking-wide text-slate-900 dark:text-white">
             {nextTier ? (
               <>
                 {t('achievements.nextRank', { tier: '' })}{' '}
@@ -99,26 +75,20 @@ export function MPBalanceCard({
         </View>
 
         {/* Progress Bar */}
-        <View className="relative h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-[#2E2E2E]">
+        <View className="relative h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
           <View
-            className="absolute left-0 top-0 h-full rounded-full bg-primary-500 shadow-[0_0_10px_rgba(168,61,245,0.4)] dark:bg-gradient-to-r dark:from-primary-500/60 dark:to-primary-500 dark:shadow-[0_0_10px_rgba(168,61,245,0.6)]"
+            className="absolute left-0 top-0 h-full rounded-full bg-primary-500 shadow-primary-500/40 dark:bg-gradient-to-r dark:from-primary-500/60 dark:to-primary-500 dark:shadow-primary-500/60"
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           />
         </View>
 
         {/* Labels */}
         <View className="flex-row justify-between">
-          <Text
-            className="font-mono text-[10px] uppercase tracking-wider"
-            style={{ color: colors.progressLabel }}
-          >
+          <Text className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-white/40">
             {t(`achievements.tiers.${currentTier}`)} {currentTier === 'gold' ? 'III' : ''}
           </Text>
           {nextTier ? (
-            <Text
-              className="font-mono text-[10px] uppercase tracking-wider"
-              style={{ color: colors.progressLabel }}
-            >
+            <Text className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-white/40">
               {t('achievements.mpToUpgrade', { mp: mpToUpgrade })}
             </Text>
           ) : null}
