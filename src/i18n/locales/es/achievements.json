@@ -1,0 +1,125 @@
+{
+  "achievements": {
+    "title": "Logros",
+    "milestones": "Hitos",
+    "unlocked": "{{count}}/{{total}} Desbloqueados",
+    "locked": "Bloqueado",
+    "progress": "{{current}}/{{target}}",
+    "first_wake": {
+      "name": "Madrugador",
+      "description": "Completa tu primer desafío"
+    },
+    "alarm_10": {
+      "name": "Dedicado",
+      "description": "Completa 10 alarmas"
+    },
+    "alarm_50": {
+      "name": "Comprometido",
+      "description": "Completa 50 alarmas"
+    },
+    "alarm_100": {
+      "name": "Club del Siglo",
+      "description": "Completa 100 alarmas"
+    },
+    "alarm_365": {
+      "name": "Leyenda del Año",
+      "description": "Completa 365 alarmas"
+    },
+    "alarm_1000": {
+      "name": "Maestro del Milenio",
+      "description": "Completa 1000 alarmas"
+    },
+    "streak_3": {
+      "name": "Comenzando Fuerte",
+      "description": "Racha de 3 días"
+    },
+    "streak_7": {
+      "name": "Guerrero Semanal",
+      "description": "Mantén una racha de 7 días"
+    },
+    "streak_30": {
+      "name": "Maestro Mensual",
+      "description": "Mantén una racha de 30 días"
+    },
+    "streak_100": {
+      "name": "Centurión",
+      "description": "Mantén una racha de 100 días"
+    },
+    "streak_365": {
+      "name": "Campeón del Año",
+      "description": "Mantén una racha de 365 días"
+    },
+    "perfect_score": {
+      "name": "Perfeccionista",
+      "description": "Logra una puntuación de 100/100"
+    },
+    "avg_score_90": {
+      "name": "Actuación Elite",
+      "description": "Puntuación promedio ≥ 90"
+    },
+    "speed_10s": {
+      "name": "Demonio de la Velocidad",
+      "description": "Completa en <10 segundos"
+    },
+    "speed_5s": {
+      "name": "Rayo",
+      "description": "Completa en <5 segundos"
+    },
+    "no_fail_week": {
+      "name": "Semana Impecable",
+      "description": "7 días con éxito al 1er intento"
+    },
+    "hard_master": {
+      "name": "Maestro del Difícil",
+      "description": "Completa 50 desafíos Difíciles"
+    },
+    "all_challenges": {
+      "name": "Explorador de Desafíos",
+      "description": "Prueba los 3 tipos de desafíos"
+    },
+    "all_difficulties": {
+      "name": "Explorador de Dificultades",
+      "description": "Prueba todos los niveles"
+    },
+    "math_specialist": {
+      "name": "Especialista en Matemáticas",
+      "description": "Completa 50 desafíos de Matemáticas"
+    },
+    "memory_master": {
+      "name": "Maestro de la Memoria",
+      "description": "Completa 50 desafíos de Memoria"
+    },
+    "early_riser": {
+      "name": "Madrugador",
+      "description": "Despierta antes de las 5 AM",
+      "secretDescription": "???"
+    },
+    "weekend_warrior": {
+      "name": "Guerrero de Fin de Semana",
+      "description": "Completa 10 alarmas de fin de semana",
+      "secretDescription": "???"
+    },
+    "comeback_kid": {
+      "name": "Regreso Triunfal",
+      "description": "Reinicia después de 30+ días",
+      "secretDescription": "???"
+    },
+    "categories": {
+      "progression": "Progresión",
+      "consistency": "Consistencia",
+      "mastery": "Maestría",
+      "exploration": "Exploración",
+      "secret": "Secreto"
+    },
+    "tiers": {
+      "bronze": "Bronce",
+      "silver": "Plata",
+      "gold": "Oro",
+      "platinum": "Platino"
+    },
+    "unlock": {
+      "title": "¡Logro Desbloqueado!",
+      "button": "¡Genial!"
+    }
+  }
+}

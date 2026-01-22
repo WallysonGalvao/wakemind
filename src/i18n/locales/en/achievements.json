@@ -1,0 +1,125 @@
+{
+  "achievements": {
+    "title": "Achievements",
+    "milestones": "Milestones",
+    "unlocked": "{{count}}/{{total}} Unlocked",
+    "locked": "Locked",
+    "progress": "{{current}}/{{target}}",
+    "first_wake": {
+      "name": "Early Bird",
+      "description": "Complete your first challenge"
+    },
+    "alarm_10": {
+      "name": "Dedicated",
+      "description": "Complete 10 alarms"
+    },
+    "alarm_50": {
+      "name": "Committed",
+      "description": "Complete 50 alarms"
+    },
+    "alarm_100": {
+      "name": "Century Club",
+      "description": "Complete 100 alarms"
+    },
+    "alarm_365": {
+      "name": "Year Legend",
+      "description": "Complete 365 alarms"
+    },
+    "alarm_1000": {
+      "name": "Millennium Master",
+      "description": "Complete 1000 alarms"
+    },
+    "streak_3": {
+      "name": "Starting Strong",
+      "description": "3-day streak"
+    },
+    "streak_7": {
+      "name": "Week Warrior",
+      "description": "Maintain a 7-day streak"
+    },
+    "streak_30": {
+      "name": "Monthly Master",
+      "description": "Maintain a 30-day streak"
+    },
+    "streak_100": {
+      "name": "Centurion",
+      "description": "Maintain a 100-day streak"
+    },
+    "streak_365": {
+      "name": "Year-Round Champion",
+      "description": "Maintain a 365-day streak"
+    },
+    "perfect_score": {
+      "name": "Perfectionist",
+      "description": "Achieve a 100/100 cognitive score"
+    },
+    "avg_score_90": {
+      "name": "Elite Performer",
+      "description": "Average score ≥ 90"
+    },
+    "speed_10s": {
+      "name": "Speed Demon",
+      "description": "Complete in <10 seconds"
+    },
+    "speed_5s": {
+      "name": "Lightning Fast",
+      "description": "Complete in <5 seconds"
+    },
+    "no_fail_week": {
+      "name": "Flawless Week",
+      "description": "7 days with 1st attempt success"
+    },
+    "hard_master": {
+      "name": "Hard Mode Master",
+      "description": "Complete 50 Hard challenges"
+    },
+    "all_challenges": {
+      "name": "Challenge Explorer",
+      "description": "Try all 3 challenge types"
+    },
+    "all_difficulties": {
+      "name": "Difficulty Explorer",
+      "description": "Try all difficulty levels"
+    },
+    "math_specialist": {
+      "name": "Math Specialist",
+      "description": "Complete 50 Math challenges"
+    },
+    "memory_master": {
+      "name": "Memory Master",
+      "description": "Complete 50 Memory challenges"
+    },
+    "early_riser": {
+      "name": "Early Riser",
+      "description": "Wake up before 5 AM",
+      "secretDescription": "???"
+    },
+    "weekend_warrior": {
+      "name": "Weekend Warrior",
+      "description": "Complete 10 weekend alarms",
+      "secretDescription": "???"
+    },
+    "comeback_kid": {
+      "name": "Comeback Kid",
+      "description": "Restart after 30+ day gap",
+      "secretDescription": "???"
+    },
+    "categories": {
+      "progression": "Progression",
+      "consistency": "Consistency",
+      "mastery": "Mastery",
+      "exploration": "Exploration",
+      "secret": "Secret"
+    },
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum"
+    },
+    "unlock": {
+      "title": "Achievement Unlocked!",
+      "button": "Awesome!"
+    }
+  }
+}
