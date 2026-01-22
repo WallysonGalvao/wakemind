@@ -18,7 +18,7 @@ export function CurrentStreak({ streak }: CurrentStreakProps) {
 
   return (
     <View
-      className="h-32 flex-1 flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark"
+      className="h-32 flex-1 flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-surface-dark"
       style={shadowStyle}
     >
       <View className="flex-row items-start justify-between">
