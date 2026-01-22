@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 
-import { AchievementGrid } from '../components/achievement-grid';
+import { AchievementCard } from '../components/achievement-card';
 import { useAchievements } from '../hooks/use-achievements';
+import type { AchievementState } from '../types/achievement.types';
 import { AchievementTier } from '../types/achievement.types';
 
 import type { IconButton } from '@/components/header';
@@ -56,6 +57,23 @@ export default function AchievementsScreen() {
     [router, t]
   );
 
+  const keyExtractor = useCallback((item: AchievementState) => item.achievement.id, []);
+
+  const renderItem = useCallback(
+    ({ item }: { item: AchievementState }) => <AchievementCard achievement={item} />,
+    []
+  );
+
+  const renderFooter = useCallback(
+    () =>
+      loading && (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#3FA9F5" />
+        </View>
+      ),
+    [loading]
+  );
+
   return (
     <>
       <View className="flex-1 bg-white dark:bg-slate-950">
@@ -81,10 +99,16 @@ export default function AchievementsScreen() {
           />
         </View>
 
-        {/* Achievement Grid */}
-        <ScrollView className="flex-1 p-4 pb-24">
-          <AchievementGrid achievements={filteredAchievements} loading={loading} />
-        </ScrollView>
+        <FlatList
+          data={filteredAchievements}
+          keyExtractor={keyExtractor}
+          numColumns={2}
+          contentContainerClassName="p-4 pb-24"
+          columnWrapperClassName="gap-4"
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={renderFooter}
+        />
       </View>
     </>
   );

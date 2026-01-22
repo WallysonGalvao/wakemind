@@ -1,8 +1,3 @@
-/**
- * Use Achievements Hook
- * Fetches and manages achievements state
- */
-
 import { useEffect, useState } from 'react';
 
 import type { AchievementState } from '../types/achievement.types';

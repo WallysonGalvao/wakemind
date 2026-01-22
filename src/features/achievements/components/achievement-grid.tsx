@@ -1,8 +1,3 @@
-/**
- * Achievement Grid Component
- * Displays achievements in a 2-column grid
- */
-
 import React from 'react';
 
 import { ActivityIndicator, View } from 'react-native';
@@ -31,7 +26,7 @@ export function AchievementGrid({
 
   return (
     <View className="flex-row flex-wrap gap-4">
-      {achievements.map((achievement, index) => (
+      {achievements.map((achievement) => (
         <View key={achievement.achievement.id} className="w-[48%]">
           <AchievementCard
             achievement={achievement}
