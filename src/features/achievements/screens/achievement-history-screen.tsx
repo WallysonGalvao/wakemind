@@ -121,7 +121,7 @@ export default function AchievementHistoryScreen() {
   if (loading) {
     return (
       <View className="flex-1 bg-white dark:bg-slate-950">
-        <Header title={t('achievements.history.title')} leftIcons={leftIcons} rightIcons={[]} />
+        <Header title={t('achievements.history.title')} leftIcons={leftIcons} />
         <View className="flex-1 items-center justify-center">
           <Text className="text-slate-600 dark:text-slate-400">Loading...</Text>
         </View>
@@ -132,7 +132,7 @@ export default function AchievementHistoryScreen() {
   return (
     <View className="flex-1 bg-white dark:bg-slate-950">
       <View style={{ paddingTop: insets.top }}>
-        <Header title={t('achievements.history.title')} leftIcons={leftIcons} rightIcons={[]} />
+        <Header title={t('achievements.history.title')} leftIcons={leftIcons} />
       </View>
 
       <SectionList
