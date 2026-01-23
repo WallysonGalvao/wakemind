@@ -86,12 +86,31 @@ export async function checkAllChallengeTypes(): Promise<boolean> {
  * Check if user has completed all difficulty levels
  */
 export async function checkAllDifficulties(): Promise<boolean> {
-  // Note: difficulty is in alarms table, need to check if user has completed
-  // alarms with easy, medium, and hard difficulties
-  const completions = await db.select().from(alarmCompletions);
-  // For now, we'll check if they have at least 3 completions
-  // TODO: Add difficulty tracking to alarmCompletions table
-  return completions.length >= 3;
+  const { alarms } = await import('@/db/schema');
+  const { eq } = await import('drizzle-orm');
+
+  const completions = await db
+    .select({ difficulty: alarms.difficulty })
+    .from(alarmCompletions)
+    .innerJoin(alarms, eq(alarmCompletions.alarmId, alarms.id))
+    .where(eq(alarms.difficulty, 'easy'))
+    .union(
+      db
+        .select({ difficulty: alarms.difficulty })
+        .from(alarmCompletions)
+        .innerJoin(alarms, eq(alarmCompletions.alarmId, alarms.id))
+        .where(eq(alarms.difficulty, 'medium'))
+    )
+    .union(
+      db
+        .select({ difficulty: alarms.difficulty })
+        .from(alarmCompletions)
+        .innerJoin(alarms, eq(alarmCompletions.alarmId, alarms.id))
+        .where(eq(alarms.difficulty, 'hard'))
+    );
+
+  const difficulties = new Set(completions.map((c) => c.difficulty));
+  return difficulties.size === 3;
 }
 
 /**
@@ -122,9 +141,16 @@ export async function getChallengeTypeProgress(
  * Check if number of Hard challenges meets target
  */
 export async function checkHardChallenges(target: number): Promise<boolean> {
-  // TODO: Add difficulty tracking to alarmCompletions
-  // For now, return false as placeholder
-  return false;
+  const { alarms } = await import('@/db/schema');
+  const { eq } = await import('drizzle-orm');
+
+  const completions = await db
+    .select()
+    .from(alarmCompletions)
+    .innerJoin(alarms, eq(alarmCompletions.alarmId, alarms.id))
+    .where(eq(alarms.difficulty, 'hard'));
+
+  return completions.length >= target;
 }
 
 /**
@@ -195,7 +221,252 @@ export async function checkComebackAfterGap(gapDays: number): Promise<boolean> {
  * Check for 7 consecutive days with first-attempt success
  */
 export async function checkFlawlessWeek(): Promise<boolean> {
-  // TODO: Need to track attempts in alarmCompletions
+  const completions = await db.select().from(alarmCompletions).orderBy(alarmCompletions.date);
+
+  if (completions.length < 7) return false;
+
+  // Check for 7 consecutive days with attempts = 1
+  let consecutiveDays = 0;
+
+  for (let i = 0; i < completions.length; i++) {
+    if (completions[i].attempts === 1) {
+      consecutiveDays++;
+
+      // Check if next day is consecutive
+      if (i < completions.length - 1) {
+        const currentDate = dayjs(completions[i].date);
+        const nextDate = dayjs(completions[i + 1].date);
+        const diff = nextDate.diff(currentDate, 'day');
+
+        if (diff !== 1) {
+          consecutiveDays = 0;
+        }
+      }
+
+      if (consecutiveDays >= 7) return true;
+    } else {
+      consecutiveDays = 0;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Check for X consecutive days with first-attempt success (no failures)
+ */
+export async function checkFlawlessStreak(days: number): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions).orderBy(alarmCompletions.date);
+
+  if (completions.length < days) return false;
+
+  // Check for X consecutive days with attempts = 1
+  let consecutiveDays = 0;
+
+  for (let i = 0; i < completions.length; i++) {
+    if (completions[i].attempts === 1) {
+      consecutiveDays++;
+
+      // Check if next day is consecutive
+      if (i < completions.length - 1) {
+        const currentDate = dayjs(completions[i].date);
+        const nextDate = dayjs(completions[i + 1].date);
+        const diff = nextDate.diff(currentDate, 'day');
+
+        if (diff !== 1) {
+          consecutiveDays = 0;
+        }
+      }
+
+      if (consecutiveDays >= days) return true;
+    } else {
+      consecutiveDays = 0;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Check if number of Adaptive AI challenges meets target
+ */
+export async function checkAdaptiveChallenges(target: number): Promise<boolean> {
+  // TODO: Add adaptive difficulty tracking to alarmCompletions
+  // For now, return false as placeholder
+  return false;
+}
+
+/**
+ * Check if user has completed at least X of each challenge type (balanced)
+ */
+export async function checkBalancedChallenges(target: number): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions);
+  const mathCount = completions.filter((c) => c.challengeType === 'math').length;
+  const memoryCount = completions.filter((c) => c.challengeType === 'memory').length;
+  const logicCount = completions.filter((c) => c.challengeType === 'logic').length;
+
+  return mathCount >= target && memoryCount >= target && logicCount >= target;
+}
+
+/**
+ * Check if user has completed at least X of each difficulty level (balanced)
+ */
+export async function checkBalancedDifficulties(target: number): Promise<boolean> {
+  const { alarms } = await import('@/db/schema');
+  const { eq } = await import('drizzle-orm');
+
+  const allCompletions = await db
+    .select({ difficulty: alarms.difficulty })
+    .from(alarmCompletions)
+    .innerJoin(alarms, eq(alarmCompletions.alarmId, alarms.id));
+
+  const easyCount = allCompletions.filter((c) => c.difficulty === 'easy').length;
+  const mediumCount = allCompletions.filter((c) => c.difficulty === 'medium').length;
+  const hardCount = allCompletions.filter((c) => c.difficulty === 'hard').length;
+
+  return easyCount >= target && mediumCount >= target && hardCount >= target;
+}
+
+/**
+ * Check if user has mastered all challenge types (X completions each)
+ */
+export async function checkAllChallengesMastery(target: number): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions);
+  const mathCount = completions.filter((c) => c.challengeType === 'math').length;
+  const memoryCount = completions.filter((c) => c.challengeType === 'memory').length;
+  const logicCount = completions.filter((c) => c.challengeType === 'logic').length;
+
+  return mathCount >= target && memoryCount >= target && logicCount >= target;
+}
+
+/**
+ * Check if user woke up between startTime and endTime (e.g., after midnight)
+ */
+export async function checkLateWakeUp(startTime: string, endTime: string): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions);
+  return completions.some((c) => {
+    const targetHour = parseInt(c.targetTime.split(':')[0]);
+    const targetMin = parseInt(c.targetTime.split(':')[1]);
+    const targetTimeValue = targetHour * 60 + targetMin;
+
+    const startHour = parseInt(startTime.split(':')[0]);
+    const startMin = parseInt(startTime.split(':')[1]);
+    const startTimeValue = startHour * 60 + startMin;
+
+    const endHour = parseInt(endTime.split(':')[0]);
+    const endMin = parseInt(endTime.split(':')[1]);
+    const endTimeValue = endHour * 60 + endMin;
+
+    return targetTimeValue >= startTimeValue && targetTimeValue <= endTimeValue;
+  });
+}
+
+/**
+ * Check if user woke up at the same minute for X consecutive days
+ */
+export async function checkConsistentMinute(days: number): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions).orderBy(alarmCompletions.date);
+
+  if (completions.length < days) return false;
+
+  // Check for consecutive days with same minute
+  for (let i = 0; i <= completions.length - days; i++) {
+    const firstMinute = parseInt(completions[i].targetTime.split(':')[1]);
+    let isConsistent = true;
+
+    for (let j = i + 1; j < i + days; j++) {
+      const currentMinute = parseInt(completions[j].targetTime.split(':')[1]);
+      const prevDate = dayjs(completions[j - 1].date);
+      const currDate = dayjs(completions[j].date);
+
+      // Check if dates are consecutive and minutes match
+      if (currDate.diff(prevDate, 'day') !== 1 || currentMinute !== firstMinute) {
+        isConsistent = false;
+        break;
+      }
+    }
+
+    if (isConsistent) return true;
+  }
+
+  return false;
+}
+
+/**
+ * Check if user completed X alarms within Y days (marathon)
+ */
+export async function checkMonthlyMarathon(alarms: number, days: number): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions).orderBy(alarmCompletions.date);
+
+  if (completions.length < alarms) return false;
+
+  // Check for any period where alarms were completed within days
+  for (let i = 0; i <= completions.length - alarms; i++) {
+    const firstDate = dayjs(completions[i].date);
+    const lastDate = dayjs(completions[i + alarms - 1].date);
+    const diff = lastDate.diff(firstDate, 'day');
+
+    if (diff <= days) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Check for X consecutive perfect scores (100/100)
+ */
+export async function checkConsecutivePerfectScores(count: number): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions).orderBy(alarmCompletions.date);
+
+  if (completions.length < count) return false;
+
+  let consecutiveCount = 0;
+
+  for (const completion of completions) {
+    if (completion.cognitiveScore === 100) {
+      consecutiveCount++;
+      if (consecutiveCount >= count) return true;
+    } else {
+      consecutiveCount = 0;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Check if user woke up at a specific lucky time (e.g., 07:07)
+ */
+export async function checkLuckyTime(time: string): Promise<boolean> {
+  const completions = await db.select().from(alarmCompletions);
+  return completions.some((c) => c.targetTime === time);
+}
+
+/**
+ * Check if user has shared X achievements (social feature)
+ */
+export async function checkAchievementShares(count: number): Promise<boolean> {
+  // TODO: Implement achievement sharing tracking
+  // For now, return false as placeholder
+  return false;
+}
+
+/**
+ * Check if user shared a streak of at least X days
+ */
+export async function checkStreakShare(minStreak: number): Promise<boolean> {
+  // TODO: Implement streak sharing tracking
+  // For now, return false as placeholder
+  return false;
+}
+
+/**
+ * Check if user has helped X community members
+ */
+export async function checkCommunityHelps(count: number): Promise<boolean> {
+  // TODO: Implement community help tracking
   // For now, return false as placeholder
   return false;
 }

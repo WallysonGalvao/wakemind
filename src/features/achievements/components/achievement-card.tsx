@@ -3,7 +3,7 @@
  * Displays individual achievement with tier-specific styling
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -22,6 +22,8 @@ interface AchievementCardProps {
 export function AchievementCard({ achievement }: AchievementCardProps) {
   const { t } = useTranslation();
   const { achievement: def, isUnlocked, progress, target } = achievement;
+  const [cardWidth, setCardWidth] = useState(0);
+  const [cardHeight, setCardHeight] = useState(0);
 
   // Tier-specific colors
   const getTierColors = () => {
@@ -84,10 +86,28 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
     [isLocked, colors.borderColor]
   );
 
-  const getDotStyle = (row: number, col: number) => ({
-    top: 8 + row * 16,
-    left: 8 + col * 24,
-  });
+  // Dynamic dot positioning based on card dimensions
+  const getDotStyle = useMemo(() => {
+    if (cardWidth === 0 || cardHeight === 0) {
+      return (row: number, col: number) => ({
+        top: 8 + row * 16,
+        left: 8 + col * 24,
+      });
+    }
+
+    // Calculate dynamic grid dimensions based on card size
+    const PADDING = Math.max(8, Math.floor(cardWidth * 0.025));
+    const ROWS = Math.max(6, Math.floor(cardHeight / 30));
+    const COLS = Math.max(8, Math.floor(cardWidth / 24));
+
+    const rowSpacing = (cardHeight - PADDING * 2) / (ROWS - 1);
+    const colSpacing = (cardWidth - PADDING * 2) / (COLS - 1);
+
+    return (row: number, col: number) => ({
+      top: PADDING + row * rowSpacing,
+      left: PADDING + col * colSpacing,
+    });
+  }, [cardWidth, cardHeight]);
 
   const progressBarStyle = useMemo(
     () => ({ width: `${(progress / target) * 100}%` as const }),
@@ -105,6 +125,11 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
     <View style={isLocked ? undefined : shadowStyle}>
       <View
         style={touchableStyle}
+        onLayout={(e) => {
+          const { width, height } = e.nativeEvent.layout;
+          setCardWidth(width);
+          setCardHeight(height);
+        }}
         className={`
         group relative flex flex-col overflow-hidden rounded-2xl border
         bg-white shadow-sm transition-all duration-300 dark:bg-slate-900
@@ -112,15 +137,17 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
       `}
       >
         {/* Decorative dots grid */}
-        {[0, 1, 2, 3, 4, 5].map((row) =>
-          [0, 1, 2, 3, 4, 5, 6, 7, 8].map((col) => (
-            <View
-              key={`dot-${row}-${col}`}
-              className="absolute h-1 w-1 rounded-full opacity-10"
-              style={[{ ...getDotStyle(row, col) }, { backgroundColor: colors.shadowColor }]}
-            />
-          ))
-        )}
+        {cardWidth > 0 && cardHeight > 0
+          ? Array.from({ length: Math.max(4, Math.floor(cardHeight / 30)) }).map((_, row) =>
+              Array.from({ length: Math.max(6, Math.floor(cardWidth / 24)) }).map((_, col) => (
+                <View
+                  key={`dot-${row}-${col}`}
+                  className="absolute h-1 w-1 rounded-full opacity-10"
+                  style={[{ ...getDotStyle(row, col) }, { backgroundColor: colors.shadowColor }]}
+                />
+              ))
+            )
+          : null}
 
         {/* Platinum top accent */}
         {isPlatinum && isUnlocked ? (
@@ -134,7 +161,7 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
           <Text
             className={`text-[10px] font-bold ${isPlatinum && isUnlocked ? 'text-white' : 'text-slate-900 dark:text-slate-100'}`}
           >
-            {isLocked && progress > 0 ? `${progress}/${target}` : `${mpReward} MP`}
+            {mpReward} MP
           </Text>
         </View>
 

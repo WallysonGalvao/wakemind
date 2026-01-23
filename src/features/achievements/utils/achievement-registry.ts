@@ -1,6 +1,6 @@
 /**
  * Achievement Registry
- * Centralized definition of all 24 achievements in the MVP
+ * Centralized definition of all 46 active achievements (50 total, 4 disabled)
  */
 
 import type { AchievementDefinition } from '../types/achievement.types';
@@ -9,7 +9,7 @@ import * as conditions from './achievement-conditions';
 
 export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
   // ============================================================================
-  // PROGRESSION (6 achievements)
+  // PROGRESSION (10 achievements)
   // ============================================================================
   {
     id: 'first_wake',
@@ -28,6 +28,16 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     icon: 'emoji_events',
     isSecret: false,
     target: 10,
+    conditionFn: conditions.checkTotalAlarms,
+    progressFn: conditions.getTotalAlarmsProgress,
+  },
+  {
+    id: 'alarm_25',
+    category: AchievementCategory.PROGRESSION,
+    tier: AchievementTier.BRONZE,
+    icon: 'grade',
+    isSecret: false,
+    target: 25,
     conditionFn: conditions.checkTotalAlarms,
     progressFn: conditions.getTotalAlarmsProgress,
   },
@@ -52,12 +62,32 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     progressFn: conditions.getTotalAlarmsProgress,
   },
   {
+    id: 'alarm_250',
+    category: AchievementCategory.PROGRESSION,
+    tier: AchievementTier.GOLD,
+    icon: 'military_tech',
+    isSecret: false,
+    target: 250,
+    conditionFn: conditions.checkTotalAlarms,
+    progressFn: conditions.getTotalAlarmsProgress,
+  },
+  {
     id: 'alarm_365',
     category: AchievementCategory.PROGRESSION,
     tier: AchievementTier.PLATINUM,
     icon: 'workspace_premium',
     isSecret: false,
     target: 365,
+    conditionFn: conditions.checkTotalAlarms,
+    progressFn: conditions.getTotalAlarmsProgress,
+  },
+  {
+    id: 'alarm_500',
+    category: AchievementCategory.PROGRESSION,
+    tier: AchievementTier.PLATINUM,
+    icon: 'stars',
+    isSecret: false,
+    target: 500,
     conditionFn: conditions.checkTotalAlarms,
     progressFn: conditions.getTotalAlarmsProgress,
   },
@@ -71,9 +101,19 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     conditionFn: conditions.checkTotalAlarms,
     progressFn: conditions.getTotalAlarmsProgress,
   },
+  {
+    id: 'alarm_2500',
+    category: AchievementCategory.PROGRESSION,
+    tier: AchievementTier.PLATINUM,
+    icon: 'auto_awesome',
+    isSecret: false,
+    target: 2500,
+    conditionFn: conditions.checkTotalAlarms,
+    progressFn: conditions.getTotalAlarmsProgress,
+  },
 
   // ============================================================================
-  // CONSISTENCY (5 achievements)
+  // CONSISTENCY (9 achievements)
   // ============================================================================
   {
     id: 'streak_3',
@@ -96,12 +136,32 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     progressFn: conditions.getCurrentStreakProgress,
   },
   {
+    id: 'streak_14',
+    category: AchievementCategory.CONSISTENCY,
+    tier: AchievementTier.SILVER,
+    icon: 'whatshot',
+    isSecret: false,
+    target: 14,
+    conditionFn: conditions.checkCurrentStreak,
+    progressFn: conditions.getCurrentStreakProgress,
+  },
+  {
     id: 'streak_30',
     category: AchievementCategory.CONSISTENCY,
     tier: AchievementTier.GOLD,
     icon: 'local_fire_department',
     isSecret: false,
     target: 30,
+    conditionFn: conditions.checkCurrentStreak,
+    progressFn: conditions.getCurrentStreakProgress,
+  },
+  {
+    id: 'streak_60',
+    category: AchievementCategory.CONSISTENCY,
+    tier: AchievementTier.GOLD,
+    icon: 'flare',
+    isSecret: false,
+    target: 60,
     conditionFn: conditions.checkCurrentStreak,
     progressFn: conditions.getCurrentStreakProgress,
   },
@@ -116,6 +176,16 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     progressFn: conditions.getCurrentStreakProgress,
   },
   {
+    id: 'streak_180',
+    category: AchievementCategory.CONSISTENCY,
+    tier: AchievementTier.PLATINUM,
+    icon: 'rocket_launch',
+    isSecret: false,
+    target: 180,
+    conditionFn: conditions.checkCurrentStreak,
+    progressFn: conditions.getCurrentStreakProgress,
+  },
+  {
     id: 'streak_365',
     category: AchievementCategory.CONSISTENCY,
     tier: AchievementTier.PLATINUM,
@@ -125,9 +195,18 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     conditionFn: conditions.checkCurrentStreak,
     progressFn: conditions.getCurrentStreakProgress,
   },
+  {
+    id: 'perfect_month',
+    category: AchievementCategory.CONSISTENCY,
+    tier: AchievementTier.GOLD,
+    icon: 'shield',
+    isSecret: false,
+    target: 30,
+    conditionFn: async () => conditions.checkFlawlessStreak(30),
+  },
 
   // ============================================================================
-  // MASTERY (6 achievements)
+  // MASTERY (12 achievements)
   // ============================================================================
   {
     id: 'perfect_score',
@@ -145,6 +224,15 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     icon: 'psychology',
     isSecret: false,
     target: 90,
+    conditionFn: conditions.checkAverageScore,
+  },
+  {
+    id: 'avg_score_95',
+    category: AchievementCategory.MASTERY,
+    tier: AchievementTier.PLATINUM,
+    icon: 'workspace_premium',
+    isSecret: false,
+    target: 95,
     conditionFn: conditions.checkAverageScore,
   },
   {
@@ -166,6 +254,24 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     conditionFn: conditions.checkReactionTime,
   },
   {
+    id: 'speed_3s',
+    category: AchievementCategory.MASTERY,
+    tier: AchievementTier.GOLD,
+    icon: 'flash_on',
+    isSecret: false,
+    target: 3000, // 3 seconds in milliseconds
+    conditionFn: conditions.checkReactionTime,
+  },
+  {
+    id: 'speed_1s',
+    category: AchievementCategory.MASTERY,
+    tier: AchievementTier.PLATINUM,
+    icon: 'electric_bolt',
+    isSecret: false,
+    target: 1000, // 1 second in milliseconds
+    conditionFn: conditions.checkReactionTime,
+  },
+  {
     id: 'no_fail_week',
     category: AchievementCategory.MASTERY,
     tier: AchievementTier.GOLD,
@@ -173,6 +279,15 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     isSecret: false,
     target: 7,
     conditionFn: async () => conditions.checkFlawlessWeek(),
+  },
+  {
+    id: 'no_fail_month',
+    category: AchievementCategory.MASTERY,
+    tier: AchievementTier.PLATINUM,
+    icon: 'verified_user',
+    isSecret: false,
+    target: 30,
+    conditionFn: async () => conditions.checkFlawlessStreak(30),
   },
   {
     id: 'hard_master',
@@ -183,9 +298,27 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     target: 50,
     conditionFn: conditions.checkHardChallenges,
   },
+  {
+    id: 'hard_specialist',
+    category: AchievementCategory.MASTERY,
+    tier: AchievementTier.PLATINUM,
+    icon: 'shield_with_house',
+    isSecret: false,
+    target: 100,
+    conditionFn: conditions.checkHardChallenges,
+  },
+  // {
+  //   id: 'adaptive_master',
+  //   category: AchievementCategory.MASTERY,
+  //   tier: AchievementTier.PLATINUM,
+  //   icon: 'smart_toy',
+  //   isSecret: false,
+  //   target: 50,
+  //   conditionFn: async (target) => conditions.checkAdaptiveChallenges(target),
+  // },
 
   // ============================================================================
-  // EXPLORATION (4 achievements)
+  // EXPLORATION (8 achievements)
   // ============================================================================
   {
     id: 'all_challenges',
@@ -197,6 +330,15 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     conditionFn: async () => conditions.checkAllChallengeTypes(),
   },
   {
+    id: 'challenge_variety',
+    category: AchievementCategory.EXPLORATION,
+    tier: AchievementTier.BRONZE,
+    icon: 'diversity_3',
+    isSecret: false,
+    target: 10,
+    conditionFn: async (target) => conditions.checkBalancedChallenges(target),
+  },
+  {
     id: 'all_difficulties',
     category: AchievementCategory.EXPLORATION,
     tier: AchievementTier.SILVER,
@@ -204,6 +346,15 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     isSecret: false,
     target: 3,
     conditionFn: async () => conditions.checkAllDifficulties(),
+  },
+  {
+    id: 'difficulty_balanced',
+    category: AchievementCategory.EXPLORATION,
+    tier: AchievementTier.SILVER,
+    icon: 'balance',
+    isSecret: false,
+    target: 25,
+    conditionFn: async (target) => conditions.checkBalancedDifficulties(target),
   },
   {
     id: 'math_specialist',
@@ -225,9 +376,28 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     conditionFn: async (target) => conditions.checkChallengeTypeCount('memory', target),
     progressFn: async (target) => conditions.getChallengeTypeProgress('memory', target),
   },
+  {
+    id: 'logic_specialist',
+    category: AchievementCategory.EXPLORATION,
+    tier: AchievementTier.SILVER,
+    icon: 'extension',
+    isSecret: false,
+    target: 50,
+    conditionFn: async (target) => conditions.checkChallengeTypeCount('logic', target),
+    progressFn: async (target) => conditions.getChallengeTypeProgress('logic', target),
+  },
+  {
+    id: 'ultimate_explorer',
+    category: AchievementCategory.EXPLORATION,
+    tier: AchievementTier.PLATINUM,
+    icon: 'public',
+    isSecret: false,
+    target: 100,
+    conditionFn: async (target) => conditions.checkAllChallengesMastery(target),
+  },
 
   // ============================================================================
-  // SECRET (3 achievements)
+  // SECRET (8 achievements)
   // ============================================================================
   {
     id: 'early_riser',
@@ -257,6 +427,83 @@ export const ACHIEVEMENT_REGISTRY: AchievementDefinition[] = [
     target: 30,
     conditionFn: async () => conditions.checkComebackAfterGap(30),
   },
+  {
+    id: 'night_owl',
+    category: AchievementCategory.SECRET,
+    tier: AchievementTier.BRONZE,
+    icon: 'bedtime',
+    isSecret: true,
+    target: 1,
+    conditionFn: async () => conditions.checkLateWakeUp('00:00', '04:59'),
+  },
+  {
+    id: 'perfect_timing',
+    category: AchievementCategory.SECRET,
+    tier: AchievementTier.SILVER,
+    icon: 'schedule',
+    isSecret: true,
+    target: 7,
+    conditionFn: async () => conditions.checkConsistentMinute(7),
+  },
+  {
+    id: 'marathon_month',
+    category: AchievementCategory.SECRET,
+    tier: AchievementTier.GOLD,
+    icon: 'directions_run',
+    isSecret: true,
+    target: 50,
+    conditionFn: async () => conditions.checkMonthlyMarathon(50, 30),
+  },
+  {
+    id: 'zen_master',
+    category: AchievementCategory.SECRET,
+    tier: AchievementTier.SILVER,
+    icon: 'self_improvement',
+    isSecret: true,
+    target: 7,
+    conditionFn: async () => conditions.checkConsecutivePerfectScores(7),
+  },
+  {
+    id: 'lucky_seven',
+    category: AchievementCategory.SECRET,
+    tier: AchievementTier.BRONZE,
+    icon: 'casino',
+    isSecret: true,
+    target: 1,
+    conditionFn: async () => conditions.checkLuckyTime('07:07'),
+  },
+
+  // ============================================================================
+  // SOCIAL (3 achievements) - DISABLED UNTIL SHARING FEATURE IS IMPLEMENTED
+  // ============================================================================
+  // TODO: Re-enable when social sharing features are implemented
+  // {
+  //   id: 'first_share',
+  //   category: AchievementCategory.SOCIAL,
+  //   tier: AchievementTier.BRONZE,
+  //   icon: 'share',
+  //   isSecret: false,
+  //   target: 1,
+  //   conditionFn: async () => conditions.checkAchievementShares(1),
+  // },
+  // {
+  //   id: 'streak_sharer',
+  //   category: AchievementCategory.SOCIAL,
+  //   tier: AchievementTier.SILVER,
+  //   icon: 'group',
+  //   isSecret: false,
+  //   target: 1,
+  //   conditionFn: async () => conditions.checkStreakShare(30),
+  // },
+  // {
+  //   id: 'motivator',
+  //   category: AchievementCategory.SOCIAL,
+  //   tier: AchievementTier.BRONZE,
+  //   icon: 'volunteer_activism',
+  //   isSecret: false,
+  //   target: 5,
+  //   conditionFn: async () => conditions.checkCommunityHelps(5),
+  // },
 ];
 
 /**

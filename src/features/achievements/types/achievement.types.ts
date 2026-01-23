@@ -8,6 +8,7 @@ export enum AchievementCategory {
   MASTERY = 'mastery',
   EXPLORATION = 'exploration',
   SECRET = 'secret',
+  SOCIAL = 'social',
 }
 
 export enum AchievementTier {
