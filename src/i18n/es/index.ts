@@ -5,6 +5,7 @@ import { appES } from './app';
 import { backES } from './back';
 import { countriesES } from './countries';
 import { dashboardES } from './dashboard';
+import { dashboardWidgetsES } from './dashboard-widgets';
 import { expoES } from './expo';
 import { onboardingES } from './onboarding';
 import { privacyPolicyES } from './privacy-policy';
@@ -21,6 +22,7 @@ export default {
   ...backES,
   ...countriesES,
   ...dashboardES,
+  ...dashboardWidgetsES,
   ...sportsES,
   ...expoES,
   ...onboardingES,

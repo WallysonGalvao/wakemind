@@ -8,6 +8,14 @@ export enum WidgetType {
   ACHIEVEMENTS = 'achievements',
   FALSE_STARTS = 'falseStarts',
   SLEEP_ENVIRONMENT = 'sleepEnvironment',
+  // High Priority Widgets
+  SNOOZE_ANALYTICS = 'snoozeAnalytics',
+  GOAL_PROGRESS = 'goalProgress',
+  WEEKLY_HEATMAP = 'weeklyHeatmap',
+  // Medium Priority Widgets
+  SLEEP_QUALITY = 'sleepQuality',
+  CIRCADIAN_RHYTHM = 'circadianRhythm',
+  MORNING_ROUTINE = 'morningRoutine',
 }
 
 export enum WidgetCategory {
@@ -100,5 +108,55 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     titleKey: 'widgets.sleepEnvironment.title',
     descriptionKey: 'widgets.sleepEnvironment.description',
     defaultEnabled: true,
+  },
+  // High Priority Widgets
+  {
+    id: WidgetType.SNOOZE_ANALYTICS,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'snooze',
+    titleKey: 'widgets.snoozeAnalytics.title',
+    descriptionKey: 'widgets.snoozeAnalytics.description',
+    defaultEnabled: false,
+  },
+  {
+    id: WidgetType.GOAL_PROGRESS,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'flag',
+    titleKey: 'widgets.goalProgress.title',
+    descriptionKey: 'widgets.goalProgress.description',
+    defaultEnabled: true,
+  },
+  {
+    id: WidgetType.WEEKLY_HEATMAP,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'grid_on',
+    titleKey: 'widgets.weeklyHeatmap.title',
+    descriptionKey: 'widgets.weeklyHeatmap.description',
+    defaultEnabled: false,
+  },
+  // Medium Priority Widgets
+  {
+    id: WidgetType.SLEEP_QUALITY,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'bedtime',
+    titleKey: 'widgets.sleepQuality.title',
+    descriptionKey: 'widgets.sleepQuality.description',
+    defaultEnabled: false,
+  },
+  {
+    id: WidgetType.CIRCADIAN_RHYTHM,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'routine',
+    titleKey: 'widgets.circadianRhythm.title',
+    descriptionKey: 'widgets.circadianRhythm.description',
+    defaultEnabled: false,
+  },
+  {
+    id: WidgetType.MORNING_ROUTINE,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'checklist',
+    titleKey: 'widgets.morningRoutine.title',
+    descriptionKey: 'widgets.morningRoutine.description',
+    defaultEnabled: false,
   },
 ];
