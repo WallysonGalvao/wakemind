@@ -17,6 +17,9 @@ export function WeeklyHeatmap({ data }: WeeklyHeatmapProps) {
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('sm');
 
+  console.log('[WeeklyHeatmap Component] Received data:', data.length, 'days');
+  console.log('[WeeklyHeatmap Component] Sample data:', data.slice(0, 3));
+
   // Group data into weeks (7 days each)
   const weeks: HeatmapDay[][] = [];
   for (let i = 0; i < data.length; i += 7) {
@@ -28,18 +31,18 @@ export function WeeklyHeatmap({ data }: WeeklyHeatmapProps) {
 
   return (
     <View
-      className="flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-surface-dark"
+      className="flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#1a2233]"
       style={shadowStyle}
     >
       {/* Header */}
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
           <MaterialSymbol name="grid_on" size={24} color={COLORS.brandPrimary} />
-          <Text className="text-base font-semibold text-slate-900 dark:text-white">
+          <Text className="text-base font-semibold text-[#0F1621] dark:text-white">
             {t('dashboard.heatmap.title')}
           </Text>
         </View>
-        <Text className="text-xs text-gray-500 dark:text-gray-400">
+        <Text className="text-xs text-slate-500 dark:text-gray-400">
           {t('dashboard.heatmap.last28Days')}
         </Text>
       </View>
@@ -71,17 +74,17 @@ export function WeeklyHeatmap({ data }: WeeklyHeatmapProps) {
       </View>
 
       {/* Legend */}
-      <View className="flex-row items-center justify-between border-t border-slate-200 pt-3 dark:border-slate-800">
-        <Text className="text-xs text-gray-500 dark:text-gray-400">
+      <View className="flex-row items-center justify-between border-t border-slate-200 pt-3 dark:border-slate-700">
+        <Text className="text-xs text-slate-500 dark:text-gray-400">
           {t('dashboard.heatmap.legend')}
         </Text>
         <View className="flex-row items-center gap-2">
           <View className="h-4 w-4 rounded bg-slate-200 dark:bg-slate-800" />
-          <Text className="text-xs text-gray-500 dark:text-gray-400">Low</Text>
-          <View className="bg-success/30 h-4 w-4 rounded" />
-          <View className="bg-success/60 h-4 w-4 rounded" />
-          <View className="bg-success h-4 w-4 rounded" />
-          <Text className="text-xs text-gray-500 dark:text-gray-400">High</Text>
+          <Text className="text-xs text-slate-500 dark:text-gray-400">Low</Text>
+          <View className="h-4 w-4 rounded bg-green-500/30" />
+          <View className="h-4 w-4 rounded bg-green-500/60" />
+          <View className="h-4 w-4 rounded bg-green-500" />
+          <Text className="text-xs text-slate-500 dark:text-gray-400">High</Text>
         </View>
       </View>
     </View>
@@ -99,11 +102,11 @@ function HeatmapCell({ day }: HeatmapCellProps) {
     }
 
     // Score-based color intensity
-    if (day.score >= 90) return 'bg-success';
-    if (day.score >= 75) return 'bg-success/60';
-    if (day.score >= 60) return 'bg-success/30';
-    if (day.score >= 40) return 'bg-warning/40';
-    return 'bg-error/40';
+    if (day.score >= 90) return 'bg-green-500';
+    if (day.score >= 75) return 'bg-green-500/60';
+    if (day.score >= 60) return 'bg-green-500/30';
+    if (day.score >= 40) return 'bg-orange-500/40';
+    return 'bg-red-500/40';
   };
 
   const isToday = dayjs(day.date).isSame(dayjs(), 'day');

@@ -6,7 +6,6 @@ import { desc, gte } from 'drizzle-orm';
 import { db } from '@/db';
 import { alarmCompletions } from '@/db/schema';
 import type { PeriodType } from '@/features/dashboard/types';
-import { calculateExecutionScore } from '@/utils/cognitive-score';
 
 export interface SleepQualityData {
   avgSleepHours: number;
@@ -91,12 +90,8 @@ export function useSleepQuality(period: PeriodType, refreshKey?: number): SleepQ
           sleepHours = 7; // Default assumption
         }
 
-        const score = calculateExecutionScore({
-          cognitiveScore: current.cognitiveScore,
-          reactionTime: current.reactionTime,
-          targetTime: current.targetTime,
-          actualTime: current.actualTime,
-        });
+        // Use cognitive score directly
+        const score = current.cognitiveScore;
 
         sleepData.push({
           hours: sleepHours,
