@@ -99,22 +99,6 @@ export default function DashboardScreen() {
     ];
   }, [router]);
 
-  // Debug logs
-  if (__DEV__) {
-    console.log('[Dashboard] Data for widgets:', {
-      refreshKey,
-      selectedPeriod,
-      wakeConsistency: {
-        targetTime: wakeConsistencyData.targetTime,
-        averageTime: wakeConsistencyData.averageTime,
-        variance: wakeConsistencyData.variance,
-        chartDataLength: wakeConsistencyData.chartData.length,
-      },
-      avgLatency,
-      currentStreak,
-    });
-  }
-
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}

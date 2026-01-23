@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { Pressable, View } from 'react-native';
 
-
 import { MaterialSymbol } from '@/components/material-symbol';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { Text } from '@/components/ui/text';
@@ -15,9 +14,8 @@ import { routineCompletions } from '@/db/schema';
 import type { RoutineItemData, RoutineStats } from '@/features/dashboard/hooks/use-morning-routine';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
 
-import { db } from '@/db';
-import { routineCompletions } from '@/db/schema';
-
+interface MorningRoutineChecklistProps {
+  items: RoutineItemData[];
   stats: RoutineStats;
   onRefresh?: () => void;
 }
@@ -74,10 +72,10 @@ export function MorningRoutineChecklist({ items, stats, onRefresh }: MorningRout
   };
 
   const getProgressColor = () => {
-    if (stats.todayProgress >= 80) return COLORS.success;
+    if (stats.todayProgress >= 80) return COLORS.green[500];
     if (stats.todayProgress >= 50) return COLORS.brandPrimary;
-    if (stats.todayProgress >= 25) return COLORS.warning;
-    return COLORS.error;
+    if (stats.todayProgress >= 25) return COLORS.orange[500];
+    return COLORS.red[500];
   };
 
   return (
@@ -111,7 +109,7 @@ export function MorningRoutineChecklist({ items, stats, onRefresh }: MorningRout
       {/* Stats */}
       <View className="flex-row items-center justify-between border-t border-slate-200 pt-3 dark:border-slate-800">
         <View className="flex-row items-center gap-1">
-          <MaterialSymbol name="calendar_month" size={16} color={COLORS.textSecondary} />
+          <MaterialSymbol name="calendar_month" size={16} color={COLORS.green[500]} />
           <Text className="text-xs text-gray-500 dark:text-gray-400">
             {t('dashboard.routine.weeklyAvg')}:{' '}
             <Text className="font-semibold">{stats.weeklyAverage}%</Text>
@@ -138,6 +136,7 @@ interface RoutineChecklistItemProps {
 function RoutineChecklistItem({ item, onToggle }: RoutineChecklistItemProps) {
   return (
     <Pressable
+      accessibilityRole="button"
       onPress={() => onToggle(item.id)}
       className="flex-row items-center gap-3 rounded-lg bg-slate-50 p-3 active:bg-slate-100 dark:bg-slate-900 dark:active:bg-slate-800"
     >
@@ -146,19 +145,19 @@ function RoutineChecklistItem({ item, onToggle }: RoutineChecklistItemProps) {
         className={`h-6 w-6 items-center justify-center rounded border-2 ${
           item.isCompleted
             ? 'border-brand-primary bg-brand-primary'
-            :e acc ssibilityRole="button"'border-slate-300 dark:border-slate-700'
+            : 'border-slate-300 dark:border-slate-700'
         }`}
       >
-        {item.isCompleted && <MaterialSymbol name="check" size={16} color="#fff" />}
+        {item.isCompleted ? <MaterialSymbol name="check" size={16} color="#fff" /> : null}
       </View>
 
       {/* Icon */}
       <MaterialSymbol
         name={item.icon}
         size={20}
-        color={item.isCompleted ? COLORS.brandPrimary : COLORS.textSecondary}
+        color={item.isCompleted ? COLORS.brandPrimary : COLORS.green[500]}
       />
-? : null
+
       {/* Title */}
       <Text
         className={`flex-1 text-sm ${

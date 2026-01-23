@@ -120,6 +120,93 @@ export function initializeDatabase() {
       ON user_achievements(unlocked_at);
     `);
 
+    // Create snooze_logs table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS snooze_logs (
+        id TEXT PRIMARY KEY,
+        alarm_id TEXT NOT NULL,
+        triggered_at TEXT NOT NULL,
+        snoozed_at TEXT NOT NULL,
+        snooze_count INTEGER NOT NULL,
+        final_action TEXT NOT NULL,
+        date TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+    `);
+
+    // Create indexes for snooze_logs
+    expoDb.execSync(`
+      CREATE INDEX IF NOT EXISTS idx_snooze_logs_alarm_id 
+      ON snooze_logs(alarm_id);
+      
+      CREATE INDEX IF NOT EXISTS idx_snooze_logs_date 
+      ON snooze_logs(date);
+    `);
+
+    // Create goals table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS goals (
+        id TEXT PRIMARY KEY,
+        type TEXT NOT NULL,
+        target INTEGER NOT NULL,
+        current_value INTEGER NOT NULL DEFAULT 0,
+        start_date TEXT NOT NULL,
+        end_date TEXT NOT NULL,
+        is_completed INTEGER NOT NULL DEFAULT 0,
+        completed_at TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `);
+
+    // Create indexes for goals
+    expoDb.execSync(`
+      CREATE INDEX IF NOT EXISTS idx_goals_is_completed 
+      ON goals(is_completed);
+      
+      CREATE INDEX IF NOT EXISTS idx_goals_end_date 
+      ON goals(end_date);
+    `);
+
+    // Create routine_items table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS routine_items (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        "order" INTEGER NOT NULL,
+        is_enabled INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `);
+
+    // Create index for routine_items
+    expoDb.execSync(`
+      CREATE INDEX IF NOT EXISTS idx_routine_items_order 
+      ON routine_items("order");
+    `);
+
+    // Create routine_completions table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS routine_completions (
+        id TEXT PRIMARY KEY,
+        routine_item_id TEXT NOT NULL,
+        completed_at TEXT NOT NULL,
+        date TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+    `);
+
+    // Create indexes for routine_completions
+    expoDb.execSync(`
+      CREATE INDEX IF NOT EXISTS idx_routine_completions_item_id 
+      ON routine_completions(routine_item_id);
+      
+      CREATE INDEX IF NOT EXISTS idx_routine_completions_date 
+      ON routine_completions(date);
+    `);
+
     console.log('[Database] Tables initialized successfully');
   } catch (error) {
     console.error('[Database] Failed to initialize tables:', error);
