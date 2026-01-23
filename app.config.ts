@@ -66,6 +66,25 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     './plugins/withAlarmIOS.js',
     './plugins/withSoundAssets.js',
     [
+      'expo-build-properties',
+      {
+        android: {
+          enableProguardInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
+          packagingOptions: {
+            pickFirst: ['**/libc++_shared.so'],
+          },
+          extraProguardRules: '-dontwarn org.bouncycastle.jsse.**',
+          gradleProperties: {
+            'org.gradle.jvmargs':
+              '-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8',
+            'org.gradle.parallel': 'true',
+            'org.gradle.daemon': 'true',
+          },
+        },
+      },
+    ],
+    [
       'expo-splash-screen',
       {
         image: './assets/images/splash-icon.png',
