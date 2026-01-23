@@ -81,9 +81,9 @@ export function WeeklyHeatmap({ data }: WeeklyHeatmapProps) {
         <View className="flex-row items-center gap-2">
           <View className="h-4 w-4 rounded bg-slate-200 dark:bg-slate-800" />
           <Text className="text-xs text-slate-500 dark:text-gray-400">Low</Text>
-          <View className="h-4 w-4 rounded bg-green-500/30" />
-          <View className="h-4 w-4 rounded bg-green-500/60" />
-          <View className="h-4 w-4 rounded bg-green-500" />
+          <View className="h-4 w-4 rounded bg-blue-200 dark:bg-blue-900/30" />
+          <View className="h-4 w-4 rounded bg-blue-400 dark:bg-blue-600/70" />
+          <View className="h-4 w-4 rounded bg-blue-600 dark:bg-blue-400" />
           <Text className="text-xs text-slate-500 dark:text-gray-400">High</Text>
         </View>
       </View>
@@ -98,15 +98,15 @@ interface HeatmapCellProps {
 function HeatmapCell({ day }: HeatmapCellProps) {
   const getBackgroundColor = () => {
     if (day.isEmpty) {
-      return 'bg-slate-200 dark:bg-slate-800';
+      return 'bg-gray-200 dark:bg-white/10';
     }
 
-    // Score-based color intensity
-    if (day.score >= 90) return 'bg-green-500';
-    if (day.score >= 75) return 'bg-green-500/60';
-    if (day.score >= 60) return 'bg-green-500/30';
-    if (day.score >= 40) return 'bg-orange-500/40';
-    return 'bg-red-500/40';
+    // Score-based color intensity (blue theme like Cognitive Activation)
+    if (day.score >= 90) return 'bg-blue-600 dark:bg-blue-400';
+    if (day.score >= 75) return 'bg-blue-500 dark:bg-blue-500/90';
+    if (day.score >= 60) return 'bg-blue-400 dark:bg-blue-600/70';
+    if (day.score >= 40) return 'bg-blue-200 dark:bg-blue-700/50';
+    return 'bg-blue-100 dark:bg-blue-900/30';
   };
 
   const isToday = dayjs(day.date).isSame(dayjs(), 'day');

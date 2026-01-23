@@ -1,3 +1,22 @@
+// ### 2. **Cognitive Activation** - Removido temporariamente
+// - Código comentado com TODO explicativo
+// - Imports e hooks desabilitados
+// - **Próximas features a implementar:**
+//   - 📊 Performance por tipo de desafio (Math/Memory/Logic)
+//   - ⏰ Análise de horário de pico de performance
+//   - 📈 Insights de padrões semanais ("Você performa melhor às segundas")
+//   - 🔥 Análise e predição de streaks
+
+// ## 🎯 Próximos Passos para Cognitive Activation Premium:
+
+// Quando for reimplementar, crie um novo componente `advanced-performance-insights.tsx` com:
+
+// 1. **Dashboard por tipo de desafio** (qual você é melhor?)
+// 2. **Mapa de calor por hora do dia** (quando você está mais alerta?)
+// 3. **Padrões semanais** (dia da semana × performance)
+// 4. **Predições** baseadas em histórico
+// 5. **Recomendações personalizadas** ("Tente desafios de lógica pela manhã")
+
 import React, { useMemo } from 'react';
 
 import dayjs from 'dayjs';
