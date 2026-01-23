@@ -5,7 +5,6 @@ import { desc, gte } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { alarmCompletions } from '@/db/schema';
-import { calculateExecutionScore } from '@/utils/cognitive-score';
 
 export interface HeatmapDay {
   date: string; // YYYY-MM-DD
@@ -25,6 +24,8 @@ export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
       const now = dayjs();
       const startDate = now.subtract(27, 'day').startOf('day'); // Last 28 days
 
+      console.log('[WeeklyHeatmap] Generating heatmap from:', startDate.format('YYYY-MM-DD'));
+
       // Fetch all completions for the period
       const completions = await db
         .select()
@@ -32,20 +33,24 @@ export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
         .where(gte(alarmCompletions.date, startDate.format('YYYY-MM-DD')))
         .orderBy(desc(alarmCompletions.date));
 
+      console.log('[WeeklyHeatmap] Found completions:', completions.length);
+      if (completions.length > 0) {
+        console.log('[WeeklyHeatmap] Sample completion:', completions[0]);
+      }
+
       // Group by date and calculate daily execution score
       const dailyScores = new Map<string, number>();
 
-      completions.forEach((completion) => {
+      completions.forEach((completion, index) => {
         const date = dayjs(completion.date).format('YYYY-MM-DD');
 
         if (!dailyScores.has(date)) {
-          // Calculate execution score for this completion
-          const score = calculateExecutionScore({
-            cognitiveScore: completion.cognitiveScore,
-            reactionTime: completion.reactionTime,
-            targetTime: completion.targetTime,
-            actualTime: completion.actualTime,
-          });
+          // Use cognitive score directly as the daily score
+          const score = completion.cognitiveScore;
+
+          if (index === 0) {
+            console.log('[WeeklyHeatmap] First score:', score, 'for date:', date);
+          }
 
           dailyScores.set(date, score);
         }
@@ -65,6 +70,9 @@ export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
           isEmpty: score === undefined,
         });
       }
+
+      console.log('[WeeklyHeatmap] Daily scores calculated:', dailyScores.size);
+      console.log('[WeeklyHeatmap] Heatmap data generated:', heatmap.length, 'days');
 
       setHeatmapData(heatmap);
     };
