@@ -27,10 +27,10 @@ export function CircadianRhythmTracker({
   const shadowStyle = useShadowStyle('sm');
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return COLORS.success;
+    if (score >= 80) return COLORS.green[500];
     if (score >= 60) return COLORS.brandPrimary;
-    if (score >= 40) return COLORS.warning;
-    return COLORS.error;
+    if (score >= 40) return COLORS.orange[500];
+    return COLORS.red[500];
   };
 
   const getScoreLabel = (score: number) => {
@@ -53,7 +53,7 @@ export function CircadianRhythmTracker({
             {t('dashboard.circadian.title')}
           </Text>
         </View>
-        <MaterialSymbol name="wb_twilight" size={20} color={COLORS.textSecondary} />
+        <MaterialSymbol name="wb_twilight" size={20} color={COLORS.gray[500]} />
       </View>
 
       {/* Average Wake Time */}
@@ -127,7 +127,7 @@ export function CircadianRhythmTracker({
 
       {/* Info Footer */}
       <View className="flex-row items-center gap-2 border-t border-slate-200 pt-3 dark:border-slate-800">
-        <MaterialSymbol name="info" size={14} color={COLORS.textSecondary} />
+        <MaterialSymbol name="info" size={14} color={COLORS.gray[500]} />
         <Text className="flex-1 text-xs text-gray-500 dark:text-gray-400">
           {t('dashboard.circadian.basedOnCycles')}
         </Text>

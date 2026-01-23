@@ -116,7 +116,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'snooze',
     titleKey: 'widgets.snoozeAnalytics.title',
     descriptionKey: 'widgets.snoozeAnalytics.description',
-    defaultEnabled: false,
+    defaultEnabled: true,
   },
   {
     id: WidgetType.GOAL_PROGRESS,
@@ -132,7 +132,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'grid_on',
     titleKey: 'widgets.weeklyHeatmap.title',
     descriptionKey: 'widgets.weeklyHeatmap.description',
-    defaultEnabled: false,
+    defaultEnabled: true,
   },
   // Medium Priority Widgets
   {
@@ -141,7 +141,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'bedtime',
     titleKey: 'widgets.sleepQuality.title',
     descriptionKey: 'widgets.sleepQuality.description',
-    defaultEnabled: false,
+    defaultEnabled: true,
   },
   {
     id: WidgetType.CIRCADIAN_RHYTHM,
@@ -149,7 +149,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'routine',
     titleKey: 'widgets.circadianRhythm.title',
     descriptionKey: 'widgets.circadianRhythm.description',
-    defaultEnabled: false,
+    defaultEnabled: true,
   },
   {
     id: WidgetType.MORNING_ROUTINE,
@@ -157,6 +157,6 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'checklist',
     titleKey: 'widgets.morningRoutine.title',
     descriptionKey: 'widgets.morningRoutine.description',
-    defaultEnabled: false,
+    defaultEnabled: true,
   },
 ];

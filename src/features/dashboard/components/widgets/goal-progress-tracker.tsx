@@ -26,7 +26,7 @@ export function GoalProgressTracker({ goals }: GoalProgressTrackerProps) {
         className="flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-surface-dark"
         style={shadowStyle}
       >
-        <MaterialSymbol name="flag" size={48} color={COLORS.textSecondary} />
+        <MaterialSymbol name="flag" size={48} color={COLORS.gray[400]} />
         <Text className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
           {t('dashboard.goals.noActiveGoals')}
         </Text>
@@ -73,10 +73,10 @@ function GoalItem({ goal }: GoalItemProps) {
   const { t } = useTranslation();
 
   const getProgressColor = () => {
-    if (goal.progress >= 75) return COLORS.success;
+    if (goal.progress >= 75) return COLORS.green[500];
     if (goal.progress >= 50) return COLORS.brandPrimary;
-    if (goal.progress >= 25) return COLORS.warning;
-    return COLORS.error;
+    if (goal.progress >= 25) return COLORS.orange[500];
+    return COLORS.red[500];
   };
 
   return (
