@@ -46,5 +46,29 @@ export const widgetsPT = {
       title: 'Ambiente de Sono',
       description: 'Níveis de ruído e luz',
     },
+    snoozeAnalytics: {
+      title: 'Análise de Sonecas',
+      description: 'Rastreamento de comportamento de soneca',
+    },
+    goalProgress: {
+      title: 'Progresso de Metas',
+      description: 'Rastreamento de metas pessoais',
+    },
+    weeklyHeatmap: {
+      title: 'Mapa de Calor Semanal',
+      description: 'Grade de desempenho de 4 semanas',
+    },
+    sleepQuality: {
+      title: 'Qualidade do Sono',
+      description: 'Análise de impacto do sono',
+    },
+    circadianRhythm: {
+      title: 'Ritmo Circadiano',
+      description: 'Horário ideal de despertar',
+    },
+    morningRoutine: {
+      title: 'Rotina Matinal',
+      description: 'Lista de hábitos diários',
+    },
   },
 };

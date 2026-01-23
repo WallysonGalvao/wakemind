@@ -124,4 +124,78 @@ export const dashboardEN = {
     'Great momentum! {{days}} days strong. Keep building your habit.',
   'dashboard.dailyInsight.insights.keepItUp':
     'Outstanding performance! Your execution score is excellent.',
+
+  // Snooze Analytics
+  'dashboard.snooze.title': 'Snooze Analytics',
+  'dashboard.snooze.avgPerAlarm': 'Avg per alarm',
+  'dashboard.snooze.firstTouch': 'First touch',
+  'dashboard.snooze.totalSnoozes': 'Total snoozes',
+  'dashboard.snooze.timeLost': 'Time lost',
+  'dashboard.snooze.minutes': 'min',
+  'dashboard.snooze.status': 'Status',
+  'dashboard.snooze.excellent': 'Excellent',
+  'dashboard.snooze.good': 'Good',
+  'dashboard.snooze.fair': 'Fair',
+  'dashboard.snooze.needsWork': 'Needs work',
+
+  // Goal Progress
+  'dashboard.goals.title': 'Goal Progress',
+  'dashboard.goals.active': 'active',
+  'dashboard.goals.noActiveGoals': 'No active goals yet',
+  'dashboard.goals.setGoalHint': 'Set a goal to track your progress',
+  'dashboard.goals.streak': 'Streak Goal',
+  'dashboard.goals.executionScore': 'Execution Score Goal',
+  'dashboard.goals.latencyReduction': 'Latency Reduction',
+  'dashboard.goals.custom': 'Custom Goal',
+  'dashboard.goals.complete': 'complete',
+  'dashboard.goals.daysLeft': 'days left',
+  'dashboard.goals.overdue': 'Overdue',
+
+  // Weekly Heatmap
+  'dashboard.heatmap.title': 'Weekly Heatmap',
+  'dashboard.heatmap.last28Days': 'Last 28 days',
+  'dashboard.heatmap.legend': 'Performance',
+
+  // Sleep Quality
+  'dashboard.sleep.title': 'Sleep Quality',
+  'dashboard.sleep.qualityScore': 'Quality Score',
+  'dashboard.sleep.avgHours': 'Avg Hours',
+  'dashboard.sleep.perNight': 'per night',
+  'dashboard.sleep.correlation': 'Sleep-Performance Link',
+  'dashboard.sleep.strongPositive': 'Strong Positive',
+  'dashboard.sleep.moderate': 'Moderate',
+  'dashboard.sleep.weak': 'Weak',
+  'dashboard.sleep.negative': 'Negative',
+  'dashboard.sleep.excellent': 'Excellent',
+  'dashboard.sleep.good': 'Good',
+  'dashboard.sleep.fair': 'Fair',
+  'dashboard.sleep.poor': 'Poor',
+  'dashboard.sleep.needMoreData': 'Need more data to calculate sleep quality',
+  'dashboard.sleep.maintainSchedule': 'Great! Maintain your current sleep schedule',
+  'dashboard.sleep.increaseHours': 'Try sleeping 7-9 hours for better performance',
+  'dashboard.sleep.reduceSleepTime': 'Consider reducing sleep time slightly',
+  'dashboard.sleep.improveQuality': 'Focus on sleep quality over quantity',
+
+  // Circadian Rhythm
+  'dashboard.circadian.title': 'Circadian Rhythm',
+  'dashboard.circadian.avgWakeTime': 'Avg Wake Time',
+  'dashboard.circadian.alignment': 'Alignment',
+  'dashboard.circadian.consistency': 'Consistency',
+  'dashboard.circadian.optimalWindow': 'Optimal Window',
+  'dashboard.circadian.basedOnCycles': 'Based on 90-min sleep cycles',
+  'dashboard.circadian.excellent': 'Excellent',
+  'dashboard.circadian.good': 'Good',
+  'dashboard.circadian.fair': 'Fair',
+  'dashboard.circadian.poor': 'Poor',
+  'dashboard.circadian.needMoreData': 'Need more data to analyze your rhythm',
+  'dashboard.circadian.maintainSchedule': 'Perfect! Your rhythm is well aligned',
+  'dashboard.circadian.wakeEarlier': 'Try waking 15 minutes earlier',
+  'dashboard.circadian.wakeLater': 'Try waking 15 minutes later',
+  'dashboard.circadian.improveConsistency': 'Focus on waking at the same time daily',
+
+  // Morning Routine
+  'dashboard.routine.title': 'Morning Routine',
+  'dashboard.routine.complete': 'complete',
+  'dashboard.routine.weeklyAvg': 'Weekly avg',
+  'dashboard.routine.streak': 'Streak',
 };

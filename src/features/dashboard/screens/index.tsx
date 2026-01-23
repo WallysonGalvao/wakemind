@@ -8,11 +8,17 @@ import { ScrollView, View } from 'react-native';
 
 import { AddWidget } from '../components/add-widget';
 import { useAvgLatency } from '../hooks/use-avg-latency';
+import { useCircadianRhythm } from '../hooks/use-circadian-rhythm';
 import { useCognitiveActivation } from '../hooks/use-cognitive-activation';
 import { useCurrentStreak } from '../hooks/use-current-streak';
 import { useDailyInsight } from '../hooks/use-daily-insight';
 import { useExecutionScore } from '../hooks/use-execution-score';
+import { useGoalProgress } from '../hooks/use-goal-progress';
+import { useMorningRoutine } from '../hooks/use-morning-routine';
+import { useSleepQuality } from '../hooks/use-sleep-quality';
+import { useSnoozeAnalytics } from '../hooks/use-snooze-analytics';
 import { useWakeConsistency } from '../hooks/use-wake-consistency';
+import { useWeeklyHeatmap } from '../hooks/use-weekly-heatmap';
 
 import type { IconButton } from '@/components/header';
 import { Header } from '@/components/header';
@@ -20,11 +26,17 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { SegmentedControl } from '@/components/segmented-control';
 import { Achievements } from '@/features/dashboard/components/widgets/achievements';
 import { AvgLatency } from '@/features/dashboard/components/widgets/avg-latency';
+import { CircadianRhythmTracker } from '@/features/dashboard/components/widgets/circadian-rhythm-tracker';
 import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
 import { CurrentStreak } from '@/features/dashboard/components/widgets/current-streak';
 import { DailyExecutionScore } from '@/features/dashboard/components/widgets/daily-execution-score';
 import { DailyInsight } from '@/features/dashboard/components/widgets/daily-insight';
+import { GoalProgressTracker } from '@/features/dashboard/components/widgets/goal-progress-tracker';
+import { MorningRoutineChecklist } from '@/features/dashboard/components/widgets/morning-routine-checklist';
+import { SleepQualityScore } from '@/features/dashboard/components/widgets/sleep-quality-score';
+import { SnoozeAnalytics } from '@/features/dashboard/components/widgets/snooze-analytics';
 import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
+import { WeeklyHeatmap } from '@/features/dashboard/components/widgets/weekly-heatmap';
 import type { PeriodType } from '@/features/dashboard/types';
 import { FeatureGate } from '@/features/subscription/components/feature-gate';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
@@ -69,6 +81,14 @@ export default function DashboardScreen() {
     executionScore: executionData.score,
     streak: currentStreak,
   });
+
+  // Get new widgets data
+  const snoozeAnalytics = useSnoozeAnalytics(selectedPeriod, refreshKey);
+  const goalProgress = useGoalProgress(refreshKey);
+  const weeklyHeatmap = useWeeklyHeatmap(refreshKey);
+  const sleepQuality = useSleepQuality(selectedPeriod, refreshKey);
+  const circadianRhythm = useCircadianRhythm(refreshKey);
+  const morningRoutine = useMorningRoutine(refreshKey);
 
   const rightIcons = useMemo(() => {
     return [
@@ -162,6 +182,58 @@ export default function DashboardScreen() {
 
         {/* Achievements */}
         {enabledWidgets.has(WidgetType.ACHIEVEMENTS) && <Achievements />}
+
+        {/* Snooze Analytics - High Priority */}
+        {enabledWidgets.has(WidgetType.SNOOZE_ANALYTICS) && (
+          <SnoozeAnalytics
+            avgSnoozeCount={snoozeAnalytics.avgSnoozeCount}
+            totalSnoozes={snoozeAnalytics.totalSnoozes}
+            totalTimeLostMinutes={snoozeAnalytics.totalTimeLostMinutes}
+            firstTouchRate={snoozeAnalytics.firstTouchRate}
+            trendDirection={snoozeAnalytics.trendDirection}
+            period={selectedPeriod}
+          />
+        )}
+
+        {/* Goal Progress Tracker - High Priority */}
+        {enabledWidgets.has(WidgetType.GOAL_PROGRESS) && (
+          <GoalProgressTracker goals={goalProgress} />
+        )}
+
+        {/* Weekly Heatmap - High Priority */}
+        {enabledWidgets.has(WidgetType.WEEKLY_HEATMAP) && <WeeklyHeatmap data={weeklyHeatmap} />}
+
+        {/* Sleep Quality Score - Medium Priority */}
+        {enabledWidgets.has(WidgetType.SLEEP_QUALITY) && (
+          <SleepQualityScore
+            avgSleepHours={sleepQuality.avgSleepHours}
+            qualityScore={sleepQuality.qualityScore}
+            correlation={sleepQuality.correlation}
+            recommendation={sleepQuality.recommendation}
+            trendDirection={sleepQuality.trendDirection}
+            period={selectedPeriod}
+          />
+        )}
+
+        {/* Circadian Rhythm Tracker - Medium Priority */}
+        {enabledWidgets.has(WidgetType.CIRCADIAN_RHYTHM) && (
+          <CircadianRhythmTracker
+            avgWakeTime={circadianRhythm.avgWakeTime}
+            alignmentScore={circadianRhythm.alignmentScore}
+            suggestion={circadianRhythm.suggestion}
+            optimalWakeWindow={circadianRhythm.optimalWakeWindow}
+            consistencyScore={circadianRhythm.consistencyScore}
+          />
+        )}
+
+        {/* Morning Routine Checklist - Medium Priority */}
+        {enabledWidgets.has(WidgetType.MORNING_ROUTINE) && (
+          <MorningRoutineChecklist
+            items={morningRoutine.items}
+            stats={morningRoutine.stats}
+            onRefresh={() => setRefreshKey((prev) => prev + 1)}
+          />
+        )}
 
         <AddWidget />
       </ScrollView>
