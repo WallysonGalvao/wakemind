@@ -93,6 +93,21 @@ export default {
   'featureGate.streakFreeze': 'Desbloquear Congelamiento de Racha',
   'featureGate.cloudBackup': 'Desbloquear Respaldo en la Nube',
 
+  // Streak Freeze
+  'streakFreeze.title': 'Congelamiento de Racha',
+  'streakFreeze.tokensAvailable': '{{count}} tokens disponibles',
+  'streakFreeze.proRequired.title': 'Función Pro',
+  'streakFreeze.proRequired.message':
+    'El Congelamiento de Racha está disponible para usuarios Pro. ¡Obtén 3 tokens de congelamiento por mes!',
+  'streakFreeze.noTokens.title': 'Sin Tokens Disponibles',
+  'streakFreeze.noTokens.message':
+    'Has usado todos tus tokens de congelamiento este mes. Los tokens se reinician al inicio de cada mes.',
+  'streakFreeze.confirm.title': '¿Usar Congelamiento de Racha?',
+  'streakFreeze.confirm.message': 'Esto protegerá tu racha actual si fallas mañana. ¿Estás seguro?',
+  'streakFreeze.confirm.use': 'Usar Token',
+  'streakFreeze.success.title': '¡Racha Protegida!',
+  'streakFreeze.success.message': 'Tu racha está ahora protegida para mañana.',
+
   // Settings - Subscription
   'settings.subscription.title': 'Suscripción',
   'settings.subscription.status': 'Estado',

@@ -86,6 +86,22 @@ export default {
   'featureGate.streakFreeze': 'Unlock Streak Freeze',
   'featureGate.cloudBackup': 'Unlock Cloud Backup',
 
+  // Streak Freeze
+  'streakFreeze.title': 'Streak Freeze',
+  'streakFreeze.tokensAvailable': '{{count}} tokens available',
+  'streakFreeze.proRequired.title': 'Pro Feature',
+  'streakFreeze.proRequired.message':
+    'Streak Freeze is available for Pro users. Get 3 freeze tokens per month!',
+  'streakFreeze.noTokens.title': 'No Tokens Available',
+  'streakFreeze.noTokens.message':
+    'You have used all your freeze tokens this month. Tokens reset at the start of each month.',
+  'streakFreeze.confirm.title': 'Use Streak Freeze?',
+  'streakFreeze.confirm.message':
+    'This will protect your current streak if you miss tomorrow. Are you sure?',
+  'streakFreeze.confirm.use': 'Use Token',
+  'streakFreeze.success.title': 'Streak Protected!',
+  'streakFreeze.success.message': 'Your streak is now protected for tomorrow.',
+
   // Settings - Subscription
   'settings.subscription.title': 'Subscription',
   'settings.subscription.status': 'Status',
