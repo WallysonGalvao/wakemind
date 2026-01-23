@@ -9,11 +9,10 @@ import { ScrollView, View } from 'react-native';
 import { AddWidget } from '../components/add-widget';
 import { useAvgLatency } from '../hooks/use-avg-latency';
 import { useCircadianRhythm } from '../hooks/use-circadian-rhythm';
-import { useCognitiveActivation } from '../hooks/use-cognitive-activation';
+// import { useCognitiveActivation } from '../hooks/use-cognitive-activation';
 import { useCurrentStreak } from '../hooks/use-current-streak';
 import { useDailyInsight } from '../hooks/use-daily-insight';
 import { useExecutionScore } from '../hooks/use-execution-score';
-import { useGoalProgress } from '../hooks/use-goal-progress';
 import { useMorningRoutine } from '../hooks/use-morning-routine';
 import { useSleepQuality } from '../hooks/use-sleep-quality';
 import { useSnoozeAnalytics } from '../hooks/use-snooze-analytics';
@@ -27,11 +26,10 @@ import { SegmentedControl } from '@/components/segmented-control';
 import { Achievements } from '@/features/dashboard/components/widgets/achievements';
 import { AvgLatency } from '@/features/dashboard/components/widgets/avg-latency';
 import { CircadianRhythmTracker } from '@/features/dashboard/components/widgets/circadian-rhythm-tracker';
-import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
+// import { CognitiveActivation } from '@/features/dashboard/components/widgets/cognitive-activation';
 import { CurrentStreak } from '@/features/dashboard/components/widgets/current-streak';
 import { DailyExecutionScore } from '@/features/dashboard/components/widgets/daily-execution-score';
 import { DailyInsight } from '@/features/dashboard/components/widgets/daily-insight';
-import { GoalProgressTracker } from '@/features/dashboard/components/widgets/goal-progress-tracker';
 import { MorningRoutineChecklist } from '@/features/dashboard/components/widgets/morning-routine-checklist';
 import { SleepQualityScore } from '@/features/dashboard/components/widgets/sleep-quality-score';
 import { SnoozeAnalytics } from '@/features/dashboard/components/widgets/snooze-analytics';
@@ -69,7 +67,7 @@ export default function DashboardScreen() {
   const wakeConsistencyData = useWakeConsistency(selectedPeriod, refreshKey);
 
   // Get cognitive activation data for current month
-  const cognitiveActivationData = useCognitiveActivation(refreshKey);
+  // const cognitiveActivationData = useCognitiveActivation(refreshKey);
 
   // Get current streak and latency data
   const currentStreak = useCurrentStreak(refreshKey);
@@ -84,7 +82,7 @@ export default function DashboardScreen() {
 
   // Get new widgets data
   const snoozeAnalytics = useSnoozeAnalytics(selectedPeriod, refreshKey);
-  const goalProgress = useGoalProgress(refreshKey);
+  // const goalProgress = useGoalProgress(refreshKey);
   const weeklyHeatmap = useWeeklyHeatmap(refreshKey);
   const sleepQuality = useSleepQuality(selectedPeriod, refreshKey);
   const circadianRhythm = useCircadianRhythm(refreshKey);
@@ -158,11 +156,17 @@ export default function DashboardScreen() {
         )}
 
         {/* Cognitive Activation - Premium Feature */}
-        {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
+        {/* TODO: Re-implement with unique features:
+            - Performance by challenge type (Math vs Memory vs Logic)
+            - Peak performance hours analysis
+            - Weekly pattern insights (e.g., "You perform better on Mondays")
+            - Streak analysis and predictions
+        */}
+        {/* {enabledWidgets.has(WidgetType.COGNITIVE_MAP) && (
           <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
             <CognitiveActivation data={cognitiveActivationData} />
           </FeatureGate>
-        )}
+        )} */}
 
         {/* Achievements */}
         {enabledWidgets.has(WidgetType.ACHIEVEMENTS) && <Achievements />}
@@ -180,34 +184,39 @@ export default function DashboardScreen() {
         )}
 
         {/* Goal Progress Tracker - High Priority */}
+        {/* TODO: Implement goal creation and management UI
         {enabledWidgets.has(WidgetType.GOAL_PROGRESS) && (
           <GoalProgressTracker goals={goalProgress} />
-        )}
+        )} */}
 
         {/* Weekly Heatmap - High Priority */}
         {enabledWidgets.has(WidgetType.WEEKLY_HEATMAP) && <WeeklyHeatmap data={weeklyHeatmap} />}
 
-        {/* Sleep Quality Score - Medium Priority */}
+        {/* Sleep Quality Score - Premium */}
         {enabledWidgets.has(WidgetType.SLEEP_QUALITY) && (
-          <SleepQualityScore
-            avgSleepHours={sleepQuality.avgSleepHours}
-            qualityScore={sleepQuality.qualityScore}
-            correlation={sleepQuality.correlation}
-            recommendation={sleepQuality.recommendation}
-            trendDirection={sleepQuality.trendDirection}
-            period={selectedPeriod}
-          />
+          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+            <SleepQualityScore
+              avgSleepHours={sleepQuality.avgSleepHours}
+              qualityScore={sleepQuality.qualityScore}
+              correlation={sleepQuality.correlation}
+              recommendation={sleepQuality.recommendation}
+              trendDirection={sleepQuality.trendDirection}
+              period={selectedPeriod}
+            />
+          </FeatureGate>
         )}
 
-        {/* Circadian Rhythm Tracker - Medium Priority */}
+        {/* Circadian Rhythm Tracker - Premium */}
         {enabledWidgets.has(WidgetType.CIRCADIAN_RHYTHM) && (
-          <CircadianRhythmTracker
-            avgWakeTime={circadianRhythm.avgWakeTime}
-            alignmentScore={circadianRhythm.alignmentScore}
-            suggestion={circadianRhythm.suggestion}
-            optimalWakeWindow={circadianRhythm.optimalWakeWindow}
-            consistencyScore={circadianRhythm.consistencyScore}
-          />
+          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+            <CircadianRhythmTracker
+              avgWakeTime={circadianRhythm.avgWakeTime}
+              alignmentScore={circadianRhythm.alignmentScore}
+              suggestion={circadianRhythm.suggestion}
+              optimalWakeWindow={circadianRhythm.optimalWakeWindow}
+              consistencyScore={circadianRhythm.consistencyScore}
+            />
+          </FeatureGate>
         )}
 
         {/* Morning Routine Checklist - Medium Priority */}

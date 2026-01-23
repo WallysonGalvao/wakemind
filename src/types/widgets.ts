@@ -68,14 +68,14 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     defaultEnabled: false,
   },
   // Insights
-  {
-    id: WidgetType.COGNITIVE_MAP,
-    category: WidgetCategory.INSIGHTS,
-    icon: 'psychology',
-    titleKey: 'widgets.cognitiveMap.title',
-    descriptionKey: 'widgets.cognitiveMap.description',
-    defaultEnabled: true,
-  },
+  // {
+  //   id: WidgetType.COGNITIVE_MAP,
+  //   category: WidgetCategory.INSIGHTS,
+  //   icon: 'psychology',
+  //   titleKey: 'widgets.cognitiveMap.title',
+  //   descriptionKey: 'widgets.cognitiveMap.description',
+  //   defaultEnabled: true,
+  // },
   {
     id: WidgetType.DAILY_INSIGHT,
     category: WidgetCategory.INSIGHTS,
@@ -118,14 +118,14 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     descriptionKey: 'widgets.snoozeAnalytics.description',
     defaultEnabled: true,
   },
-  {
-    id: WidgetType.GOAL_PROGRESS,
-    category: WidgetCategory.INSIGHTS,
-    icon: 'flag',
-    titleKey: 'widgets.goalProgress.title',
-    descriptionKey: 'widgets.goalProgress.description',
-    defaultEnabled: true,
-  },
+  // {
+  //   id: WidgetType.GOAL_PROGRESS,
+  //   category: WidgetCategory.INSIGHTS,
+  //   icon: 'flag',
+  //   titleKey: 'widgets.goalProgress.title',
+  //   descriptionKey: 'widgets.goalProgress.description',
+  //   defaultEnabled: false,
+  // },
   {
     id: WidgetType.WEEKLY_HEATMAP,
     category: WidgetCategory.ACTIVE_PERFORMANCE,
@@ -151,12 +151,12 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     descriptionKey: 'widgets.circadianRhythm.description',
     defaultEnabled: true,
   },
-  {
-    id: WidgetType.MORNING_ROUTINE,
-    category: WidgetCategory.ACTIVE_PERFORMANCE,
-    icon: 'checklist',
-    titleKey: 'widgets.morningRoutine.title',
-    descriptionKey: 'widgets.morningRoutine.description',
-    defaultEnabled: true,
-  },
+  // {
+  //   id: WidgetType.MORNING_ROUTINE,
+  //   category: WidgetCategory.ACTIVE_PERFORMANCE,
+  //   icon: 'checklist',
+  //   titleKey: 'widgets.morningRoutine.title',
+  //   descriptionKey: 'widgets.morningRoutine.description',
+  //   defaultEnabled: true,
+  // },
 ];
