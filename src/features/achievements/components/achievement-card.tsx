@@ -15,7 +15,7 @@ import type {
   AchievementState,
   AchievementTier,
 } from '../types/achievement.types';
-import { AchievementIcon3D } from './achievement-icon-3d';
+import { AchievementIconSkia } from './achievement-icon-skia';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -172,13 +172,15 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
 
         {/* Icon Area */}
         <View className={`flex h-28 items-center justify-center p-4 ${colors.iconBg}`}>
-          {def.use3DIcon ? (
-            <AchievementIcon3D
-              iconName={def.icon}
-              tier={def.tier as AchievementTier}
-              isUnlocked={isUnlocked}
-              size={64}
-            />
+          {def.useSkiaIcon ? (
+            <View className="h-16 w-16">
+              <AchievementIconSkia
+                iconName={def.icon}
+                tier={def.tier as AchievementTier}
+                isUnlocked={isUnlocked}
+                size={64}
+              />
+            </View>
           ) : (
             <View
               className={`flex h-12 w-12 items-center justify-center rounded-full ${isPlatinum && isUnlocked ? 'border border-blue-500/20 bg-gradient-to-tr from-white to-blue-500/20' : colors.iconBg}`}
