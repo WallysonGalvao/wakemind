@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, View } from 'react-native';
 
 import { FeatureRow, ProBadge } from '../components/paywall-features';
-import { PaywallFooter } from '../components/paywall-footer';
 import { usePaywallHeader } from '../components/paywall-header';
 import { MonthlyPricingCard, YearlyPricingCard } from '../components/paywall-pricing-cards';
 import { PRO_FEATURES } from '../constants/pro-features';
@@ -39,6 +39,13 @@ export default function PaywallScreen() {
 
   // Track paywall view time for analytics
   const [viewStartTime] = useState(Date.now());
+
+  // Features carousel state
+  const [currentFeaturePage, setCurrentFeaturePage] = useState(0);
+  const featureScrollRef = useRef<ScrollView>(null);
+  const screenWidth = Dimensions.get('window').width - 48; // minus horizontal padding
+  const FEATURES_PER_PAGE = 3;
+  const totalPages = Math.ceil(PRO_FEATURES.length / FEATURES_PER_PAGE);
 
   // Set initial selected plan based on mode
   const getInitialPlan = (): PlanType => {
@@ -110,6 +117,13 @@ export default function PaywallScreen() {
     return t('paywall.hero.subtitle');
   };
 
+  // Handle feature scroll
+  const handleFeatureScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const page = Math.round(offsetX / screenWidth);
+    setCurrentFeaturePage(page);
+  };
+
   return (
     <View
       className="flex-1 bg-background-light dark:bg-background-dark"
@@ -131,16 +145,47 @@ export default function PaywallScreen() {
           </Text>
         </View>
 
-        {/* Features Section - Only show in full mode */}
+        {/* Features Section - Horizontal Carousel */}
         {mode === 'full' ? (
-          <View className="py-6">
-            <View className="gap-4">
-              {PRO_FEATURES.map((feature) => (
-                <FeatureRow
-                  key={feature.titleKey}
-                  icon={feature.icon}
-                  title={t(feature.titleKey)}
-                  description={t(feature.descriptionKey)}
+          <View className="py-4">
+            <ScrollView
+              ref={featureScrollRef}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onScroll={handleFeatureScroll}
+              scrollEventThrottle={16}
+              decelerationRate="fast"
+              snapToInterval={screenWidth}
+              snapToAlignment="center"
+            >
+              {Array.from({ length: totalPages }).map((_, pageIndex) => (
+                <View key={pageIndex} style={{ width: screenWidth }} className="gap-4">
+                  {PRO_FEATURES.slice(
+                    pageIndex * FEATURES_PER_PAGE,
+                    (pageIndex + 1) * FEATURES_PER_PAGE
+                  ).map((feature) => (
+                    <FeatureRow
+                      key={feature.titleKey}
+                      icon={feature.icon}
+                      title={t(feature.titleKey)}
+                      description={t(feature.descriptionKey)}
+                    />
+                  ))}
+                </View>
+              ))}
+            </ScrollView>
+
+            {/* Dots Indicator */}
+            <View className="mt-4 flex-row items-center justify-center gap-2">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <View
+                  key={index}
+                  className={`h-2 rounded-full transition-all ${
+                    index === currentFeaturePage
+                      ? 'w-6 bg-primary-500'
+                      : 'w-2 bg-gray-300 dark:bg-gray-600'
+                  }`}
                 />
               ))}
             </View>
@@ -218,7 +263,7 @@ export default function PaywallScreen() {
         ) : null}
 
         {/* Footer */}
-        <PaywallFooter />
+        {/* <PaywallFooter /> */}
       </View>
     </View>
   );

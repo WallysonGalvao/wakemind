@@ -9,6 +9,9 @@ export default {
   'paywall.features.title': "What's Included",
   'paywall.features.unlimitedAlarms.title': 'Unlimited Alarms',
   'paywall.features.unlimitedAlarms.description': 'Create as many alarms as you need, no limits',
+  'paywall.features.hardDifficulty.title': 'Hard Difficulty',
+  'paywall.features.hardDifficulty.description':
+    'Challenge yourself with the hardest wake-up puzzles',
   'paywall.features.allDifficulties.title': 'All Difficulty Levels',
   'paywall.features.allDifficulties.description':
     'Access Easy, Medium, and Hard modes for progressive challenges',
@@ -16,12 +19,22 @@ export default {
   'paywall.features.advancedStats.description': 'Detailed analytics with unlimited history',
   'paywall.features.premiumChallenges.title': 'Premium Challenges',
   'paywall.features.premiumChallenges.description': 'Access to all types of mental challenges',
+  'paywall.features.adaptiveDifficulty.title': 'Adaptive AI',
+  'paywall.features.adaptiveDifficulty.description':
+    'Smart difficulty that adapts to your performance',
+  'paywall.features.achievements.title': 'Achievements & Rewards',
+  'paywall.features.achievements.description': 'Unlock exclusive badges and track your progress',
+  'paywall.features.themes.title': 'Custom Themes',
+  'paywall.features.themes.description': 'Personalize your app with exclusive themes',
   'paywall.features.customThemes.title': 'Custom Themes',
   'paywall.features.customThemes.description': 'Personalize your app with exclusive themes',
   'paywall.features.premiumSounds.title': 'Premium Alarm Sounds',
   'paywall.features.premiumSounds.description': 'Unlock exclusive high-quality alarm tones',
   'paywall.features.cloudBackup.title': 'Cloud Backup',
   'paywall.features.cloudBackup.description': 'Sync your data across devices securely',
+  'paywall.features.customNotifications.title': 'Custom Notifications',
+  'paywall.features.customNotifications.description':
+    'Personalize alerts with unique styles and sounds',
   'paywall.features.prioritySupport.title': 'Priority Support',
   'paywall.features.prioritySupport.description': 'Get faster responses from our support team',
 
