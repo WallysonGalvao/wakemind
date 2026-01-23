@@ -10,7 +10,12 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import { getAchievementReward } from '../constants/achievement-rewards';
-import type { AchievementDefinition, AchievementState } from '../types/achievement.types';
+import type {
+  AchievementDefinition,
+  AchievementState,
+  AchievementTier,
+} from '../types/achievement.types';
+import { AchievementIcon3D } from './achievement-icon-3d';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
@@ -167,15 +172,24 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
 
         {/* Icon Area */}
         <View className={`flex h-28 items-center justify-center p-4 ${colors.iconBg}`}>
-          <View
-            className={`flex h-12 w-12 items-center justify-center rounded-full ${isPlatinum && isUnlocked ? 'border border-blue-500/20 bg-gradient-to-tr from-white to-blue-500/20' : colors.iconBg}`}
-          >
-            <MaterialSymbol
-              name={def.icon}
-              size={32}
-              color={isLocked ? '#94A3B8' : colors.iconColor}
+          {def.use3DIcon ? (
+            <AchievementIcon3D
+              iconName={def.icon}
+              tier={def.tier as AchievementTier}
+              isUnlocked={isUnlocked}
+              size={64}
             />
-          </View>
+          ) : (
+            <View
+              className={`flex h-12 w-12 items-center justify-center rounded-full ${isPlatinum && isUnlocked ? 'border border-blue-500/20 bg-gradient-to-tr from-white to-blue-500/20' : colors.iconBg}`}
+            >
+              <MaterialSymbol
+                name={def.icon}
+                size={32}
+                color={isLocked ? '#94A3B8' : colors.iconColor}
+              />
+            </View>
+          )}
         </View>
 
         {/* Content Area */}
