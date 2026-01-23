@@ -29,6 +29,12 @@ export default {
   'paywall.features.premiumSounds.title': 'Sonidos Premium',
   'paywall.features.premiumSounds.description':
     'Desbloquea tonos de alarma exclusivos de alta calidad',
+  'paywall.features.premiumAchievements.title': 'Logros Premium',
+  'paywall.features.premiumAchievements.description':
+    'Desbloquea logros exclusivos de nivel Oro y Platino',
+  'paywall.features.streakFreeze.title': 'Congelamiento de Racha',
+  'paywall.features.streakFreeze.description':
+    'Protege tu racha con hasta 3 tokens de congelamiento',
   'paywall.features.cloudBackup.title': 'Respaldo en la Nube',
   'paywall.features.cloudBackup.description':
     'Sincroniza tus datos entre dispositivos de forma segura',

@@ -35,4 +35,14 @@ export const PRO_FEATURES: ProFeature[] = [
     titleKey: 'paywall.features.premiumSounds.title',
     descriptionKey: 'paywall.features.premiumSounds.description',
   },
+  {
+    icon: 'emoji_events',
+    titleKey: 'paywall.features.premiumAchievements.title',
+    descriptionKey: 'paywall.features.premiumAchievements.description',
+  },
+  {
+    icon: 'ac_unit',
+    titleKey: 'paywall.features.streakFreeze.title',
+    descriptionKey: 'paywall.features.streakFreeze.description',
+  },
 ];
