@@ -90,6 +90,11 @@ export default function AchievementsScreen() {
       100
     : 100;
 
+  // Calculate unlocked achievements in current tier
+  const unlockedInCurrentTier = achievements.filter(
+    (a) => a.isUnlocked && a.achievement.tier === currentTier
+  ).length;
+
   const leftIcons = useMemo(
     () => [
       {
@@ -177,6 +182,7 @@ export default function AchievementsScreen() {
           nextTier={nextTier}
           progressPercentage={progressPercentage}
           mpToUpgrade={mpToUpgrade}
+          unlockedInCurrentTier={unlockedInCurrentTier}
         />
 
         <FlatList
