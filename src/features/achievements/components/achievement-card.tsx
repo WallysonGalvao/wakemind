@@ -170,6 +170,14 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
           </Text>
         </View>
 
+        {/* Premium Badge - Only show if locked and premium */}
+        {isLocked && def.isPremium ? (
+          <View className="absolute left-3 top-3 z-10 flex-row items-center gap-1 rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-1">
+            <MaterialSymbol name="workspace_premium" size={12} color="#3B82F6" />
+            <Text className="text-[9px] font-bold uppercase text-blue-500">PRO</Text>
+          </View>
+        ) : null}
+
         {/* Icon Area */}
         <View className={`flex h-28 items-center justify-center p-4 ${colors.iconBg}`}>
           {def.useSkiaIcon ? (

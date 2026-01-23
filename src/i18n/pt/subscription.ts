@@ -29,6 +29,12 @@ export default {
   'paywall.features.premiumSounds.title': 'Sons Premium',
   'paywall.features.premiumSounds.description':
     'Desbloqueie tons de alarme exclusivos de alta qualidade',
+  'paywall.features.premiumAchievements.title': 'Conquistas Premium',
+  'paywall.features.premiumAchievements.description':
+    'Desbloqueie conquistas exclusivas de nível Ouro e Platina',
+  'paywall.features.streakFreeze.title': 'Congelamento de Sequência',
+  'paywall.features.streakFreeze.description':
+    'Proteja sua sequência com até 3 tokens de congelamento',
   'paywall.features.cloudBackup.title': 'Backup na Nuvem',
   'paywall.features.cloudBackup.description':
     'Sincronize seus dados entre dispositivos com segurança',

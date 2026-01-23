@@ -111,11 +111,11 @@ export default function PaywallScreen() {
     return t('paywall.hero.title');
   };
 
-  const getSubtitle = () => {
-    if (mode === 'yearly-only') return t('paywall.upgrade.yearlySubtitle');
-    if (mode === 'monthly-only') return t('paywall.upgrade.monthlySubtitle');
-    return t('paywall.hero.subtitle');
-  };
+  // const getSubtitle = () => {
+  //   if (mode === 'yearly-only') return t('paywall.upgrade.yearlySubtitle');
+  //   if (mode === 'monthly-only') return t('paywall.upgrade.monthlySubtitle');
+  //   return t('paywall.hero.subtitle');
+  // };
 
   // Handle feature scroll
   const handleFeatureScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -130,67 +130,66 @@ export default function PaywallScreen() {
       style={{ paddingBottom: insets.bottom }}
     >
       <ScrollView
-        className="flex-1 px-6"
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-5"
       >
         {/* Title Section */}
-        <View className="pb-2 pt-4">
+        <View className="px-6 pb-2 pt-4">
           <ProBadge />
           <Text className="mb-4 text-[2.5rem] font-bold leading-[1.1] tracking-tight text-gray-900 dark:text-white">
             {getTitle()}
           </Text>
-          <Text className="max-w-[300px] text-base font-normal leading-relaxed text-gray-500 dark:text-gray-400">
+          {/* <Text className="max-w-[300px] text-base font-normal leading-relaxed text-gray-500 dark:text-gray-400">
             {getSubtitle()}
-          </Text>
+          </Text> */}
         </View>
 
         {/* Features Section - Horizontal Carousel */}
-        {mode === 'full' ? (
-          <View className="py-4">
-            <ScrollView
-              ref={featureScrollRef}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              onScroll={handleFeatureScroll}
-              scrollEventThrottle={16}
-              decelerationRate="fast"
-              snapToInterval={screenWidth}
-              snapToAlignment="center"
-            >
-              {Array.from({ length: totalPages }).map((_, pageIndex) => (
-                <View key={pageIndex} style={{ width: screenWidth }} className="gap-4">
-                  {PRO_FEATURES.slice(
-                    pageIndex * FEATURES_PER_PAGE,
-                    (pageIndex + 1) * FEATURES_PER_PAGE
-                  ).map((feature) => (
-                    <FeatureRow
-                      key={feature.titleKey}
-                      icon={feature.icon}
-                      title={t(feature.titleKey)}
-                      description={t(feature.descriptionKey)}
-                    />
-                  ))}
-                </View>
-              ))}
-            </ScrollView>
+        <View>
+          <ScrollView
+            ref={featureScrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleFeatureScroll}
+            scrollEventThrottle={16}
+            decelerationRate="fast"
+            snapToInterval={screenWidth}
+            snapToAlignment="center"
+            contentContainerClassName="px-6"
+          >
+            {Array.from({ length: totalPages }).map((_, pageIndex) => (
+              <View key={pageIndex} style={{ width: screenWidth }} className="gap-2">
+                {PRO_FEATURES.slice(
+                  pageIndex * FEATURES_PER_PAGE,
+                  (pageIndex + 1) * FEATURES_PER_PAGE
+                ).map((feature) => (
+                  <FeatureRow
+                    key={feature.titleKey}
+                    icon={feature.icon}
+                    title={t(feature.titleKey)}
+                    description={t(feature.descriptionKey)}
+                  />
+                ))}
+              </View>
+            ))}
+          </ScrollView>
 
-            {/* Dots Indicator */}
-            <View className="mt-4 flex-row items-center justify-center gap-2">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <View
-                  key={index}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentFeaturePage
-                      ? 'w-6 bg-primary-500'
-                      : 'w-2 bg-gray-300 dark:bg-gray-600'
-                  }`}
-                />
-              ))}
-            </View>
+          {/* Dots Indicator */}
+          <View className="mt-4 flex-row items-center justify-center gap-2">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <View
+                key={index}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentFeaturePage
+                    ? 'w-6 bg-primary-500'
+                    : 'w-2 bg-gray-300 dark:bg-gray-600'
+                }`}
+              />
+            ))}
           </View>
-        ) : null}
+        </View>
       </ScrollView>
 
       {/* Pricing Section - Fixed at bottom */}

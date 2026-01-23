@@ -87,6 +87,7 @@ export async function getAllAchievementsWithStatus(): Promise<AchievementState[]
         tier: achievement.tier,
         icon: achievement.icon,
         isSecret: achievement.isSecret,
+        isPremium: definition?.isPremium,
         target: achievement.target,
         use3DIcon: definition?.use3DIcon,
         useSkiaIcon: definition?.useSkiaIcon,

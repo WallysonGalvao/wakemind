@@ -24,6 +24,7 @@ export interface AchievementDefinition {
   tier: AchievementTier;
   icon: string; // Material symbol name
   isSecret: boolean;
+  isPremium?: boolean; // Whether this achievement requires Pro subscription
   target: number; // For progress tracking
   reward?: number; // Optional custom MP reward (defaults to tier-based value)
   use3DIcon?: boolean; // Whether to use 3D SVG icon instead of Material Symbol
@@ -39,6 +40,7 @@ export interface AchievementState {
     tier: string;
     icon: string;
     isSecret: boolean;
+    isPremium?: boolean;
     target: number;
     reward?: number;
     use3DIcon?: boolean;

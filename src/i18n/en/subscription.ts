@@ -30,6 +30,11 @@ export default {
   'paywall.features.customThemes.description': 'Personalize your app with exclusive themes',
   'paywall.features.premiumSounds.title': 'Premium Alarm Sounds',
   'paywall.features.premiumSounds.description': 'Unlock exclusive high-quality alarm tones',
+  'paywall.features.premiumAchievements.title': 'Premium Achievements',
+  'paywall.features.premiumAchievements.description':
+    'Unlock exclusive Gold and Platinum tier achievements',
+  'paywall.features.streakFreeze.title': 'Streak Freeze',
+  'paywall.features.streakFreeze.description': 'Protect your streak with up to 3 freeze tokens',
   'paywall.features.cloudBackup.title': 'Cloud Backup',
   'paywall.features.cloudBackup.description': 'Sync your data across devices securely',
   'paywall.features.customNotifications.title': 'Custom Notifications',
