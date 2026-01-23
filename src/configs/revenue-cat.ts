@@ -3,21 +3,23 @@
  * Centralized configuration for in-app purchases and subscriptions
  */
 
-import Constants from 'expo-constants';
-
-import { Platform } from 'react-native';
-
 /**
  * RevenueCat API Keys
  * Using test key for development: test_brhnDrWRyBlNoHVTqHlmssTpNhV
  */
+// export const REVENUE_CAT_CONFIG = {
+//   apiKey: __DEV__
+//     ? 'test_brhnDrWRyBlNoHVTqHlmssTpNhV' // Test API key
+//     : (Platform.select({
+//         ios: Constants.expoConfig?.extra?.revenueCatAppleApiKey || '',
+//         android: Constants.expoConfig?.extra?.revenueCatGoogleApiKey || '',
+//       }) as string),
+//   // Enable debug logs in development
+//   enableDebugLogs: __DEV__,
+// };
+
 export const REVENUE_CAT_CONFIG = {
-  apiKey: __DEV__
-    ? 'test_brhnDrWRyBlNoHVTqHlmssTpNhV' // Test API key
-    : (Platform.select({
-        ios: Constants.expoConfig?.extra?.revenueCatAppleApiKey || '',
-        android: Constants.expoConfig?.extra?.revenueCatGoogleApiKey || '',
-      }) as string),
+  apiKey: 'test_brhnDrWRyBlNoHVTqHlmssTpNhV',
   // Enable debug logs in development
   enableDebugLogs: __DEV__,
 };
