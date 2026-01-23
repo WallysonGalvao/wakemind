@@ -74,7 +74,7 @@ export function MPBalanceCard({
             ) : (
               <>
                 {t('achievements.tiers.platinum').toUpperCase()}{' '}
-                <Text className="text-primary-500">ACHIEVED</Text>
+                <Text className="text-primary-500">{t('achievements.achieved').toUpperCase()}</Text>
               </>
             )}
           </Text>

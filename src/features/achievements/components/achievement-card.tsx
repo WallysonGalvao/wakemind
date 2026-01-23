@@ -9,16 +9,17 @@ import { useTranslation } from 'react-i18next';
 
 import { Text, View } from 'react-native';
 
+import { AchievementIconSkia } from './achievement-icon-skia';
 import { getAchievementReward } from '../constants/achievement-rewards';
 import type {
   AchievementDefinition,
   AchievementState,
   AchievementTier,
 } from '../types/achievement.types';
-import { AchievementIconSkia } from './achievement-icon-skia';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
+import { cn } from '@/utils/cn';
 
 interface AchievementCardProps {
   achievement: AchievementState;
@@ -172,9 +173,16 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
 
         {/* Premium Badge - Only show if locked and premium */}
         {isLocked && def.isPremium ? (
-          <View className="absolute left-3 top-3 z-10 flex-row items-center gap-1 rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-1">
-            <MaterialSymbol name="workspace_premium" size={12} color="#3B82F6" />
-            <Text className="text-[9px] font-bold uppercase text-blue-500">PRO</Text>
+          <View
+            className={cn(
+              'absolute left-3 top-3 z-10 flex-row items-center gap-1 rounded-full border px-2 py-1'
+            )}
+            style={{ borderColor: colors.borderColor }}
+          >
+            <MaterialSymbol name="workspace_premium" size={12} color={colors.iconColor} />
+            <Text className="uppercas text-[9px] font-bold" style={{ color: colors.iconColor }}>
+              PRO
+            </Text>
           </View>
         ) : null}
 
