@@ -381,15 +381,23 @@ export default function DatabaseManagerScreen() {
         });
       }
 
+      console.log('[SeedSnooze] Inserting', logsToAdd.length, 'records');
+
       for (const log of logsToAdd) {
         await db.insert(snoozeLogs).values(log);
       }
 
-      Alert.alert('Success', 'Added 14 days of snooze data!');
+      console.log('[SeedSnooze] Successfully inserted all records');
+
+      // Verify insertion
+      const inserted = await db.select().from(snoozeLogs);
+      console.log('[SeedSnooze] Total records in DB:', inserted.length);
+
+      Alert.alert('Success', `Added 14 days of snooze data!\nTotal records: ${inserted.length}`);
       await loadStats();
     } catch (error) {
       Alert.alert('Error', 'Failed to add snooze data.');
-      console.error(error);
+      console.error('[SeedSnooze] Error:', error);
     }
   };
 

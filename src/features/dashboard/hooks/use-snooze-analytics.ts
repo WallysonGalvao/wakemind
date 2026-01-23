@@ -63,7 +63,11 @@ export function useSnoozeAnalytics(period: PeriodType, refreshKey?: number): Sno
         .where(gte(snoozeLogs.date, startDate.format('YYYY-MM-DD')))
         .orderBy(desc(snoozeLogs.date));
 
+      console.log('[SnoozeAnalytics] Period:', period, 'Start:', startDate.format('YYYY-MM-DD'));
+      console.log('[SnoozeAnalytics] Found logs:', logs.length);
+
       if (logs.length === 0) {
+        console.log('[SnoozeAnalytics] No data found, returning defaults');
         setAnalytics({
           avgSnoozeCount: 0,
           totalSnoozes: 0,
@@ -87,6 +91,14 @@ export function useSnoozeAnalytics(period: PeriodType, refreshKey?: number): Sno
       // Calculate first touch rate (alarms dismissed without snooze)
       const firstTouchCount = logs.filter((log) => log.snoozeCount === 0).length;
       const firstTouchRate = (firstTouchCount / logs.length) * 100;
+
+      console.log('[SnoozeAnalytics] Calculated:', {
+        totalSnoozes,
+        avgSnoozeCount,
+        totalTimeLostMinutes,
+        firstTouchRate,
+        firstTouchCount,
+      });
 
       // Calculate trend (compare first half vs second half of period)
       const midPoint = Math.floor(logs.length / 2);

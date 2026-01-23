@@ -30,10 +30,10 @@ export function SleepQualityScore({
   const shadowStyle = useShadowStyle('sm');
 
   const getQualityColor = () => {
-    if (qualityScore >= 80) return COLORS.success;
+    if (qualityScore >= 80) return COLORS.green[500];
     if (qualityScore >= 60) return COLORS.brandPrimary;
-    if (qualityScore >= 40) return COLORS.warning;
-    return COLORS.error;
+    if (qualityScore >= 40) return COLORS.orange[500];
+    return COLORS.red[500];
   };
 
   const getQualityLabel = () => {
@@ -70,7 +70,7 @@ export function SleepQualityScore({
           </Text>
         </View>
         <View className="flex-row items-center gap-1">
-          <MaterialSymbol name={getTrendIcon()} size={18} color={COLORS.textSecondary} />
+          <MaterialSymbol name={getTrendIcon()} size={18} color={COLORS.gray[500]} />
           <Text className="text-xs text-gray-500 dark:text-gray-400">
             {t(`dashboard.period.${period}`)}
           </Text>
