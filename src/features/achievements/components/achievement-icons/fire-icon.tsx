@@ -1,17 +1,17 @@
 import {
   Group,
-  LinearGradieItoColos
-  RadialGradieAthievemetTie.././typesachievement.
-
+  LinearGradient,
+  Path,
+  RadialGradient,
   Shadow,
   Skia,
   vec,
 } from '@shopify/react-native-skia';
 
 import type { AchievementTier } from '../../types/achievement.types';
-
 import type { IconColors } from './types';
 
+//
 interface FireIconProps {
   cx: number;
   cy: number;
