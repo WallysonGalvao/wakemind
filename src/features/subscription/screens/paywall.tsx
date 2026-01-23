@@ -43,7 +43,7 @@ export default function PaywallScreen() {
   // Features carousel state
   const [currentFeaturePage, setCurrentFeaturePage] = useState(0);
   const featureScrollRef = useRef<ScrollView>(null);
-  const screenWidth = Dimensions.get('window').width - 48; // minus horizontal padding
+  const { width: screenWidth } = Dimensions.get('window');
   const FEATURES_PER_PAGE = 3;
   const totalPages = Math.ceil(PRO_FEATURES.length / FEATURES_PER_PAGE);
 
@@ -146,7 +146,7 @@ export default function PaywallScreen() {
         </View>
 
         {/* Features Section - Horizontal Carousel */}
-        <View>
+        <View className="pb-6">
           <ScrollView
             ref={featureScrollRef}
             horizontal
@@ -156,39 +156,43 @@ export default function PaywallScreen() {
             scrollEventThrottle={16}
             decelerationRate="fast"
             snapToInterval={screenWidth}
-            snapToAlignment="center"
-            contentContainerClassName="px-6"
+            snapToAlignment="start"
           >
-            {Array.from({ length: totalPages }).map((_, pageIndex) => (
-              <View key={pageIndex} style={{ width: screenWidth }} className="gap-2">
-                {PRO_FEATURES.slice(
-                  pageIndex * FEATURES_PER_PAGE,
-                  (pageIndex + 1) * FEATURES_PER_PAGE
-                ).map((feature) => (
-                  <FeatureRow
-                    key={feature.titleKey}
-                    icon={feature.icon}
-                    title={t(feature.titleKey)}
-                    description={t(feature.descriptionKey)}
-                  />
-                ))}
-              </View>
-            ))}
+            {Array.from({ length: totalPages }).map((_, pageIndex) => {
+              const startIdx = pageIndex * FEATURES_PER_PAGE;
+              const endIdx = Math.min(startIdx + FEATURES_PER_PAGE, PRO_FEATURES.length);
+              const pageFeatures = PRO_FEATURES.slice(startIdx, endIdx);
+
+              return (
+                <View key={pageIndex} style={{ width: screenWidth }} className="gap-2 px-6">
+                  {pageFeatures.map((feature) => (
+                    <FeatureRow
+                      key={feature.titleKey}
+                      icon={feature.icon}
+                      title={t(feature.titleKey)}
+                      description={t(feature.descriptionKey)}
+                    />
+                  ))}
+                </View>
+              );
+            })}
           </ScrollView>
 
           {/* Dots Indicator */}
-          <View className="mt-4 flex-row items-center justify-center gap-2">
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <View
-                key={index}
-                className={`h-2 rounded-full transition-all ${
-                  index === currentFeaturePage
-                    ? 'w-6 bg-primary-500'
-                    : 'w-2 bg-gray-300 dark:bg-gray-600'
-                }`}
-              />
-            ))}
-          </View>
+          {totalPages > 1 ? (
+            <View className="mt-4 flex-row items-center justify-center gap-2">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <View
+                  key={index}
+                  className={`h-2 rounded-full ${
+                    index === currentFeaturePage
+                      ? 'w-6 bg-primary-500'
+                      : 'w-2 bg-gray-300 dark:bg-gray-600'
+                  }`}
+                />
+              ))}
+            </View>
+          ) : null}
         </View>
       </ScrollView>
 
