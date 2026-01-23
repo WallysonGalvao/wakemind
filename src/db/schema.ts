@@ -38,6 +38,7 @@ export const alarmCompletions = sqliteTable('alarm_completions', {
   cognitiveScore: integer('cognitive_score').notNull(),
   reactionTime: integer('reaction_time').notNull(),
   challengeType: text('challenge_type').notNull(),
+  attempts: integer('attempts').notNull().default(1), // Number of attempts to complete
   date: text('date').notNull(),
 });
 

@@ -66,6 +66,7 @@ export function initializeDatabase() {
         name: string;
       }>;
       const hasAlarmId = tableInfo.some((col) => col.name === 'alarm_id');
+      const hasAttempts = tableInfo.some((col) => col.name === 'attempts');
 
       if (!hasAlarmId) {
         console.log('[Database] Adding alarm_id column to alarm_completions');
@@ -73,8 +74,15 @@ export function initializeDatabase() {
           ALTER TABLE alarm_completions ADD COLUMN alarm_id TEXT;
         `);
       }
+
+      if (!hasAttempts) {
+        console.log('[Database] Adding attempts column to alarm_completions');
+        expoDb.execSync(`
+          ALTER TABLE alarm_completions ADD COLUMN attempts INTEGER NOT NULL DEFAULT 1;
+        `);
+      }
     } catch (pragmaError) {
-      console.warn('[Database] Could not check for alarm_id column:', pragmaError);
+      console.warn('[Database] Could not check for alarm_id/attempts column:', pragmaError);
     }
 
     // Create indexes for alarm_completions

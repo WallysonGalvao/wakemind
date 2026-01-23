@@ -17,21 +17,28 @@ import type { AchievementState } from '@/features/achievements/types/achievement
 import { ACHIEVEMENT_REGISTRY } from '@/features/achievements/utils/achievement-registry';
 
 /**
- * Seed all 24 achievements into the database
- * This should be called once on app initialization
+ * Seed all achievements into the database
+ * This should be called on app initialization to ensure all achievements from registry are in the database
  */
 export async function seedAchievements(): Promise<void> {
   const now = dayjs().toISOString();
 
-  // Check if already seeded
+  // Get existing achievements
   const existing = await db.select().from(achievements);
-  if (existing.length >= ACHIEVEMENT_REGISTRY.length) {
-    console.log('[seedAchievements] Already seeded, skipping');
+  const existingIds = new Set(existing.map((a) => a.id));
+
+  // Find new achievements that need to be inserted
+  const newAchievements = ACHIEVEMENT_REGISTRY.filter((def) => !existingIds.has(def.id));
+
+  if (newAchievements.length === 0) {
+    console.log(
+      `[seedAchievements] All ${ACHIEVEMENT_REGISTRY.length} achievements already seeded`
+    );
     return;
   }
 
-  // Insert all achievements from registry
-  const achievementsToInsert = ACHIEVEMENT_REGISTRY.map((def) => ({
+  // Insert only new achievements
+  const achievementsToInsert = newAchievements.map((def) => ({
     id: def.id,
     category: def.category,
     tier: def.tier,
@@ -42,7 +49,9 @@ export async function seedAchievements(): Promise<void> {
   }));
 
   await db.insert(achievements).values(achievementsToInsert);
-  console.log(`[seedAchievements] Seeded ${achievementsToInsert.length} achievements`);
+  console.log(
+    `[seedAchievements] Seeded ${achievementsToInsert.length} new achievements (total: ${existing.length + achievementsToInsert.length})`
+  );
 }
 
 /**
