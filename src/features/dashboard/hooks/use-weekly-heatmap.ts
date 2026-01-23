@@ -15,6 +15,7 @@ export interface HeatmapDay {
 /**
  * Generate heatmap data for the last 28 days (4 weeks)
  * Each day shows the execution score
+ * Weeks start on Monday
  */
 export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
   const [heatmapData, setHeatmapData] = useState<HeatmapDay[]>([]);
@@ -22,9 +23,17 @@ export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
   useEffect(() => {
     const generateHeatmap = async () => {
       const now = dayjs();
-      const startDate = now.subtract(27, 'day').startOf('day'); // Last 28 days
+
+      // Calculate the most recent Monday
+      const dayOfWeek = now.day(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days
+      const lastMonday = now.subtract(daysToMonday, 'day').startOf('day');
+
+      // Go back 4 weeks from that Monday (28 days total)
+      const startDate = lastMonday.subtract(27, 'day').startOf('day');
 
       console.log('[WeeklyHeatmap] Generating heatmap from:', startDate.format('YYYY-MM-DD'));
+      console.log('[WeeklyHeatmap] Last Monday:', lastMonday.format('YYYY-MM-DD'));
 
       // Fetch all completions for the period
       const completions = await db
@@ -56,11 +65,11 @@ export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
         }
       });
 
-      // Generate array of 28 days
+      // Generate array of 28 days starting from the Monday
       const heatmap: HeatmapDay[] = [];
 
-      for (let i = 27; i >= 0; i--) {
-        const date = now.subtract(i, 'day');
+      for (let i = 0; i < 28; i++) {
+        const date = startDate.add(i, 'day');
         const dateStr = date.format('YYYY-MM-DD');
         const score = dailyScores.get(dateStr);
 

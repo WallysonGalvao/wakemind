@@ -86,8 +86,8 @@ export function StreakFreezeWidget({ availableTokens, onUseToken }: StreakFreeze
       disabled={isLoading}
       className={`rounded-2xl border p-4 active:scale-[0.98] ${
         confirmMode && isPro
-          ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
-          : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+          ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-surface-dark'
+          : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-surface-dark'
       }`}
       style={shadowStyle}
     >
