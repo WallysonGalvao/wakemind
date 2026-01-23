@@ -78,26 +78,25 @@ export function SnoozeAnalytics({
       {/* Main Stats Grid */}
       <View className="flex-row gap-4">
         {/* Avg Snooze Count */}
-        <View className="flex-1 rounded-lg bg-slate-50 p-3 dark:bg-[#0d1117]">
+        <View className="flex-1 rounded-lg bg-slate-50 p-3 dark:bg-brand-primary/10">
           <Text className="text-xs text-slate-500 dark:text-gray-400">
             {t('dashboard.snooze.avgPerAlarm')}
           </Text>
           <AnimatedCounter
             value={avgSnoozeCount}
-            decimals={1}
-            className="mt-1 text-2xl font-bold text-[#0F1621] dark:text-white"
+            className="mt-1 text-2xl font-bold text-slate-900 dark:text-white"
           />
         </View>
 
         {/* First Touch Rate */}
-        <View className="flex-1 rounded-lg bg-slate-50 p-3 dark:bg-[#0d1117]">
+        <View className="flex-1 rounded-lg bg-slate-50 p-3 dark:bg-brand-primary/10">
           <Text className="text-xs text-slate-500 dark:text-gray-400">
             {t('dashboard.snooze.firstTouch')}
           </Text>
           <View className="mt-1 flex-row items-end gap-1">
             <AnimatedCounter
               value={firstTouchRate}
-              className="text-2xl font-bold text-[#0F1621] dark:text-white"
+              className="text-2xl font-bold text-slate-900 dark:text-white"
             />
             <Text className="mb-0.5 text-lg font-semibold text-slate-500 dark:text-gray-400">
               %

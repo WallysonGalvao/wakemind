@@ -70,5 +70,9 @@ export const widgetsES = {
       title: 'Rutina Matutina',
       description: 'Lista de hábitos diarios',
     },
+    streakFreeze: {
+      title: 'Congelamiento de Racha',
+      description: 'Protege tu racha con tokens de congelamiento',
+    },
   },
 };

@@ -147,23 +147,22 @@ export default function DashboardScreen() {
           />
         )}
 
-        {/* Current Streak, Streak Freeze, and Avg Latency Grid */}
+        {/* Current Streak and Avg Latency Grid */}
         {(enabledWidgets.has(WidgetType.CURRENT_STREAK) ||
           enabledWidgets.has(WidgetType.AVG_LATENCY)) && (
-          <View className="gap-4">
-            {/* Primeira linha: CurrentStreak e AvgLatency */}
-            <View className="flex-row gap-4">
-              {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
-                <CurrentStreak streak={currentStreak} />
-              )}
-              {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
-                <AvgLatency latencyMinutes={avgLatency} />
-              )}
-            </View>
-
-            {/* Segunda linha: Streak Freeze */}
-            <StreakFreezeWidget availableTokens={availableTokens} onUseToken={useFreezeToken} />
+          <View className="flex-row gap-4">
+            {enabledWidgets.has(WidgetType.CURRENT_STREAK) && (
+              <CurrentStreak streak={currentStreak} />
+            )}
+            {enabledWidgets.has(WidgetType.AVG_LATENCY) && (
+              <AvgLatency latencyMinutes={avgLatency} />
+            )}
           </View>
+        )}
+
+        {/* Streak Freeze */}
+        {enabledWidgets.has(WidgetType.STREAK_FREEZE) && (
+          <StreakFreezeWidget availableTokens={availableTokens} onUseToken={useFreezeToken} />
         )}
 
         {/* Cognitive Activation - Premium Feature */}

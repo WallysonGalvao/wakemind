@@ -3,6 +3,7 @@ export enum WidgetType {
   WAKE_CONSISTENCY = 'wakeConsistency',
   CURRENT_STREAK = 'currentStreak',
   AVG_LATENCY = 'avgLatency',
+  STREAK_FREEZE = 'streakFreeze',
   COGNITIVE_MAP = 'cognitiveMap',
   DAILY_INSIGHT = 'dailyInsight',
   ACHIEVEMENTS = 'achievements',
@@ -49,7 +50,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'schedule',
     titleKey: 'widgets.wakeConsistency.title',
     descriptionKey: 'widgets.wakeConsistency.description',
-    defaultEnabled: true,
+    defaultEnabled: false,
   },
   {
     id: WidgetType.CURRENT_STREAK,
@@ -65,6 +66,14 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'speed',
     titleKey: 'widgets.avgLatency.title',
     descriptionKey: 'widgets.avgLatency.description',
+    defaultEnabled: false,
+  },
+  {
+    id: WidgetType.STREAK_FREEZE,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'ac_unit',
+    titleKey: 'widgets.streakFreeze.title',
+    descriptionKey: 'widgets.streakFreeze.description',
     defaultEnabled: false,
   },
   // Insights
@@ -90,7 +99,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'emoji_events',
     titleKey: 'widgets.achievements.title',
     descriptionKey: 'widgets.achievements.description',
-    defaultEnabled: true,
+    defaultEnabled: false,
   },
   // System Monitoring
   {
@@ -107,7 +116,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'thermostat',
     titleKey: 'widgets.sleepEnvironment.title',
     descriptionKey: 'widgets.sleepEnvironment.description',
-    defaultEnabled: true,
+    defaultEnabled: false,
   },
   // High Priority Widgets
   {
@@ -141,7 +150,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'bedtime',
     titleKey: 'widgets.sleepQuality.title',
     descriptionKey: 'widgets.sleepQuality.description',
-    defaultEnabled: true,
+    defaultEnabled: false,
   },
   {
     id: WidgetType.CIRCADIAN_RHYTHM,
@@ -149,7 +158,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'routine',
     titleKey: 'widgets.circadianRhythm.title',
     descriptionKey: 'widgets.circadianRhythm.description',
-    defaultEnabled: true,
+    defaultEnabled: false,
   },
   // {
   //   id: WidgetType.MORNING_ROUTINE,

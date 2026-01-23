@@ -26,8 +26,8 @@ export function WeeklyHeatmap({ data }: WeeklyHeatmapProps) {
     weeks.push(data.slice(i, i + 7));
   }
 
-  // Get day labels (S M T W T F S)
-  const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  // Get day labels (M T W T F S S) - Starting on Monday
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   return (
     <View
