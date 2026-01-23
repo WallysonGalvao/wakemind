@@ -92,6 +92,22 @@ export default {
   'featureGate.streakFreeze': 'Desbloquear Congelamento de Sequência',
   'featureGate.cloudBackup': 'Desbloquear Backup na Nuvem',
 
+  // Streak Freeze
+  'streakFreeze.title': 'Congelamento de Sequência',
+  'streakFreeze.tokensAvailable': '{{count}} tokens disponíveis',
+  'streakFreeze.proRequired.title': 'Recurso Pro',
+  'streakFreeze.proRequired.message':
+    'Congelamento de Sequência está disponível para usuários Pro. Ganhe 3 tokens de congelamento por mês!',
+  'streakFreeze.noTokens.title': 'Sem Tokens Disponíveis',
+  'streakFreeze.noTokens.message':
+    'Você usou todos os seus tokens de congelamento este mês. Os tokens resetam no início de cada mês.',
+  'streakFreeze.confirm.title': 'Usar Congelamento de Sequência?',
+  'streakFreeze.confirm.message':
+    'Isso protegerá sua sequência atual se você perder amanhã. Tem certeza?',
+  'streakFreeze.confirm.use': 'Usar Token',
+  'streakFreeze.success.title': 'Sequência Protegida!',
+  'streakFreeze.success.message': 'Sua sequência está protegida para amanhã.',
+
   // Settings - Subscription
   'settings.subscription.title': 'Assinatura',
   'settings.subscription.status': 'Status',

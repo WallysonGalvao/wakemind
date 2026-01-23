@@ -215,6 +215,25 @@ export function initializeDatabase() {
       ON routine_completions(date);
     `);
 
+    // Create streak_freezes table
+    expoDb.execSync(`
+      CREATE TABLE IF NOT EXISTS streak_freezes (
+        id TEXT PRIMARY KEY,
+        used_at TEXT NOT NULL,
+        date TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+    `);
+
+    // Create indexes for streak_freezes
+    expoDb.execSync(`
+      CREATE INDEX IF NOT EXISTS idx_streak_freezes_date 
+      ON streak_freezes(date);
+      
+      CREATE INDEX IF NOT EXISTS idx_streak_freezes_used_at 
+      ON streak_freezes(used_at);
+    `);
+
     console.log('[Database] Tables initialized successfully');
   } catch (error) {
     console.error('[Database] Failed to initialize tables:', error);
