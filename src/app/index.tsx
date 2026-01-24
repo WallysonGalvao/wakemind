@@ -4,13 +4,16 @@ import notifee from '@notifee/react-native';
 import type { Href } from 'expo-router';
 import { Redirect, useRouter } from 'expo-router';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import type { AlarmNotificationData } from '@/services/notification-handler';
 import { useSettingsStore } from '@/stores/use-settings-store';
 
 export default function Index() {
   const router = useRouter();
   const hasCompletedOnboarding = useSettingsStore((state) => state.hasCompletedOnboarding);
+  const hasCompletedPermissions = useSettingsStore((state) => state.hasCompletedPermissions);
   const [isChecking, setIsChecking] = useState(true);
+  const { hasAllCriticalPermissions } = usePermissions();
 
   // Check if app was opened by a notification
   useEffect(() => {
@@ -56,8 +59,14 @@ export default function Index() {
     return null;
   }
 
+  // First-time onboarding
   if (!hasCompletedOnboarding) {
     return <Redirect href="/onboarding" />;
+  }
+
+  // Permissions onboarding (if not completed or critical permissions missing)
+  if (!hasCompletedPermissions || !hasAllCriticalPermissions()) {
+    return <Redirect href="/permissions-onboarding" />;
   }
 
   return <Redirect href="/(tabs)" />;

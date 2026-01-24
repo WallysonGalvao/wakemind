@@ -8,6 +8,7 @@ import { dashboardES } from './dashboard';
 import { dashboardWidgetsES } from './dashboard-widgets';
 import { expoES } from './expo';
 import { onboardingES } from './onboarding';
+import permissionsES from './permissions';
 import { privacyPolicyES } from './privacy-policy';
 import { quickActionsES } from './quick-actions';
 import { settingsES } from './settings';
@@ -36,4 +37,5 @@ export default {
   ...alarmSchedulerES,
   ...widgetsES,
   ...achievementsES,
+  permissions: permissionsES,
 };
