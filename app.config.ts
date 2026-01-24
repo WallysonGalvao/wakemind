@@ -51,6 +51,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'POST_NOTIFICATIONS',
       'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
       'BILLING',
+      'REORDER_TASKS',
+      'DISABLE_KEYGUARD',
     ],
   },
   web: {
