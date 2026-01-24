@@ -5,6 +5,7 @@ import '../configs';
 import { useEffect } from 'react';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -45,6 +46,7 @@ function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
   const { getAlarmById } = useAlarms();
+  usePerformanceMonitorDevTools();
   const { initialize: initializeSubscription } = useSubscriptionStore();
 
   const [fontsLoaded] = useFonts({

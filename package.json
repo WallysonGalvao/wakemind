@@ -96,6 +96,9 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@rozenite/expo-atlas-plugin": "^1.2.0",
+    "@rozenite/metro": "^1.2.0",
+    "@rozenite/performance-monitor-plugin": "^1.2.0",
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "29.5.14",
@@ -104,6 +107,7 @@
     "@typescript-eslint/parser": "^8.52.0",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
+    "better-sqlite3": "^12.6.2",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.25.0",
@@ -126,6 +130,7 @@
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "react-native-performance": "^6.0.0",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.4.6",
     "typescript": "~5.9.2"
