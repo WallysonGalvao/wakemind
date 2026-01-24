@@ -237,7 +237,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         showChronometer: false,
         fullScreenAction: {
           id: 'alarm-triggered',
-          launchActivity: 'default',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
           mainComponent: 'default',
         },
         sound: 'alarm_sound',
@@ -246,7 +246,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         autoCancel: false,
         pressAction: {
           id: 'alarm-triggered',
-          launchActivity: 'default',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         actions,
         lightUpScreen: true,
@@ -365,6 +365,8 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         visibility: AndroidVisibility.PUBLIC,
         fullScreenAction: {
           id: 'alarm-triggered',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
+          mainComponent: 'default',
         },
         sound: 'alarm_sound',
         loopSound: true,
@@ -372,7 +374,7 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         autoCancel: false,
         pressAction: {
           id: 'default',
-          launchActivity: 'default',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         actions: [
           {
@@ -456,7 +458,7 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
         vibrationPattern: [300, 500],
         pressAction: {
           id: 'wake-check-confirm',
-          launchActivity: 'default',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         actions: [
           {

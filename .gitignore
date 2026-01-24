@@ -71,3 +71,4 @@ maestro/screenshots/
 .env.local
 
 google-service-account.json
+wakemind.db

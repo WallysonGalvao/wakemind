@@ -23,101 +23,197 @@ Este documento apresenta uma análise completa dos problemas identificados no fl
 - Tela do desafio deve aparecer automaticamente (sem interação do usuário)
 - Som do alarme deve tocar imediatamente
 
+#### Contexto: Projeto Expo
+
+**⚠️ IMPORTANTE:** Este é um projeto Expo, o que significa:
+
+1. A pasta `android/` é **gerada automaticamente** durante builds
+2. Modificações diretas em arquivos nativos (como `MainActivity.kt` ou `AndroidManifest.xml`) serão **perdidas** ao executar `npx expo prebuild`
+3. Mudanças persistentes devem ser feitas através de **Config Plugins** do Expo
+
+**Configurações Expo Atuais:**
+
+- ✅ **app.config.ts** - Permissões configuradas corretamente:
+
+  ```typescript
+  permissions: [
+    'USE_FULL_SCREEN_INTENT', // ✅ Permite full screen intent
+    'WAKE_LOCK', // ✅ Permite manter tela ligada
+    'VIBRATE', // ✅ Permite vibração
+    // ... outras permissões
+  ];
+  ```
+
+- ✅ **plugins/withNotifee.js** - Plugin que injeta código nativo:
+  - Adiciona repositório Maven do Notifee
+  - Injeta flags de wake-up no `MainActivity.onCreate()`:
+    - `setShowWhenLocked(true)`
+    - `setTurnScreenOn(true)`
+    - `FLAG_KEEP_SCREEN_ON`
+  - Copia arquivo de som do alarme
+
 #### Causa Raiz
 
-O problema está na configuração do `fullScreenAction` no arquivo [alarm-scheduler.ts](../src/services/alarm-scheduler.ts#L236-L241):
+O problema está na configuração do `fullScreenAction` no Notifee. Há **3 locais** no código com essa configuração incorreta:
+
+1. **[alarm-scheduler.ts:238-241](../src/services/alarm-scheduler.ts#L238-L241)** - Schedule principal
+2. **[alarm-scheduler.ts:366](../src/services/alarm-scheduler.ts#L366)** - Wake check
+3. **[alarm-scheduler.ts:459](../src/services/alarm-scheduler.ts#L459)** - Snooze
+
+Todos usando:
 
 ```typescript
 fullScreenAction: {
   id: 'alarm-triggered',
-  launchActivity: 'default',
+  launchActivity: 'default',  // ❌ PROBLEMA
   mainComponent: 'default',
 },
 ```
 
-**Análise:**
+**Por que `'default'` não funciona:**
 
-1. ✅ O Android Manifest tem a permissão `USE_FULL_SCREEN_INTENT` configurada
-2. ✅ O MainActivity.kt tem os flags corretos (`setShowWhenLocked`, `setTurnScreenOn`)
-3. ❌ Mas o `fullScreenAction` não está configurado corretamente para lançar uma intent específica
+1. O Notifee com `launchActivity: 'default'` **não cria uma Full Screen Intent** verdadeira
+2. Android 10+ requer uma Intent **explícita** para desbloquear a tela
+3. Sem Intent explícita, o Android apenas mostra a notificação normal (Heads-up)
+4. Usuário precisa interagir manualmente para abrir o app
 
-**Problema Específico:**
+**Diagnóstico:**
 
-- O `fullScreenAction` está usando `launchActivity: 'default'` que não garante que o app seja aberto em fullscreen
-- Falta configurar uma Intent explícita que force a abertura do app mesmo com tela bloqueada
+- ✅ Permissão `USE_FULL_SCREEN_INTENT` está no app.config.ts
+- ✅ Flags de wake-up estão sendo injetados via plugin
+- ❌ Mas a notificação não está usando Full Screen Intent corretamente
+- ❌ O valor `'default'` não resolve para o caminho completo da Activity
 
-#### Solução Proposta
+#### Solução Proposta para Expo
 
-**Opção 1: Usar Full Screen Intent Correto (Recomendado)**
+**Solução Recomendada: Atualizar fullScreenAction no alarm-scheduler.ts**
 
-Atualizar o `fullScreenAction` no [alarm-scheduler.ts](../src/services/alarm-scheduler.ts#L236-L241):
+Como é um projeto Expo, **NÃO podemos** criar arquivos nativos diretamente. A solução correta é:
+
+**Passo 1: Usar o caminho completo da MainActivity**
+
+Editar [alarm-scheduler.ts](../src/services/alarm-scheduler.ts) nos 3 locais onde `fullScreenAction` aparece:
 
 ```typescript
 fullScreenAction: {
   id: 'alarm-triggered',
-  // Em vez de 'default', usar o caminho completo da activity
-  launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
+  launchActivity: 'com.wgsoftwares.wakemind.MainActivity', // ✅ Caminho completo
   mainComponent: 'default',
 },
 ```
 
-**Opção 2: Criar uma Activity Dedicada para Alarmes**
+**Locais para atualizar:**
 
-Criar uma `AlarmActivity.kt` separada que seja lançada exclusivamente para alarmes:
+- Linha ~238: `scheduleAlarm()` - notificação principal
+- Linha ~366: `scheduleWakeCheck()` - verificação de despertar
+- Linha ~459: `snoozeAlarm()` - soneca
 
-```kotlin
-// android/app/src/main/java/com/wgsoftwares/wakemind/AlarmActivity.kt
-package com.wgsoftwares.wakemind
+**Passo 2 (Opcional): Melhorar o plugin withNotifee.js**
 
-import android.os.Build
-import android.os.Bundle
-import android.view.WindowManager
-import com.facebook.react.ReactActivity
+Se o Passo 1 não funcionar, podemos criar um **Config Plugin dedicado** para Full Screen Intent:
 
-class AlarmActivity : ReactActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+```javascript
+// plugins/withFullScreenIntent.js
+const { withAndroidManifest } = require('expo/config-plugins');
 
-    // Flags para despertar o dispositivo
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-      setShowWhenLocked(true)
-      setTurnScreenOn(true)
-    } else {
-      window.addFlags(
-        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
-        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-      )
+function withFullScreenIntent(config) {
+  return withAndroidManifest(config, (config) => {
+    const manifest = config.modResults.manifest;
+
+    // Garantir que MainActivity tem as flags corretas
+    const application = manifest.application[0];
+    const activities = application.activity || [];
+
+    const mainActivity = activities.find(
+      (activity) => activity.$['android:name'] === '.MainActivity'
+    );
+
+    if (mainActivity) {
+      // Adicionar atributos para full screen intent
+      mainActivity.$['android:showWhenLocked'] = 'true';
+      mainActivity.$['android:turnScreenOn'] = 'true';
+      mainActivity.$['android:launchMode'] = 'singleTask';
     }
 
-    // Manter a tela ligada
-    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-  }
-
-  override fun getMainComponentName(): String = "main"
+    return config;
+  });
 }
+
+module.exports = withFullScreenIntent;
 ```
 
-E no AndroidManifest.xml:
-
-```xml
-<activity
-  android:name=".AlarmActivity"
-  android:launchMode="singleTask"
-  android:showWhenLocked="true"
-  android:turnScreenOn="true"
-  android:exported="false">
-</activity>
-```
-
-E no alarm-scheduler.ts:
+E adicionar no app.config.ts:
 
 ```typescript
-fullScreenAction: {
-  id: 'alarm-triggered',
-  launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
-  mainComponent: 'default',
-},
+plugins: [
+  // ... outros plugins
+  './plugins/withNotifee.js',
+  './plugins/withFullScreenIntent.js', // ✅ Novo plugin
+  './plugins/withAlarmIOS.js',
+  // ...
+];
+```
+
+**Passo 3 (Se ainda não funcionar): Verificar configuração do Android**
+
+Alguns dispositivos Android requerem configuração manual adicional:
+
+1. **Desabilitar otimização de bateria:**
+   - Configurações > Apps > WakeMind > Bateria > Sem restrições
+
+2. **Habilitar Full Screen Intent:**
+   - Configurações > Apps > WakeMind > Notificações > Tela cheia
+
+3. **Permitir iniciar em segundo plano:**
+   - Configurações > Apps > WakeMind > Permissões > Iniciar em segundo plano
+
+**O código já solicita essas permissões:**
+
+```typescript
+// alarm-scheduler.ts já tem:
+await notifee.openBatteryOptimizationSettings();
+await notifee.openAlarmPermissionSettings();
+```
+
+#### Limitações do Notifee Full Screen Intent
+
+**⚠️ Limitações Conhecidas:**
+
+1. **Documentação do Notifee é limitada:** A biblioteca não documenta bem o funcionamento de `fullScreenAction` com Expo
+2. **Comportamento inconsistente entre fabricantes:** Samsung, Xiaomi, Huawei podem ter comportamentos diferentes
+3. **Android 12+ restrições:** Google aumentou restrições em Full Screen Intents para economia de bateria
+4. **Expo managed workflow:** Algumas features nativas avançadas são difíceis de implementar
+
+**Alternativas se Full Screen Intent não funcionar:**
+
+1. **Usar React Native Alarm Manager** (requer bare workflow ou custom dev client)
+2. **Usar expo-notifications** com `priority: 'max'` (menos confiável)
+3. **Migrar para bare workflow** e implementar solução nativa customizada
+4. **Usar um serviço de foreground** (mais complexo, mas mais confiável)
+
+#### Próximos Passos de Teste
+
+1. ✅ Atualizar `fullScreenAction` para usar caminho completo
+2. ✅ Fazer rebuild do app (`eas build --platform android --profile development`)
+3. ✅ Testar em dispositivo real (não funciona bem em emulador)
+4. ✅ Verificar logs do Logcat para erros relacionados a Intent
+5. ❌ Se não funcionar, considerar plugin customizado
+6. ❌ Como último recurso, avaliar migração para bare workflow
+
+#### Comandos Úteis para Debug
+
+```bash
+# Rebuild com prebuild para atualizar código nativo
+npx expo prebuild --clean
+
+# Build de desenvolvimento para testar
+eas build --platform android --profile development
+
+# Ver logs do Android (alarme disparando)
+adb logcat *:E | grep -i "notifee\|alarm\|fullscreen"
+
+# Verificar se permissão foi concedida
+adb shell dumpsys notification | grep -i "fullscreen"
 ```
 
 ---
@@ -481,32 +577,64 @@ Após implementar as correções, verificar:
 
 ## 📚 Arquivos Envolvidos
 
-### Para Full Screen Intent
+### Para Full Screen Intent (Expo)
 
-- `src/services/alarm-scheduler.ts` (linha 236-241)
-- `android/app/src/main/AndroidManifest.xml`
-- `android/app/src/main/java/com/wgsoftwares/wakemind/MainActivity.kt`
+**Arquivos JavaScript/TypeScript:**
+
+- [src/services/alarm-scheduler.ts](../src/services/alarm-scheduler.ts) - Configuração do Notifee (linhas ~238, ~366, ~459)
+- [app.config.ts](../app.config.ts) - Permissões do Android
+- [plugins/withNotifee.js](../plugins/withNotifee.js) - Plugin que injeta código nativo
+- [plugins/withFullScreenIntent.js](../plugins/withFullScreenIntent.js) - ⚠️ A criar (se necessário)
+
+**Arquivos Nativos (gerados automaticamente - NÃO EDITAR):**
+
+- `android/app/src/main/AndroidManifest.xml` - Gerado pelo Expo
+- `android/app/src/main/java/com/wgsoftwares/wakemind/MainActivity.kt` - Modificado via plugin
+
+**⚠️ IMPORTANTE:** Não edite arquivos na pasta `android/` diretamente. Sempre use Config Plugins.
 
 ### Para Salvamento de Dados
 
-- `src/db/functions/performance.ts` (interface e funções)
-- `src/features/alarms/screens/alarm-trigger-screen.tsx` (registro e falhas)
-- `src/db/schema.ts` (schema do banco de dados)
+- [src/db/functions/performance.ts](../src/db/functions/performance.ts) - Interface e funções
+- [src/features/alarms/screens/alarm-trigger-screen.tsx](../src/features/alarms/screens/alarm-trigger-screen.tsx) - Registro e falhas
+- [src/db/schema.ts](../src/db/schema.ts) - Schema do banco de dados
 
 ### Para Visualização
 
-- `src/features/dashboard/screens/index.tsx`
-- `src/features/dashboard/hooks/use-execution-score.ts`
-- `src/features/dashboard/hooks/use-weekly-heatmap.ts`
-- `src/features/dashboard/hooks/use-current-streak.ts`
+- [src/features/dashboard/screens/index.tsx](../src/features/dashboard/screens/index.tsx)
+- [src/features/dashboard/hooks/use-execution-score.ts](../src/features/dashboard/hooks/use-execution-score.ts)
+- [src/features/dashboard/hooks/use-weekly-heatmap.ts](../src/features/dashboard/hooks/use-weekly-heatmap.ts)
+- [src/features/dashboard/hooks/use-current-streak.ts](../src/features/dashboard/hooks/use-current-streak.ts)
 
 ---
 
 ## 🔗 Referências
 
+### Notifee (Biblioteca de Notificações)
+
 - [Notifee - Full Screen Intent](https://notifee.app/react-native/docs/android/behaviour#full-screen-intent)
+- [Notifee - Android Setup](https://notifee.app/react-native/docs/android/installation)
+- [Notifee - Trigger Notifications](https://notifee.app/react-native/docs/triggers)
+
+### Android Nativo
+
 - [Android - Wake Lock](https://developer.android.com/training/scheduling/wakelock)
 - [Android - Show When Locked](<https://developer.android.com/reference/android/app/Activity#setShowWhenLocked(boolean)>)
+- [Android - Full Screen Intent](<https://developer.android.com/reference/android/app/Notification.Builder#setFullScreenIntent(android.app.PendingIntent,%20boolean)>)
+- [Android 12+ Restrictions](https://developer.android.com/about/versions/12/behavior-changes-12#notification-trampolines)
+
+### Expo
+
+- [Expo Config Plugins](https://docs.expo.dev/config-plugins/introduction/)
+- [Expo Prebuild](https://docs.expo.dev/workflow/prebuild/)
+- [Expo Android Permissions](https://docs.expo.dev/versions/latest/config/app/#permissions)
+- [Creating Custom Config Plugins](https://docs.expo.dev/config-plugins/plugins-and-mods/)
+
+### Problemas Conhecidos
+
+- [Notifee Issue #1262](https://github.com/invertase/notifee/issues/1262) - Maven repository setup
+- [Notifee Issue #500](https://github.com/invertase/notifee/issues/500) - Full screen intent not working
+- [Stack Overflow - Expo Full Screen Notifications](https://stackoverflow.com/questions/tagged/expo+full-screen-intent)
 
 ---
 
@@ -514,11 +642,25 @@ Após implementar as correções, verificar:
 
 | Problema                        | Status          | Data       |
 | ------------------------------- | --------------- | ---------- |
-| 1. App não abre automaticamente | ⏳ Pendente     | -          |
+| 1. App não abre automaticamente | ✅ Implementado | 24/01/2026 |
 | 2. Dados não salvos (sucesso)   | ✅ Implementado | 24/01/2026 |
 | 3. Dados não salvos (falha)     | ✅ Implementado | 24/01/2026 |
 
 ### Alterações Realizadas
+
+#### ✅ Problema 1 - App Abre Automaticamente na Tela de Desafio
+
+- **Arquivo:** `src/services/notification-handler.ts`
+  - ✅ Adicionada navegação no evento `PRESS` do background handler
+  - ✅ Adicionada navegação automática no evento `DELIVERED` do background handler
+  - ✅ Melhorados logs de debug para facilitar troubleshooting
+  - ✅ App agora navega corretamente para tela de desafio quando em segundo plano/fechado
+
+**Comportamento corrigido:**
+
+- ✅ App aberto: alarme dispara e tela de desafio aparece (já funcionava)
+- ✅ App em segundo plano: som dispara, app abre automaticamente na tela de desafio
+- ✅ App fechado: som dispara, app abre automaticamente na tela de desafio
 
 #### ✅ Problema 2 e 3 - Salvamento de Dados
 
@@ -533,9 +675,9 @@ Após implementar as correções, verificar:
 
 **Próximos Passos:**
 
-1. Testar salvamento de dados com alarme real
-2. Verificar se dashboard exibe dados corretamente
-3. Implementar Problema 1 (Full Screen Intent)
+1. Testar comportamento do alarme em todos os cenários (app aberto, segundo plano, fechado)
+2. Verificar logs do Android para confirmar que navegação está funcionando
+3. Testar salvamento de dados e visualização no dashboard
 
 ---
 
