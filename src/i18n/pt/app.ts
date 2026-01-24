@@ -177,6 +177,8 @@ export const appPT = {
   'common.delete': 'Excluir',
   'common.confirm': 'Confirmar',
   'common.ok': 'OK',
+  'common.success': 'Sucesso',
+  'common.error': 'Erro',
   'common.info': 'Mais informações',
   'common.close': 'Fechar',
   'common.back': 'Voltar',

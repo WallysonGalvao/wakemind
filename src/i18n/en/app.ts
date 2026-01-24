@@ -175,6 +175,8 @@ export const appEN = {
   'common.delete': 'Delete',
   'common.confirm': 'Confirm',
   'common.ok': 'OK',
+  'common.success': 'Success',
+  'common.error': 'Error',
   'common.info': 'More information',
   'common.close': 'Close',
   'common.back': 'Back',

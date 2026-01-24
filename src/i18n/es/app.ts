@@ -178,6 +178,8 @@ export const appES = {
   'common.delete': 'Eliminar',
   'common.confirm': 'Confirmar',
   'common.ok': 'OK',
+  'common.success': 'Éxito',
+  'common.error': 'Error',
   'common.info': 'Más información',
   'common.close': 'Cerrar',
   'common.back': 'Atrás',
