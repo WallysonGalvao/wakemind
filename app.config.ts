@@ -43,6 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'SCHEDULE_EXACT_ALARM',
       'USE_EXACT_ALARM',
       'USE_FULL_SCREEN_INTENT',
+      'SYSTEM_ALERT_WINDOW',
       'VIBRATE',
       'RECEIVE_BOOT_COMPLETED',
       'FOREGROUND_SERVICE',
