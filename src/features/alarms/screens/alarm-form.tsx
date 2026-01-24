@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Platform, Pressable, ScrollView, View } from 'react-native';
 
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
@@ -182,9 +182,11 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     isAllGranted,
     needsNotificationPermission,
     needsExactAlarmPermission,
+    needsBatteryOptimizationPermission,
     requestNotificationPermission,
     openBatterySettings,
     openAlarmSettings,
+    openNotificationSettings,
   } = useAlarmPermissions();
 
   // Get alarms from hook
@@ -396,14 +398,54 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
             ),
           });
 
-          // Open both battery optimization and alarm settings
-          // Battery optimization affects alarm reliability
-          await openBatterySettings();
           // Exact alarm permission is required on Android 12+
           await openAlarmSettings();
 
           // After settings, user needs to manually create alarm again
           // We don't auto-continue here as they need to go through system settings
+          return;
+        }
+
+        // Check for battery optimization (Android - critical for alarm reliability)
+        if (needsBatteryOptimizationPermission) {
+          toast.show({
+            placement: 'top',
+            duration: 6000,
+            render: ({ id }) => (
+              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
+                <ToastTitle>{t('permissions.batteryOptimization')}</ToastTitle>
+                <ToastDescription>
+                  {t('permissions.batteryOptimizationDescription')}
+                </ToastDescription>
+              </Toast>
+            ),
+          });
+
+          // Battery optimization affects alarm reliability
+          await openBatterySettings();
+
+          // After settings, user needs to manually create alarm again
+          return;
+        }
+
+        // Open notification settings to enable Full Screen Intent (Android 14+)
+        // This is the final critical permission for auto-opening the app
+        if (Platform.OS === 'android') {
+          toast.show({
+            placement: 'top',
+            duration: 7000,
+            render: ({ id }) => (
+              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
+                <ToastTitle>{t('permissions.fullScreenRequired')}</ToastTitle>
+                <ToastDescription>{t('permissions.fullScreenDescription')}</ToastDescription>
+              </Toast>
+            ),
+          });
+
+          await openNotificationSettings();
+
+          // Give user time to enable the setting
+          // After settings, user needs to manually create alarm again
           return;
         }
       }

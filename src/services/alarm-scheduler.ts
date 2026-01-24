@@ -43,6 +43,8 @@ async function createAlarmChannel(): Promise<void> {
     bypassDnd: true,
     lights: false,
   });
+
+  console.log('[AlarmScheduler] Alarm channel created with HIGH importance');
 }
 
 /**
@@ -150,6 +152,16 @@ export async function openAlarmPermissionSettings(): Promise<void> {
 }
 
 /**
+ * Open app notification settings to enable Full Screen Intent
+ * This is required on Android 14+ for alarm notifications to show over lock screen
+ */
+export async function openNotificationSettings(): Promise<void> {
+  if (Platform.OS === 'android') {
+    await notifee.openNotificationSettings();
+  }
+}
+
+/**
  * Schedule an alarm notification
  */
 export async function scheduleAlarm(alarm: Alarm): Promise<string> {
@@ -237,8 +249,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         showChronometer: false,
         fullScreenAction: {
           id: 'alarm-triggered',
-          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
-          mainComponent: 'default',
+          launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
@@ -246,7 +257,6 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         autoCancel: false,
         pressAction: {
           id: 'alarm-triggered',
-          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         actions,
         lightUpScreen: true,
@@ -263,6 +273,9 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
   );
 
   console.log('[AlarmScheduler] Alarm scheduled successfully:', notificationId);
+  console.log(
+    "[AlarmScheduler] Full Screen Intent configured - ensure it's enabled in Settings > Apps > WakeMind > Notifications"
+  );
 
   return notificationId;
 }
@@ -365,8 +378,7 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         visibility: AndroidVisibility.PUBLIC,
         fullScreenAction: {
           id: 'alarm-triggered',
-          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
-          mainComponent: 'default',
+          launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
@@ -374,7 +386,6 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         autoCancel: false,
         pressAction: {
           id: 'default',
-          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         actions: [
           {
@@ -491,6 +502,7 @@ export const AlarmScheduler = {
   requestPermissions,
   openBatteryOptimizationSettings,
   openAlarmPermissionSettings,
+  openNotificationSettings,
   scheduleAlarm,
   cancelAlarm,
   cancelAllAlarmNotifications,

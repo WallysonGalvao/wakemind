@@ -56,6 +56,12 @@ export function useAlarmPermissions() {
     }
   }, []);
 
+  const openNotificationSettings = useCallback(async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openNotificationSettings();
+    }
+  }, []);
+
   useEffect(() => {
     checkPermissions();
   }, [checkPermissions]);
@@ -82,5 +88,6 @@ export function useAlarmPermissions() {
     requestNotificationPermission,
     openBatterySettings,
     openAlarmSettings,
+    openNotificationSettings,
   };
 }
