@@ -97,17 +97,19 @@ function navigateToAlarmScreen(data: AlarmNotificationData): void {
 
     const url = `/alarm/trigger?alarmId=${alarmId}&time=${time}&period=${period}&challenge=${encodeURIComponent(challenge)}&challengeIcon=${challengeIcon}&type=${type}`;
 
-    console.log('[NotificationHandler] Navigating with data:', {
+    console.log('[NotificationHandler] Navigating to alarm trigger screen');
+    console.log('[NotificationHandler] URL:', url);
+    console.log('[NotificationHandler] Navigation data:', {
       alarmId,
       time,
       period,
       challenge,
       challengeIcon,
       type,
-      rawData: data,
     });
 
     router.push(url as Href);
+    console.log('[NotificationHandler] Navigation command sent successfully');
   } catch (error) {
     console.error('[NotificationHandler] Error navigating to alarm screen:', error);
   }
@@ -202,10 +204,18 @@ async function handleBackgroundEvent(event: Event): Promise<void> {
           console.warn('[NotificationHandler] Cannot reschedule (bg): alarm not found in store');
         }
       }
+
+      // Navigate to alarm trigger screen when app is in background/closed
+      // This ensures fullScreenAction opens the app at the correct screen
+      console.log('[NotificationHandler] Navigating to alarm screen from background delivery');
+      navigateToAlarmScreen(data);
+      callbacks.onAlarmTriggered?.(data.alarmId, data);
       break;
 
     case EventType.PRESS:
-      // User tapped notification
+      // User tapped notification - navigate to alarm screen
+      console.log('[NotificationHandler] Notification pressed (background):', data.alarmId);
+      navigateToAlarmScreen(data);
       break;
 
     case EventType.ACTION_PRESS:
