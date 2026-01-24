@@ -250,14 +250,12 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         fullScreenAction: {
           id: 'alarm-triggered',
           launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
+          mainComponent: 'com.wgsoftwares.wakemind.AlarmActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
         ongoing: true,
         autoCancel: false,
-        pressAction: {
-          id: 'alarm-triggered',
-        },
         actions,
         lightUpScreen: true,
       },
@@ -379,14 +377,12 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         fullScreenAction: {
           id: 'alarm-triggered',
           launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
+          mainComponent: 'com.wgsoftwares.wakemind.AlarmActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
         ongoing: true,
         autoCancel: false,
-        pressAction: {
-          id: 'default',
-        },
         actions: [
           {
             title: i18n.t('alarmScheduler.actions.dismiss'),

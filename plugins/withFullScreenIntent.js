@@ -1,4 +1,9 @@
-const { withMainActivity, withAndroidManifest, AndroidConfig } = require('expo/config-plugins');
+const {
+  withMainActivity,
+  withAndroidManifest,
+  withDangerousMod,
+  AndroidConfig,
+} = require('expo/config-plugins');
 const fs = require('fs');
 const path = require('path');
 
@@ -9,7 +14,7 @@ const path = require('path');
 function withFullScreenIntent(config) {
   // 1. Modify AndroidManifest to add transparent activity for alarms
   config = withAndroidManifest(config, (config) => {
-    const manifest = config.modResults.manifest;
+    const manifest = config.modResults;
     const application = AndroidConfig.Manifest.getMainApplicationOrThrow(manifest);
 
     // Find or create the activity array
@@ -30,7 +35,7 @@ function withFullScreenIntent(config) {
           'android:label': 'Alarm',
           'android:theme': '@android:style/Theme.Translucent.NoTitleBar',
           'android:excludeFromRecents': 'true',
-          'android:exported': 'false',
+          'android:exported': 'true', // Changed to true - Full Screen Intent requires exported
           'android:showWhenLocked': 'true',
           'android:turnScreenOn': 'true',
           'android:launchMode': 'singleInstance',
@@ -55,21 +60,38 @@ function withFullScreenIntent(config) {
     return config;
   });
 
-  // 2. Add AlarmActivity.kt source file
-  config = withMainActivity(config, async (config) => {
-    const projectRoot = config.modRequest?.projectRoot;
-    if (!projectRoot) return config;
+  // 2. Add AlarmActivity.kt source file using dangerousMod
+  config = withDangerousMod(config, [
+    'android',
+    async (config) => {
+      const projectRoot = config.modRequest.projectRoot;
+      const androidMainPath = path.join(
+        projectRoot,
+        'android',
+        'app',
+        'src',
+        'main',
+        'java',
+        'com',
+        'wgsoftwares',
+        'wakemind'
+      );
 
-    const mainActivityPath = config.modResults.path;
-    const activityDir = path.dirname(mainActivityPath);
-    const alarmActivityPath = path.join(activityDir, 'AlarmActivity.kt');
+      // Ensure directory exists
+      if (!fs.existsSync(androidMainPath)) {
+        fs.mkdirSync(androidMainPath, { recursive: true });
+      }
 
-    // Create AlarmActivity.kt
-    const alarmActivityContent = `package com.wgsoftwares.wakemind
+      const alarmActivityPath = path.join(androidMainPath, 'AlarmActivity.kt');
 
+      // Create AlarmActivity.kt
+      const alarmActivityContent = `package com.wgsoftwares.wakemind
+
+import android.app.ActivityManager
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -77,11 +99,22 @@ import androidx.appcompat.app.AppCompatActivity
 
 /**
  * Transparent activity that launches when alarm triggers
- * This activity is shown over the lock screen and immediately launches the main app
+ * This activity is shown over the lock screen and launches the alarm screen
  */
 class AlarmActivity : AppCompatActivity() {
+    companion object {
+        private const val TAG = "AlarmActivity"
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        android.util.Log.d(TAG, "========================================")
+        android.util.Log.d(TAG, "AlarmActivity.onCreate() called!")
+        android.util.Log.d(TAG, "Intent action: \${intent.action}")
+        android.util.Log.d(TAG, "Intent data: \${intent.data}")
+        android.util.Log.d(TAG, "Intent extras: \${intent.extras?.keySet()?.joinToString()}")
+        android.util.Log.d(TAG, "========================================")
         
         // Turn on screen and show over lock screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -102,29 +135,86 @@ class AlarmActivity : AppCompatActivity() {
         // Keep screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         
-        // Launch MainActivity with alarm data
-        val mainIntent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            
-            // Pass through all extras from the notification
-            intent.extras?.let { putExtras(it) }
+        android.util.Log.d(TAG, "Screen wake flags applied")
+        
+        // Get alarm data from intent extras (Notifee passes notification data as extras)
+        val bundle = intent.extras
+        android.util.Log.d(TAG, "All extras keys: \${bundle?.keySet()?.joinToString()}")
+        
+        val alarmId = bundle?.getString("alarmId") ?: intent.getStringExtra("alarmId") ?: ""
+        val time = bundle?.getString("time") ?: intent.getStringExtra("time") ?: "00:00"
+        val period = bundle?.getString("period") ?: intent.getStringExtra("period") ?: "AM"
+        val challenge = bundle?.getString("challenge") ?: intent.getStringExtra("challenge") ?: "Challenge"
+        val challengeIcon = bundle?.getString("challengeIcon") ?: intent.getStringExtra("challengeIcon") ?: "calculate"
+        val type = bundle?.getString("type") ?: intent.getStringExtra("type") ?: "alarm"
+        
+        android.util.Log.d(TAG, "Extracted alarm data:")
+        android.util.Log.d(TAG, "  alarmId: \$alarmId")
+        android.util.Log.d(TAG, "  time: \$time")
+        android.util.Log.d(TAG, "  period: \$period")
+        android.util.Log.d(TAG, "  challenge: \$challenge")
+        
+        // Build deep link URL for alarm trigger screen
+        val deepLinkUrl = "wakemind://alarm/trigger?alarmId=\${alarmId}&time=\${time}&period=\${period}&challenge=\${Uri.encode(challenge)}&challengeIcon=\${challengeIcon}&type=\${type}"
+        
+        android.util.Log.d(TAG, "Deep link URL: \$deepLinkUrl")
+        
+        // Check if app is already running
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val appTasks = activityManager.appTasks
+        val isAppRunning = appTasks.any { 
+            it.taskInfo.topActivity?.packageName == packageName 
         }
         
+        android.util.Log.d(TAG, "Is app running: \$isAppRunning")
+        
+        // Launch MainActivity with deep link
+        val mainIntent = Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            data = Uri.parse(deepLinkUrl)
+            
+            if (isAppRunning) {
+                // If app is running, bring it to front and navigate
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            } else {
+                // If app is not running, start fresh
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            
+            // Pass all extras as well for fallback
+            putExtra("alarmId", alarmId)
+            putExtra("time", time)
+            putExtra("period", period)
+            putExtra("challenge", challenge)
+            putExtra("challengeIcon", challengeIcon)
+            putExtra("type", type)
+        }
+        
+        android.util.Log.d(TAG, "Starting MainActivity...")
+        android.util.Log.d(TAG, "  Action: \${mainIntent.action}")
+        android.util.Log.d(TAG, "  Data: \${mainIntent.data}")
+        android.util.Log.d(TAG, "  Flags: \${mainIntent.flags}")
+        
         startActivity(mainIntent)
+        
+        android.util.Log.d(TAG, "MainActivity started, finishing AlarmActivity")
+        android.util.Log.d(TAG, "========================================")
+        
         finish()
     }
 }
 `;
 
-    try {
-      fs.writeFileSync(alarmActivityPath, alarmActivityContent);
-      console.log('✅ AlarmActivity.kt created');
-    } catch (error) {
-      console.warn('⚠️  Could not create AlarmActivity.kt:', error.message);
-    }
+      try {
+        fs.writeFileSync(alarmActivityPath, alarmActivityContent);
+        console.log('✅ AlarmActivity.kt created at:', alarmActivityPath);
+      } catch (error) {
+        console.warn('⚠️  Could not create AlarmActivity.kt:', error.message);
+      }
 
-    return config;
-  });
+      return config;
+    },
+  ]);
 
   return config;
 }
