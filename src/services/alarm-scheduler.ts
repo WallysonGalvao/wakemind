@@ -250,12 +250,12 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         fullScreenAction: {
           id: 'alarm-triggered',
           launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
-          mainComponent: 'com.wgsoftwares.wakemind.AlarmActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
         ongoing: true,
         autoCancel: false,
+        onlyAlertOnce: false,
         actions,
         lightUpScreen: true,
       },
@@ -377,12 +377,12 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         fullScreenAction: {
           id: 'alarm-triggered',
           launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
-          mainComponent: 'com.wgsoftwares.wakemind.AlarmActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
         ongoing: true,
         autoCancel: false,
+        onlyAlertOnce: false,
         actions: [
           {
             title: i18n.t('alarmScheduler.actions.dismiss'),
@@ -463,6 +463,8 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
         visibility: AndroidVisibility.PUBLIC,
         sound: 'alarm_sound',
         vibrationPattern: [300, 500],
+        onlyAlertOnce: false,
+        priority: 'max' as any,
         pressAction: {
           id: 'wake-check-confirm',
           launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
