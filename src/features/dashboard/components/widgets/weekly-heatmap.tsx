@@ -98,26 +98,35 @@ interface HeatmapCellProps {
 function HeatmapCell({ day }: HeatmapCellProps) {
   const getBackgroundColor = () => {
     if (day.isEmpty) {
-      return 'bg-gray-200 dark:bg-white/10';
+      return 'bg-slate-100 dark:bg-slate-800';
     }
 
     // Score-based color intensity (blue theme like Cognitive Activation)
     if (day.score >= 90) return 'bg-blue-600 dark:bg-blue-400';
     if (day.score >= 75) return 'bg-blue-500 dark:bg-blue-500/90';
     if (day.score >= 60) return 'bg-blue-400 dark:bg-blue-600/70';
-    if (day.score >= 40) return 'bg-blue-200 dark:bg-blue-700/50';
-    return 'bg-blue-100 dark:bg-blue-900/30';
+    if (day.score >= 40) return 'bg-blue-300 dark:bg-blue-700/50';
+    return 'bg-blue-200 dark:bg-blue-800/40';
+  };
+
+  const getTextColor = () => {
+    if (day.isEmpty) {
+      return 'text-slate-400 dark:text-slate-600';
+    }
+
+    // Use dark text for light backgrounds, white text for dark backgrounds
+    if (day.score >= 60) return 'text-white dark:text-white';
+    return 'text-slate-800 dark:text-white';
   };
 
   const isToday = dayjs(day.date).isSame(dayjs(), 'day');
 
   return (
     <View
-      className={`h-9 w-9 items-center justify-center rounded ${getBackgroundColor()} ${isToday ? 'border-2 border-brand-primary' : ''}`}
+      className={`h-9 w-9 items-center justify-center rounded ${getBackgroundColor()}`}
+      style={isToday ? { borderWidth: 2, borderColor: COLORS.brandPrimary } : undefined}
     >
-      {!day.isEmpty && (
-        <Text className="text-xs font-semibold text-white">{dayjs(day.date).date()}</Text>
-      )}
+      <Text className={`text-xs font-semibold ${getTextColor()}`}>{dayjs(day.date).date()}</Text>
     </View>
   );
 }

@@ -24,15 +24,17 @@ export function useWeeklyHeatmap(refreshKey?: number): HeatmapDay[] {
     const generateHeatmap = async () => {
       const now = dayjs();
 
-      // Calculate the most recent Monday
+      // Calculate the most recent Monday (or today if it's Monday)
       const dayOfWeek = now.day(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
       const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days
       const lastMonday = now.subtract(daysToMonday, 'day').startOf('day');
 
-      // Go back 4 weeks from that Monday (28 days total)
-      const startDate = lastMonday.subtract(27, 'day').startOf('day');
+      // Start from 3 weeks before Monday, ending at Sunday of current week (28 days total)
+      const startDate = lastMonday.subtract(21, 'day').startOf('day');
+      const endDate = lastMonday.add(6, 'day').endOf('day'); // Sunday of current week
 
       console.log('[WeeklyHeatmap] Generating heatmap from:', startDate.format('YYYY-MM-DD'));
+      console.log('[WeeklyHeatmap] To:', endDate.format('YYYY-MM-DD'));
       console.log('[WeeklyHeatmap] Last Monday:', lastMonday.format('YYYY-MM-DD'));
 
       // Fetch all completions for the period
