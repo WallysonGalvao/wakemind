@@ -36,9 +36,9 @@ export enum Entitlement {
  */
 export enum ProductId {
   // Monthly subscription
-  MONTHLY = 'monthly',
+  MONTHLY = 'wakemind_pro_monthly',
   // Yearly subscription (discounted)
-  YEARLY = 'yearly',
+  YEARLY = 'wakemind_pro_yearly',
 }
 
 /**
