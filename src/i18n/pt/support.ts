@@ -12,6 +12,12 @@ export const supportPT = {
   'support.faq.alarms.snooze.question': 'Como funciona a Proteção de Soneca?',
   'support.faq.alarms.snooze.answer':
     'Quando ativada, você precisa completar um desafio cognitivo para adiar o alarme, evitando o snooze inconsciente.',
+  'support.faq.alarms.permissions.question': 'Quais permissões o WakeMind precisa no Android 14+?',
+  'support.faq.alarms.permissions.answer':
+    'Android 14+ requer: 1) Notificações em Tela Cheia - para abrir o app automaticamente quando o alarme disparar (Configurações > Apps > WakeMind > Notificações > Permitir notificações em tela cheia). 2) Desativar Otimização de Bateria - garante que os alarmes toquem mesmo quando o celular está em repouso.',
+  'support.faq.alarms.autoOpen.question': 'O app não abre automaticamente quando o alarme toca',
+  'support.faq.alarms.autoOpen.answer':
+    'Ative "Notificações em Tela Cheia" em Configurações > Apps > WakeMind > Notificações. Também desative a otimização de bateria para o WakeMind.',
 
   // Sound & Vibration
   'support.faq.sound.title': 'Som e Vibração',

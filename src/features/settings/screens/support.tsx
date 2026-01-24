@@ -3,7 +3,7 @@ import React, { useLayoutEffect } from 'react';
 import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Platform, Pressable, ScrollView, View } from 'react-native';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
@@ -95,6 +95,18 @@ export default function SupportScreen() {
               question={t('support.faq.alarms.locked.question')}
               answer={t('support.faq.alarms.locked.answer')}
             />
+            {Platform.OS === 'android' && (
+              <>
+                <FAQItem
+                  question={t('support.faq.alarms.permissions.question')}
+                  answer={t('support.faq.alarms.permissions.answer')}
+                />
+                <FAQItem
+                  question={t('support.faq.alarms.autoOpen.question')}
+                  answer={t('support.faq.alarms.autoOpen.answer')}
+                />
+              </>
+            )}
             <FAQItem
               question={t('support.faq.alarms.snooze.question')}
               answer={t('support.faq.alarms.snooze.answer')}
