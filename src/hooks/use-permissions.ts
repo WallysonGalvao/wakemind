@@ -10,6 +10,8 @@ export function usePermissions() {
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
     batteryOptimization: 'undetermined',
+    displayOverOtherApps: 'undetermined',
+    autoStart: 'undetermined',
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,8 +51,32 @@ export function usePermissions() {
     }
   };
 
+  const requestDisplayOverOtherApps = async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openDisplayOverOtherAppsSettings();
+      await checkPermissions();
+    }
+  };
+
+  const requestAutoStart = async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openAutoStartSettings();
+      // AutoStart permission cannot be checked programmatically
+      // Just mark as handled in the UI
+      setPermissions((prev) => ({
+        ...prev,
+        autoStart: 'granted', // Assume user enabled it
+      }));
+    }
+  };
+
   const hasAllCriticalPermissions = () => {
-    return permissions.notifications === 'granted' && permissions.exactAlarms === 'granted';
+    return (
+      permissions.notifications === 'granted' &&
+      permissions.exactAlarms === 'granted' &&
+      permissions.displayOverOtherApps === 'granted' &&
+      permissions.autoStart === 'granted'
+    );
   };
 
   const hasOptimalPermissions = () => {
@@ -74,6 +100,8 @@ export function usePermissions() {
     requestExactAlarms,
     requestBatteryOptimization,
     requestFullScreen,
+    requestDisplayOverOtherApps,
+    requestAutoStart,
     hasAllCriticalPermissions,
     hasOptimalPermissions,
   };

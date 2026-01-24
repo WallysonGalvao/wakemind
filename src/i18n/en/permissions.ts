@@ -38,6 +38,26 @@ export default {
     buttonDeny: 'Skip for now',
   },
 
+  displayOverOtherApps: {
+    title: 'Allow display over other apps?',
+    description:
+      'This permission allows the alarm to automatically launch when the app is in the background.',
+    additionalInfo:
+      'Essential for the alarm to work like native alarm apps, opening the screen even when the phone is locked.',
+    buttonAllow: 'Open Settings',
+    buttonDeny: 'Skip for now',
+  },
+
+  autoStart: {
+    title: 'Enable Auto-Start?',
+    description:
+      'Allow WakeMind to start automatically in the background. Required on {{manufacturer}} devices.',
+    additionalInfo:
+      'Without this, alarms may not ring when the app is closed. This is critical for Xiaomi, Huawei, Oppo, Vivo, and Samsung devices.',
+    buttonAllow: 'Open Settings',
+    buttonDeny: 'Skip for now',
+  },
+
   summary: {
     title: 'Ensure your alarm rings',
     description: 'Alarm and Notification permissions let us ring when the phone is locked',

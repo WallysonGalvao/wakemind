@@ -40,6 +40,26 @@ export default {
     buttonDeny: 'Pular por enquanto',
   },
 
+  displayOverOtherApps: {
+    title: 'Permitir aparecer sobre outros apps?',
+    description:
+      'Esta permissão permite que o alarme abra automaticamente quando o app estiver em segundo plano.',
+    additionalInfo:
+      'Essencial para que o alarme funcione como apps nativos, abrindo a tela mesmo com o telefone bloqueado.',
+    buttonAllow: 'Abrir Configurações',
+    buttonDeny: 'Pular por enquanto',
+  },
+
+  autoStart: {
+    title: 'Habilitar Início Automático?',
+    description:
+      'Permitir que o WakeMind inicie automaticamente em segundo plano. Necessário em dispositivos {{manufacturer}}.',
+    additionalInfo:
+      'Sem isso, alarmes podem não tocar quando o app está fechado. Crítico para dispositivos Xiaomi, Huawei, Oppo, Vivo e Samsung.',
+    buttonAllow: 'Abrir Configurações',
+    buttonDeny: 'Pular por enquanto',
+  },
+
   summary: {
     title: 'Garanta que seu alarme toque',
     description:

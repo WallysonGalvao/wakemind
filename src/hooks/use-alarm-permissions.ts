@@ -18,6 +18,8 @@ export function useAlarmPermissions() {
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
     batteryOptimization: 'undetermined',
+    displayOverOtherApps: 'undetermined',
+    autoStart: 'undetermined',
   });
   const [isLoading, setIsLoading] = useState(true);
 

@@ -9,7 +9,7 @@ import notifee, {
 import dayjs from 'dayjs';
 import i18n from 'i18next';
 
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 import { getToneFilename } from '@/constants/alarm-tones';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -24,6 +24,8 @@ export interface PermissionStatus {
   exactAlarms: 'granted' | 'denied' | 'undetermined';
   fullScreen: 'granted' | 'denied' | 'undetermined';
   batteryOptimization: 'granted' | 'denied' | 'undetermined';
+  displayOverOtherApps: 'granted' | 'denied' | 'undetermined';
+  autoStart: 'granted' | 'denied' | 'undetermined';
 }
 
 /**
@@ -56,6 +58,8 @@ export async function checkPermissions(): Promise<PermissionStatus> {
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
     batteryOptimization: 'undetermined',
+    displayOverOtherApps: 'undetermined',
+    autoStart: 'undetermined',
   };
 
   try {
@@ -89,12 +93,34 @@ export async function checkPermissions(): Promise<PermissionStatus> {
       const batteryOptimizationEnabled = await notifee.isBatteryOptimizationEnabled();
       status.batteryOptimization = batteryOptimizationEnabled ? 'denied' : 'granted';
 
+      // Check SYSTEM_ALERT_WINDOW permission (Display over other apps)
+      try {
+        const { OverlayPermission } = NativeModules;
+
+        if (OverlayPermission && typeof OverlayPermission.canDrawOverlays === 'function') {
+          const canDrawOverlays = await OverlayPermission.canDrawOverlays();
+          status.displayOverOtherApps = canDrawOverlays ? 'granted' : 'denied';
+        } else {
+          // Assume granted if module not available (shouldn't happen)
+          status.displayOverOtherApps = 'undetermined';
+        }
+      } catch (error) {
+        console.warn('[AlarmScheduler] Could not check overlay permission:', error);
+        status.displayOverOtherApps = 'undetermined';
+      }
+
       // Full screen intent is typically granted by default for alarm apps
       status.fullScreen = 'granted';
+
+      // AutoStart permission cannot be checked programmatically
+      // We assume it's undetermined and guide users to enable it manually
+      status.autoStart = 'undetermined';
     } else {
       // iOS doesn't have these specific permissions
       status.exactAlarms = 'granted';
       status.fullScreen = 'granted';
+      status.displayOverOtherApps = 'granted';
+      status.autoStart = 'granted';
     }
   } catch (error) {
     console.error('[AlarmScheduler] Error checking permissions:', error);
@@ -159,6 +185,69 @@ export async function openNotificationSettings(): Promise<void> {
   if (Platform.OS === 'android') {
     await notifee.openNotificationSettings();
   }
+}
+
+/**
+ * Open system settings to allow displaying over other apps (SYSTEM_ALERT_WINDOW)
+ * This is CRITICAL for alarms to auto-launch when app is in foreground/background
+ */
+export async function openDisplayOverOtherAppsSettings(): Promise<void> {
+  if (Platform.OS === 'android') {
+    try {
+      const { OverlayPermission } = NativeModules;
+
+      if (OverlayPermission && typeof OverlayPermission.openSettings === 'function') {
+        await OverlayPermission.openSettings();
+      } else {
+        // Fallback: open app notification settings
+        console.warn('[AlarmScheduler] OverlayPermission module not available, using fallback');
+        await notifee.openNotificationSettings();
+      }
+    } catch (error) {
+      console.error('[AlarmScheduler] Error opening overlay settings:', error);
+      // Last resort: open notification settings
+      await notifee.openNotificationSettings();
+    }
+  }
+}
+
+/**
+ * Open manufacturer-specific AutoStart settings
+ * This is CRITICAL for Xiaomi, Huawei, Oppo, Vivo, Samsung devices
+ * Allows the app to start automatically in background and show alarms
+ */
+export async function openAutoStartSettings(): Promise<void> {
+  if (Platform.OS === 'android') {
+    try {
+      const { OverlayPermission } = NativeModules;
+
+      if (OverlayPermission && typeof OverlayPermission.openAutoStartSettings === 'function') {
+        await OverlayPermission.openAutoStartSettings();
+      } else {
+        console.warn('[AlarmScheduler] OverlayPermission module not available');
+      }
+    } catch (error) {
+      console.error('[AlarmScheduler] Error opening auto-start settings:', error);
+    }
+  }
+}
+
+/**
+ * Get device manufacturer name
+ */
+export async function getDeviceManufacturer(): Promise<string> {
+  if (Platform.OS === 'android') {
+    try {
+      const { OverlayPermission } = NativeModules;
+
+      if (OverlayPermission && typeof OverlayPermission.getManufacturer === 'function') {
+        return await OverlayPermission.getManufacturer();
+      }
+    } catch (error) {
+      console.error('[AlarmScheduler] Error getting manufacturer:', error);
+    }
+  }
+  return 'unknown';
 }
 
 /**
@@ -464,7 +553,6 @@ export async function scheduleWakeCheck(alarm: Alarm): Promise<string> {
         sound: 'alarm_sound',
         vibrationPattern: [300, 500],
         onlyAlertOnce: false,
-        priority: 'max' as any,
         pressAction: {
           id: 'wake-check-confirm',
           launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
@@ -501,6 +589,9 @@ export const AlarmScheduler = {
   openBatteryOptimizationSettings,
   openAlarmPermissionSettings,
   openNotificationSettings,
+  openDisplayOverOtherAppsSettings,
+  openAutoStartSettings,
+  getDeviceManufacturer,
   scheduleAlarm,
   cancelAlarm,
   cancelAllAlarmNotifications,
