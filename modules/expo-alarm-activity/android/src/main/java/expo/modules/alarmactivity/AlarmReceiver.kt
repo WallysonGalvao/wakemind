@@ -1,5 +1,6 @@
 package expo.modules.alarmactivity
 
+import android.app.KeyguardManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,7 +15,10 @@ import androidx.core.app.NotificationCompat
 
 /**
  * BroadcastReceiver que recebe alarmes do AlarmManager
- * e dispara uma notificação com Full Screen Intent para abrir AlarmActivity
+ * 
+ * ESTRATÉGIA DUAL com SYSTEM_ALERT_WINDOW:
+ * - Tela bloqueada: Full Screen Intent notification
+ * - Tela desbloqueada: startActivity com flags TYPE_APPLICATION_OVERLAY
  */
 class AlarmReceiver : BroadcastReceiver() {
     companion object {
@@ -40,70 +44,105 @@ class AlarmReceiver : BroadcastReceiver() {
 
         Log.d(TAG, "Alarm data: alarmId=$alarmId, time=$time")
 
-        // Criar canal de notificação (obrigatório no Android 8+)
-        createNotificationChannel(context)
+        // Verificar se a tela está bloqueada
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val isScreenLocked = keyguardManager.isKeyguardLocked
 
-        // Build deep link URL for alarm trigger screen
+        // Build deep link URL
         val deepLinkUrl = "wakemind://alarm/trigger?alarmId=${alarmId}&time=${time}&period=${period}&challenge=${Uri.encode(challenge)}&challengeIcon=${challengeIcon}&type=${type}"
         
-        Log.d(TAG, "Deep link URL: $deepLinkUrl")
+        Log.d(TAG, "Screen locked: $isScreenLocked")
+        Log.d(TAG, "Deep link: $deepLinkUrl")
 
-        // Criar Intent para abrir MainActivity DIRETO com deep link
+        if (isScreenLocked) {
+            Log.d(TAG, "🔒 Using Full Screen Intent (locked screen)")
+            handleLockedScreen(context, alarmId, time, period, challenge, deepLinkUrl)
+        } else {
+            Log.d(TAG, "🔓 Using SYSTEM_ALERT_WINDOW overlay (unlocked screen)")
+            handleUnlockedScreen(context, deepLinkUrl)
+        }
+        
+        Log.d(TAG, "========================================")
+    }
+
+    /**
+     * Full Screen Intent notification (locked screen only)
+     */
+    private fun handleLockedScreen(
+        context: Context,
+        alarmId: String,
+        time: String,
+        period: String,
+        challenge: String,
+        deepLinkUrl: String
+    ) {
+        createNotificationChannel(context)
+        
         val activityIntent = Intent().apply {
             component = ComponentName(
                 "com.wgsoftwares.wakemind",
-                "com.wgsoftwares.wakemind.MainActivity" // Abre direto a MainActivity!
+                "com.wgsoftwares.wakemind.MainActivity"
             )
             action = Intent.ACTION_VIEW
             data = Uri.parse(deepLinkUrl)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or 
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-            // Pass extras as fallback
-            putExtra("alarmId", alarmId)
-            putExtra("time", time)
-            putExtra("period", period)
-            putExtra("challenge", challenge)
-            putExtra("challengeIcon", challengeIcon)
-            putExtra("type", type)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-
-        // Criar PendingIntent para Full Screen Intent
-        val fullScreenPendingIntent = PendingIntent.getActivity(
+        
+        val pendingIntent = PendingIntent.getActivity(
             context,
-            alarmId.hashCode(), // Usar hashCode do alarmId para evitar conflitos
+            alarmId.hashCode(),
             activityIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-
-        Log.d(TAG, "Creating Full Screen Intent notification...")
-
-        // Criar notificação com Full Screen Intent
+        
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm) // Ícone do sistema
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle("⏰ Alarm: $time $period")
-            .setContentText("Tap to open alarm - $challenge")
+            .setContentText(challenge)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
-            .setOngoing(false)
-            .setShowWhen(true)
-            .setWhen(System.currentTimeMillis())
-            .setContentIntent(fullScreenPendingIntent) // Tap abre a activity
-            .setFullScreenIntent(fullScreenPendingIntent, true) // CRITICAL: true = show immediately
-            .setSound(null) // Sem som para teste
-            .setVibrate(longArrayOf(0, 500, 200, 500)) // Vibração simples
+            .setContentIntent(pendingIntent)
+            .setFullScreenIntent(pendingIntent, true)
+            .setVibrate(longArrayOf(0, 500, 200, 500))
             .build()
-
-        notificationManager.notify(alarmId.hashCode(), notification)
         
-        Log.d(TAG, "Full Screen Intent notification posted with ID: ${alarmId.hashCode()}")
-        Log.d(TAG, "Notification will open MainActivity directly with deep link")
-        Log.d(TAG, "If screen is locked, it SHOULD wake up and show MainActivity")
-        Log.d(TAG, "========================================")
+        notificationManager.notify(alarmId.hashCode(), notification)
+        Log.d(TAG, "✅ Full Screen Intent notification posted")
+    }
+
+    /**
+     * Direct activity launch with SYSTEM_ALERT_WINDOW permission (unlocked screen)
+     */
+    private fun handleUnlockedScreen(
+        context: Context,
+        deepLinkUrl: String
+    ) {
+        try {
+            val activityIntent = Intent().apply {
+                component = ComponentName(
+                    "com.wgsoftwares.wakemind",
+                    "com.wgsoftwares.wakemind.MainActivity"
+                )
+                action = Intent.ACTION_VIEW
+                data = Uri.parse(deepLinkUrl)
+                // Flags especiais para usar com SYSTEM_ALERT_WINDOW
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or 
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                        Intent.FLAG_ACTIVITY_NO_USER_ACTION or
+                        Intent.FLAG_FROM_BACKGROUND
+            }
+            
+            context.startActivity(activityIntent)
+            Log.d(TAG, "✅ MainActivity launched with SYSTEM_ALERT_WINDOW flags")
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Failed to launch MainActivity: ${e.message}")
+            e.printStackTrace()
+        }
     }
 
     private fun createNotificationChannel(context: Context) {

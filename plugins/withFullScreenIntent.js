@@ -3,6 +3,7 @@ const { withAndroidManifest, AndroidConfig } = require('expo/config-plugins');
 /**
  * Expo config plugin to configure MainActivity for Full Screen Intent support
  * Adds necessary flags to wake screen and show over lock screen
+ * Also registers ForegroundAlarmHandler service for unlocked screen alarms
  */
 function withFullScreenIntent(config) {
   // Modify AndroidManifest to add wake/lock screen flags to MainActivity
@@ -19,7 +20,10 @@ function withFullScreenIntent(config) {
       // Add flags to show over lock screen and turn screen on
       mainActivity.$['android:showWhenLocked'] = 'true';
       mainActivity.$['android:turnScreenOn'] = 'true';
-      console.log('✅ MainActivity configured for Full Screen Intent (wake + lock screen)');
+      // Allow app to show when other apps are on screen (uses SYSTEM_ALERT_WINDOW permission)
+      mainActivity.$['android:showOnLockScreen'] = 'true';
+      mainActivity.$['android:excludeFromRecents'] = 'false';
+      console.log('✅ MainActivity configured for Full Screen Intent + SYSTEM_ALERT_WINDOW');
     } else {
       console.warn('⚠️  MainActivity not found in AndroidManifest.xml');
     }
