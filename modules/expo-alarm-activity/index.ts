@@ -17,12 +17,25 @@ export function requestFullScreenIntentPermission(): string {
 }
 
 /**
- * Agenda um alarme REAL usando AlarmManager nativo
- * Dispara após 10 segundos e abre a MainActivity mesmo com tela bloqueada
- * Use para testar se Full Screen Intent funciona
+ * Abre tela de alarme com deep link
+ * Chamado quando Notifee dispara o alarme
  */
-export function testAlarmManagerFullScreen(): string {
-  return ExpoAlarmActivityModule.testAlarmManagerFullScreen();
+export function openAlarmScreen(
+  alarmId: string,
+  time: string,
+  period: string,
+  challenge: string,
+  challengeIcon: string,
+  type: string
+): string {
+  return ExpoAlarmActivityModule.openAlarmScreen(
+    alarmId,
+    time,
+    period,
+    challenge,
+    challengeIcon,
+    type
+  );
 }
 
 export default ExpoAlarmActivityModule;

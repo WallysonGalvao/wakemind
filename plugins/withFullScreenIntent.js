@@ -3,7 +3,6 @@ const { withAndroidManifest, AndroidConfig } = require('expo/config-plugins');
 /**
  * Expo config plugin to configure MainActivity for Full Screen Intent support
  * Adds necessary flags to wake screen and show over lock screen
- * Also registers ForegroundAlarmHandler service for unlocked screen alarms
  */
 function withFullScreenIntent(config) {
   // Modify AndroidManifest to add wake/lock screen flags to MainActivity

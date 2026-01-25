@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
-import * as ExpoAlarmActivity from '../../../../modules/expo-alarm-activity';
 import { AlarmCard } from '../components/alarm-card';
 import { AlarmsHeader } from '../components/alarms-header';
 import { EmptyState } from '../components/empty-state';
@@ -152,25 +151,6 @@ export default function AlarmsScreen() {
       params: mockParams,
     });
   }, [router, sortedAlarms]);
-
-  // DEBUG: Testar AlarmManager + Full Screen Intent
-  const handleTestAlarmManager = useCallback(() => {
-    // Verificar se tem permissão
-    const hasPermission = ExpoAlarmActivity.canUseFullScreenIntent();
-    console.log('[DEBUG] Full Screen Intent permission:', hasPermission);
-
-    if (!hasPermission) {
-      console.log('[DEBUG] ❌ SEM PERMISSÃO! Abrindo configurações...');
-      ExpoAlarmActivity.requestFullScreenIntentPermission();
-      return;
-    }
-
-    console.log('[DEBUG] ✅ Permissão OK! Testando AlarmManager...');
-    console.log('[DEBUG] Alarme agendado para 10 segundos. BLOQUEIE A TELA AGORA!');
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    const result = ExpoAlarmActivity.testAlarmManagerFullScreen();
-    console.log('[DEBUG]', result);
-  }, []);
 
   // Scroll handler
   const scrollHandler = useAnimatedScrollHandler({
@@ -311,39 +291,20 @@ export default function AlarmsScreen() {
 
       {/* DEBUG: Test Alarm Trigger Button - Remove in production */}
       {__DEV__ ? (
-        <>
-          {/* Botão para testar a tela de alarme (React Native) */}
-          <Pressable
-            accessibilityRole="button"
-            onPress={handleTestAlarmTrigger}
-            className="absolute bottom-6 left-6 h-14 w-14 items-center justify-center rounded-full bg-orange-500"
-            style={{
-              shadowColor: '#f97316',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 8,
-            }}
-          >
-            <MaterialSymbol name="notifications_active" size={24} className="text-white" />
-          </Pressable>
-
-          {/* Botão para testar AlarmManager + Full Screen Intent (10s) */}
-          <Pressable
-            accessibilityRole="button"
-            onPress={handleTestAlarmManager}
-            className="absolute bottom-24 left-6 h-14 w-14 items-center justify-center rounded-full bg-green-600"
-            style={{
-              shadowColor: '#16a34a',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 8,
-            }}
-          >
-            <MaterialSymbol name="alarm" size={24} className="text-white" />
-          </Pressable>
-        </>
+        <Pressable
+          accessibilityRole="button"
+          onPress={handleTestAlarmTrigger}
+          className="absolute bottom-6 left-6 h-14 w-14 items-center justify-center rounded-full bg-orange-500"
+          style={{
+            shadowColor: '#f97316',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 8,
+          }}
+        >
+          <MaterialSymbol name="notifications_active" size={24} className="text-white" />
+        </Pressable>
       ) : null}
     </View>
   );

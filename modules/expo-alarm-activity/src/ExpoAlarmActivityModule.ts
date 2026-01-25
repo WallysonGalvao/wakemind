@@ -19,10 +19,17 @@ declare class ExpoAlarmActivityModule extends NativeModule<ExpoAlarmActivityModu
   requestFullScreenIntentPermission(): string;
 
   /**
-   * Agenda um alarme de teste usando AlarmManager nativo
-   * Dispara após 10 segundos e abre a tela do alarme mesmo com device bloqueado
+   * Abre tela de alarme com deep link
+   * Chamado quando Notifee dispara o alarme
    */
-  testAlarmManagerFullScreen(): string;
+  openAlarmScreen(
+    alarmId: string,
+    time: string,
+    period: string,
+    challenge: string,
+    challengeIcon: string,
+    type: string
+  ): string;
 }
 
 // This call loads the native module object from the JSI.

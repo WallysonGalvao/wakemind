@@ -9,7 +9,7 @@ import notifee, {
 import dayjs from 'dayjs';
 import i18n from 'i18next';
 
-import { NativeModules, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import { getToneFilename } from '@/constants/alarm-tones';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -252,6 +252,8 @@ export async function getDeviceManufacturer(): Promise<string> {
 
 /**
  * Schedule an alarm notification
+ * Uses native AlarmManager on Android for reliable triggering
+ * Uses Notifee on iOS for critical notifications
  */
 export async function scheduleAlarm(alarm: Alarm): Promise<string> {
   // Check and request permissions first
@@ -265,7 +267,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     }
   }
 
-  // Ensure channel exists
+  // Ensure channel exists (for Notifee and Android notifications)
   await createAlarmChannel();
 
   // Cancel any existing notifications for this alarm before scheduling new one
@@ -338,7 +340,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
         showChronometer: false,
         fullScreenAction: {
           id: 'alarm-triggered',
-          launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
@@ -465,7 +467,7 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
         visibility: AndroidVisibility.PUBLIC,
         fullScreenAction: {
           id: 'alarm-triggered',
-          launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         sound: 'alarm_sound',
         loopSound: true,
@@ -625,7 +627,7 @@ export async function testNotifeeFullScreenIntent(): Promise<string> {
         timestamp: triggerTimestamp,
         fullScreenAction: {
           id: 'alarm-triggered',
-          launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
+          launchActivity: 'com.wgsoftwares.wakemind.MainActivity',
         },
         sound: 'alarm_sound',
         loopSound: false,
