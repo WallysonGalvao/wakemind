@@ -582,6 +582,73 @@ export async function initializeAlarmScheduler(): Promise<void> {
   await createAlarmChannel();
 }
 
+/**
+ * TEST: Schedule a test alarm notification for 10 seconds in the future
+ * This tests if Notifee's fullScreenAction can open AlarmActivity
+ */
+export async function testNotifeeFullScreenIntent(): Promise<string> {
+  console.log('[AlarmScheduler] Testing Notifee fullScreenAction...');
+
+  // Ensure channel exists
+  await createAlarmChannel();
+
+  // Schedule for 10 seconds from now
+  const triggerTimestamp = Date.now() + 10 * 1000;
+
+  const trigger: TimestampTrigger = {
+    type: TriggerType.TIMESTAMP,
+    timestamp: triggerTimestamp,
+    alarmManager: {
+      allowWhileIdle: true,
+    },
+  };
+
+  const notificationId = await notifee.createTriggerNotification(
+    {
+      id: 'test-fullscreen',
+      title: '🧪 TEST: Notifee FullScreen',
+      body: 'This notification will trigger in 10 seconds to test AlarmActivity',
+      data: {
+        alarmId: 'test-notifee-123',
+        time: '07:00',
+        period: 'AM',
+        challenge: 'Test Notifee Challenge',
+        challengeIcon: 'calculate',
+        type: 'alarm',
+      },
+      android: {
+        channelId: ALARM_CHANNEL_ID,
+        category: AndroidCategory.ALARM,
+        importance: AndroidImportance.HIGH,
+        visibility: AndroidVisibility.PUBLIC,
+        showTimestamp: true,
+        timestamp: triggerTimestamp,
+        fullScreenAction: {
+          id: 'alarm-triggered',
+          launchActivity: 'com.wgsoftwares.wakemind.AlarmActivity',
+        },
+        sound: 'alarm_sound',
+        loopSound: false,
+        ongoing: false,
+        autoCancel: true,
+        lightUpScreen: true,
+      },
+      ios: {
+        sound: 'default',
+        critical: true,
+        criticalVolume: 1.0,
+        interruptionLevel: 'critical',
+      },
+    },
+    trigger
+  );
+
+  console.log('[AlarmScheduler] Test notification scheduled:', notificationId);
+  console.log('[AlarmScheduler] Wait 10 seconds and lock your screen to test...');
+
+  return notificationId;
+}
+
 export const AlarmScheduler = {
   initialize: initializeAlarmScheduler,
   checkPermissions,
@@ -601,4 +668,5 @@ export const AlarmScheduler = {
   snoozeAlarm,
   dismissAlarm,
   scheduleWakeCheck,
+  testNotifeeFullScreenIntent,
 };
