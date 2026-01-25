@@ -31,7 +31,6 @@ import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useFeatureAccess } from '@/hooks/use-feature-access';
-import { AlarmScheduler } from '@/services/alarm-scheduler';
 import type { Alarm } from '@/types/alarm';
 
 const AnimatedFlatList = Animated.FlatList<Alarm>;
@@ -154,24 +153,9 @@ export default function AlarmsScreen() {
     });
   }, [router, sortedAlarms]);
 
-  // DEBUG: Testar AlarmActivity nativa
-  const handleTestNativeActivity = useCallback(() => {
-    console.log('[DEBUG] Testando AlarmActivity nativa...');
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    ExpoAlarmActivity.testOpenActivity();
-  }, []);
-
-  // DEBUG: Testar Notifee fullScreenAction
-  const handleTestNotifee = useCallback(async () => {
-    console.log('[DEBUG] Testando Notifee fullScreenAction...');
-    console.log('[DEBUG] Notificação agendada para 10 segundos. Bloqueie a tela!');
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    await AlarmScheduler.testNotifeeFullScreenIntent();
-  }, []);
-
-  // DEBUG: Testar AlarmManager + PendingIntent (NATIVO REAL)
+  // DEBUG: Testar AlarmManager + Full Screen Intent
   const handleTestAlarmManager = useCallback(() => {
-    // Primeiro verificar se tem permissão
+    // Verificar se tem permissão
     const hasPermission = ExpoAlarmActivity.canUseFullScreenIntent();
     console.log('[DEBUG] Full Screen Intent permission:', hasPermission);
 
@@ -181,7 +165,7 @@ export default function AlarmsScreen() {
       return;
     }
 
-    console.log('[DEBUG] ✅ Permissão OK! Testando AlarmManager NATIVO...');
+    console.log('[DEBUG] ✅ Permissão OK! Testando AlarmManager...');
     console.log('[DEBUG] Alarme agendado para 10 segundos. BLOQUEIE A TELA AGORA!');
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     const result = ExpoAlarmActivity.testAlarmManagerFullScreen();
@@ -344,46 +328,12 @@ export default function AlarmsScreen() {
             <MaterialSymbol name="notifications_active" size={24} className="text-white" />
           </Pressable>
 
-          {/* Botão para testar Notifee fullScreenAction (10s) */}
-          <Pressable
-            accessibilityRole="button"
-            onPress={handleTestNotifee}
-            className="absolute bottom-24 left-6 h-14 w-14 items-center justify-center rounded-full bg-blue-600"
-            style={{
-              shadowColor: '#2563eb',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 8,
-            }}
-          >
-            <MaterialSymbol name="notifications" size={24} className="text-white" />
-          </Pressable>
-
-          {/* Botão para testar AlarmActivity NATIVA (imediato) */}
-          <Pressable
-            accessibilityRole="button"
-            onPress={handleTestNativeActivity}
-            className="absolute left-6 h-14 w-14 items-center justify-center rounded-full bg-purple-600"
-            style={{
-              bottom: 168,
-              shadowColor: '#9333ea',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 8,
-            }}
-          >
-            <MaterialSymbol name="android" size={24} className="text-white" />
-          </Pressable>
-
-          {/* Botão para testar AlarmManager NATIVO (10s) - TESTE DEFINITIVO */}
+          {/* Botão para testar AlarmManager + Full Screen Intent (10s) */}
           <Pressable
             accessibilityRole="button"
             onPress={handleTestAlarmManager}
-            className="absolute left-6 h-14 w-14 items-center justify-center rounded-full bg-green-600"
+            className="absolute bottom-24 left-6 h-14 w-14 items-center justify-center rounded-full bg-green-600"
             style={{
-              bottom: 240,
               shadowColor: '#16a34a',
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,

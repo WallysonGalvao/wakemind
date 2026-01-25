@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -42,15 +43,23 @@ class AlarmReceiver : BroadcastReceiver() {
         // Criar canal de notificação (obrigatório no Android 8+)
         createNotificationChannel(context)
 
-        // Criar Intent para abrir AlarmActivity
+        // Build deep link URL for alarm trigger screen
+        val deepLinkUrl = "wakemind://alarm/trigger?alarmId=${alarmId}&time=${time}&period=${period}&challenge=${Uri.encode(challenge)}&challengeIcon=${challengeIcon}&type=${type}"
+        
+        Log.d(TAG, "Deep link URL: $deepLinkUrl")
+
+        // Criar Intent para abrir MainActivity DIRETO com deep link
         val activityIntent = Intent().apply {
             component = ComponentName(
                 "com.wgsoftwares.wakemind",
-                "com.wgsoftwares.wakemind.AlarmActivity"
+                "com.wgsoftwares.wakemind.MainActivity" // Abre direto a MainActivity!
             )
+            action = Intent.ACTION_VIEW
+            data = Uri.parse(deepLinkUrl)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or 
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+            // Pass extras as fallback
             putExtra("alarmId", alarmId)
             putExtra("time", time)
             putExtra("period", period)
@@ -92,8 +101,8 @@ class AlarmReceiver : BroadcastReceiver() {
         notificationManager.notify(alarmId.hashCode(), notification)
         
         Log.d(TAG, "Full Screen Intent notification posted with ID: ${alarmId.hashCode()}")
-        Log.d(TAG, "Notification should appear even on lock screen")
-        Log.d(TAG, "If screen is locked, it SHOULD wake up and show AlarmActivity")
+        Log.d(TAG, "Notification will open MainActivity directly with deep link")
+        Log.d(TAG, "If screen is locked, it SHOULD wake up and show MainActivity")
         Log.d(TAG, "========================================")
     }
 
