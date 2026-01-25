@@ -16,8 +16,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Platform, StyleSheet } from 'react-native';
 
-import * as Alarms from '../../modules/expo-alarms';
-
 import 'react-native-reanimated';
 
 const CustomDarkTheme = {
@@ -118,8 +116,6 @@ function RootLayout() {
   if (!fontsLoaded) {
     return null;
   }
-
-  console.log('Alarms | Theme:: ' + JSON.stringify(Alarms.getTheme()));
 
   return (
     <GestureHandlerRootView style={styles.gestureHandlerRootView}>
