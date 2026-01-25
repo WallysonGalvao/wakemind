@@ -7,12 +7,17 @@ Para conceder e verificar a permissão `USE_FULL_SCREEN_INTENT` via adb:
 
 ```bash
 adb shell appops set com.wgsoftwares.wakemind USE_FULL_SCREEN_INTENT allow
+adb shell appops set com.wgsoftwares.wakemind SYSTEM_ALERT_WINDOW allow
+adb shell dumpsys deviceidle whitelist +com.wgsoftwares.wakemind
+
 ```
 
 **2. Verificar se foi concedida:**
 
 ```bash
 adb shell appops get com.wgsoftwares.wakemind USE_FULL_SCREEN_INTENT
+adb shell appops get com.wgsoftwares.wakemind SYSTEM_ALERT_WINDOW
+adb shell dumpsys deviceidle whitelist | grep wakemind
 ```
 
 Deve retornar: `USE_FULL_SCREEN_INTENT: allow`
