@@ -53,35 +53,7 @@ class ExpoAlarmActivityModule : Module() {
       return@Function "No permission needed on Android < 14"
     }
 
-    // Função simples para testar: abre a AlarmActivity imediatamente
-    // A AlarmActivity é criada pelo plugin withFullScreenIntent
-    Function("testOpenActivity") {
-      val context = appContext.reactContext
-      
-      if (context == null) {
-        return@Function "Context is null"
-      }
-      
-      // Usar Intent genérica com ComponentName para evitar dependência direta
-      val intent = Intent().apply {
-        component = ComponentName(
-          "com.wgsoftwares.wakemind",
-          "com.wgsoftwares.wakemind.AlarmActivity"
-        )
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        putExtra("alarmId", "test-123")
-        putExtra("time", "07:00")
-        putExtra("period", "AM")
-        putExtra("challenge", "Test Challenge")
-        putExtra("challengeIcon", "calculate")
-        putExtra("type", "alarm")
-      }
-      
-      context.startActivity(intent)
-      return@Function "Activity launched"
-    }
-
-    // Nova função: Agenda um alarme real usando AlarmManager que abre AlarmActivity após 10s
+    // Agenda um alarme real usando AlarmManager que abre MainActivity após 10s
     Function("testAlarmManagerFullScreen") {
       val context = appContext.reactContext
       

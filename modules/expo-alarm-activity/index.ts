@@ -17,16 +17,8 @@ export function requestFullScreenIntentPermission(): string {
 }
 
 /**
- * Função simples para testar a AlarmActivity
- * Abre a AlarmActivity imediatamente (útil para debug)
- */
-export function testOpenActivity(): void {
-  ExpoAlarmActivityModule.testOpenActivity();
-}
-
-/**
  * Agenda um alarme REAL usando AlarmManager nativo
- * Dispara após 10 segundos e abre a AlarmActivity mesmo com tela bloqueada
+ * Dispara após 10 segundos e abre a MainActivity mesmo com tela bloqueada
  * Use para testar se Full Screen Intent funciona
  */
 export function testAlarmManagerFullScreen(): string {
