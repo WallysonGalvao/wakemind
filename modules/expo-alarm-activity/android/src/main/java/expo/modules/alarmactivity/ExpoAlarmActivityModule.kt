@@ -1,11 +1,9 @@
 package expo.modules.alarmactivity
 
-import android.app.AlarmManager
 import android.app.NotificationManager
-import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ComponentName
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -53,57 +51,37 @@ class ExpoAlarmActivityModule : Module() {
       return@Function "No permission needed on Android < 14"
     }
 
-    // Agenda um alarme real usando AlarmManager que abre MainActivity após 10s
-    Function("testAlarmManagerFullScreen") {
+    // Abre MainActivity com deep link (chamado quando Notifee dispara alarme)
+    Function("openAlarmScreen") { alarmId: String, time: String, period: String, challenge: String, challengeIcon: String, type: String ->
       val context = appContext.reactContext
       
       if (context == null) {
         return@Function "Context is null"
       }
-      
-      val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-      
-      // Intent para o BroadcastReceiver (não mais para Activity diretamente)
-      val intent = Intent(context, AlarmReceiver::class.java).apply {
-        action = AlarmReceiver.ACTION_ALARM
-        putExtra("alarmId", "test-alarm-manager-123")
-        putExtra("time", "07:00")
-        putExtra("period", "AM")
-        putExtra("challenge", "AlarmManager Test")
-        putExtra("challengeIcon", "calculate")
-        putExtra("type", "alarm")
+
+      // Construir deep link URL
+      val deepLinkUrl = "wakemind://alarm/trigger?alarmId=${alarmId}&time=${time}&period=${period}&challenge=${Uri.encode(challenge)}&challengeIcon=${challengeIcon}&type=${type}"
+
+      try {
+        val activityIntent = Intent().apply {
+          component = ComponentName(
+            "com.wgsoftwares.wakemind",
+            "com.wgsoftwares.wakemind.MainActivity"
+          )
+          action = Intent.ACTION_VIEW
+          data = Uri.parse(deepLinkUrl)
+          // Flags para abrir app usando SYSTEM_ALERT_WINDOW
+          flags = Intent.FLAG_ACTIVITY_NEW_TASK or 
+                  Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                  Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        
+        context.startActivity(activityIntent)
+        return@Function "MainActivity opened"
+      } catch (e: Exception) {
+        e.printStackTrace()
+        return@Function "Error: ${e.message}"
       }
-      
-      val pendingIntent = PendingIntent.getBroadcast(
-        context,
-        999, // Request code único para teste
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-      )
-      
-      // Agendar alarme para 10 segundos no futuro
-      val triggerTime = System.currentTimeMillis() + 10_000L
-      
-      // Usar setExactAndAllowWhileIdle para garantir que dispare mesmo em Doze Mode
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        alarmManager.setExactAndAllowWhileIdle(
-          AlarmManager.RTC_WAKEUP,
-          triggerTime,
-          pendingIntent
-        )
-      } else {
-        alarmManager.setExact(
-          AlarmManager.RTC_WAKEUP,
-          triggerTime,
-          pendingIntent
-        )
-      }
-      
-      android.util.Log.d("ExpoAlarmActivity", "AlarmManager scheduled for 10 seconds")
-      android.util.Log.d("ExpoAlarmActivity", "Using BroadcastReceiver approach")
-      android.util.Log.d("ExpoAlarmActivity", "Lock your screen now to test!")
-      
-      return@Function "AlarmManager scheduled for 10 seconds - Lock your screen!"
     }
   }
 }
