@@ -6,6 +6,9 @@ export default {
   'paywall.features.title': 'Qué está incluido',
   'paywall.features.unlimitedAlarms.title': 'Alarmas Ilimitadas',
   'paywall.features.unlimitedAlarms.description': 'Crea tantas alarmas como necesites, sin límites',
+  'paywall.features.hardDifficulty.title': 'Dificultad Difícil',
+  'paywall.features.hardDifficulty.description':
+    'Desafíate con los rompecabezas más difíciles para despertar',
   'paywall.features.allDifficulties.title': 'Todos los Niveles',
   'paywall.features.allDifficulties.description':
     'Accede a Easy, Medium y Hard mode para desafíos progresivos',
@@ -13,14 +16,31 @@ export default {
   'paywall.features.advancedStats.description': 'Análisis detallado con historial ilimitado',
   'paywall.features.premiumChallenges.title': 'Desafíos Premium',
   'paywall.features.premiumChallenges.description': 'Acceso a todos los tipos de desafíos mentales',
+  'paywall.features.adaptiveDifficulty.title': 'IA Adaptativa',
+  'paywall.features.adaptiveDifficulty.description':
+    'Dificultad inteligente que se adapta a tu rendimiento',
+  'paywall.features.achievements.title': 'Logros y Recompensas',
+  'paywall.features.achievements.description':
+    'Desbloquea insignias exclusivas y sigue tu progreso',
+  'paywall.features.themes.title': 'Temas Personalizados',
+  'paywall.features.themes.description': 'Personaliza tu app con temas exclusivos',
   'paywall.features.customThemes.title': 'Temas Personalizados',
   'paywall.features.customThemes.description': 'Personaliza tu app con temas exclusivos',
   'paywall.features.premiumSounds.title': 'Sonidos Premium',
   'paywall.features.premiumSounds.description':
     'Desbloquea tonos de alarma exclusivos de alta calidad',
+  'paywall.features.premiumAchievements.title': 'Logros Premium',
+  'paywall.features.premiumAchievements.description':
+    'Desbloquea logros exclusivos de nivel Oro y Platino',
+  'paywall.features.streakFreeze.title': 'Congelamiento de Racha',
+  'paywall.features.streakFreeze.description':
+    'Protege tu racha con hasta 3 tokens de congelamiento',
   'paywall.features.cloudBackup.title': 'Respaldo en la Nube',
   'paywall.features.cloudBackup.description':
     'Sincroniza tus datos entre dispositivos de forma segura',
+  'paywall.features.customNotifications.title': 'Notificaciones Personalizadas',
+  'paywall.features.customNotifications.description':
+    'Personaliza alertas con estilos y sonidos únicos',
   'paywall.features.prioritySupport.title': 'Soporte Prioritario',
   'paywall.features.prioritySupport.description': 'Respuestas más rápidas de nuestro equipo',
 
@@ -72,6 +92,21 @@ export default {
   'featureGate.premiumSounds': 'Desbloquear Sonidos Premium',
   'featureGate.streakFreeze': 'Desbloquear Congelamiento de Racha',
   'featureGate.cloudBackup': 'Desbloquear Respaldo en la Nube',
+
+  // Streak Freeze
+  'streakFreeze.title': 'Congelamiento de Racha',
+  'streakFreeze.tokensAvailable': '{{count}} tokens disponibles',
+  'streakFreeze.proRequired.title': 'Función Pro',
+  'streakFreeze.proRequired.message':
+    'El Congelamiento de Racha está disponible para usuarios Pro. ¡Obtén 3 tokens de congelamiento por mes!',
+  'streakFreeze.noTokens.title': 'Sin Tokens Disponibles',
+  'streakFreeze.noTokens.message':
+    'Has usado todos tus tokens de congelamiento este mes. Los tokens se reinician al inicio de cada mes.',
+  'streakFreeze.confirm.title': '¿Usar Congelamiento de Racha?',
+  'streakFreeze.confirm.message': 'Esto protegerá tu racha actual si fallas mañana. ¿Estás seguro?',
+  'streakFreeze.confirm.use': 'Usar Token',
+  'streakFreeze.success.title': '¡Racha Protegida!',
+  'streakFreeze.success.message': 'Tu racha está ahora protegida para mañana.',
 
   // Settings - Subscription
   'settings.subscription.title': 'Suscripción',

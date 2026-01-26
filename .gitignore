@@ -23,6 +23,12 @@ expo-env.d.ts
 android/
 ios/
 !google-services/
+# Exception: Keep native code in local modules
+!modules/**/android/
+!modules/**/ios/
+# But ignore build folders in modules
+modules/**/android/build/
+modules/**/ios/build/
 
 # Metro
 .metro-health-check*
@@ -71,3 +77,6 @@ maestro/screenshots/
 .env.local
 
 google-service-account.json
+wakemind.db
+
+

@@ -1,4 +1,5 @@
 import accessibilityEN from './accessibility';
+import { achievementsEN } from './achievements';
 import { alarmSchedulerEN } from './alarm-scheduler';
 import { appEN } from './app';
 import { backEN } from './back';
@@ -6,6 +7,7 @@ import { countriesEN } from './countries';
 import { dashboardEN } from './dashboard';
 import { expoEN } from './expo';
 import { onboardingEN } from './onboarding';
+import permissionsEN from './permissions';
 import { privacyPolicyEN } from './privacy-policy';
 import { quickActionsEN } from './quick-actions';
 import { settingsEN } from './settings';
@@ -32,4 +34,6 @@ export default {
   ...supportEN,
   ...alarmSchedulerEN,
   ...widgetsEN,
+  ...achievementsEN,
+  permissions: permissionsEN,
 };

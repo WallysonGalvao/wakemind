@@ -301,6 +301,7 @@ export default function AlarmTriggerScreen() {
         cognitiveScore,
         reactionTime,
         challengeType,
+        attempts: attempt,
       });
 
       // Track challenge completed
@@ -331,23 +332,69 @@ export default function AlarmTriggerScreen() {
   ]);
 
   const handleChallengeAttempt = useCallback(
-    (correct: boolean) => {
+    async (correct: boolean) => {
       if (!correct) {
         if (attempt >= maxAttempts) {
           // Track challenge failed after max attempts
           AnalyticsEvents.challengeFailed(challengeType, difficulty);
 
-          // Auto-dismiss alarm after max failed attempts to prevent indefinite ringing
-          // This ensures the alarm stops even if user struggles with the challenge
-          setTimeout(() => {
-            handleDismiss();
-          }, 1500); // Small delay to show final feedback
+          // Calculate performance metrics even on failure
+          const challengeEndTime = Date.now();
+          const timeSpent = challengeEndTime - challengeStartTime;
+          const reactionTime = timeSpent;
+
+          // Calculate cognitive score (will be low due to max attempts)
+          const cognitiveScore = calculateCognitiveScore({
+            attempts: maxAttempts,
+            timeSpent,
+            difficulty,
+            maxAttempts,
+          });
+
+          await stopAlarm();
+
+          // Record alarm completion even on failure for complete tracking
+          if (alarm) {
+            const targetTime = `${params.time || alarm.time}`;
+            const actualTime = dayjs().toISOString();
+
+            await recordAlarmCompletion({
+              targetTime,
+              actualTime,
+              cognitiveScore,
+              reactionTime,
+              challengeType,
+              attempts: maxAttempts,
+            });
+
+            // Dismiss alarm from scheduler
+            AnalyticsEvents.alarmDismissed(alarm.id, challengeType, maxAttempts);
+            await AlarmScheduler.dismissAlarm(alarm);
+
+            // Schedule wake check if protocol is enabled
+            if (isWakeCheckEnabled) {
+              await AlarmScheduler.scheduleWakeCheck(alarm);
+            }
+          }
+
+          // Navigate to performance summary even on failure
+          router.push('/alarm/performance-summary');
         } else if (attempt < maxAttempts) {
           setAttempt((prev) => prev + 1);
         }
       }
     },
-    [attempt, maxAttempts, challengeType, difficulty, handleDismiss]
+    [
+      attempt,
+      maxAttempts,
+      challengeType,
+      difficulty,
+      challengeStartTime,
+      alarm,
+      params.time,
+      stopAlarm,
+      isWakeCheckEnabled,
+    ]
   );
 
   const containerStyle = useMemo(

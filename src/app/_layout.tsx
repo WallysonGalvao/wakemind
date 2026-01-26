@@ -5,6 +5,7 @@ import '../configs';
 import { useEffect } from 'react';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -14,6 +15,7 @@ import { HapticsProvider } from 'react-native-custom-haptics';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Platform, StyleSheet } from 'react-native';
+
 import 'react-native-reanimated';
 
 const CustomDarkTheme = {
@@ -45,6 +47,7 @@ function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
   const { getAlarmById } = useAlarms();
+  usePerformanceMonitorDevTools();
   const { initialize: initializeSubscription } = useSubscriptionStore();
 
   const [fontsLoaded] = useFonts({
@@ -80,6 +83,11 @@ function RootLayout() {
         });
 
         if (!isMounted) return;
+
+        if (!isMounted) return;
+        // Seed achievements on first launch
+        const { seedAchievements } = await import('@/db/functions/achievements');
+        await seedAchievements();
 
         if (!isMounted) return;
         // Sync alarms with scheduler on app start
@@ -189,6 +197,14 @@ function RootLayout() {
                 options={{
                   presentation: 'modal',
                   headerShown: true,
+                }}
+              />
+
+              {/* Achievements */}
+              <Stack.Screen
+                name="achievements"
+                options={{
+                  headerShown: false,
                 }}
               />
 

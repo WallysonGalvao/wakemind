@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Image } from 'expo-image';
 
 import { Pressable, View } from 'react-native';
