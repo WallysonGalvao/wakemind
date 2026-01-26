@@ -517,11 +517,13 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   return (
     <View className="flex-1 bg-background-light dark:bg-background-dark" style={{ paddingTop }}>
       {/* Permissions Modal - Shows on first alarm creation for critical Android permissions */}
-      <AlarmPermissionsModal
-        visible={showPermissionsModal}
-        onClose={() => setShowPermissionsModal(false)}
-        onComplete={handlePermissionsComplete}
-      />
+      {Platform.OS === 'android' && (
+        <AlarmPermissionsModal
+          visible={showPermissionsModal}
+          onClose={() => setShowPermissionsModal(false)}
+          onComplete={handlePermissionsComplete}
+        />
+      )}
 
       {/* Header */}
       {!isEditMode && (
