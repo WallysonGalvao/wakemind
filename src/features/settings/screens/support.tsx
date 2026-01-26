@@ -1,10 +1,11 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 
 import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Platform, Pressable, ScrollView, View } from 'react-native';
+import { Linking, Platform, Pressable, ScrollView, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
@@ -25,21 +26,51 @@ function SectionTitle({ icon, title }: { icon: string; title: string }) {
   );
 }
 
-function FAQItem({ question, answer }: { question: string; answer: string }) {
+function FAQItem({
+  question,
+  answer,
+  questionId,
+  category,
+}: {
+  question: string;
+  answer: string;
+  questionId: string;
+  category: string;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleToggle = () => {
+    if (!isExpanded) {
+      AnalyticsEvents.faqItemExpanded(questionId, category);
+    }
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <View className="mb-4 flex-row gap-4">
+    <Pressable accessibilityRole="button" onPress={handleToggle} className="mb-4 flex-row gap-4">
       <View className="mt-1.5">
         <View className="h-3.5 w-3.5 items-center justify-center rounded-sm border border-primary-500 bg-white shadow-sm dark:bg-background-dark">
           <View className="h-1 w-1 rounded-[1px] bg-primary-500" />
         </View>
       </View>
       <View className="flex-1">
-        <Text className="mb-1 text-sm font-semibold text-slate-800 dark:text-white">
-          {question}
-        </Text>
-        <Text className="text-xs leading-relaxed text-gray-600 dark:text-gray-400">{answer}</Text>
+        <View className="flex-row items-center justify-between">
+          <Text className="mb-1 flex-1 text-sm font-semibold text-slate-800 dark:text-white">
+            {question}
+          </Text>
+          <MaterialSymbol
+            name={isExpanded ? 'expand_less' : 'expand_more'}
+            size={20}
+            color={COLORS.brandPrimary}
+          />
+        </View>
+        {isExpanded ? (
+          <Text className="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+            {answer}
+          </Text>
+        ) : null}
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -48,12 +79,17 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 // ============================================================================
 
 export default function SupportScreen() {
+  const router = useRouter();
   const navigation = useNavigation();
   const { t } = useTranslation();
 
   // Analytics tracking
   useAnalyticsScreen('Support');
-  const router = useRouter();
+
+  const handleContactPress = () => {
+    AnalyticsEvents.supportEmailTapped();
+    Linking.openURL('mailto:wallyson.galvao@gmail.com');
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -88,26 +124,36 @@ export default function SupportScreen() {
           <SectionTitle icon="alarm" title={t('support.faq.alarms.title')} />
           <View className="pl-1">
             <FAQItem
+              questionId="alarms_not_ringing"
+              category="alarms"
               question={t('support.faq.alarms.notRinging.question')}
               answer={t('support.faq.alarms.notRinging.answer')}
             />
             <FAQItem
+              questionId="alarms_locked"
+              category="alarms"
               question={t('support.faq.alarms.locked.question')}
               answer={t('support.faq.alarms.locked.answer')}
             />
             {Platform.OS === 'android' && (
               <>
                 <FAQItem
+                  questionId="alarms_permissions"
+                  category="alarms"
                   question={t('support.faq.alarms.permissions.question')}
                   answer={t('support.faq.alarms.permissions.answer')}
                 />
                 <FAQItem
+                  questionId="alarms_auto_open"
+                  category="alarms"
                   question={t('support.faq.alarms.autoOpen.question')}
                   answer={t('support.faq.alarms.autoOpen.answer')}
                 />
               </>
             )}
             <FAQItem
+              questionId="alarms_snooze"
+              category="alarms"
               question={t('support.faq.alarms.snooze.question')}
               answer={t('support.faq.alarms.snooze.answer')}
             />
@@ -120,10 +166,14 @@ export default function SupportScreen() {
           <SectionTitle icon="volume_up" title={t('support.faq.sound.title')} />
           <View className="pl-1">
             <FAQItem
+              questionId="sound_no_vibration"
+              category="sound"
               question={t('support.faq.sound.noVibration.question')}
               answer={t('support.faq.sound.noVibration.answer')}
             />
             <FAQItem
+              questionId="sound_test_tones"
+              category="sound"
               question={t('support.faq.sound.testTones.question')}
               answer={t('support.faq.sound.testTones.answer')}
             />
@@ -136,10 +186,14 @@ export default function SupportScreen() {
           <SectionTitle icon="psychology" title={t('support.faq.challenges.title')} />
           <View className="pl-1">
             <FAQItem
+              questionId="challenges_difficult"
+              category="challenges"
               question={t('support.faq.challenges.difficult.question')}
               answer={t('support.faq.challenges.difficult.answer')}
             />
             <FAQItem
+              questionId="challenges_screen_lock"
+              category="challenges"
               question={t('support.faq.challenges.screenLock.question')}
               answer={t('support.faq.challenges.screenLock.answer')}
             />
@@ -152,14 +206,20 @@ export default function SupportScreen() {
           <SectionTitle icon="trending_up" title={t('support.faq.performance.title')} />
           <View className="pl-1">
             <FAQItem
+              questionId="performance_cognitive_score"
+              category="performance"
               question={t('support.faq.performance.cognitiveScore.question')}
               answer={t('support.faq.performance.cognitiveScore.answer')}
             />
             <FAQItem
+              questionId="performance_streak"
+              category="performance"
               question={t('support.faq.performance.streak.question')}
               answer={t('support.faq.performance.streak.answer')}
             />
             <FAQItem
+              questionId="performance_data"
+              category="performance"
               question={t('support.faq.performance.data.question')}
               answer={t('support.faq.performance.data.answer')}
             />
@@ -172,10 +232,14 @@ export default function SupportScreen() {
           <SectionTitle icon="bug_report" title={t('support.faq.technical.title')} />
           <View className="pl-1">
             <FAQItem
+              questionId="technical_crashing"
+              category="technical"
               question={t('support.faq.technical.crashing.question')}
               answer={t('support.faq.technical.crashing.answer')}
             />
             <FAQItem
+              questionId="technical_battery"
+              category="technical"
               question={t('support.faq.technical.battery.question')}
               answer={t('support.faq.technical.battery.answer')}
             />
@@ -220,6 +284,11 @@ export default function SupportScreen() {
           <Text className="mb-3 mt-4 text-center text-xs font-medium text-gray-400 dark:text-gray-500">
             {t('support.footer')}
           </Text>
+          <Pressable onPress={handleContactPress} accessibilityRole="link">
+            <Text className="text-sm font-bold text-primary-500 underline">
+              {t('privacyPolicy.footer.email')}
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </View>

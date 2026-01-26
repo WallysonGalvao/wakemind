@@ -18,6 +18,8 @@ export function useAlarmPermissions() {
     exactAlarms: 'undetermined',
     fullScreen: 'undetermined',
     batteryOptimization: 'undetermined',
+    displayOverOtherApps: 'undetermined',
+    autoStart: 'undetermined',
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -62,6 +64,18 @@ export function useAlarmPermissions() {
     }
   }, []);
 
+  const openDisplayOverOtherAppsSettings = useCallback(async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openDisplayOverOtherAppsSettings();
+    }
+  }, []);
+
+  const openAutoStartSettings = useCallback(async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openAutoStartSettings();
+    }
+  }, []);
+
   useEffect(() => {
     checkPermissions();
   }, [checkPermissions]);
@@ -89,5 +103,7 @@ export function useAlarmPermissions() {
     openBatterySettings,
     openAlarmSettings,
     openNotificationSettings,
+    openDisplayOverOtherAppsSettings,
+    openAutoStartSettings,
   };
 }
