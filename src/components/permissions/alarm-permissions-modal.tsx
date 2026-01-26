@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Activity, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -239,62 +239,68 @@ export function AlarmPermissionsModal({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
-      <View
-        className="flex-1 bg-background-light dark:bg-background-dark"
-        style={{ paddingTop: insets.top }}
-      >
-        {/* Close Button */}
-        <View className="flex-row justify-end px-6 pt-4">
-          <Pressable
-            onPress={handleClose}
-            accessibilityRole="button"
-            accessibilityLabel={t('permissions.alarmPermissions.accessibility.close')}
-            accessibilityHint={t('permissions.alarmPermissions.accessibility.closeHint')}
-            className="h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-surface-dark"
-          >
-            <MaterialSymbol name="close" size={20} className="text-slate-600 dark:text-slate-300" />
-          </Pressable>
+    <Activity mode={visible ? 'visible' : 'hidden'}>
+      <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
+        <View
+          className="flex-1 bg-background-light dark:bg-background-dark"
+          style={{ paddingTop: insets.top }}
+        >
+          {/* Close Button */}
+          <View className="flex-row justify-end px-6 pt-4">
+            <Pressable
+              onPress={handleClose}
+              accessibilityRole="button"
+              accessibilityLabel={t('permissions.alarmPermissions.accessibility.close')}
+              accessibilityHint={t('permissions.alarmPermissions.accessibility.closeHint')}
+              className="h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-surface-dark"
+            >
+              <MaterialSymbol
+                name="close"
+                size={20}
+                className="text-slate-600 dark:text-slate-300"
+              />
+            </Pressable>
+          </View>
+
+          {/* Content */}
+          <View className="flex-1 px-8 pt-6">{renderStepContent()}</View>
+
+          {/* Buttons */}
+          <View className="px-8 pb-12">
+            <Pressable
+              onPress={handleNext}
+              disabled={isLoading}
+              accessibilityRole="button"
+              accessibilityLabel={t('permissions.alarmPermissions.accessibility.nextHint')}
+              accessibilityHint={t('permissions.alarmPermissions.accessibility.nextHint')}
+              className="h-14 items-center justify-center rounded-xl bg-brand-primary shadow-lg active:scale-[0.98]"
+            >
+              <Text className="text-sm font-extrabold uppercase tracking-wider text-white">
+                {isLoading
+                  ? t('permissions.alarmPermissions.accessibility.loading')
+                  : t('permissions.alarmPermissions.buttons.openSettings')}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={handleSkip}
+              accessibilityRole="button"
+              accessibilityLabel={t('permissions.alarmPermissions.accessibility.skipLabel')}
+              accessibilityHint={t('permissions.alarmPermissions.accessibility.skipHint')}
+              className="mt-4 items-center justify-center"
+            >
+              <Text className="text-xs font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                {t('permissions.alarmPermissions.buttons.skipForNow')}
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* Bottom indicator */}
+          <View className="absolute bottom-2 left-1/2 -translate-x-1/2">
+            <View className="h-1.5 w-32 rounded-full bg-slate-300 dark:bg-white/20" />
+          </View>
         </View>
-
-        {/* Content */}
-        <View className="flex-1 px-8 pt-6">{renderStepContent()}</View>
-
-        {/* Buttons */}
-        <View className="px-8 pb-12">
-          <Pressable
-            onPress={handleNext}
-            disabled={isLoading}
-            accessibilityRole="button"
-            accessibilityLabel={t('permissions.alarmPermissions.accessibility.nextHint')}
-            accessibilityHint={t('permissions.alarmPermissions.accessibility.nextHint')}
-            className="h-14 items-center justify-center rounded-xl bg-brand-primary shadow-lg active:scale-[0.98]"
-          >
-            <Text className="text-sm font-extrabold uppercase tracking-wider text-white">
-              {isLoading
-                ? t('permissions.alarmPermissions.accessibility.loading')
-                : t('permissions.alarmPermissions.buttons.openSettings')}
-            </Text>
-          </Pressable>
-
-          <Pressable
-            onPress={handleSkip}
-            accessibilityRole="button"
-            accessibilityLabel={t('permissions.alarmPermissions.accessibility.skipLabel')}
-            accessibilityHint={t('permissions.alarmPermissions.accessibility.skipHint')}
-            className="mt-4 items-center justify-center"
-          >
-            <Text className="text-xs font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500">
-              {t('permissions.alarmPermissions.buttons.skipForNow')}
-            </Text>
-          </Pressable>
-        </View>
-
-        {/* Bottom indicator */}
-        <View className="absolute bottom-2 left-1/2 -translate-x-1/2">
-          <View className="h-1.5 w-32 rounded-full bg-slate-300 dark:bg-white/20" />
-        </View>
-      </View>
-    </Modal>
+      </Modal>
+    </Activity>
   );
 }
