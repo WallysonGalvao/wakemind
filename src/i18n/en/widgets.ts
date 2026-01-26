@@ -34,6 +34,10 @@ export const widgetsEN = {
       title: 'Daily Insight',
       description: 'Performance tips',
     },
+    achievements: {
+      title: 'Achievements',
+      description: 'Unlocked milestones',
+    },
     falseStarts: {
       title: 'False Starts',
       description: 'Snooze activity tracking',
@@ -41,6 +45,34 @@ export const widgetsEN = {
     sleepEnvironment: {
       title: 'Sleep Environment',
       description: 'Noise & light levels',
+    },
+    snoozeAnalytics: {
+      title: 'Snooze Analytics',
+      description: 'Snooze behavior tracking',
+    },
+    goalProgress: {
+      title: 'Goal Progress',
+      description: 'Personal goal tracking',
+    },
+    weeklyHeatmap: {
+      title: 'Weekly Heatmap',
+      description: '4-week performance grid',
+    },
+    sleepQuality: {
+      title: 'Sleep Quality',
+      description: 'Sleep impact analysis',
+    },
+    circadianRhythm: {
+      title: 'Circadian Rhythm',
+      description: 'Optimal wake timing',
+    },
+    morningRoutine: {
+      title: 'Morning Routine',
+      description: 'Daily habit checklist',
+    },
+    streakFreeze: {
+      title: 'Streak Freeze',
+      description: 'Protect your streak with freeze tokens',
     },
   },
 };

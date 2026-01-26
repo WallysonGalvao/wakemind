@@ -1,11 +1,14 @@
 import accessibilityPT from './accessibility';
+import { achievementsPT } from './achievements';
 import { alarmSchedulerPT } from './alarm-scheduler';
 import { appPT } from './app';
 import { backPT } from './back';
 import { countriesPT } from './countries';
 import { dashboardPT } from './dashboard';
+import { dashboardWidgetsPT } from './dashboard-widgets';
 import { expoPT } from './expo';
 import { onboardingPT } from './onboarding';
+import permissionsPT from './permissions';
 import { privacyPolicyPT } from './privacy-policy';
 import { quickActionsPT } from './quick-actions';
 import { settingsPT } from './settings';
@@ -20,6 +23,7 @@ export default {
   ...backPT,
   ...countriesPT,
   ...dashboardPT,
+  ...dashboardWidgetsPT,
   ...sportsPT,
   ...expoPT,
   ...onboardingPT,
@@ -32,4 +36,6 @@ export default {
   ...supportPT,
   ...alarmSchedulerPT,
   ...widgetsPT,
+  ...achievementsPT,
+  permissions: permissionsPT,
 };

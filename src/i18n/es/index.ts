@@ -1,11 +1,14 @@
 import accessibilityES from './accessibility';
+import { achievementsES } from './achievements';
 import { alarmSchedulerES } from './alarm-scheduler';
 import { appES } from './app';
 import { backES } from './back';
 import { countriesES } from './countries';
 import { dashboardES } from './dashboard';
+import { dashboardWidgetsES } from './dashboard-widgets';
 import { expoES } from './expo';
 import { onboardingES } from './onboarding';
+import permissionsES from './permissions';
 import { privacyPolicyES } from './privacy-policy';
 import { quickActionsES } from './quick-actions';
 import { settingsES } from './settings';
@@ -20,6 +23,7 @@ export default {
   ...backES,
   ...countriesES,
   ...dashboardES,
+  ...dashboardWidgetsES,
   ...sportsES,
   ...expoES,
   ...onboardingES,
@@ -32,4 +36,6 @@ export default {
   ...supportES,
   ...alarmSchedulerES,
   ...widgetsES,
+  ...achievementsES,
+  permissions: permissionsES,
 };

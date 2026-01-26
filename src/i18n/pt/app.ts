@@ -165,7 +165,12 @@ export const appPT = {
   'permissions.notificationsRequired': 'Permissão de notificação é necessária para alarmes',
   'permissions.exactAlarmsRequired':
     'Permissão de alarme exato é necessária para despertar confiável',
-  'permissions.batteryOptimization': 'Desative a otimização de bateria para alarmes confiáveis',
+  'permissions.batteryOptimization': 'Desativar Otimização de Bateria',
+  'permissions.batteryOptimizationDescription':
+    'Para alarmes confiáveis, desative a otimização de bateria para o WakeMind. Isso garante que os alarmes toquem mesmo quando o celular estiver em repouso.',
+  'permissions.fullScreenRequired': 'Ativar Notificações em Tela Cheia (Android 14+)',
+  'permissions.fullScreenDescription':
+    'Para abrir o app automaticamente quando o alarme tocar, ative "Permitir notificações em tela cheia" nas configurações de notificação do WakeMind. Isso é crítico para acordá-lo efetivamente.',
   'permissions.openSettings': 'Abrir Configurações',
 
   // Common
@@ -177,6 +182,8 @@ export const appPT = {
   'common.delete': 'Excluir',
   'common.confirm': 'Confirmar',
   'common.ok': 'OK',
+  'common.success': 'Sucesso',
+  'common.error': 'Erro',
   'common.info': 'Mais informações',
   'common.close': 'Fechar',
   'common.back': 'Voltar',

@@ -12,6 +12,12 @@ export const supportEN = {
   'support.faq.alarms.snooze.question': 'How does Snooze Protection work?',
   'support.faq.alarms.snooze.answer':
     'When enabled, you must complete a cognitive challenge to snooze the alarm, preventing unconscious snoozing.',
+  'support.faq.alarms.permissions.question': 'What permissions does WakeMind need on Android 14+?',
+  'support.faq.alarms.permissions.answer':
+    'Android 14+ requires: 1) Full Screen Notifications - to open the app automatically when alarm triggers (Settings > Apps > WakeMind > Notifications > Allow full screen notifications). 2) Disable Battery Optimization - ensures alarms ring reliably even when phone is idle.',
+  'support.faq.alarms.autoOpen.question': 'App does not open automatically when alarm rings',
+  'support.faq.alarms.autoOpen.answer':
+    'Enable "Full Screen Notifications" in Settings > Apps > WakeMind > Notifications. Also disable battery optimization for WakeMind.',
 
   // Sound & Vibration
   'support.faq.sound.title': 'Sound & Vibration',

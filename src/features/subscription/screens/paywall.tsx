@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, View } from 'react-native';
 
 import { FeatureRow, ProBadge } from '../components/paywall-features';
-import { PaywallFooter } from '../components/paywall-footer';
 import { usePaywallHeader } from '../components/paywall-header';
 import { MonthlyPricingCard, YearlyPricingCard } from '../components/paywall-pricing-cards';
 import { PRO_FEATURES } from '../constants/pro-features';
@@ -39,6 +39,13 @@ export default function PaywallScreen() {
 
   // Track paywall view time for analytics
   const [viewStartTime] = useState(Date.now());
+
+  // Features carousel state
+  const [currentFeaturePage, setCurrentFeaturePage] = useState(0);
+  const featureScrollRef = useRef<ScrollView>(null);
+  const { width: screenWidth } = Dimensions.get('window');
+  const FEATURES_PER_PAGE = 3;
+  const totalPages = Math.ceil(PRO_FEATURES.length / FEATURES_PER_PAGE);
 
   // Set initial selected plan based on mode
   const getInitialPlan = (): PlanType => {
@@ -104,10 +111,17 @@ export default function PaywallScreen() {
     return t('paywall.hero.title');
   };
 
-  const getSubtitle = () => {
-    if (mode === 'yearly-only') return t('paywall.upgrade.yearlySubtitle');
-    if (mode === 'monthly-only') return t('paywall.upgrade.monthlySubtitle');
-    return t('paywall.hero.subtitle');
+  // const getSubtitle = () => {
+  //   if (mode === 'yearly-only') return t('paywall.upgrade.yearlySubtitle');
+  //   if (mode === 'monthly-only') return t('paywall.upgrade.monthlySubtitle');
+  //   return t('paywall.hero.subtitle');
+  // };
+
+  // Handle feature scroll
+  const handleFeatureScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const page = Math.round(offsetX / screenWidth);
+    setCurrentFeaturePage(page);
   };
 
   return (
@@ -116,36 +130,70 @@ export default function PaywallScreen() {
       style={{ paddingBottom: insets.bottom }}
     >
       <ScrollView
-        className="flex-1 px-6"
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-5"
       >
         {/* Title Section */}
-        <View className="pb-2 pt-4">
+        <View className="px-6 pb-2 pt-4">
           <ProBadge />
           <Text className="mb-4 text-[2.5rem] font-bold leading-[1.1] tracking-tight text-gray-900 dark:text-white">
             {getTitle()}
           </Text>
-          <Text className="max-w-[300px] text-base font-normal leading-relaxed text-gray-500 dark:text-gray-400">
+          {/* <Text className="max-w-[300px] text-base font-normal leading-relaxed text-gray-500 dark:text-gray-400">
             {getSubtitle()}
-          </Text>
+          </Text> */}
         </View>
 
-        {/* Features Section - Only show in full mode */}
-        {mode === 'full' ? (
-          <View className="py-6">
-            <View className="gap-4">
-              {PRO_FEATURES.map((feature) => (
-                <FeatureRow
-                  key={feature.titleKey}
-                  icon={feature.icon}
-                  title={t(feature.titleKey)}
-                  description={t(feature.descriptionKey)}
+        {/* Features Section - Horizontal Carousel */}
+        <View className="pb-6">
+          <ScrollView
+            ref={featureScrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleFeatureScroll}
+            scrollEventThrottle={16}
+            decelerationRate="fast"
+            snapToInterval={screenWidth}
+            snapToAlignment="start"
+          >
+            {Array.from({ length: totalPages }).map((_, pageIndex) => {
+              const startIdx = pageIndex * FEATURES_PER_PAGE;
+              const endIdx = Math.min(startIdx + FEATURES_PER_PAGE, PRO_FEATURES.length);
+              const pageFeatures = PRO_FEATURES.slice(startIdx, endIdx);
+
+              return (
+                <View key={pageIndex} style={{ width: screenWidth }} className="gap-2 px-6">
+                  {pageFeatures.map((feature) => (
+                    <FeatureRow
+                      key={feature.titleKey}
+                      icon={feature.icon}
+                      title={t(feature.titleKey)}
+                      description={t(feature.descriptionKey)}
+                    />
+                  ))}
+                </View>
+              );
+            })}
+          </ScrollView>
+
+          {/* Dots Indicator */}
+          {totalPages > 1 ? (
+            <View className="mt-4 flex-row items-center justify-center gap-2">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <View
+                  key={index}
+                  className={`h-2 rounded-full ${
+                    index === currentFeaturePage
+                      ? 'w-6 bg-primary-500'
+                      : 'w-2 bg-gray-300 dark:bg-gray-600'
+                  }`}
                 />
               ))}
             </View>
-          </View>
-        ) : null}
+          ) : null}
+        </View>
       </ScrollView>
 
       {/* Pricing Section - Fixed at bottom */}
@@ -218,7 +266,7 @@ export default function PaywallScreen() {
         ) : null}
 
         {/* Footer */}
-        <PaywallFooter />
+        {/* <PaywallFooter /> */}
       </View>
     </View>
   );

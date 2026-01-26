@@ -1,5 +1,25 @@
+// ### 2. **Cognitive Activation** - Removido temporariamente
+// - Código comentado com TODO explicativo
+// - Imports e hooks desabilitados
+// - **Próximas features a implementar:**
+//   - 📊 Performance por tipo de desafio (Math/Memory/Logic)
+//   - ⏰ Análise de horário de pico de performance
+//   - 📈 Insights de padrões semanais ("Você performa melhor às segundas")
+//   - 🔥 Análise e predição de streaks
+
+// ## 🎯 Próximos Passos para Cognitive Activation Premium:
+
+// Quando for reimplementar, crie um novo componente `advanced-performance-insights.tsx` com:
+
+// 1. **Dashboard por tipo de desafio** (qual você é melhor?)
+// 2. **Mapa de calor por hora do dia** (quando você está mais alerta?)
+// 3. **Padrões semanais** (dia da semana × performance)
+// 4. **Predições** baseadas em histórico
+// 5. **Recomendações personalizadas** ("Tente desafios de lógica pela manhã")
+
 import React, { useMemo } from 'react';
 
+import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -49,8 +69,8 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
 
   // Get current month name
   const currentMonthName = useMemo(() => {
-    const now = new Date();
-    return new Intl.DateTimeFormat(t('common.locale'), { month: 'long' }).format(now);
+    const now = dayjs();
+    return new Intl.DateTimeFormat(t('common.locale'), { month: 'long' }).format(now.toDate());
   }, [t]);
 
   // Create a map of date -> score for quick lookup
@@ -64,13 +84,17 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
 
   // Build the grid for current month only
   const monthGrid = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    const now = dayjs();
+    const year = now.year();
+    const month = now.month();
 
     // Get first day of month and total days in month
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
+    const firstDay = dayjs().year(year).month(month).date(1).toDate();
+    const lastDay = dayjs()
+      .year(year)
+      .month(month + 1)
+      .date(0)
+      .toDate();
     const daysInMonth = lastDay.getDate();
     const startDayOfWeek = firstDay.getDay(); // 0 = Sunday
     // Convert to Monday-based week (Monday = 0, Sunday = 6)
@@ -86,7 +110,7 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
 
     // Add all days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
+      const date = dayjs().year(year).month(month).date(day).toDate();
       const dateStr = date.toISOString().split('T')[0];
       const score = scoreMap.get(dateStr) || 0;
       const dayOfWeek = date.getDay();
@@ -176,7 +200,7 @@ export function CognitiveActivation({ data }: CognitiveActivationProps) {
                   }
 
                   // Check if this is today
-                  const today = new Date().toISOString().split('T')[0];
+                  const today = dayjs().toISOString().split('T')[0];
                   const isToday = cell.date === today;
 
                   if (isToday) {

@@ -95,12 +95,13 @@ function WaveformBar({
   return (
     <Animated.View
       style={animatedStyle}
-      className={`w-1 rounded-full ${isPlaying
+      className={`w-1 rounded-full ${
+        isPlaying
           ? 'bg-brand-primary'
           : isActive
             ? 'bg-brand-primary/40'
             : 'bg-gray-300 dark:bg-gray-600'
-        }`}
+      }`}
     />
   );
 }
@@ -134,10 +135,11 @@ function ToneItem({
         isLocked ? 'Premium tone - upgrade required' : `Select ${toneName} as alarm tone`
       }
       accessibilityState={{ selected: isActive }}
-      className={`mx-4 mb-3 overflow-hidden rounded-xl border p-4 ${isActive
+      className={`mx-4 mb-3 overflow-hidden rounded-xl border p-4 ${
+        isActive
           ? 'border-brand-primary ring-1 ring-brand-primary/20'
           : 'border-gray-100 dark:border-white/5'
-        } bg-white shadow-sm dark:bg-surface-dark`}
+      } bg-white shadow-sm dark:bg-surface-dark`}
     >
       <View className="flex-row items-center gap-3">
         <Pressable
@@ -148,25 +150,26 @@ function ToneItem({
           accessibilityRole="button"
           accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
           accessibilityHint={`${isPlaying ? 'Pause' : 'Play'} ${toneName} preview`}
-          className={`h-12 w-12 items-center justify-center rounded-full ${isPlaying
+          className={`h-12 w-12 items-center justify-center rounded-full ${
+            isPlaying
               ? 'bg-brand-primary'
               : isActive
                 ? 'bg-brand-primary/20'
                 : 'bg-gray-100 dark:bg-gray-800'
-            }`}
+          }`}
           /* eslint-disable react-native/no-inline-styles, react-native/no-color-literals -- shadow-* in conditional className causes navigation context error with NativeWind + Expo Router + React 19 */
           style={
             isPlaying
               ? {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 4,
-                elevation: 4,
-              }
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 4,
+                }
               : undefined
           }
-        /* eslint-enable react-native/no-inline-styles, react-native/no-color-literals */
+          /* eslint-enable react-native/no-inline-styles, react-native/no-color-literals */
         >
           <MaterialSymbol
             name={isPlaying ? 'pause' : 'play_arrow'}
@@ -274,6 +277,12 @@ export default function AlarmToneScreen() {
         // Get the audio source for this tone
         const audioSource = getToneAudioSource(toneId) as AudioSource;
 
+        // Track preview
+        const tone = ALARM_TONES.find((t) => t.id === toneId);
+        if (tone) {
+          AnalyticsEvents.alarmTonePreviewed(toneId, t(tone.categoryKey));
+        }
+
         // Use the dummy player (we can change its source dynamically)
         dummyPlayer.replace(audioSource);
         dummyPlayer.loop = true;
@@ -286,7 +295,7 @@ export default function AlarmToneScreen() {
         setPlayingToneId(null);
       }
     },
-    [playingToneId, stopCurrentSound, dummyPlayer]
+    [playingToneId, stopCurrentSound, dummyPlayer, t]
   );
 
   const handleSelect = async (tone: AlarmTone) => {
@@ -296,7 +305,7 @@ export default function AlarmToneScreen() {
       return;
     }
     setAlarmToneId(tone.id);
-    AnalyticsEvents.alarmToneChanged(tone.id);
+    AnalyticsEvents.alarmToneChanged(tone.id, t(tone.categoryKey));
   };
 
   return (

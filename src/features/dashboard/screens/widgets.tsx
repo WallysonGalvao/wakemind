@@ -4,10 +4,11 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScrollView, Text, View } from 'react-native';
+import { SectionList, Text, View } from 'react-native';
 
 import { WidgetToggle } from '../components/widget-toggle';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -20,21 +21,35 @@ export default function WidgetsScreen() {
   const colorScheme = useColorScheme();
   const { enabledWidgets, toggleWidget, resetToDefaults } = useWidgetStore();
 
+  // Track screen view
+  React.useEffect(() => {
+    AnalyticsEvents.widgetsScreenViewed();
+  }, []);
+
   const iconColor = colorScheme === 'dark' ? '#FFFFFF' : '#0F1621';
 
-  const widgetsByCategory = WIDGET_CONFIGS.reduce(
-    (acc, widget) => {
-      if (!acc[widget.category]) {
-        acc[widget.category] = [];
-      }
-      acc[widget.category].push(widget);
-      return acc;
+  const sections = [
+    {
+      title: t('widgets.category.activePerformance'),
+      data: WIDGET_CONFIGS.filter(
+        (widget) => widget.category === WidgetCategory.ACTIVE_PERFORMANCE
+      ),
     },
-    {} as Record<WidgetCategory, typeof WIDGET_CONFIGS>
-  );
+    {
+      title: t('widgets.category.insights'),
+      data: WIDGET_CONFIGS.filter((widget) => widget.category === WidgetCategory.INSIGHTS),
+    },
+    // Uncomment to add System Monitoring section
+    // {
+    //   title: t('widgets.category.systemMonitoring'),
+    //   data: WIDGET_CONFIGS.filter(
+    //     (widget) => widget.category === WidgetCategory.SYSTEM_MONITORING
+    //   ),
+    // },
+  ].filter((section) => section.data.length > 0);
 
   return (
-    <View className="flex-1 bg-slate-50 dark:bg-background-dark">
+    <View className="flex-1 bg-background-light dark:bg-background-dark">
       {/* Header */}
       <View style={{ paddingTop: insets.top }}>
         <Header
@@ -59,74 +74,50 @@ export default function WidgetsScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView className="flex-1" contentContainerClassName="gap-6 max-w-md mx-auto w-full">
-        {/* Introduction */}
-        <View className="mt-2 px-1">
-          <Text className="mb-1 text-2xl font-bold text-[#0F1621] dark:text-white">
-            {t('widgets.availableWidgets')}
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id}
+        contentContainerClassName="p-4 pb-6"
+        // contentContainerStyle={{ paddingBottom: 18 }}
+        showsVerticalScrollIndicator={false}
+        stickySectionHeadersEnabled={false}
+        ListHeaderComponent={() => (
+          <View className="px-1">
+            <Text className="mb-1 text-2xl font-bold text-[#0F1621] dark:text-white">
+              {t('widgets.availableWidgets')}
+            </Text>
+            <Text className="text-sm leading-relaxed text-slate-500 dark:text-gray-400">
+              {t('widgets.description')}
+            </Text>
+          </View>
+        )}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text className="mb-3 mt-6 px-1 text-xs font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-gray-500">
+            {title}
           </Text>
-          <Text className="text-sm leading-relaxed text-slate-500 dark:text-gray-400">
-            {t('widgets.description')}
-          </Text>
-        </View>
+        )}
+        renderItem={({ item: widget, section, index }) => {
+          const isFirst = index === 0;
+          const isLast = index === section.data.length - 1;
 
-        {/* Active Performance Section */}
-        <View>
-          <Text className="mb-3 px-1 text-xs font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-gray-500">
-            {t('widgets.category.activePerformance')}
-          </Text>
-          <View className="divide-y divide-slate-50 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:divide-[#232f48] dark:border-gray-800 dark:bg-[#1a2233]">
-            {widgetsByCategory[WidgetCategory.ACTIVE_PERFORMANCE]?.map((widget) => (
+          return (
+            <View
+              className={`overflow-hidden border-slate-200 bg-white dark:border-gray-800 dark:bg-[#1a2233] ${
+                isFirst ? 'rounded-t-2xl border-t' : ''
+              } ${isLast ? 'rounded-b-2xl border-b' : ''} border-x`}
+            >
+              {index > 0 && <View className="h-px bg-slate-50 dark:bg-[#232f48]" />}
               <WidgetToggle
-                key={widget.id}
                 icon={widget.icon}
                 titleKey={widget.titleKey}
                 descriptionKey={widget.descriptionKey}
                 enabled={enabledWidgets.has(widget.id)}
                 onToggle={() => toggleWidget(widget.id)}
               />
-            ))}
-          </View>
-        </View>
-
-        {/* Insights Section */}
-        <View>
-          <Text className="mb-3 px-1 text-xs font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-gray-500">
-            {t('widgets.category.insights')}
-          </Text>
-          <View className="divide-y divide-slate-50 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:divide-[#232f48] dark:border-gray-800 dark:bg-[#1a2233]">
-            {widgetsByCategory[WidgetCategory.INSIGHTS]?.map((widget) => (
-              <WidgetToggle
-                key={widget.id}
-                icon={widget.icon}
-                titleKey={widget.titleKey}
-                descriptionKey={widget.descriptionKey}
-                enabled={enabledWidgets.has(widget.id)}
-                onToggle={() => toggleWidget(widget.id)}
-              />
-            ))}
-          </View>
-        </View>
-
-        {/* System Monitoring Section */}
-        {/* <View>
-          <Text className="mb-3 px-1 text-xs font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-gray-500">
-            {t('widgets.category.systemMonitoring')}
-          </Text>
-          <View className="divide-y divide-slate-50 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:divide-[#232f48] dark:border-gray-800 dark:bg-[#1a2233]">
-            {widgetsByCategory[WidgetCategory.SYSTEM_MONITORING]?.map((widget) => (
-              <WidgetToggle
-                key={widget.id}
-                icon={widget.icon}
-                titleKey={widget.titleKey}
-                descriptionKey={widget.descriptionKey}
-                enabled={enabledWidgets.has(widget.id)}
-                onToggle={() => toggleWidget(widget.id)}
-              />
-            ))}
-          </View>
-        </View> */}
-      </ScrollView>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 }
