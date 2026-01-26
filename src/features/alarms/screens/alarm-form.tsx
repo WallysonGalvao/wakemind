@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
@@ -21,6 +21,7 @@ import { alarmFormSchema, getDefaultAlarmFormValues } from '../schemas/alarm-for
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
+import { AlarmPermissionsModal } from '@/components/permissions/alarm-permissions-modal';
 import { Text } from '@/components/ui/text';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import * as alarmsDb from '@/db/functions/alarms';
@@ -177,16 +178,18 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const toast = useToast();
   const insets = useSafeAreaInsets();
 
+  // Permissions modal state
+  const [showPermissionsModal, setShowPermissionsModal] = useState(true);
+  const [pendingAlarmData, setPendingAlarmData] = useState<AlarmFormData | null>(null);
+
   // Permissions hook
   const {
-    isAllGranted,
+    status,
     needsNotificationPermission,
     needsExactAlarmPermission,
-    needsBatteryOptimizationPermission,
+    checkPermissions,
     requestNotificationPermission,
-    openBatterySettings,
     openAlarmSettings,
-    openNotificationSettings,
   } = useAlarmPermissions();
 
   // Get alarms from hook
@@ -197,6 +200,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
   // Determine mode
   const isEditMode = Boolean(alarmId);
+
+  // Check if this is the first alarm
+  const isFirstAlarm = !isEditMode && alarms.length === 0;
 
   // Analytics tracking
   useAnalyticsScreen(isEditMode ? 'Edit Alarm' : 'Create Alarm');
@@ -295,31 +301,23 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     setValue('protocols', updatedProtocols);
   };
 
-  const onSubmit = async (data: AlarmFormData) => {
-    // Validate hour and minute are valid numbers
-    if (
-      typeof data.hour !== 'number' ||
-      typeof data.minute !== 'number' ||
-      isNaN(data.hour) ||
-      isNaN(data.minute) ||
-      data.hour < 0 ||
-      data.hour > 23 ||
-      data.minute < 0 ||
-      data.minute > 59
-    ) {
-      toast.show({
-        placement: 'top',
-        duration: 4000,
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
-            <ToastTitle>{t('newAlarm.validationError.title')}</ToastTitle>
-            <ToastDescription>{t('validation.alarm.timeFormat')}</ToastDescription>
-          </Toast>
-        ),
-      });
-      return;
-    }
+  // Handle permission modal completion
+  const handlePermissionsComplete = useCallback(async () => {
+    setShowPermissionsModal(false);
 
+    // Recheck permissions after user goes through settings
+    await checkPermissions();
+
+    // If we have pending alarm data, try to create it now
+    if (pendingAlarmData) {
+      await createAlarm(pendingAlarmData);
+      setPendingAlarmData(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkPermissions, pendingAlarmData]);
+
+  // Separated function to create/update alarm (called after all validations)
+  const createAlarm = async (data: AlarmFormData) => {
     // Store time in 24h format
     const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
     const displayPeriod = data.hour < 12 ? Period.AM : Period.PM;
@@ -328,129 +326,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     const scheduleLabel = getScheduleLabel(data.selectedDays);
 
     try {
-      // Check if user can use selected difficulty (Pro only for hard/adaptive)
-      if (!canUseDifficulty(data.difficulty)) {
-        toast.show({
-          placement: 'top',
-          duration: 4000,
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
-              <ToastTitle>{t('featureGate.hardDifficulty')}</ToastTitle>
-              <ToastDescription>
-                {t('paywall.features.allDifficulties.description')}
-              </ToastDescription>
-            </Toast>
-          ),
-        });
-        await requirePremiumAccess('difficulty_selection');
-        return;
-      }
-
-      // Check alarm creation limit (only for new alarms)
-      if (!isEditMode && !canCreateAlarm(alarms.length)) {
-        toast.show({
-          placement: 'top',
-          duration: 4000,
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
-              <ToastTitle>{t('featureGate.unlimitedAlarms')}</ToastTitle>
-              <ToastDescription>
-                {t('paywall.features.unlimitedAlarms.description')}
-              </ToastDescription>
-            </Toast>
-          ),
-        });
-        await requirePremiumAccess('alarm_creation');
-        return;
-      }
-
-      // Check permissions before creating/updating alarm
-      if (!isAllGranted) {
-        // Request notification permission first
-        if (needsNotificationPermission) {
-          const granted = await requestNotificationPermission();
-
-          if (!granted) {
-            toast.show({
-              placement: 'top',
-              duration: 4000,
-              render: ({ id }) => (
-                <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
-                  <ToastTitle>{t('permissions.notificationsRequired')}</ToastTitle>
-                  <ToastDescription>{t('permissions.openSettings')}</ToastDescription>
-                </Toast>
-              ),
-            });
-            return;
-          }
-        }
-
-        // Check for exact alarm permission (Android 12+)
-        if (needsExactAlarmPermission) {
-          toast.show({
-            placement: 'top',
-            duration: 5000,
-            render: ({ id }) => (
-              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
-                <ToastTitle>{t('permissions.exactAlarmsRequired')}</ToastTitle>
-                <ToastDescription>{t('permissions.batteryOptimization')}</ToastDescription>
-              </Toast>
-            ),
-          });
-
-          // Exact alarm permission is required on Android 12+
-          await openAlarmSettings();
-
-          // After settings, user needs to manually create alarm again
-          // We don't auto-continue here as they need to go through system settings
-          return;
-        }
-
-        // Check for battery optimization (Android - critical for alarm reliability)
-        if (needsBatteryOptimizationPermission) {
-          toast.show({
-            placement: 'top',
-            duration: 6000,
-            render: ({ id }) => (
-              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
-                <ToastTitle>{t('permissions.batteryOptimization')}</ToastTitle>
-                <ToastDescription>
-                  {t('permissions.batteryOptimizationDescription')}
-                </ToastDescription>
-              </Toast>
-            ),
-          });
-
-          // Battery optimization affects alarm reliability
-          await openBatterySettings();
-
-          // After settings, user needs to manually create alarm again
-          return;
-        }
-
-        // Open notification settings to enable Full Screen Intent (Android 14+)
-        // This is the final critical permission for auto-opening the app
-        if (Platform.OS === 'android') {
-          toast.show({
-            placement: 'top',
-            duration: 7000,
-            render: ({ id }) => (
-              <Toast nativeID={`toast-${id}`} action="info" variant="solid">
-                <ToastTitle>{t('permissions.fullScreenRequired')}</ToastTitle>
-                <ToastDescription>{t('permissions.fullScreenDescription')}</ToastDescription>
-              </Toast>
-            ),
-          });
-
-          await openNotificationSettings();
-
-          // Give user time to enable the setting
-          // After settings, user needs to manually create alarm again
-          return;
-        }
-      }
-
-      // All permissions granted, proceed with alarm creation/update
+      // Create or update alarm
       if (isEditMode && alarmId) {
         await alarmsDb.updateAlarm(alarmId, {
           time: timeString,
@@ -478,7 +354,6 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
         const newId = randomUUID();
         await alarmsDb.addAlarm(newId, newAlarmInput);
         await refetch();
-        // Track creation (ID will be generated, so we track with available info)
         AnalyticsEvents.alarmCreated(newId, timeString, data.challenge);
       }
 
@@ -499,6 +374,112 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
         ),
       });
     }
+  };
+
+  const onSubmit = async (data: AlarmFormData) => {
+    // 1️⃣ Validate time format
+    if (
+      typeof data.hour !== 'number' ||
+      typeof data.minute !== 'number' ||
+      isNaN(data.hour) ||
+      isNaN(data.minute) ||
+      data.hour < 0 ||
+      data.hour > 23 ||
+      data.minute < 0 ||
+      data.minute > 59
+    ) {
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
+            <ToastTitle>{t('newAlarm.validationError.title')}</ToastTitle>
+            <ToastDescription>{t('validation.alarm.timeFormat')}</ToastDescription>
+          </Toast>
+        ),
+      });
+      return;
+    }
+
+    // 2️⃣ Check difficulty (Pro only for hard/adaptive)
+    if (!canUseDifficulty(data.difficulty)) {
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+            <ToastTitle>{t('featureGate.hardDifficulty')}</ToastTitle>
+            <ToastDescription>{t('paywall.features.allDifficulties.description')}</ToastDescription>
+          </Toast>
+        ),
+      });
+      await requirePremiumAccess('difficulty_selection');
+      return;
+    }
+
+    // 3️⃣ Check alarm creation limit (only for new alarms)
+    if (!isEditMode && !canCreateAlarm(alarms.length)) {
+      toast.show({
+        placement: 'top',
+        duration: 4000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+            <ToastTitle>{t('featureGate.unlimitedAlarms')}</ToastTitle>
+            <ToastDescription>{t('paywall.features.unlimitedAlarms.description')}</ToastDescription>
+          </Toast>
+        ),
+      });
+      await requirePremiumAccess('alarm_creation');
+      return;
+    }
+
+    // 4️⃣ Request notification permission first (runtime permission)
+    if (needsNotificationPermission) {
+      const granted = await requestNotificationPermission();
+      if (!granted) {
+        toast.show({
+          placement: 'top',
+          duration: 4000,
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
+              <ToastTitle>{t('permissions.notificationsRequired')}</ToastTitle>
+              <ToastDescription>{t('permissions.openSettings')}</ToastDescription>
+            </Toast>
+          ),
+        });
+        return;
+      }
+    }
+
+    // 5️⃣ Check exact alarm permission (Android 12+)
+    if (needsExactAlarmPermission) {
+      toast.show({
+        placement: 'top',
+        duration: 5000,
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="info" variant="solid">
+            <ToastTitle>{t('permissions.exactAlarmsRequired')}</ToastTitle>
+            <ToastDescription>{t('permissions.batteryOptimization')}</ToastDescription>
+          </Toast>
+        ),
+      });
+      await openAlarmSettings();
+      return;
+    }
+
+    // 6️⃣ FIRST ALARM: Show permissions modal for SYSTEM_ALERT_WINDOW + Auto Start
+    if (
+      Platform.OS === 'android' &&
+      isFirstAlarm &&
+      (status.displayOverOtherApps !== 'granted' || status.autoStart === 'undetermined')
+    ) {
+      setPendingAlarmData(data);
+      setShowPermissionsModal(true);
+      return;
+    }
+
+    // 7️⃣ All validations passed - create the alarm
+    await createAlarm(data);
   };
 
   // Format time for display (24h format with period indicator)
@@ -531,11 +512,17 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     }
   }, [isEditMode, navigation, screenTitle, handleClose, handleReset, t]);
 
+  const paddingTop = isEditMode ? 0 : insets.top;
+
   return (
-    <View
-      className="flex-1 bg-background-light dark:bg-background-dark"
-      style={{ paddingTop: isEditMode ? 0 : insets.top }}
-    >
+    <View className="flex-1 bg-background-light dark:bg-background-dark" style={{ paddingTop }}>
+      {/* Permissions Modal - Shows on first alarm creation for critical Android permissions */}
+      <AlarmPermissionsModal
+        visible={showPermissionsModal}
+        onClose={() => setShowPermissionsModal(false)}
+        onComplete={handlePermissionsComplete}
+      />
+
       {/* Header */}
       {!isEditMode && (
         <Header

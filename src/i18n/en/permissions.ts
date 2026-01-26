@@ -71,4 +71,58 @@ export default {
     next: 'Next',
     skip: 'Skip',
   },
+
+  // Alarm Permissions Modal (for first alarm creation)
+  alarmPermissions: {
+    progress: 'Permission {{current}} / {{total}}',
+
+    intro: {
+      title: "Don't let your alarms stay silent",
+      description: 'To work perfectly, we need 2 important permissions',
+      step1Title: 'Display over other apps',
+      step1Description: 'Open the alarm automatically, even with locked screen',
+      step2Title: 'Auto start',
+      step2Description: 'Ensure the alarm always rings, even in background',
+      footer: 'You can configure this now or do it later in settings',
+    },
+
+    systemAlertWindow: {
+      title: 'To dismiss alarm without unlocking',
+      description: 'Grant permission to Display over other apps',
+      benefitTitle: 'Why we need this?',
+      benefit:
+        'Allows the app to open automatically over the lock screen when the alarm rings. You can dismiss or snooze without unlocking your phone.',
+    },
+
+    batteryOptimization: {
+      title: 'So the alarm always rings',
+      description: 'Grant permission for Auto start in background',
+      benefitTitle: 'Reliability guarantee',
+      benefit:
+        'Ensures your alarms ring even when the app is closed or in battery saver mode. Critical for 24/7 functionality.',
+    },
+
+    complete: {
+      title: 'All set! 🎉',
+      description: 'Your permissions are configured. Your alarm will work perfectly.',
+      feature1: 'Alarm opens automatically on lock screen',
+      feature2: 'Works even with app closed or battery saver enabled',
+    },
+
+    buttons: {
+      getStarted: 'Get Started',
+      openSettings: 'Open Settings',
+      skipForNow: 'Not now',
+      done: 'Done',
+    },
+
+    accessibility: {
+      close: 'Close',
+      closeHint: 'Close permissions modal',
+      nextHint: 'Proceed to next step',
+      skipLabel: 'Skip for now',
+      skipHint: 'Skip permissions setup',
+      loading: 'Loading...',
+    },
+  },
 };

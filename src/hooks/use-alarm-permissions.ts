@@ -64,6 +64,18 @@ export function useAlarmPermissions() {
     }
   }, []);
 
+  const openDisplayOverOtherAppsSettings = useCallback(async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openDisplayOverOtherAppsSettings();
+    }
+  }, []);
+
+  const openAutoStartSettings = useCallback(async () => {
+    if (Platform.OS === 'android') {
+      await AlarmScheduler.openAutoStartSettings();
+    }
+  }, []);
+
   useEffect(() => {
     checkPermissions();
   }, [checkPermissions]);
@@ -91,5 +103,7 @@ export function useAlarmPermissions() {
     openBatterySettings,
     openAlarmSettings,
     openNotificationSettings,
+    openDisplayOverOtherAppsSettings,
+    openAutoStartSettings,
   };
 }
