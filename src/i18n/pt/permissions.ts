@@ -127,5 +127,11 @@ export default {
       skipHint: 'Ignorar configuração de permissões',
       loading: 'Carregando...',
     },
+
+    illustration: {
+      autoStart: 'Início Automático',
+      displayOver: 'Exibir Sobre',
+      statusPending: 'Status: Pendente',
+    },
   },
 };
