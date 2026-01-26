@@ -1,9 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Animated, Easing, Modal, Pressable, View } from 'react-native';
+import { Modal, Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '../material-symbol';
 import { Text } from '../ui/text';
@@ -23,52 +31,37 @@ enum PermissionStep {
 
 // Animated pulse ring component
 function PulseRing() {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const opacityAnim = useRef(new Animated.Value(0.3)).current;
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(0.3);
 
   useEffect(() => {
-    const animation = Animated.loop(
-      Animated.parallel([
-        Animated.sequence([
-          Animated.timing(scaleAnim, {
-            toValue: 1.15,
-            duration: 1000,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-          Animated.timing(scaleAnim, {
-            toValue: 1,
-            duration: 1000,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(opacityAnim, {
-            toValue: 0.1,
-            duration: 1000,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacityAnim, {
-            toValue: 0.3,
-            duration: 1000,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-        ]),
-      ])
+    scale.value = withRepeat(
+      withSequence(
+        withTiming(1.15, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      false
     );
-    animation.start();
-    return () => animation.stop();
-  }, [scaleAnim, opacityAnim]);
+
+    opacity.value = withRepeat(
+      withSequence(
+        withTiming(0.1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0.3, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      false
+    );
+  }, [scale, opacity]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
 
   return (
     <Animated.View
-      style={{
-        transform: [{ scale: scaleAnim }],
-        opacity: opacityAnim,
-      }}
+      style={animatedStyle}
       className="absolute -right-2 h-10 w-10 rounded-full bg-brand-primary/30"
     />
   );
@@ -126,23 +119,23 @@ export function AlarmPermissionsModal({
       : t('permissions.alarmPermissions.illustration.displayOver');
 
     return (
-      <View className="relative mt-8 flex-1 items-center justify-center">
+      <View className="relative mt-12 w-full flex-1 items-center justify-center">
         {/* Outer ring */}
-        <View className="absolute h-64 w-64 rounded-full border border-brand-primary/20 bg-brand-primary/10" />
+        <View className="absolute h-[280px] w-[280px] rounded-full border border-brand-primary/20 bg-brand-primary/10 dark:bg-brand-primary/5" />
 
         {/* Blur effect */}
-        <View className="absolute h-48 w-48 rounded-full bg-brand-primary/5" />
+        <View className="absolute h-[200px] w-[200px] rounded-full bg-brand-primary/5 blur-3xl" />
 
         {/* Settings card */}
-        <View className="z-10 w-56 rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-700 dark:bg-surface-dark">
+        <View className="z-10 w-full max-w-[240px] rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-white/5 dark:bg-surface-dark">
           {/* Skeleton header */}
           <View className="mb-4 flex-row items-center justify-between opacity-40">
-            <View className="h-2 w-16 rounded-full bg-slate-200 dark:bg-slate-600" />
-            <View className="h-2 w-8 rounded-full bg-slate-200 dark:bg-slate-600" />
+            <View className="h-2 w-16 rounded-full bg-slate-300 dark:bg-white/20" />
+            <View className="h-2 w-8 rounded-full bg-slate-300 dark:bg-white/20" />
           </View>
 
           {/* Toggle row */}
-          <View className="flex-row items-center justify-between border-y border-slate-100 py-3 dark:border-slate-700">
+          <View className="flex-row items-center justify-between border-y border-slate-100 py-3 dark:border-white/10">
             <Text className="text-sm font-bold text-slate-900 dark:text-white">{toggleLabel}</Text>
             <View className="relative">
               <View className="h-6 w-12 flex-row items-center rounded-full bg-brand-primary px-1">
@@ -154,9 +147,19 @@ export function AlarmPermissionsModal({
 
           {/* Skeleton content */}
           <View className="mt-4 gap-2 opacity-40">
-            <View className="h-2 w-full rounded-full bg-slate-200 dark:bg-slate-600" />
-            <View className="h-2 w-3/4 rounded-full bg-slate-200 dark:bg-slate-600" />
+            <View className="h-2 w-full rounded-full bg-slate-200 dark:bg-white/10" />
+            <View className="h-2 w-3/4 rounded-full bg-slate-200 dark:bg-white/10" />
           </View>
+        </View>
+
+        {/* Animated ping dot */}
+        <View className="absolute right-10 top-0 h-2 w-2 animate-ping rounded-full bg-brand-primary" />
+
+        {/* Status label */}
+        <View className="absolute bottom-36 left-16">
+          <Text className="font-mono rotate-90 text-[8px] uppercase tracking-widest text-brand-primary/50">
+            {t('permissions.alarmPermissions.illustration.statusPending')}
+          </Text>
         </View>
       </View>
     );
@@ -251,7 +254,7 @@ export function AlarmPermissionsModal({
 
         {/* Bottom indicator */}
         <View className="absolute bottom-2 left-1/2 -translate-x-1/2">
-          <View className="bg-off-white h-1.5 w-32 rounded-full" />
+          <View className="h-1.5 w-32 rounded-full bg-slate-300 dark:bg-white/20" />
         </View>
       </View>
     </Modal>
