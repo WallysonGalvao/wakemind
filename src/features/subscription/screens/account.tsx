@@ -77,6 +77,7 @@ export default function AccountScreen() {
   };
 
   const handleRestorePurchases = async () => {
+    AnalyticsEvents.restorePurchasesTapped();
     const result = await restorePurchases();
 
     if (result.success) {

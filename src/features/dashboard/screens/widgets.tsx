@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,6 +8,7 @@ import { SectionList, Text, View } from 'react-native';
 
 import { WidgetToggle } from '../components/widget-toggle';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -17,6 +20,11 @@ export default function WidgetsScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const { enabledWidgets, toggleWidget, resetToDefaults } = useWidgetStore();
+
+  // Track screen view
+  React.useEffect(() => {
+    AnalyticsEvents.widgetsScreenViewed();
+  }, []);
 
   const iconColor = colorScheme === 'dark' ? '#FFFFFF' : '#0F1621';
 

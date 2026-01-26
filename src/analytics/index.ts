@@ -215,6 +215,8 @@ export const AnalyticsEvents = {
   widgetToggled: (widgetId: string, enabled: boolean) =>
     logEvent('widget_toggled', { widget_id: widgetId, enabled }),
 
+  widgetsScreenViewed: () => logEvent('widgets_screen_viewed'),
+
   // Performance Summary events
   performanceSummaryViewed: (streak: number, cognitiveScore: number, executionRate: number) =>
     logEvent('performance_summary_viewed', {
@@ -235,6 +237,10 @@ export const AnalyticsEvents = {
   accountScreenViewed: () => logEvent('account_screen_viewed'),
 
   manageSubscriptionTapped: () => logEvent('manage_subscription_tapped'),
+
+  restorePurchasesTapped: () => logEvent('restore_purchases_tapped'),
+
+  deleteAccountTapped: () => logEvent('delete_account_tapped'),
 
   // Subscription events
   paywallViewed: (source: string) => logEvent('paywall_viewed', { source }),
@@ -319,6 +325,9 @@ export const AnalyticsEvents = {
     logEvent('achievement_shared', { achievement_id: achievementId }),
 
   achievementHistoryViewed: () => logEvent('achievement_history_viewed'),
+
+  achievementFilterChanged: (tier: string) =>
+    logEvent('achievement_filter_changed', { tier }),
 
   // Support events
   faqItemExpanded: (questionId: string, category: string) =>
