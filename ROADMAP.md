@@ -198,6 +198,41 @@ Este documento descreve os próximos passos planejados para o desenvolvimento do
 - [ ] Cloud backup (opcional)
 - [ ] Migração entre dispositivos
 
+### Fase 5 - Advanced Widgets (Baixa Prioridade)
+
+#### Social Comparison Widget
+
+- [ ] Backend para agregação anônima de dados
+- [ ] Endpoint de estatísticas globais
+- [ ] Widget de comparação com percentis
+- [ ] Sistema de ranking opt-in
+- [ ] Privacy controls granulares
+
+#### Mood & Productivity Correlation Widget
+
+- [ ] Sistema de mood tracking (3x ao dia)
+- [ ] Sistema de productivity check-in (EOD)
+- [ ] Algoritmo de correlação entre wake metrics e outcomes
+- [ ] Visualização de insights de correlação
+- [ ] ML para identificar padrões individuais
+
+#### Energy Forecast Widget
+
+- [ ] Modelo de previsão baseado em métricas matinais
+- [ ] Curva de energia ao longo do dia
+- [ ] Sistema de validação com feedback do usuário
+- [ ] Sugestões de timing para tarefas importantes
+- [ ] Integração com calendário (opcional)
+
+#### Smart Wake Window Suggestion Widget
+
+- [ ] ML pipeline para análise de padrões pessoais
+- [ ] Algoritmo de otimização de horário de despertar
+- [ ] A/B testing framework para validação
+- [ ] Sistema de confiança de recomendação
+- [ ] Visualização de janela de tempo ideal
+- [ ] Auto-ajuste de alarmes baseado em insights
+
 ---
 
 ## ✅ Checklist Final para Lançamento nas Stores

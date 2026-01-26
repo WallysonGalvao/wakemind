@@ -43,6 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'SCHEDULE_EXACT_ALARM',
       'USE_EXACT_ALARM',
       'USE_FULL_SCREEN_INTENT',
+      'SYSTEM_ALERT_WINDOW',
       'VIBRATE',
       'RECEIVE_BOOT_COMPLETED',
       'FOREGROUND_SERVICE',
@@ -50,6 +51,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'POST_NOTIFICATIONS',
       'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
       'BILLING',
+      'REORDER_TASKS',
+      'DISABLE_KEYGUARD',
     ],
   },
   web: {
@@ -63,8 +66,28 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-font',
     'expo-audio',
     './plugins/withNotifee.js',
+    './plugins/withFullScreenIntent.js',
     './plugins/withAlarmIOS.js',
     './plugins/withSoundAssets.js',
+    [
+      'expo-build-properties',
+      {
+        android: {
+          enableProguardInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
+          packagingOptions: {
+            pickFirst: ['**/libc++_shared.so'],
+          },
+          extraProguardRules: '-dontwarn org.bouncycastle.jsse.**',
+          gradleProperties: {
+            'org.gradle.jvmargs':
+              '-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8',
+            'org.gradle.parallel': 'true',
+            'org.gradle.daemon': 'true',
+          },
+        },
+      },
+    ],
     [
       'expo-splash-screen',
       {

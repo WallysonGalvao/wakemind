@@ -174,6 +174,16 @@ export const AnalyticsEvents = {
   onboardingCompleted: () => logEvent('onboarding_completed'),
   onboardingSkipped: (step: number) => logEvent('onboarding_skipped', { step }),
 
+  // Permission events
+  permissionModalShown: (source: string) => logEvent('permission_modal_shown', { source }),
+  permissionStepViewed: (step: string, stepNumber: number) =>
+    logEvent('permission_step_viewed', { step, step_number: stepNumber }),
+  permissionGranted: (permission: string) => logEvent('permission_granted', { permission }),
+  permissionDenied: (permission: string) => logEvent('permission_denied', { permission }),
+  permissionSkipped: (step: string) => logEvent('permission_skipped', { step }),
+  permissionFlowCompleted: (grantedCount: number, totalCount: number) =>
+    logEvent('permission_flow_completed', { granted_count: grantedCount, total_count: totalCount }),
+
   // Settings events
   settingsChanged: (setting: string, value: string) =>
     logEvent('settings_changed', { setting, value }),
@@ -182,9 +192,30 @@ export const AnalyticsEvents = {
 
   languageChanged: (language: string) => logEvent('language_changed', { language }),
 
-  alarmToneChanged: (toneId: string) => logEvent('alarm_tone_changed', { tone_id: toneId }),
+  alarmToneChanged: (toneId: string, category?: string) =>
+    logEvent('alarm_tone_changed', { tone_id: toneId, category }),
+
+  alarmTonePreviewed: (toneId: string, category: string) =>
+    logEvent('alarm_tone_previewed', { tone_id: toneId, category }),
 
   vibrationPatternChanged: (pattern: string) => logEvent('vibration_pattern_changed', { pattern }),
+
+  alarmVolumeChanged: (volume: number) => logEvent('alarm_volume_changed', { volume }),
+
+  vibrateOnSuccessChanged: (enabled: boolean) =>
+    logEvent('vibrate_on_success_changed', { enabled }),
+
+  preventAutoLockChanged: (enabled: boolean) => logEvent('prevent_auto_lock_changed', { enabled }),
+
+  snoozeProtectionChanged: (enabled: boolean) => logEvent('snooze_protection_changed', { enabled }),
+
+  dataDeleted: (reason: string) => logEvent('data_deleted', { reason }),
+
+  // Widget events
+  widgetToggled: (widgetId: string, enabled: boolean) =>
+    logEvent('widget_toggled', { widget_id: widgetId, enabled }),
+
+  widgetsScreenViewed: () => logEvent('widgets_screen_viewed'),
 
   // Performance Summary events
   performanceSummaryViewed: (streak: number, cognitiveScore: number, executionRate: number) =>
@@ -195,6 +226,21 @@ export const AnalyticsEvents = {
     }),
 
   performanceSummaryShared: () => logEvent('performance_summary_shared'),
+
+  // Info modal events
+  infoModalViewed: (topic: string) => logEvent('info_modal_viewed', { topic }),
+
+  infoModalClosed: (topic: string, durationSeconds: number) =>
+    logEvent('info_modal_closed', { topic, duration_seconds: durationSeconds }),
+
+  // Account screen events
+  accountScreenViewed: () => logEvent('account_screen_viewed'),
+
+  manageSubscriptionTapped: () => logEvent('manage_subscription_tapped'),
+
+  restorePurchasesTapped: () => logEvent('restore_purchases_tapped'),
+
+  deleteAccountTapped: () => logEvent('delete_account_tapped'),
 
   // Subscription events
   paywallViewed: (source: string) => logEvent('paywall_viewed', { source }),
@@ -255,6 +301,38 @@ export const AnalyticsEvents = {
 
   networkError: (operation: string, retryCount: number) =>
     logEvent('network_error', { operation, retry_count: retryCount }),
+
+  // Achievement events
+  achievementUnlocked: (achievementId: string, tier: string) =>
+    logEvent('achievement_unlocked', { achievement_id: achievementId, tier }),
+
+  achievementProgressUpdated: (achievementId: string, progress: number, target: number) =>
+    logEvent('achievement_progress_updated', {
+      achievement_id: achievementId,
+      progress,
+      target,
+      percentage: Math.round((progress / target) * 100),
+    }),
+
+  achievementsScreenViewed: (unlockedCount: number, totalCount: number) =>
+    logEvent('achievements_screen_viewed', {
+      unlocked_count: unlockedCount,
+      total_count: totalCount,
+      percentage: Math.round((unlockedCount / totalCount) * 100),
+    }),
+
+  achievementShared: (achievementId: string) =>
+    logEvent('achievement_shared', { achievement_id: achievementId }),
+
+  achievementHistoryViewed: () => logEvent('achievement_history_viewed'),
+
+  achievementFilterChanged: (tier: string) => logEvent('achievement_filter_changed', { tier }),
+
+  // Support events
+  faqItemExpanded: (questionId: string, category: string) =>
+    logEvent('faq_item_expanded', { question_id: questionId, category }),
+
+  supportEmailTapped: () => logEvent('support_email_tapped'),
 
   // App lifecycle
   appOpened: () => {

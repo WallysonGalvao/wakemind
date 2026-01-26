@@ -4,11 +4,12 @@ import dayjs from 'dayjs';
 import { desc, gte } from 'drizzle-orm';
 
 import { db } from '@/db';
+import * as streakFreezeService from '@/db/functions/streak-freeze';
 import { alarmCompletions } from '@/db/schema';
 
 /**
  * Calculate current streak of consecutive days meeting wake time target
- * A day is "on target" if the user woke up within acceptable variance
+ * A day is "on target" if the user woke up within acceptable variance OR protected by freeze
  * Note: Always looks back 90 days regardless of period parameter
  */
 export function useCurrentStreak(refreshKey?: number): number {
@@ -88,8 +89,20 @@ export function useCurrentStreak(refreshKey?: number): number {
         const dateStr = checkDate.format('YYYY-MM-DD');
         const wasOnTarget = dailyResults.get(dateStr);
 
+        // Check if this date is protected by a freeze token
+        const isProtected = await streakFreezeService.isDateProtectedByFreeze(dateStr);
+
         if (wasOnTarget === undefined) {
-          // No data for this day - only break if we haven't started the streak yet
+          // No data for this day
+          if (isProtected) {
+            // Day is protected by freeze - continue streak
+            console.log(`[CurrentStreak] ${dateStr} protected by freeze token`);
+            currentStreak++;
+            checkDate = checkDate.subtract(1, 'day');
+            continue;
+          }
+
+          // Only break if we haven't started the streak yet
           if (currentStreak === 0 && checkDate.isSame(now.startOf('day'), 'day')) {
             // Today has no data yet, try yesterday
             checkDate = checkDate.subtract(1, 'day');
@@ -98,7 +111,7 @@ export function useCurrentStreak(refreshKey?: number): number {
           break;
         }
 
-        if (wasOnTarget) {
+        if (wasOnTarget || isProtected) {
           currentStreak++;
         } else {
           // Streak broken

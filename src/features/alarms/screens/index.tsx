@@ -132,19 +132,19 @@ export default function AlarmsScreen() {
     const testAlarm = sortedAlarms[0];
     const mockParams = testAlarm
       ? {
-        alarmId: testAlarm.id,
-        time: testAlarm.time,
-        period: testAlarm.period,
-        challenge: testAlarm.challenge,
-        challengeIcon: testAlarm.challengeIcon,
-      }
+          alarmId: testAlarm.id,
+          time: testAlarm.time,
+          period: testAlarm.period,
+          challenge: testAlarm.challenge,
+          challengeIcon: testAlarm.challengeIcon,
+        }
       : {
-        alarmId: 'mock-alarm-id',
-        time: '07:30',
-        period: 'AM',
-        challenge: 'Math Challenge',
-        challengeIcon: 'calculate',
-      };
+          alarmId: 'mock-alarm-id',
+          time: '07:30',
+          period: 'AM',
+          challenge: 'Math Challenge',
+          challengeIcon: 'calculate',
+        };
 
     router.push({
       pathname: '/alarm/trigger',

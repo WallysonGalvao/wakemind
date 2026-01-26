@@ -34,6 +34,10 @@ export const widgetsES = {
       title: 'Perspectiva Diaria',
       description: 'Consejos de rendimiento',
     },
+    achievements: {
+      title: 'Logros',
+      description: 'Hitos desbloqueados',
+    },
     falseStarts: {
       title: 'Inicios Falsos',
       description: 'Seguimiento de actividad de repetición',
@@ -41,6 +45,34 @@ export const widgetsES = {
     sleepEnvironment: {
       title: 'Ambiente de Sueño',
       description: 'Niveles de ruido y luz',
+    },
+    snoozeAnalytics: {
+      title: 'Análisis de Aplazamientos',
+      description: 'Seguimiento de comportamiento de aplazamiento',
+    },
+    goalProgress: {
+      title: 'Progreso de Objetivos',
+      description: 'Seguimiento de objetivos personales',
+    },
+    weeklyHeatmap: {
+      title: 'Mapa de Calor Semanal',
+      description: 'Cuadrícula de rendimiento de 4 semanas',
+    },
+    sleepQuality: {
+      title: 'Calidad del Sueño',
+      description: 'Análisis de impacto del sueño',
+    },
+    circadianRhythm: {
+      title: 'Ritmo Circadiano',
+      description: 'Horario óptimo para despertar',
+    },
+    morningRoutine: {
+      title: 'Rutina Matutina',
+      description: 'Lista de hábitos diarios',
+    },
+    streakFreeze: {
+      title: 'Congelamiento de Racha',
+      description: 'Protege tu racha con tokens de congelamiento',
     },
   },
 };

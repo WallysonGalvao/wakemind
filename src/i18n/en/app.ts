@@ -163,7 +163,12 @@ export const appEN = {
   'notifications.snoozedBody': 'Wake up! Snoozed from {{time}} {{period}}',
   'permissions.notificationsRequired': 'Notification permission is required for alarms',
   'permissions.exactAlarmsRequired': 'Exact alarm permission is required for reliable wake-ups',
-  'permissions.batteryOptimization': 'Please disable battery optimization for reliable alarms',
+  'permissions.batteryOptimization': 'Disable Battery Optimization',
+  'permissions.batteryOptimizationDescription':
+    'For reliable alarms, disable battery optimization for WakeMind. This ensures alarms ring even when your phone is idle.',
+  'permissions.fullScreenRequired': 'Enable Full Screen Notifications (Android 14+)',
+  'permissions.fullScreenDescription':
+    'To automatically open the app when alarm rings, enable "Allow full screen notifications" in WakeMind notification settings. This is critical for waking you up effectively.',
   'permissions.openSettings': 'Open Settings',
 
   // Common
@@ -175,6 +180,8 @@ export const appEN = {
   'common.delete': 'Delete',
   'common.confirm': 'Confirm',
   'common.ok': 'OK',
+  'common.success': 'Success',
+  'common.error': 'Error',
   'common.info': 'More information',
   'common.close': 'Close',
   'common.back': 'Back',

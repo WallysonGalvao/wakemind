@@ -28,7 +28,7 @@ function ProtocolInfoCard({
 
   return (
     <View
-      className="flex-row gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark"
+      className="flex-row gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-surface-dark"
       style={shadowStyle}
     >
       <View className={`flex size-12 items-center justify-center rounded-full ${iconBgColor}`}>

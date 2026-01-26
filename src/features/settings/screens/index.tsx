@@ -1,11 +1,11 @@
-import React from 'react';
+import { useState } from 'react';
 
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { SubscriptionCard } from '../components/subscription-card';
 
@@ -15,9 +15,10 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { Toast, ToastTitle, useToast } from '@/components/ui/toast';
 import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
-import { seedDatabase } from '@/db/seed';
+import { deleteAllUserData } from '@/db/functions/reset';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -87,8 +88,9 @@ function SettingRow({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-        }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -113,8 +115,9 @@ function SettingToggleRow({
 }: SettingToggleRowProps) {
   return (
     <View
-      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-        }`}
+      className={`flex-row items-center gap-4 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
     >
       <View className={`h-8 w-8 items-center justify-center rounded-full ${iconBgColor}`}>
         <MaterialSymbol name={icon} size={20} color={iconColor} />
@@ -145,8 +148,9 @@ function VolumeSliderRow({ title, value, onValueChange, isLast = false }: Volume
 
   return (
     <View
-      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${!isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
-        }`}
+      className={`gap-2 bg-white px-4 py-3 dark:bg-[#1a2233] ${
+        !isLast ? 'border-b border-gray-100 dark:border-[#232f48]' : ''
+      }`}
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-base font-medium text-gray-900 dark:text-white">{title}</Text>
@@ -178,6 +182,8 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const toast = useToast();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Analytics tracking
   useAnalyticsScreen('Settings');
@@ -230,29 +236,40 @@ export default function SettingsScreen() {
     AnalyticsEvents.themeChanged(newTheme);
   };
 
-  const handleSeedDatabase = async () => {
-    Alert.alert(
-      'Seed Database',
-      'This will clear all existing data and populate with sample alarms and completions. Continue?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Seed',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await seedDatabase();
-              Alert.alert(
-                'Success',
-                'Database seeded successfully! Restart the app to see changes.'
-              );
-            } catch (_error) {
-              Alert.alert('Error', 'Failed to seed database. Check console for details.');
-            }
-          },
-        },
-      ]
-    );
+  const handleVolumeChange = (value: number) => {
+    setAlarmVolume(value);
+    AnalyticsEvents.alarmVolumeChanged(value);
+  };
+
+  const handleDeleteAllData = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteAllData = async () => {
+    setShowDeleteConfirm(false);
+    try {
+      await deleteAllUserData();
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: ({ id }) => (
+          <Toast action="success" variant="solid" nativeID={id}>
+            <ToastTitle>{t('settings.deleteAllDataSuccess')}</ToastTitle>
+          </Toast>
+        ),
+      });
+    } catch (error) {
+      console.error('Error deleting all data:', error);
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: ({ id }) => (
+          <Toast action="error" variant="solid" nativeID={id}>
+            <ToastTitle>{t('settings.deleteAllDataError')}</ToastTitle>
+          </Toast>
+        ),
+      });
+    }
   };
 
   return (
@@ -321,7 +338,7 @@ export default function SettingsScreen() {
             <VolumeSliderRow
               title={t('settings.alarmVolume')}
               value={alarmVolume}
-              onValueChange={setAlarmVolume}
+              onValueChange={handleVolumeChange}
             />
             <SettingToggleRow
               icon="check_circle"
@@ -329,7 +346,10 @@ export default function SettingsScreen() {
               iconColor={COLORS.green[500]}
               title={t('settings.vibrateOnSuccess')}
               value={vibrateOnSuccess}
-              onValueChange={setVibrateOnSuccess}
+              onValueChange={(value) => {
+                setVibrateOnSuccess(value);
+                AnalyticsEvents.vibrateOnSuccessChanged(value);
+              }}
             />
             <SettingRow
               icon="vibration"
@@ -369,10 +389,10 @@ export default function SettingsScreen() {
           <SectionFooter text={t('settings.preventAutoLockDescription')} />
         </View>
 
-        {/* General Section */}
+        {/* Dev Section */}
         {__DEV__ ? (
           <View className="mb-2 mt-8">
-            <SectionHeader title={t('settings.general')} />
+            <SectionHeader title={t('settings.dev')} />
             <SectionCard>
               <SettingRow
                 icon="help_center"
@@ -385,14 +405,25 @@ export default function SettingsScreen() {
               <SettingRow
                 icon="database"
                 iconBgColor="bg-amber-100 dark:bg-amber-900/30"
-                iconColor={COLORS.blue[500]}
-                title="Seed Database (Dev)"
-                onPress={handleSeedDatabase}
+                iconColor={COLORS.orange[500]}
+                title="Database Manager"
+                onPress={() => router.push('/settings/database-manager')}
                 isLast
               />
             </SectionCard>
           </View>
         ) : null}
+
+        {/* Data Management Section */}
+        <Pressable
+          accessibilityRole="button"
+          onPress={handleDeleteAllData}
+          className="items-center px-4 py-6 active:opacity-70"
+        >
+          <Text className="text-base font-bold text-red-600 underline dark:text-red-400">
+            {t('settings.deleteAllData')}
+          </Text>
+        </Pressable>
 
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">
@@ -416,6 +447,47 @@ export default function SettingsScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={showDeleteConfirm}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowDeleteConfirm(false)}
+      >
+        <View className="flex-1 items-center justify-center bg-black/50 px-6">
+          <View className="w-full max-w-sm rounded-2xl bg-white p-6 dark:bg-surface-dark">
+            <Text className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+              {t('settings.deleteAllDataConfirmTitle')}
+            </Text>
+            <Text className="mb-6 text-sm leading-6 text-gray-600 dark:text-gray-400">
+              {t('settings.deleteAllDataConfirmMessage')}
+            </Text>
+            <View className="flex-row gap-3">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.cancel')}
+                accessibilityHint={t('common.cancel')}
+                onPress={() => setShowDeleteConfirm(false)}
+                className="flex-1 items-center rounded-xl bg-gray-100 py-3 active:opacity-70 dark:bg-gray-800"
+              >
+                <Text className="font-semibold text-gray-900 dark:text-white">
+                  {t('common.cancel')}
+                </Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.ok')}
+                accessibilityHint={t('settings.deleteAllDataConfirmTitle')}
+                onPress={confirmDeleteAllData}
+                className="flex-1 items-center rounded-xl bg-red-600 py-3 active:opacity-70"
+              >
+                <Text className="font-semibold text-white">{t('common.ok')}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

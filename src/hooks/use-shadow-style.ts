@@ -66,9 +66,10 @@ export const useShadowStyle = (size: ShadowSize, color?: string): ViewStyle => {
   const config = SHADOW_CONFIGS[size];
 
   return useMemo(() => {
-    // In dark mode, reduce shadow opacity or use transparent for subtlety
-    const shadowColor = color ?? (isDark ? 'transparent' : 'rgba(0, 0, 0, 1)');
-    const adjustedOpacity = isDark && !color ? 0 : config.opacity;
+    const shadowColor = color ?? 'rgba(0, 0, 0, 1)';
+    // If custom color is provided, use config opacity as-is
+    // If no custom color, reduce opacity in dark mode for subtlety
+    const adjustedOpacity = color ? config.opacity : isDark ? config.opacity * 0.5 : config.opacity;
 
     return {
       shadowColor,
@@ -105,12 +106,19 @@ export const useCustomShadow = (params: {
   const isDark = useIsDarkMode();
 
   return useMemo(() => {
-    const shadowColor = params.color ?? (isDark ? 'transparent' : 'rgba(0, 0, 0, 1)');
+    const shadowColor = params.color ?? 'rgba(0, 0, 0, 1)';
+    // If custom color is provided, use params opacity as-is
+    // If no custom color, reduce opacity in dark mode for subtlety
+    const adjustedOpacity = params.color
+      ? params.opacity
+      : isDark
+        ? params.opacity * 0.5
+        : params.opacity;
 
     return {
       shadowColor,
       shadowOffset: params.offset,
-      shadowOpacity: params.opacity,
+      shadowOpacity: adjustedOpacity,
       shadowRadius: params.radius,
       elevation: params.elevation,
     };

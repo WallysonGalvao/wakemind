@@ -11,6 +11,7 @@ export interface AlarmCompletionRecord {
   cognitiveScore: number; // 0-100
   reactionTime: number; // milliseconds
   challengeType: string;
+  attempts: number; // Number of attempts to complete
   date: string; // ISO date
 }
 
@@ -47,6 +48,7 @@ export async function recordAlarmCompletion(
         cognitiveScore: record.cognitiveScore,
         reactionTime: record.reactionTime,
         challengeType: record.challengeType,
+        attempts: record.attempts,
       })
       .where(eq(alarmCompletions.id, existingRecords[0].id));
     return;

@@ -1,0 +1,76 @@
+// New widget translations for Spanish (ES)
+export const dashboardWidgetsES = {
+  // Snooze Analytics
+  'dashboard.snooze.title': 'Análisis de Aplazamientos',
+  'dashboard.snooze.avgPerAlarm': 'Promedio por alarma',
+  'dashboard.snooze.firstTouch': 'Primer toque',
+  'dashboard.snooze.totalSnoozes': 'Total de aplazamientos',
+  'dashboard.snooze.timeLost': 'Tiempo perdido',
+  'dashboard.snooze.minutes': 'min',
+  'dashboard.snooze.status': 'Estado',
+  'dashboard.snooze.excellent': 'Excelente',
+  'dashboard.snooze.good': 'Bueno',
+  'dashboard.snooze.fair': 'Aceptable',
+  'dashboard.snooze.needsWork': 'Necesita mejorar',
+
+  // Goal Progress
+  'dashboard.goals.title': 'Progreso de Objetivos',
+  'dashboard.goals.active': 'activos',
+  'dashboard.goals.noActiveGoals': 'Aún no hay objetivos activos',
+  'dashboard.goals.setGoalHint': 'Establece un objetivo para seguir tu progreso',
+  'dashboard.goals.streak': 'Objetivo de Racha',
+  'dashboard.goals.executionScore': 'Objetivo de Puntuación',
+  'dashboard.goals.latencyReduction': 'Reducción de Latencia',
+  'dashboard.goals.custom': 'Objetivo Personalizado',
+  'dashboard.goals.complete': 'completado',
+  'dashboard.goals.daysLeft': 'días restantes',
+  'dashboard.goals.overdue': 'Vencido',
+
+  // Weekly Heatmap
+  'dashboard.heatmap.title': 'Mapa de Calor Semanal',
+  'dashboard.heatmap.last28Days': 'Últimos 28 días',
+  'dashboard.heatmap.legend': 'Rendimiento',
+
+  // Sleep Quality
+  'dashboard.sleep.title': 'Calidad del Sueño',
+  'dashboard.sleep.qualityScore': 'Puntuación de Calidad',
+  'dashboard.sleep.avgHours': 'Horas Promedio',
+  'dashboard.sleep.perNight': 'por noche',
+  'dashboard.sleep.correlation': 'Relación Sueño-Rendimiento',
+  'dashboard.sleep.strongPositive': 'Fuerte Positiva',
+  'dashboard.sleep.moderate': 'Moderada',
+  'dashboard.sleep.weak': 'Débil',
+  'dashboard.sleep.negative': 'Negativa',
+  'dashboard.sleep.excellent': 'Excelente',
+  'dashboard.sleep.good': 'Bueno',
+  'dashboard.sleep.fair': 'Aceptable',
+  'dashboard.sleep.poor': 'Malo',
+  'dashboard.sleep.needMoreData': 'Se necesitan más datos para calcular la calidad del sueño',
+  'dashboard.sleep.maintainSchedule': '¡Genial! Mantén tu horario de sueño actual',
+  'dashboard.sleep.increaseHours': 'Intenta dormir 7-9 horas para mejor rendimiento',
+  'dashboard.sleep.reduceSleepTime': 'Considera reducir un poco el tiempo de sueño',
+  'dashboard.sleep.improveQuality': 'Enfócate en la calidad del sueño sobre la cantidad',
+
+  // Circadian Rhythm
+  'dashboard.circadian.title': 'Ritmo Circadiano',
+  'dashboard.circadian.avgWakeTime': 'Hora Promedio de Despertar',
+  'dashboard.circadian.alignment': 'Alineación',
+  'dashboard.circadian.consistency': 'Consistencia',
+  'dashboard.circadian.optimalWindow': 'Ventana Óptima',
+  'dashboard.circadian.basedOnCycles': 'Basado en ciclos de sueño de 90min',
+  'dashboard.circadian.excellent': 'Excelente',
+  'dashboard.circadian.good': 'Bueno',
+  'dashboard.circadian.fair': 'Aceptable',
+  'dashboard.circadian.poor': 'Malo',
+  'dashboard.circadian.needMoreData': 'Se necesitan más datos para analizar tu ritmo',
+  'dashboard.circadian.maintainSchedule': '¡Perfecto! Tu ritmo está bien alineado',
+  'dashboard.circadian.wakeEarlier': 'Intenta despertar 15 minutos antes',
+  'dashboard.circadian.wakeLater': 'Intenta despertar 15 minutos después',
+  'dashboard.circadian.improveConsistency': 'Enfócate en despertar a la misma hora diariamente',
+
+  // Morning Routine
+  'dashboard.routine.title': 'Rutina Matutina',
+  'dashboard.routine.complete': 'completado',
+  'dashboard.routine.weeklyAvg': 'Promedio semanal',
+  'dashboard.routine.streak': 'Racha',
+};
