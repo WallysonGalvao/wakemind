@@ -9,7 +9,7 @@ import notifee, {
 import dayjs from 'dayjs';
 import i18n from 'i18next';
 
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 import { getToneFilename } from '@/constants/alarm-tones';
 import { useSettingsStore } from '@/stores/use-settings-store';

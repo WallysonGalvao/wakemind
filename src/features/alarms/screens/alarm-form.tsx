@@ -179,7 +179,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const insets = useSafeAreaInsets();
 
   // Permissions modal state
-  const [showPermissionsModal, setShowPermissionsModal] = useState(true);
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [pendingAlarmData, setPendingAlarmData] = useState<AlarmFormData | null>(null);
 
   // Permissions hook
