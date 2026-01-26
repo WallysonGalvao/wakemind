@@ -124,5 +124,11 @@ export default {
       skipHint: 'Skip permissions setup',
       loading: 'Loading...',
     },
+
+    illustration: {
+      autoStart: 'Auto Start',
+      displayOver: 'Display Over',
+      statusPending: 'Status: Pending',
+    },
   },
 };
