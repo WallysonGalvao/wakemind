@@ -236,6 +236,11 @@ export default function SettingsScreen() {
     AnalyticsEvents.themeChanged(newTheme);
   };
 
+  const handleVolumeChange = (value: number) => {
+    setAlarmVolume(value);
+    AnalyticsEvents.alarmVolumeChanged(value);
+  };
+
   const handleDeleteAllData = () => {
     setShowDeleteConfirm(true);
   };
@@ -333,7 +338,7 @@ export default function SettingsScreen() {
             <VolumeSliderRow
               title={t('settings.alarmVolume')}
               value={alarmVolume}
-              onValueChange={setAlarmVolume}
+              onValueChange={handleVolumeChange}
             />
             <SettingToggleRow
               icon="check_circle"
@@ -341,7 +346,10 @@ export default function SettingsScreen() {
               iconColor={COLORS.green[500]}
               title={t('settings.vibrateOnSuccess')}
               value={vibrateOnSuccess}
-              onValueChange={setVibrateOnSuccess}
+              onValueChange={(value) => {
+                setVibrateOnSuccess(value);
+                AnalyticsEvents.vibrateOnSuccessChanged(value);
+              }}
             />
             <SettingRow
               icon="vibration"

@@ -1,4 +1,4 @@
-import React, { Activity, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -16,6 +16,7 @@ import { Modal, Pressable, View } from 'react-native';
 import { MaterialSymbol } from '../material-symbol';
 import { Text } from '../ui/text';
 
+import { AnalyticsEvents } from '@/analytics';
 import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
 
 interface AlarmPermissionsModalProps {
@@ -119,12 +120,22 @@ export function AlarmPermissionsModal({
   );
   const [isLoading, setIsLoading] = useState(false);
 
+  // Track modal shown
+  useEffect(() => {
+    if (visible) {
+      AnalyticsEvents.permissionModalShown('first_alarm');
+      AnalyticsEvents.permissionStepViewed('system_alert_window', 1);
+    }
+  }, [visible]);
+
   const handleNext = async () => {
     if (currentStep === PermissionStep.SYSTEM_ALERT_WINDOW) {
       setIsLoading(true);
       try {
         await openDisplayOverOtherAppsSettings();
+        AnalyticsEvents.permissionGranted('system_alert_window');
         setCurrentStep(PermissionStep.BATTERY_OPTIMIZATION);
+        AnalyticsEvents.permissionStepViewed('battery_optimization', 2);
       } finally {
         setIsLoading(false);
       }
@@ -132,6 +143,8 @@ export function AlarmPermissionsModal({
       setIsLoading(true);
       try {
         await openAutoStartSettings();
+        AnalyticsEvents.permissionGranted('battery_optimization');
+        AnalyticsEvents.permissionFlowCompleted(2, 2);
         onComplete();
         handleClose();
       } finally {
@@ -141,6 +154,12 @@ export function AlarmPermissionsModal({
   };
 
   const handleSkip = () => {
+    const step =
+      currentStep === PermissionStep.SYSTEM_ALERT_WINDOW
+        ? 'system_alert_window'
+        : 'battery_optimization';
+    AnalyticsEvents.permissionSkipped(step);
+    AnalyticsEvents.permissionFlowCompleted(0, 2);
     onComplete();
     handleClose();
   };
@@ -239,8 +258,7 @@ export function AlarmPermissionsModal({
   };
 
   return (
-    <Activity mode={visible ? 'visible' : 'hidden'}>
-      <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
         <View
           className="flex-1 bg-background-light dark:bg-background-dark"
           style={{ paddingTop: insets.top }}
@@ -301,6 +319,4 @@ export function AlarmPermissionsModal({
           </View>
         </View>
       </Modal>
-    </Activity>
-  );
-}
+
