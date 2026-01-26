@@ -8,9 +8,11 @@ import { Alert, Linking, Pressable, ScrollView, View } from 'react-native';
 import { FeatureRow, ProBadge } from '../components/paywall-features';
 import { PRO_FEATURES } from '../constants/pro-features';
 
+import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { getManageSubscriptionURL, restorePurchases } from '@/services/revenue-cat-service';
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
@@ -18,6 +20,9 @@ export default function AccountScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
+  // Analytics tracking
+  useAnalyticsScreen('Account');
 
   const { customerInfo } = useSubscriptionStore();
 
@@ -59,6 +64,7 @@ export default function AccountScreen() {
   };
 
   const handleCancelSubscription = async () => {
+    AnalyticsEvents.manageSubscriptionTapped();
     const managementURL = await getManageSubscriptionURL();
 
     if (managementURL) {
@@ -71,6 +77,7 @@ export default function AccountScreen() {
   };
 
   const handleRestorePurchases = async () => {
+    AnalyticsEvents.restorePurchasesTapped();
     const result = await restorePurchases();
 
     if (result.success) {

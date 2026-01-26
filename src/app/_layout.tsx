@@ -15,6 +15,7 @@ import { HapticsProvider } from 'react-native-custom-haptics';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Platform, StyleSheet } from 'react-native';
+
 import 'react-native-reanimated';
 
 const CustomDarkTheme = {

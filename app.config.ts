@@ -43,6 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'SCHEDULE_EXACT_ALARM',
       'USE_EXACT_ALARM',
       'USE_FULL_SCREEN_INTENT',
+      'SYSTEM_ALERT_WINDOW',
       'VIBRATE',
       'RECEIVE_BOOT_COMPLETED',
       'FOREGROUND_SERVICE',
@@ -50,6 +51,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'POST_NOTIFICATIONS',
       'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
       'BILLING',
+      'REORDER_TASKS',
+      'DISABLE_KEYGUARD',
     ],
   },
   web: {

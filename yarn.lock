@@ -14931,10 +14931,10 @@ react-native-purchases@latest:
   languageName: node
   linkType: hard
 
-"react@npm:19.1.0":
-  version: 19.1.0
-  resolution: "react@npm:19.1.0"
-  checksum: c0905f8cfb878b0543a5522727e5ed79c67c8111dc16ceee135b7fe19dce77b2c1c19293513061a8934e721292bfc1517e0487e262d1906f306bdf95fa54d02f
+"react@npm:^19.2.3":
+  version: 19.2.3
+  resolution: "react@npm:19.2.3"
+  checksum: 506e369ae13cb46b7f303c0201aadf856642f482cdf5b1c3730c3a6d1762fd5a3ae1dd31196a4686bfbbe56456dcd0c48a4656c75cbcb45620e3028c54789ae9
   languageName: node
   linkType: hard
 
@@ -17131,7 +17131,7 @@ react-native-purchases@latest:
     nativewind: ^4.1.23
     prettier: ^3.7.4
     prettier-plugin-tailwindcss: ^0.5.11
-    react: 19.1.0
+    react: ^19.2.3
     react-aria: ^3.33.0
     react-dom: 19.1.0
     react-hook-form: ^7.70.0
