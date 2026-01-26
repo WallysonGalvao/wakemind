@@ -67,6 +67,44 @@ function PulseRing() {
   );
 }
 
+// Animated ping dot component
+function PingDot() {
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
+
+  useEffect(() => {
+    scale.value = withRepeat(
+      withTiming(2, { duration: 1000, easing: Easing.out(Easing.ease) }),
+      -1,
+      false
+    );
+
+    opacity.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 0 }),
+        withTiming(0, { duration: 1000, easing: Easing.out(Easing.ease) })
+      ),
+      -1,
+      false
+    );
+  }, [scale, opacity]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <View className="absolute right-10 top-0 h-2 w-2">
+      <View className="h-2 w-2 rounded-full bg-brand-primary" />
+      <Animated.View
+        style={animatedStyle}
+        className="absolute inset-0 rounded-full bg-brand-primary"
+      />
+    </View>
+  );
+}
+
 export function AlarmPermissionsModal({
   visible,
   onClose,
@@ -153,7 +191,7 @@ export function AlarmPermissionsModal({
         </View>
 
         {/* Animated ping dot */}
-        <View className="absolute right-10 top-0 h-2 w-2 animate-ping rounded-full bg-brand-primary" />
+        {/* <PingDot /> */}
 
         {/* Status label */}
         <View className="absolute bottom-36 left-16">
