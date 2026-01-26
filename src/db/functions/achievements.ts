@@ -77,6 +77,9 @@ export async function getAllAchievementsWithStatus(): Promise<AchievementState[]
 
   return allAchievements.map((achievement) => {
     const userProgress = userUnlocks.find((u) => u.achievementId === achievement.id);
+    // Get definition from registry to access icon flags
+    const definition = ACHIEVEMENT_REGISTRY.find((def) => def.id === achievement.id);
+
     return {
       achievement: {
         id: achievement.id,
@@ -84,7 +87,10 @@ export async function getAllAchievementsWithStatus(): Promise<AchievementState[]
         tier: achievement.tier,
         icon: achievement.icon,
         isSecret: achievement.isSecret,
+        isPremium: definition?.isPremium,
         target: achievement.target,
+        use3DIcon: definition?.use3DIcon,
+        useSkiaIcon: definition?.useSkiaIcon,
       },
       isUnlocked: !!userProgress?.unlockedAt,
       unlockedAt: userProgress?.unlockedAt || undefined,

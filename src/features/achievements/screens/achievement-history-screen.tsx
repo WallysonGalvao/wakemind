@@ -20,6 +20,7 @@ import { groupAchievementsByPeriod } from '../utils/achievement-history-grouper'
 import type { IconButton } from '@/components/header';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
+import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 
 interface HistorySection {
   period: 'thisWeek' | 'lastMonth' | 'archive';
@@ -31,6 +32,9 @@ export default function AchievementHistoryScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { achievements, loading } = useAchievements();
+
+  // Analytics tracking
+  useAnalyticsScreen('Achievement History');
 
   // Group achievements by period and prepare for SectionList
   const sections = useMemo(() => {

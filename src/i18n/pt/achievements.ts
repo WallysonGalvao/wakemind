@@ -144,6 +144,7 @@ export const achievementsPT = {
   'achievements.tiers.silver': 'Prata',
   'achievements.tiers.gold': 'Ouro',
   'achievements.tiers.platinum': 'Platina',
+  'achievements.achieved': 'Conquistado',
 
   // Unlock Modal
   'achievements.unlock.title': 'Conquista Desbloqueada!',

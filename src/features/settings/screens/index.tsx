@@ -1,9 +1,11 @@
+import { useState } from 'react';
+
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { SubscriptionCard } from '../components/subscription-card';
 
@@ -13,8 +15,10 @@ import { MaterialSymbol } from '@/components/material-symbol';
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { Toast, ToastTitle, useToast } from '@/components/ui/toast';
 import { ALARM_TONES } from '@/constants/alarm-tones';
 import { COLORS } from '@/constants/colors';
+import { deleteAllUserData } from '@/db/functions/reset';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -178,6 +182,8 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const toast = useToast();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Analytics tracking
   useAnalyticsScreen('Settings');
@@ -228,6 +234,42 @@ export default function SettingsScreen() {
     const newTheme = value ? ThemeMode.DARK : ThemeMode.LIGHT;
     setTheme(newTheme);
     AnalyticsEvents.themeChanged(newTheme);
+  };
+
+  const handleVolumeChange = (value: number) => {
+    setAlarmVolume(value);
+    AnalyticsEvents.alarmVolumeChanged(value);
+  };
+
+  const handleDeleteAllData = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteAllData = async () => {
+    setShowDeleteConfirm(false);
+    try {
+      await deleteAllUserData();
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: ({ id }) => (
+          <Toast action="success" variant="solid" nativeID={id}>
+            <ToastTitle>{t('settings.deleteAllDataSuccess')}</ToastTitle>
+          </Toast>
+        ),
+      });
+    } catch (error) {
+      console.error('Error deleting all data:', error);
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: ({ id }) => (
+          <Toast action="error" variant="solid" nativeID={id}>
+            <ToastTitle>{t('settings.deleteAllDataError')}</ToastTitle>
+          </Toast>
+        ),
+      });
+    }
   };
 
   return (
@@ -296,7 +338,7 @@ export default function SettingsScreen() {
             <VolumeSliderRow
               title={t('settings.alarmVolume')}
               value={alarmVolume}
-              onValueChange={setAlarmVolume}
+              onValueChange={handleVolumeChange}
             />
             <SettingToggleRow
               icon="check_circle"
@@ -304,7 +346,10 @@ export default function SettingsScreen() {
               iconColor={COLORS.green[500]}
               title={t('settings.vibrateOnSuccess')}
               value={vibrateOnSuccess}
-              onValueChange={setVibrateOnSuccess}
+              onValueChange={(value) => {
+                setVibrateOnSuccess(value);
+                AnalyticsEvents.vibrateOnSuccessChanged(value);
+              }}
             />
             <SettingRow
               icon="vibration"
@@ -369,6 +414,17 @@ export default function SettingsScreen() {
           </View>
         ) : null}
 
+        {/* Data Management Section */}
+        <Pressable
+          accessibilityRole="button"
+          onPress={handleDeleteAllData}
+          className="items-center px-4 py-6 active:opacity-70"
+        >
+          <Text className="text-base font-bold text-red-600 underline dark:text-red-400">
+            {t('settings.deleteAllData')}
+          </Text>
+        </Pressable>
+
         {/* App Info */}
         <View className="mb-10 mt-8 items-center justify-center gap-2">
           <Text className="text-sm font-medium text-gray-500 dark:text-gray-600">
@@ -391,6 +447,47 @@ export default function SettingsScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={showDeleteConfirm}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowDeleteConfirm(false)}
+      >
+        <View className="flex-1 items-center justify-center bg-black/50 px-6">
+          <View className="w-full max-w-sm rounded-2xl bg-white p-6 dark:bg-surface-dark">
+            <Text className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+              {t('settings.deleteAllDataConfirmTitle')}
+            </Text>
+            <Text className="mb-6 text-sm leading-6 text-gray-600 dark:text-gray-400">
+              {t('settings.deleteAllDataConfirmMessage')}
+            </Text>
+            <View className="flex-row gap-3">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.cancel')}
+                accessibilityHint={t('common.cancel')}
+                onPress={() => setShowDeleteConfirm(false)}
+                className="flex-1 items-center rounded-xl bg-gray-100 py-3 active:opacity-70 dark:bg-gray-800"
+              >
+                <Text className="font-semibold text-gray-900 dark:text-white">
+                  {t('common.cancel')}
+                </Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.ok')}
+                accessibilityHint={t('settings.deleteAllDataConfirmTitle')}
+                onPress={confirmDeleteAllData}
+                className="flex-1 items-center rounded-xl bg-red-600 py-3 active:opacity-70"
+              >
+                <Text className="font-semibold text-white">{t('common.ok')}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

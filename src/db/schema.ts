@@ -143,3 +143,17 @@ export const routineCompletions = sqliteTable('routine_completions', {
 
 export type RoutineCompletion = typeof routineCompletions.$inferSelect;
 export type NewRoutineCompletion = typeof routineCompletions.$inferInsert;
+
+// ============================================================================
+// Streak Freeze Table
+// ============================================================================
+
+export const streakFreezes = sqliteTable('streak_freezes', {
+  id: text('id').primaryKey(),
+  usedAt: text('used_at').notNull(), // ISO timestamp when freeze was used
+  date: text('date').notNull(), // YYYY-MM-DD date that was protected
+  createdAt: text('created_at').notNull(),
+});
+
+export type StreakFreeze = typeof streakFreezes.$inferSelect;
+export type NewStreakFreeze = typeof streakFreezes.$inferInsert;

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Pressable, ScrollView, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 
@@ -46,10 +47,17 @@ export default function ExecutionScoreInfoScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const router = useRouter();
+  const [openTimestamp] = React.useState(Date.now());
 
   const handleClose = useCallback(() => {
+    const durationSeconds = Math.round((Date.now() - openTimestamp) / 1000);
+    AnalyticsEvents.infoModalClosed('execution_score', durationSeconds);
     router.back();
-  }, [router]);
+  }, [router, openTimestamp]);
+
+  React.useEffect(() => {
+    AnalyticsEvents.infoModalViewed('execution_score');
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({

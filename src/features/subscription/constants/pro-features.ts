@@ -22,8 +22,8 @@ export const PRO_FEATURES: ProFeature[] = [
   },
   {
     icon: 'psychology',
-    titleKey: 'paywall.features.allDifficulties.title',
-    descriptionKey: 'paywall.features.allDifficulties.description',
+    titleKey: 'paywall.features.hardDifficulty.title',
+    descriptionKey: 'paywall.features.hardDifficulty.description',
   },
   {
     icon: 'timeline',
@@ -31,8 +31,18 @@ export const PRO_FEATURES: ProFeature[] = [
     descriptionKey: 'paywall.features.advancedStats.description',
   },
   {
-    icon: 'extension',
-    titleKey: 'paywall.features.premiumChallenges.title',
-    descriptionKey: 'paywall.features.premiumChallenges.description',
+    icon: 'music_note',
+    titleKey: 'paywall.features.premiumSounds.title',
+    descriptionKey: 'paywall.features.premiumSounds.description',
+  },
+  {
+    icon: 'emoji_events',
+    titleKey: 'paywall.features.premiumAchievements.title',
+    descriptionKey: 'paywall.features.premiumAchievements.description',
+  },
+  {
+    icon: 'ac_unit',
+    titleKey: 'paywall.features.streakFreeze.title',
+    descriptionKey: 'paywall.features.streakFreeze.description',
   },
 ];

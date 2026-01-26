@@ -8,6 +8,7 @@ import { dashboardPT } from './dashboard';
 import { dashboardWidgetsPT } from './dashboard-widgets';
 import { expoPT } from './expo';
 import { onboardingPT } from './onboarding';
+import permissionsPT from './permissions';
 import { privacyPolicyPT } from './privacy-policy';
 import { quickActionsPT } from './quick-actions';
 import { settingsPT } from './settings';
@@ -36,4 +37,5 @@ export default {
   ...alarmSchedulerPT,
   ...widgetsPT,
   ...achievementsPT,
+  permissions: permissionsPT,
 };

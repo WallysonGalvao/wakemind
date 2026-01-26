@@ -3,23 +3,21 @@
  * Centralized configuration for in-app purchases and subscriptions
  */
 
+import Constants from 'expo-constants';
+
+import { Platform } from 'react-native';
+
 /**
  * RevenueCat API Keys
  * Using test key for development: test_brhnDrWRyBlNoHVTqHlmssTpNhV
  */
-// export const REVENUE_CAT_CONFIG = {
-//   apiKey: __DEV__
-//     ? 'test_brhnDrWRyBlNoHVTqHlmssTpNhV' // Test API key
-//     : (Platform.select({
-//         ios: Constants.expoConfig?.extra?.revenueCatAppleApiKey || '',
-//         android: Constants.expoConfig?.extra?.revenueCatGoogleApiKey || '',
-//       }) as string),
-//   // Enable debug logs in development
-//   enableDebugLogs: __DEV__,
-// };
-
 export const REVENUE_CAT_CONFIG = {
-  apiKey: 'test_brhnDrWRyBlNoHVTqHlmssTpNhV',
+  apiKey: __DEV__
+    ? 'test_brhnDrWRyBlNoHVTqHlmssTpNhV' // Test API key
+    : (Platform.select({
+        ios: Constants.expoConfig?.extra?.revenueCatAppleApiKey || '',
+        android: Constants.expoConfig?.extra?.revenueCatGoogleApiKey || '',
+      }) as string),
   // Enable debug logs in development
   enableDebugLogs: __DEV__,
 };
@@ -38,9 +36,9 @@ export enum Entitlement {
  */
 export enum ProductId {
   // Monthly subscription
-  MONTHLY = 'monthly',
+  MONTHLY = 'wakemind_pro_monthly',
   // Yearly subscription (discounted)
-  YEARLY = 'yearly',
+  YEARLY = 'wakemind_pro_yearly',
 }
 
 /**

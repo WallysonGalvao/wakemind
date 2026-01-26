@@ -16,6 +16,7 @@ interface SettingsState {
   snoozeProtection: boolean;
   maxChallengeAttempts: number;
   hasCompletedOnboarding: boolean;
+  hasCompletedPermissions: boolean;
   setLanguage: (language: Language) => void;
   setTheme: (theme: ThemeMode) => void;
   setAlarmToneId: (toneId: string) => void;
@@ -26,6 +27,7 @@ interface SettingsState {
   setSnoozeProtection: (value: boolean) => void;
   setMaxChallengeAttempts: (value: number) => void;
   completeOnboarding: () => void;
+  completePermissions: () => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -41,6 +43,7 @@ export const useSettingsStore = create<SettingsState>()(
       snoozeProtection: true,
       maxChallengeAttempts: 3,
       hasCompletedOnboarding: false,
+      hasCompletedPermissions: false,
       setLanguage: (language) => set({ language }),
       setTheme: (theme) => set({ theme }),
       setAlarmToneId: (alarmToneId) => set({ alarmToneId }),
@@ -51,6 +54,7 @@ export const useSettingsStore = create<SettingsState>()(
       setSnoozeProtection: (snoozeProtection) => set({ snoozeProtection }),
       setMaxChallengeAttempts: (maxChallengeAttempts) => set({ maxChallengeAttempts }),
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
+      completePermissions: () => set({ hasCompletedPermissions: true }),
     }),
     {
       name: 'settings-storage',

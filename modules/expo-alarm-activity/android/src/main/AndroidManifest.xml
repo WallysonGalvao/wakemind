@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Registrar o BroadcastReceiver para receber alarmes do AlarmManager -->
+    <application>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="expo.modules.alarmactivity.ACTION_ALARM" />
+            </intent-filter>
+        </receiver>
+    </application>
+    <!-- Módulo não precisa declarar a AlarmActivity -->
+    <!-- Ela é criada pelo plugin withFullScreenIntent no app principal -->
+</manifest>
