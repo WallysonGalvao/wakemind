@@ -70,5 +70,9 @@ export const widgetsPT = {
       title: 'Rotina Matinal',
       description: 'Lista de hábitos diários',
     },
+    streakFreeze: {
+      title: 'Congelamento de Sequência',
+      description: 'Proteja sua sequência com tokens de congelamento',
+    },
   },
 };

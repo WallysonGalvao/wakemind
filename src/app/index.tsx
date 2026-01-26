@@ -56,6 +56,7 @@ export default function Index() {
     return null;
   }
 
+  // First-time onboarding
   if (!hasCompletedOnboarding) {
     return <Redirect href="/onboarding" />;
   }

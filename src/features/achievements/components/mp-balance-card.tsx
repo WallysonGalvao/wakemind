@@ -14,6 +14,39 @@ interface MPBalanceCardProps {
   nextTier: AchievementTier | null;
   progressPercentage: number;
   mpToUpgrade: number;
+  unlockedInCurrentTier: number;
+}
+
+/**
+ * Convert number to Roman numerals
+ */
+function toRoman(num: number): string {
+  if (num <= 0) return '';
+
+  const romanNumerals: [number, string][] = [
+    [1000, 'M'],
+    [900, 'CM'],
+    [500, 'D'],
+    [400, 'CD'],
+    [100, 'C'],
+    [90, 'XC'],
+    [50, 'L'],
+    [40, 'XL'],
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ];
+
+  let result = '';
+  for (const [value, numeral] of romanNumerals) {
+    while (num >= value) {
+      result += numeral;
+      num -= value;
+    }
+  }
+  return result;
 }
 
 export function MPBalanceCard({
@@ -23,12 +56,13 @@ export function MPBalanceCard({
   nextTier,
   progressPercentage,
   mpToUpgrade,
+  unlockedInCurrentTier,
 }: MPBalanceCardProps) {
   const { t } = useTranslation();
   const shadowStyle = useShadowStyle('md', '#3FA9F5');
 
   return (
-    <View className="flex flex-col gap-4 px-4 pt-4">
+    <View className="flex flex-col gap-4 px-4 py-4">
       {/* Balance Card */}
       <View style={shadowStyle}>
         <View className="relative overflow-hidden rounded-2xl border border-primary-500 bg-white p-5 shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]">
@@ -74,7 +108,7 @@ export function MPBalanceCard({
             ) : (
               <>
                 {t('achievements.tiers.platinum').toUpperCase()}{' '}
-                <Text className="text-primary-500">ACHIEVED</Text>
+                <Text className="text-primary-500">{t('achievements.achieved').toUpperCase()}</Text>
               </>
             )}
           </Text>
@@ -94,7 +128,8 @@ export function MPBalanceCard({
         {/* Labels */}
         <View className="flex-row justify-between">
           <Text className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-white/40">
-            {t(`achievements.tiers.${currentTier}`)} {currentTier === 'gold' ? 'III' : ''}
+            {t(`achievements.tiers.${currentTier}`)}{' '}
+            {unlockedInCurrentTier > 0 ? toRoman(unlockedInCurrentTier) : ''}
           </Text>
           {nextTier ? (
             <Text className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-white/40">

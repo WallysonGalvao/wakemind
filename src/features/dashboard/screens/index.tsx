@@ -33,11 +33,13 @@ import { DailyInsight } from '@/features/dashboard/components/widgets/daily-insi
 import { MorningRoutineChecklist } from '@/features/dashboard/components/widgets/morning-routine-checklist';
 import { SleepQualityScore } from '@/features/dashboard/components/widgets/sleep-quality-score';
 import { SnoozeAnalytics } from '@/features/dashboard/components/widgets/snooze-analytics';
+import { StreakFreezeWidget } from '@/features/dashboard/components/widgets/streak-freeze';
 import { WakeConsistency } from '@/features/dashboard/components/widgets/wake-consistency';
 import { WeeklyHeatmap } from '@/features/dashboard/components/widgets/weekly-heatmap';
 import type { PeriodType } from '@/features/dashboard/types';
 import { FeatureGate } from '@/features/subscription/components/feature-gate';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
+import { useStreakFreeze } from '@/hooks/use-streak-freeze';
 import { useWidgetStore } from '@/stores/use-widget-store';
 import { WidgetType } from '@/types/widgets';
 
@@ -72,6 +74,9 @@ export default function DashboardScreen() {
   // Get current streak and latency data
   const currentStreak = useCurrentStreak(refreshKey);
   const avgLatency = useAvgLatency(selectedPeriod, refreshKey);
+
+  // Get streak freeze data
+  const { availableTokens, useFreezeToken } = useStreakFreeze();
 
   // Get daily insight based on metrics
   const dailyInsight = useDailyInsight({
@@ -153,6 +158,11 @@ export default function DashboardScreen() {
               <AvgLatency latencyMinutes={avgLatency} />
             )}
           </View>
+        )}
+
+        {/* Streak Freeze */}
+        {enabledWidgets.has(WidgetType.STREAK_FREEZE) && (
+          <StreakFreezeWidget availableTokens={availableTokens} onUseToken={useFreezeToken} />
         )}
 
         {/* Cognitive Activation - Premium Feature */}

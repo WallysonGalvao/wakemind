@@ -70,5 +70,9 @@ export const widgetsEN = {
       title: 'Morning Routine',
       description: 'Daily habit checklist',
     },
+    streakFreeze: {
+      title: 'Streak Freeze',
+      description: 'Protect your streak with freeze tokens',
+    },
   },
 };

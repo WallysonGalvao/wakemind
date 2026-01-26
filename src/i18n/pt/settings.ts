@@ -55,6 +55,15 @@ export const settingsPT = {
   'settings.privacyPolicy': 'Política de Privacidade',
   'settings.support': 'Suporte',
 
+  // Data Management
+  'settings.dataManagement': 'Gestão de Dados',
+  'settings.deleteAllData': 'Deletar dados',
+  'settings.deleteAllDataConfirmTitle': 'Deletar Todos os Dados?',
+  'settings.deleteAllDataConfirmMessage':
+    'Esta ação é IRREVERSÍVEL e deletará permanentemente:\n\n• Todos os alarmes\n• Histórico de desempenho\n• Progresso de conquistas\n• Metas e rotinas\n• Todas as estatísticas\n\nSua assinatura NÃO será afetada.\n\nTem certeza que deseja continuar?',
+  'settings.deleteAllDataSuccess': 'Todos os dados foram deletados com sucesso',
+  'settings.deleteAllDataError': 'Erro ao deletar dados. Tente novamente.',
+
   // Sections
   'section.general': 'Geral',
   'section.preferences': 'Preferências',

@@ -144,6 +144,7 @@ export const achievementsEN = {
   'achievements.tiers.silver': 'Silver',
   'achievements.tiers.gold': 'Gold',
   'achievements.tiers.platinum': 'Platinum',
+  'achievements.achieved': 'Achieved',
 
   // Unlock Modal
   'achievements.unlock.title': 'Achievement Unlocked!',

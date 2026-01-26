@@ -23,7 +23,7 @@ export function Achievements() {
     <TouchableOpacity
       accessibilityRole="button"
       onPress={() => router.push('/achievements')}
-      className="rounded-2xl border border-slate-200 bg-white p-4 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900"
+      className="rounded-2xl border border-slate-200 bg-white p-4 active:scale-[0.98] dark:border-slate-800 dark:bg-surface-dark"
     >
       <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">

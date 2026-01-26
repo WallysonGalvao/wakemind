@@ -9,11 +9,17 @@ import { useTranslation } from 'react-i18next';
 
 import { Text, View } from 'react-native';
 
+import { AchievementIconSkia } from './achievement-icon-skia';
 import { getAchievementReward } from '../constants/achievement-rewards';
-import type { AchievementDefinition, AchievementState } from '../types/achievement.types';
+import type {
+  AchievementDefinition,
+  AchievementState,
+  AchievementTier,
+} from '../types/achievement.types';
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { useShadowStyle } from '@/hooks/use-shadow-style';
+import { cn } from '@/utils/cn';
 
 interface AchievementCardProps {
   achievement: AchievementState;
@@ -165,17 +171,43 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
           </Text>
         </View>
 
+        {/* Premium Badge - Only show if locked and premium */}
+        {isLocked && def.isPremium ? (
+          <View
+            className={cn(
+              'absolute left-3 top-3 z-10 flex-row items-center gap-1 rounded-full border px-2 py-1'
+            )}
+            style={{ borderColor: colors.borderColor }}
+          >
+            <MaterialSymbol name="workspace_premium" size={12} color={colors.iconColor} />
+            <Text className="uppercas text-[9px] font-bold" style={{ color: colors.iconColor }}>
+              PRO
+            </Text>
+          </View>
+        ) : null}
+
         {/* Icon Area */}
         <View className={`flex h-28 items-center justify-center p-4 ${colors.iconBg}`}>
-          <View
-            className={`flex h-12 w-12 items-center justify-center rounded-full ${isPlatinum && isUnlocked ? 'border border-blue-500/20 bg-gradient-to-tr from-white to-blue-500/20' : colors.iconBg}`}
-          >
-            <MaterialSymbol
-              name={def.icon}
-              size={32}
-              color={isLocked ? '#94A3B8' : colors.iconColor}
-            />
-          </View>
+          {def.useSkiaIcon ? (
+            <View className="h-16 w-16">
+              <AchievementIconSkia
+                iconName={def.icon}
+                tier={def.tier as AchievementTier}
+                isUnlocked={isUnlocked}
+                size={64}
+              />
+            </View>
+          ) : (
+            <View
+              className={`flex h-12 w-12 items-center justify-center rounded-full ${isPlatinum && isUnlocked ? 'border border-blue-500/20 bg-gradient-to-tr from-white to-blue-500/20' : colors.iconBg}`}
+            >
+              <MaterialSymbol
+                name={def.icon}
+                size={32}
+                color={isLocked ? '#94A3B8' : colors.iconColor}
+              />
+            </View>
+          )}
         </View>
 
         {/* Content Area */}
