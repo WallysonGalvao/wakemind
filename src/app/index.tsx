@@ -61,10 +61,5 @@ export default function Index() {
     return <Redirect href="/onboarding" />;
   }
 
-  // Permissions onboarding (if not completed or critical permissions missing)
-  // if (!hasCompletedPermissions || !hasAllCriticalPermissions()) {
-  //   return <Redirect href="/permissions-onboarding" />;
-  // }
-
   return <Redirect href="/(tabs)" />;
 }

@@ -74,4 +74,58 @@ export default {
     next: 'Siguiente',
     skip: 'Omitir',
   },
+
+  // Alarm Permissions Modal (for first alarm creation)
+  alarmPermissions: {
+    progress: 'Permiso {{current}} / {{total}}',
+
+    intro: {
+      title: 'No dejes que tus alarmas queden en silencio',
+      description: 'Para funcionar perfectamente, necesitamos 2 permisos importantes',
+      step1Title: 'Mostrar sobre otras apps',
+      step1Description: 'Abrir la alarma automáticamente, incluso con pantalla bloqueada',
+      step2Title: 'Inicio automático',
+      step2Description: 'Garantizar que la alarma siempre suene, incluso en segundo plano',
+      footer: 'Puedes configurar esto ahora o hacerlo más tarde en ajustes',
+    },
+
+    systemAlertWindow: {
+      title: 'Para desactivar la alarma sin desbloquear',
+      description: 'Conceda permiso para Mostrar sobre otras aplicaciones',
+      benefitTitle: '¿Por qué lo necesitamos?',
+      benefit:
+        'Permite que la app se abra automáticamente sobre la pantalla de bloqueo cuando suene la alarma. Podrás desactivar o posponer sin desbloquear tu teléfono.',
+    },
+
+    batteryOptimization: {
+      title: 'Para que la alarma siempre suene',
+      description: 'Conceda permiso para Inicio automático en segundo plano',
+      benefitTitle: 'Garantía de confiabilidad',
+      benefit:
+        'Garantiza que tus alarmas suenen incluso cuando la app esté cerrada o en modo de ahorro de batería. Crítico para funcionamiento 24/7.',
+    },
+
+    complete: {
+      title: '¡Todo listo! 🎉',
+      description: 'Tus permisos están configurados. Tu alarma funcionará perfectamente.',
+      feature1: 'La alarma se abre automáticamente en la pantalla de bloqueo',
+      feature2: 'Funciona incluso con la app cerrada o ahorro de batería activado',
+    },
+
+    buttons: {
+      getStarted: 'Comenzar',
+      openSettings: 'Abrir Ajustes',
+      skipForNow: 'Ahora no',
+      done: 'Finalizar',
+    },
+
+    accessibility: {
+      close: 'Cerrar',
+      closeHint: 'Cerrar modal de permisos',
+      nextHint: 'Continuar al siguiente paso',
+      skipLabel: 'Ahora no',
+      skipHint: 'Omitir configuración de permisos',
+      loading: 'Cargando...',
+    },
+  },
 };

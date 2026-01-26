@@ -74,4 +74,58 @@ export default {
     next: 'Próximo',
     skip: 'Pular',
   },
+
+  // Alarm Permissions Modal (for first alarm creation)
+  alarmPermissions: {
+    progress: 'Permissão {{current}} / {{total}}',
+
+    intro: {
+      title: 'Não deixe os seus alarmes ficarem silenciosos',
+      description: 'Para funcionar perfeitamente, precisamos de 2 permissões importantes',
+      step1Title: 'Aparecer sobre outros apps',
+      step1Description: 'Abrir o alarme automaticamente, mesmo com a tela bloqueada',
+      step2Title: 'Início automático',
+      step2Description: 'Garantir que o alarme sempre toque, mesmo em segundo plano',
+      footer: 'Você pode configurar isso agora ou fazer mais tarde nas configurações',
+    },
+
+    systemAlertWindow: {
+      title: 'Para desligar o alarme sem desbloquear',
+      description: 'Conceda a permissão de Aparecer sobre outras aplicações',
+      benefitTitle: 'Por que precisamos?',
+      benefit:
+        'Permite que o app abra automaticamente sobre a tela de bloqueio quando o alarme tocar. Você poderá desligar ou adiar sem desbloquear o celular.',
+    },
+
+    batteryOptimization: {
+      title: 'Para que o alarme sempre toque',
+      description: 'Conceda a permissão de Início automático em segundo plano',
+      benefitTitle: 'Garantia de confiabilidade',
+      benefit:
+        'Garante que seus alarmes toquem mesmo quando o app está fechado ou em economia de bateria. Crítico para funcionamento 24/7.',
+    },
+
+    complete: {
+      title: 'Tudo pronto! 🎉',
+      description: 'Suas permissões foram configuradas. Seu alarme funcionará perfeitamente.',
+      feature1: 'Alarme abre automaticamente na tela bloqueada',
+      feature2: 'Funciona mesmo com app fechado ou bateria economizada',
+    },
+
+    buttons: {
+      getStarted: 'Continuar',
+      openSettings: 'Aceder às definições',
+      skipForNow: 'Agora não',
+      done: 'Concluir',
+    },
+
+    accessibility: {
+      close: 'Fechar',
+      closeHint: 'Fechar modal de permissões',
+      nextHint: 'Prosseguir para o próximo passo',
+      skipLabel: 'Agora não',
+      skipHint: 'Ignorar configuração de permissões',
+      loading: 'Carregando...',
+    },
+  },
 };
