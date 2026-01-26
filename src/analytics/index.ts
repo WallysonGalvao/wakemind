@@ -326,8 +326,7 @@ export const AnalyticsEvents = {
 
   achievementHistoryViewed: () => logEvent('achievement_history_viewed'),
 
-  achievementFilterChanged: (tier: string) =>
-    logEvent('achievement_filter_changed', { tier }),
+  achievementFilterChanged: (tier: string) => logEvent('achievement_filter_changed', { tier }),
 
   // Support events
   faqItemExpanded: (questionId: string, category: string) =>
