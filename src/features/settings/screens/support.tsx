@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { useNavigation, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { Platform, Pressable, ScrollView, View } from 'react-native';
+import { Linking, Platform, Pressable, ScrollView, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
@@ -79,12 +79,17 @@ function FAQItem({
 // ============================================================================
 
 export default function SupportScreen() {
+  const router = useRouter();
   const navigation = useNavigation();
   const { t } = useTranslation();
 
   // Analytics tracking
   useAnalyticsScreen('Support');
-  const router = useRouter();
+
+  const handleContactPress = () => {
+    AnalyticsEvents.supportEmailTapped();
+    Linking.openURL('mailto:wallyson.galvao@gmail.com');
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -279,6 +284,11 @@ export default function SupportScreen() {
           <Text className="mb-3 mt-4 text-center text-xs font-medium text-gray-400 dark:text-gray-500">
             {t('support.footer')}
           </Text>
+          <Pressable onPress={handleContactPress} accessibilityRole="link">
+            <Text className="text-sm font-bold text-primary-500 underline">
+              {t('privacyPolicy.footer.email')}
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </View>

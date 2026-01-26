@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Modal, Pressable, View } from 'react-native';
+import { AppState, Modal, Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '../material-symbol';
 import { Text } from '../ui/text';
@@ -113,12 +113,14 @@ export function AlarmPermissionsModal({
 }: AlarmPermissionsModalProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { openDisplayOverOtherAppsSettings, openAutoStartSettings } = useAlarmPermissions();
+  const { openDisplayOverOtherAppsSettings, openAutoStartSettings, status, checkPermissions } = useAlarmPermissions();
 
   const [currentStep, setCurrentStep] = useState<PermissionStep>(
     PermissionStep.SYSTEM_ALERT_WINDOW
   );
   const [isLoading, setIsLoading] = useState(false);
+  const appState = useRef(AppState.currentState);
+  const permissionBeforeSettings = useRef<string | null>(null);
 
   // Track modal shown
   useEffect(() => {
@@ -128,12 +130,48 @@ export function AlarmPermissionsModal({
     }
   }, [visible]);
 
+  // Listen to app state to check permissions when user returns from settings
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active' &&
+        permissionBeforeSettings.current &&
+        visible
+      ) {
+        // User returned to app, check if permission was granted
+        await checkPermissions();
+        
+        const permission = permissionBeforeSettings.current;
+        let wasGranted = false;
+
+        if (permission === 'system_alert_window') {
+          wasGranted = status.displayOverOtherApps === 'granted';
+        } else if (permission === 'battery_optimization') {
+          wasGranted = status.batteryOptimization === 'granted' || status.autoStart === 'granted';
+        }
+
+        if (!wasGranted) {
+          AnalyticsEvents.permissionDenied(permission);
+        }
+
+        permissionBeforeSettings.current = null;
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [visible, status, checkPermissions]);
+
   const handleNext = async () => {
     if (currentStep === PermissionStep.SYSTEM_ALERT_WINDOW) {
       setIsLoading(true);
       try {
+        permissionBeforeSettings.current = 'system_alert_window';
         await openDisplayOverOtherAppsSettings();
-        AnalyticsEvents.permissionGranted('system_alert_window');
+        // Will check permission status when user returns (via AppState listener)
         setCurrentStep(PermissionStep.BATTERY_OPTIMIZATION);
         AnalyticsEvents.permissionStepViewed('battery_optimization', 2);
       } finally {
@@ -142,9 +180,16 @@ export function AlarmPermissionsModal({
     } else if (currentStep === PermissionStep.BATTERY_OPTIMIZATION) {
       setIsLoading(true);
       try {
+        permissionBeforeSettings.current = 'battery_optimization';
         await openAutoStartSettings();
-        AnalyticsEvents.permissionGranted('battery_optimization');
-        AnalyticsEvents.permissionFlowCompleted(2, 2);
+        // Will check permission status when user returns (via AppState listener)
+        
+        // Count granted permissions
+        let grantedCount = 0;
+        if (status.displayOverOtherApps === 'granted') grantedCount++;
+        if (status.batteryOptimization === 'granted' || status.autoStart === 'granted') grantedCount++;
+        
+        AnalyticsEvents.permissionFlowCompleted(grantedCount, 2);
         onComplete();
         handleClose();
       } finally {
