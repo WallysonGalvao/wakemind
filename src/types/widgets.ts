@@ -3,10 +3,20 @@ export enum WidgetType {
   WAKE_CONSISTENCY = 'wakeConsistency',
   CURRENT_STREAK = 'currentStreak',
   AVG_LATENCY = 'avgLatency',
+  STREAK_FREEZE = 'streakFreeze',
   COGNITIVE_MAP = 'cognitiveMap',
   DAILY_INSIGHT = 'dailyInsight',
+  ACHIEVEMENTS = 'achievements',
   FALSE_STARTS = 'falseStarts',
   SLEEP_ENVIRONMENT = 'sleepEnvironment',
+  // High Priority Widgets
+  SNOOZE_ANALYTICS = 'snoozeAnalytics',
+  GOAL_PROGRESS = 'goalProgress',
+  WEEKLY_HEATMAP = 'weeklyHeatmap',
+  // Medium Priority Widgets
+  SLEEP_QUALITY = 'sleepQuality',
+  CIRCADIAN_RHYTHM = 'circadianRhythm',
+  MORNING_ROUTINE = 'morningRoutine',
 }
 
 export enum WidgetCategory {
@@ -40,7 +50,7 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'schedule',
     titleKey: 'widgets.wakeConsistency.title',
     descriptionKey: 'widgets.wakeConsistency.description',
-    defaultEnabled: true,
+    defaultEnabled: false,
   },
   {
     id: WidgetType.CURRENT_STREAK,
@@ -58,15 +68,23 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     descriptionKey: 'widgets.avgLatency.description',
     defaultEnabled: false,
   },
-  // Insights
   {
-    id: WidgetType.COGNITIVE_MAP,
-    category: WidgetCategory.INSIGHTS,
-    icon: 'psychology',
-    titleKey: 'widgets.cognitiveMap.title',
-    descriptionKey: 'widgets.cognitiveMap.description',
-    defaultEnabled: true,
+    id: WidgetType.STREAK_FREEZE,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'ac_unit',
+    titleKey: 'widgets.streakFreeze.title',
+    descriptionKey: 'widgets.streakFreeze.description',
+    defaultEnabled: false,
   },
+  // Insights
+  // {
+  //   id: WidgetType.COGNITIVE_MAP,
+  //   category: WidgetCategory.INSIGHTS,
+  //   icon: 'psychology',
+  //   titleKey: 'widgets.cognitiveMap.title',
+  //   descriptionKey: 'widgets.cognitiveMap.description',
+  //   defaultEnabled: true,
+  // },
   {
     id: WidgetType.DAILY_INSIGHT,
     category: WidgetCategory.INSIGHTS,
@@ -74,6 +92,14 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     titleKey: 'widgets.dailyInsight.title',
     descriptionKey: 'widgets.dailyInsight.description',
     defaultEnabled: true,
+  },
+  {
+    id: WidgetType.ACHIEVEMENTS,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'emoji_events',
+    titleKey: 'widgets.achievements.title',
+    descriptionKey: 'widgets.achievements.description',
+    defaultEnabled: false,
   },
   // System Monitoring
   {
@@ -90,6 +116,56 @@ export const WIDGET_CONFIGS: WidgetConfig[] = [
     icon: 'thermostat',
     titleKey: 'widgets.sleepEnvironment.title',
     descriptionKey: 'widgets.sleepEnvironment.description',
+    defaultEnabled: false,
+  },
+  // High Priority Widgets
+  {
+    id: WidgetType.SNOOZE_ANALYTICS,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'snooze',
+    titleKey: 'widgets.snoozeAnalytics.title',
+    descriptionKey: 'widgets.snoozeAnalytics.description',
     defaultEnabled: true,
   },
+  // {
+  //   id: WidgetType.GOAL_PROGRESS,
+  //   category: WidgetCategory.INSIGHTS,
+  //   icon: 'flag',
+  //   titleKey: 'widgets.goalProgress.title',
+  //   descriptionKey: 'widgets.goalProgress.description',
+  //   defaultEnabled: false,
+  // },
+  {
+    id: WidgetType.WEEKLY_HEATMAP,
+    category: WidgetCategory.ACTIVE_PERFORMANCE,
+    icon: 'grid_on',
+    titleKey: 'widgets.weeklyHeatmap.title',
+    descriptionKey: 'widgets.weeklyHeatmap.description',
+    defaultEnabled: true,
+  },
+  // Medium Priority Widgets
+  {
+    id: WidgetType.SLEEP_QUALITY,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'bedtime',
+    titleKey: 'widgets.sleepQuality.title',
+    descriptionKey: 'widgets.sleepQuality.description',
+    defaultEnabled: false,
+  },
+  {
+    id: WidgetType.CIRCADIAN_RHYTHM,
+    category: WidgetCategory.INSIGHTS,
+    icon: 'routine',
+    titleKey: 'widgets.circadianRhythm.title',
+    descriptionKey: 'widgets.circadianRhythm.description',
+    defaultEnabled: false,
+  },
+  // {
+  //   id: WidgetType.MORNING_ROUTINE,
+  //   category: WidgetCategory.ACTIVE_PERFORMANCE,
+  //   icon: 'checklist',
+  //   titleKey: 'widgets.morningRoutine.title',
+  //   descriptionKey: 'widgets.morningRoutine.description',
+  //   defaultEnabled: true,
+  // },
 ];

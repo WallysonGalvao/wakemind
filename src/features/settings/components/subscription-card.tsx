@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +32,7 @@ export function SubscriptionCard() {
 
     if (!expirationDate) return null;
 
-    const date = new Date(expirationDate);
+    const date = dayjs(expirationDate).toDate();
     const formattedDate = date.toLocaleDateString();
 
     return {
@@ -52,8 +53,17 @@ export function SubscriptionCard() {
         accessibilityHint={t('settings.subscription.manageDescription')}
       >
         <View className="relative mb-8 w-full overflow-hidden rounded-2xl border border-primary-500 bg-white p-5 shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]">
+          {/* Decorative Icon */}
+          <View className="absolute right-4 top-1.5 opacity-[0.08] dark:opacity-10">
+            <MaterialSymbol
+              name="workspace_premium"
+              size={120}
+              className="text-slate-900 dark:text-primary-500"
+            />
+          </View>
+
           {/* Badge */}
-          <View className="absolute right-3 top-3 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
+          <View className="absolute right-3 top-3 z-10 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
             <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
               {t('account.active')}
             </Text>
@@ -106,8 +116,17 @@ export function SubscriptionCard() {
       accessibilityHint={t('subscription.card.subtitle')}
     >
       <View className="relative mb-8 w-full overflow-hidden rounded-2xl border border-primary-500 bg-white p-5 shadow-lg shadow-primary-500/20 dark:bg-[#1a2233]">
+        {/* Decorative Icon */}
+        <View className="absolute right-4 top-1.5 opacity-[0.08] dark:opacity-10">
+          <MaterialSymbol
+            name="workspace_premium"
+            size={120}
+            className="text-slate-900 dark:text-primary-500"
+          />
+        </View>
+
         {/* Badge */}
-        <View className="absolute right-3 top-3 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
+        <View className="absolute right-3 top-3 z-10 rounded bg-primary-500 px-2 py-1 shadow-lg shadow-primary-500/40">
           <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
             {t('paywall.plans.trial')}
           </Text>

@@ -1,7 +1,4 @@
-import React from 'react';
-
 import { View } from 'react-native';
-
 
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
@@ -40,7 +37,7 @@ export function ProtocolToggle({
 
   return (
     <View
-      className={`flex-row items-center justify-between rounded-lg border border-slate-200 bg-white p-4 dark:border-transparent dark:bg-surface-dark ${
+      className={`flex-row items-center justify-between rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-surface-dark ${
         disabled ? 'opacity-60' : ''
       }`}
       style={shadowStyle}

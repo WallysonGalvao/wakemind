@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Pressable, Text, View } from 'react-native';
 
+import { AnalyticsEvents } from '@/analytics';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Switch } from '@/components/ui/switch';
 import { COLORS } from '@/constants/colors';
@@ -28,13 +29,18 @@ export function WidgetToggle({
   const iconColor = colorScheme === 'dark' ? '#FFFFFF' : '#0F1621';
   const trackColorOff = colorScheme === 'dark' ? '#3B4A5C' : '#E2E8F0';
 
+  const handleToggle = () => {
+    AnalyticsEvents.widgetToggled(titleKey, !enabled);
+    onToggle();
+  };
+
   return (
     <Pressable
       accessibilityRole="switch"
       accessibilityState={{ checked: enabled }}
       accessibilityLabel={t(titleKey)}
       accessibilityHint={t(descriptionKey)}
-      onPress={onToggle}
+      onPress={handleToggle}
       className="flex-row items-center justify-between p-4 active:bg-slate-50 dark:active:bg-[#232f48]"
     >
       <View className="flex-1 flex-row items-center gap-3.5">
@@ -50,7 +56,7 @@ export function WidgetToggle({
       </View>
       <Switch
         value={enabled}
-        onValueChange={onToggle}
+        onValueChange={handleToggle}
         trackColor={{ false: COLORS.gray[300], true: COLORS.brandPrimary }}
         thumbColor={COLORS.white}
         ios_backgroundColor={trackColorOff}

@@ -12,7 +12,13 @@ export const supportES = {
   'support.faq.alarms.snooze.question': '¿Cómo funciona la Protección de Snooze?',
   'support.faq.alarms.snooze.answer':
     'Cuando está activada, debes completar un desafío cognitivo para posponer la alarma, evitando el snooze inconsciente.',
-
+  'support.faq.alarms.permissions.question': '¿Qué permisos necesita WakeMind en Android 14+?',
+  'support.faq.alarms.permissions.answer':
+    'Android 14+ requiere: 1) Notificaciones de Pantalla Completa - para abrir la app automáticamente cuando suene la alarma (Configuración > Apps > WakeMind > Notificaciones > Permitir notificaciones en pantalla completa). 2) Desactivar Optimización de Batería - garantiza que las alarmas suenen incluso cuando el teléfono está inactivo.',
+  'support.faq.alarms.autoOpen.question':
+    'La app no se abre automáticamente cuando suena la alarma',
+  'support.faq.alarms.autoOpen.answer':
+    'Activa "Notificaciones de Pantalla Completa" en Configuración > Apps > WakeMind > Notificaciones. También desactiva la optimización de batería para WakeMind.',
   // Sound & Vibration
   'support.faq.sound.title': 'Sonido y Vibración',
   'support.faq.sound.noVibration.question': 'La alarma no vibra',

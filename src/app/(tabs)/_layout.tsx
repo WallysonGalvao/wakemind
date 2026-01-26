@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
