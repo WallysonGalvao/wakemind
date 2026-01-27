@@ -45,6 +45,9 @@ yarn-error.*
 .env
 .env*.local
 
+# VS Code
+.vscode/mcp.json
+
 # TypeScript
 *.tsbuildinfo
 
