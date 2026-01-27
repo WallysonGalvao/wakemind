@@ -1,3 +1,13 @@
-import DatabaseManagerScreen from '@/features/settings/screens/database-manager';
+import { lazy, Suspense } from 'react';
 
-export default DatabaseManagerScreen;
+import { LazyLoadingFallback } from '@/components/lazy-loading-fallback';
+
+const DatabaseManagerScreen = lazy(() => import('@/features/settings/screens/database-manager'));
+
+export default function DatabaseManagerRoute() {
+  return (
+    <Suspense fallback={<LazyLoadingFallback />}>
+      <DatabaseManagerScreen />
+    </Suspense>
+  );
+}

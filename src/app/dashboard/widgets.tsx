@@ -1,5 +1,13 @@
-import WidgetsScreen from '@/features/dashboard/screens/widgets';
+import { lazy, Suspense } from 'react';
+
+import { LazyLoadingFallback } from '@/components/lazy-loading-fallback';
+
+const WidgetsScreen = lazy(() => import('@/features/dashboard/screens/widgets'));
 
 export default function WidgetsPage() {
-  return <WidgetsScreen />;
+  return (
+    <Suspense fallback={<LazyLoadingFallback />}>
+      <WidgetsScreen />
+    </Suspense>
+  );
 }

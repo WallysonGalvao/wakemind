@@ -104,7 +104,6 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
   const defaultValues = useMemo((): AlarmFormData => {
     if (isEditMode && currentAlarm) {
-      console.log('currentAlarm:: ' + JSON.stringify(currentAlarm));
       const parsedTime = parseTimeString(currentAlarm.time);
       const parsedDays = parseScheduleToDays(currentAlarm.schedule);
 

@@ -1,5 +1,15 @@
-import CognitiveActivationInfoScreen from '@/features/dashboard/components/widgets/cognitive-activation-info';
+import { lazy, Suspense } from 'react';
+
+import { LazyLoadingFallback } from '@/components/lazy-loading-fallback';
+
+const CognitiveActivationInfoScreen = lazy(
+  () => import('@/features/dashboard/components/widgets/cognitive-activation-info')
+);
 
 export default function CognitiveActivationInfoPage() {
-  return <CognitiveActivationInfoScreen />;
+  return (
+    <Suspense fallback={<LazyLoadingFallback />}>
+      <CognitiveActivationInfoScreen />
+    </Suspense>
+  );
 }

@@ -1,3 +1,15 @@
-import BackupProtocolsInfoScreen from '@/features/alarms/screens/backup-protocols-info';
+import { lazy, Suspense } from 'react';
 
-export default BackupProtocolsInfoScreen;
+import { LazyLoadingFallback } from '@/components/lazy-loading-fallback';
+
+const BackupProtocolsInfoScreen = lazy(
+  () => import('@/features/alarms/screens/backup-protocols-info')
+);
+
+export default function BackupProtocolsInfoRoute() {
+  return (
+    <Suspense fallback={<LazyLoadingFallback />}>
+      <BackupProtocolsInfoScreen />
+    </Suspense>
+  );
+}

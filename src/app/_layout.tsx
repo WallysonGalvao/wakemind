@@ -11,6 +11,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useTranslation } from 'react-i18next';
 import { HapticsProvider } from 'react-native-custom-haptics';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -46,9 +47,12 @@ export const unstable_settings = {
 function RootLayout() {
   const theme = useTheme();
   const isDark = theme === 'dark';
+
+  const { t } = useTranslation();
   const { getAlarmById } = useAlarms();
-  usePerformanceMonitorDevTools();
   const { initialize: initializeSubscription } = useSubscriptionStore();
+
+  usePerformanceMonitorDevTools();
 
   const [fontsLoaded] = useFonts({
     MaterialSymbolsRoundedFilled: require('@/assets/fonts/MaterialSymbolsRounded-Filled.ttf'),
@@ -139,15 +143,17 @@ function RootLayout() {
               <Stack.Screen
                 name="alarm/edit-alarm"
                 options={{
-                  presentation: 'modal',
+                  title: t('editAlarm.title'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
               <Stack.Screen
                 name="alarm/backup-protocols-info"
                 options={{
-                  presentation: 'modal',
+                  title: t('newAlarm.backupProtocols.infoModal.title'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
               <Stack.Screen
@@ -181,22 +187,25 @@ function RootLayout() {
               <Stack.Screen
                 name="dashboard/modals/execution-score-info"
                 options={{
-                  presentation: 'modal',
+                  title: t('dashboard.executionScore.infoModal.title'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
               <Stack.Screen
                 name="dashboard/modals/wake-consistency-info"
                 options={{
-                  presentation: 'modal',
+                  title: t('dashboard.wakeConsistency.infoModal.title'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
               <Stack.Screen
                 name="dashboard/modals/cognitive-activation-info"
                 options={{
-                  presentation: 'modal',
+                  title: t('dashboard.cognitiveActivation.infoModal.title'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
 
@@ -230,15 +239,17 @@ function RootLayout() {
               <Stack.Screen
                 name="settings/privacy-policy"
                 options={{
-                  presentation: 'modal',
+                  title: t('settings.privacyPolicy'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
               <Stack.Screen
                 name="settings/support"
                 options={{
-                  presentation: 'modal',
+                  title: t('settings.support'),
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
 
@@ -246,8 +257,9 @@ function RootLayout() {
               <Stack.Screen
                 name="subscription/paywall"
                 options={{
-                  presentation: 'modal',
+                  title: 'WakeMind Pro',
                   headerShown: true,
+                  presentation: 'modal',
                 }}
               />
             </Stack>
