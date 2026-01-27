@@ -35,6 +35,7 @@ import { useTheme } from '@/hooks/use-theme';
 import '@/i18n';
 import { AlarmScheduler } from '@/services/alarm-scheduler';
 import { NotificationHandler } from '@/services/notification-handler';
+import { useSettingsStore } from '@/stores/use-settings-store';
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -51,6 +52,7 @@ function RootLayout() {
   const { t } = useTranslation();
   const { getAlarmById } = useAlarms();
   const { initialize: initializeSubscription } = useSubscriptionStore();
+  const hasCompletedOnboarding = useSettingsStore((state) => state.hasCompletedOnboarding);
 
   usePerformanceMonitorDevTools();
 
@@ -128,140 +130,148 @@ function RootLayout() {
           <ThemeProvider value={isDark ? CustomDarkTheme : DefaultTheme}>
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="onboarding"
-                options={{
-                  headerShown: false,
-                  animation: 'fade',
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="alarm/create-alarm" options={{ headerShown: false }} />
 
-              {/* Alarm */}
-              <Stack.Screen
-                name="alarm/edit-alarm"
-                options={{
-                  title: t('editAlarm.title'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
-              <Stack.Screen
-                name="alarm/backup-protocols-info"
-                options={{
-                  title: t('newAlarm.backupProtocols.infoModal.title'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
-              <Stack.Screen
-                name="alarm/trigger"
-                options={{
-                  headerShown: false,
-                  presentation: 'fullScreenModal',
-                  animation: 'fade',
-                  gestureEnabled: false,
-                  headerBackVisible: false,
-                  headerLeft: () => null,
-                }}
-              />
-              <Stack.Screen
-                name="alarm/performance-summary"
-                options={{
-                  headerShown: false,
-                  presentation: 'fullScreenModal',
-                  animation: 'fade',
-                  gestureEnabled: false,
-                }}
-              />
+              {/* Onboarding - only accessible when not completed */}
+              <Stack.Protected guard={!hasCompletedOnboarding}>
+                <Stack.Screen
+                  name="onboarding"
+                  options={{
+                    headerShown: false,
+                    animation: 'fade',
+                    gestureEnabled: false,
+                  }}
+                />
+              </Stack.Protected>
 
-              {/* Dashboard */}
-              <Stack.Screen
-                name="dashboard/widgets"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="dashboard/modals/execution-score-info"
-                options={{
-                  title: t('dashboard.executionScore.infoModal.title'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
-              <Stack.Screen
-                name="dashboard/modals/wake-consistency-info"
-                options={{
-                  title: t('dashboard.wakeConsistency.infoModal.title'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
-              <Stack.Screen
-                name="dashboard/modals/cognitive-activation-info"
-                options={{
-                  title: t('dashboard.cognitiveActivation.infoModal.title'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
+              {/* Main app - only accessible when onboarding completed */}
+              <Stack.Protected guard={hasCompletedOnboarding}>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="alarm/create-alarm" options={{ headerShown: false }} />
 
-              {/* Achievements */}
-              <Stack.Screen
-                name="achievements"
-                options={{
-                  headerShown: false,
-                }}
-              />
+                {/* Alarm */}
+                <Stack.Screen
+                  name="alarm/edit-alarm"
+                  options={{
+                    title: t('editAlarm.title'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+                <Stack.Screen
+                  name="alarm/backup-protocols-info"
+                  options={{
+                    title: t('newAlarm.backupProtocols.infoModal.title'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+                <Stack.Screen
+                  name="alarm/trigger"
+                  options={{
+                    headerShown: false,
+                    presentation: 'fullScreenModal',
+                    animation: 'fade',
+                    gestureEnabled: false,
+                    headerBackVisible: false,
+                    headerLeft: () => null,
+                  }}
+                />
+                <Stack.Screen
+                  name="alarm/performance-summary"
+                  options={{
+                    headerShown: false,
+                    presentation: 'fullScreenModal',
+                    animation: 'fade',
+                    gestureEnabled: false,
+                  }}
+                />
 
-              {/* Settings */}
-              <Stack.Screen
-                name="settings/alarm-tone"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="settings/language"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="settings/vibration-pattern"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="settings/privacy-policy"
-                options={{
-                  title: t('settings.privacyPolicy'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
-              <Stack.Screen
-                name="settings/support"
-                options={{
-                  title: t('settings.support'),
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
+                {/* Dashboard */}
+                <Stack.Screen
+                  name="dashboard/widgets"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="dashboard/modals/execution-score-info"
+                  options={{
+                    title: t('dashboard.executionScore.infoModal.title'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+                <Stack.Screen
+                  name="dashboard/modals/wake-consistency-info"
+                  options={{
+                    title: t('dashboard.wakeConsistency.infoModal.title'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+                <Stack.Screen
+                  name="dashboard/modals/cognitive-activation-info"
+                  options={{
+                    title: t('dashboard.cognitiveActivation.infoModal.title'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
 
-              {/* Subscription */}
-              <Stack.Screen
-                name="subscription/paywall"
-                options={{
-                  title: 'WakeMind Pro',
-                  headerShown: true,
-                  presentation: 'modal',
-                }}
-              />
+                {/* Achievements */}
+                <Stack.Screen
+                  name="achievements"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+
+                {/* Settings */}
+                <Stack.Screen
+                  name="settings/alarm-tone"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="settings/language"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="settings/vibration-pattern"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="settings/privacy-policy"
+                  options={{
+                    title: t('settings.privacyPolicy'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+                <Stack.Screen
+                  name="settings/support"
+                  options={{
+                    title: t('settings.support'),
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+
+                {/* Subscription */}
+                <Stack.Screen
+                  name="subscription/paywall"
+                  options={{
+                    title: 'WakeMind Pro',
+                    headerShown: true,
+                    presentation: 'modal',
+                  }}
+                />
+              </Stack.Protected>
             </Stack>
             <StatusBar style={isDark ? 'light' : 'dark'} />
           </ThemeProvider>
