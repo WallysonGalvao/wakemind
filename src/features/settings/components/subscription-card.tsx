@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
@@ -25,6 +25,7 @@ export function SubscriptionCard() {
   const { width: screenWidth } = Dimensions.get('window');
   const FEATURES_PER_PAGE = 1;
   const totalPages = Math.ceil(PRO_FEATURES.length / FEATURES_PER_PAGE);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const handlePress = async () => {
     if (isPro) {
@@ -60,6 +61,26 @@ export function SubscriptionCard() {
     const page = Math.round(offsetX / screenWidth);
     setCurrentFeaturePage(page);
   };
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (isPro) return; // Only auto-scroll for free users
+
+    const interval = setInterval(() => {
+      setCurrentFeaturePage((prevPage) => {
+        const nextPage = (prevPage + 1) % totalPages;
+
+        scrollViewRef.current?.scrollTo({
+          x: nextPage * screenWidth,
+          animated: true,
+        });
+
+        return nextPage;
+      });
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [isPro, totalPages, screenWidth]);
 
   if (isPro) {
     // Pro User Card - Similar to YearlyPricingCard
@@ -159,6 +180,7 @@ export function SubscriptionCard() {
       {/* Features Preview - Horizontal Carousel */}
       <View className="-mx-5">
         <ScrollView
+          ref={scrollViewRef}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
