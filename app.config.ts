@@ -94,7 +94,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         android: {
           gradleProperties: {
-            'org.gradle.jvmargs': '-Xmx4096m -XX:MaxMetaspaceSize=1024m',
+            'org.gradle.jvmargs':
+              '-Xmx6144m -XX:MaxMetaspaceSize=1536m -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC',
           },
         },
       },
