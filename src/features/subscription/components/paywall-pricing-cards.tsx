@@ -27,6 +27,10 @@ interface MonthlyPricingCardProps extends BasePricingCardProps {
   subtitle: string;
 }
 
+interface LifetimePricingCardProps extends BasePricingCardProps {
+  subtitle: string;
+}
+
 // ============================================================================
 // Yearly Card
 // ============================================================================
@@ -136,6 +140,49 @@ export function MonthlyPricingCard({
       <View className="flex-row items-center gap-1">
         <Text className="text-lg font-bold text-gray-900 dark:text-white">{price}</Text>
         <Text className="text-xs text-gray-400 dark:text-gray-500">{period}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+// ============================================================================
+// Lifetime Card
+// ============================================================================
+
+export function LifetimePricingCard({
+  title,
+  price,
+  period,
+  subtitle,
+  isSelected,
+  onPress,
+}: LifetimePricingCardProps) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${title}, ${price} ${period}`}
+      accessibilityHint={`${subtitle}`}
+      accessibilityState={{ selected: isSelected }}
+      className={`flex-row items-center justify-between rounded-xl border p-4 ${
+        isSelected
+          ? 'border-primary-500 bg-white dark:bg-[#1a2233]'
+          : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-[#1a2233]'
+      }`}
+    >
+      <View>
+        <Text
+          className={`text-sm font-medium ${
+            isSelected ? 'text-primary-500' : 'text-gray-900 dark:text-white'
+          }`}
+        >
+          {title}
+        </Text>
+        <Text className="text-xs text-gray-400 dark:text-gray-500">{subtitle}</Text>
+      </View>
+      <View className="flex-row items-center gap-1">
+        <Text className="text-lg font-bold text-gray-900 dark:text-white">{price}</Text>
+        {/* <Text className="text-xs text-gray-400 dark:text-gray-500">{period}</Text> */}
       </View>
     </Pressable>
   );

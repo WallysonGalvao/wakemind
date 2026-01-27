@@ -5,6 +5,7 @@ import type { PurchasesPackage } from 'react-native-purchases';
 export interface PaywallPackages {
   monthly: PurchasesPackage | undefined;
   yearly: PurchasesPackage | undefined;
+  lifetime: PurchasesPackage | undefined;
 }
 
 /**
@@ -14,7 +15,7 @@ export interface PaywallPackages {
 export function usePaywallPackages(offerings: PurchasesPackage[] | null): PaywallPackages {
   return useMemo(() => {
     if (!offerings?.length) {
-      return { monthly: undefined, yearly: undefined };
+      return { monthly: undefined, yearly: undefined, lifetime: undefined };
     }
 
     const yearly = offerings.find(
@@ -25,6 +26,10 @@ export function usePaywallPackages(offerings: PurchasesPackage[] | null): Paywal
       (pkg) => pkg.packageType === 'MONTHLY' || pkg.identifier.toLowerCase().includes('monthly')
     );
 
-    return { monthly, yearly };
+    const lifetime = offerings.find(
+      (pkg) => pkg.packageType === 'LIFETIME' || pkg.identifier.toLowerCase().includes('lifetime')
+    );
+
+    return { monthly, yearly, lifetime };
   }, [offerings]);
 }

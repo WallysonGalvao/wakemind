@@ -56,6 +56,9 @@ export default {
   'paywall.plans.monthly.title': 'Monthly Plan',
   'paywall.plans.monthly.period': '/ mo',
   'paywall.plans.monthly.subtitle': 'Flexible commitment',
+  'paywall.plans.lifetime.title': 'Lifetime Access',
+  'paywall.plans.lifetime.period': 'one-time',
+  'paywall.plans.lifetime.subtitle': 'Pay once, own forever',
   'paywall.plans.trial': '7-Day Free Trial included',
 
   'paywall.cta.subscribe': 'Start Free Trial',

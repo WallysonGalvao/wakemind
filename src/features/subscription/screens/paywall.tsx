@@ -9,7 +9,11 @@ import { ActivityIndicator, Dimensions, Pressable, ScrollView, View } from 'reac
 
 import { FeatureRow, ProBadge } from '../components/paywall-features';
 import { usePaywallHeader } from '../components/paywall-header';
-import { MonthlyPricingCard, YearlyPricingCard } from '../components/paywall-pricing-cards';
+import {
+  LifetimePricingCard,
+  MonthlyPricingCard,
+  YearlyPricingCard,
+} from '../components/paywall-pricing-cards';
 import { PRO_FEATURES } from '../constants/pro-features';
 import type { PlanType } from '../hooks/use-paywall-actions';
 import { usePaywallActions } from '../hooks/use-paywall-actions';
@@ -67,7 +71,11 @@ export default function PaywallScreen() {
   };
 
   // Extract packages from offerings (memoized)
-  const { monthly: monthlyPackage, yearly: yearlyPackage } = usePaywallPackages(offerings);
+  const {
+    monthly: monthlyPackage,
+    yearly: yearlyPackage,
+    lifetime: lifetimePackage,
+  } = usePaywallPackages(offerings);
 
   // Calculate pricing savings (memoized)
   const yearlySavings = usePricingSavings(monthlyPackage, yearlyPackage);
@@ -77,6 +85,7 @@ export default function PaywallScreen() {
     selectedPlan,
     monthlyPackage,
     yearlyPackage,
+    lifetimePackage,
   });
 
   // Configure header
@@ -103,6 +112,7 @@ export default function PaywallScreen() {
   // Determine which cards to show based on mode
   const showYearlyCard = mode === 'full' || mode === 'yearly-only';
   const showMonthlyCard = mode === 'full' || mode === 'monthly-only';
+  const showLifetimeCard = mode === 'full'; // Show lifetime only in full mode
 
   // Dynamic title based on mode
   const getTitle = () => {
@@ -222,6 +232,18 @@ export default function PaywallScreen() {
             subtitle={t('paywall.plans.monthly.subtitle')}
             isSelected={selectedPlan === 'monthly'}
             onPress={() => handlePlanSelect('monthly')}
+          />
+        ) : null}
+
+        {/* Lifetime Card */}
+        {showLifetimeCard && lifetimePackage ? (
+          <LifetimePricingCard
+            title={t('paywall.plans.lifetime.title')}
+            price={formatPackagePrice(lifetimePackage)}
+            period={t('paywall.plans.lifetime.period')}
+            subtitle={t('paywall.plans.lifetime.subtitle')}
+            isSelected={selectedPlan === 'lifetime'}
+            onPress={() => handlePlanSelect('lifetime')}
           />
         ) : null}
 

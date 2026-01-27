@@ -5,12 +5,13 @@ import type { PurchasesPackage } from 'react-native-purchases';
 
 import { useSubscriptionStore } from '@/stores/use-subscription-store';
 
-export type PlanType = 'yearly' | 'monthly';
+export type PlanType = 'yearly' | 'monthly' | 'lifetime';
 
 interface UsePaywallActionsParams {
   selectedPlan: PlanType;
   monthlyPackage: PurchasesPackage | undefined;
   yearlyPackage: PurchasesPackage | undefined;
+  lifetimePackage: PurchasesPackage | undefined;
 }
 
 /**
@@ -21,6 +22,7 @@ export function usePaywallActions({
   selectedPlan,
   monthlyPackage,
   yearlyPackage,
+  lifetimePackage,
 }: UsePaywallActionsParams) {
   const router = useRouter();
   const { purchase, restore, refreshStatus } = useSubscriptionStore();
@@ -30,7 +32,12 @@ export function usePaywallActions({
   }, [router]);
 
   const handlePurchase = useCallback(async () => {
-    const selectedPackage = selectedPlan === 'yearly' ? yearlyPackage : monthlyPackage;
+    const selectedPackage =
+      selectedPlan === 'yearly'
+        ? yearlyPackage
+        : selectedPlan === 'lifetime'
+          ? lifetimePackage
+          : monthlyPackage;
 
     if (!selectedPackage) {
       console.warn('[Paywall] No package selected');
@@ -43,7 +50,15 @@ export function usePaywallActions({
       await refreshStatus();
       router.back();
     }
-  }, [selectedPlan, yearlyPackage, monthlyPackage, purchase, refreshStatus, router]);
+  }, [
+    selectedPlan,
+    yearlyPackage,
+    monthlyPackage,
+    lifetimePackage,
+    purchase,
+    refreshStatus,
+    router,
+  ]);
 
   const handleRestore = useCallback(async () => {
     const success = await restore();
