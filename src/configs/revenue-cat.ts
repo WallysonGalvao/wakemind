@@ -104,18 +104,3 @@ export const getFeatureAccess = (isPro: boolean) => ({
   cloudBackup: isPro && PREMIUM_FEATURES.cloudBackup,
   prioritySupport: isPro && PREMIUM_FEATURES.prioritySupport,
 });
-
-/**
- * Pricing display (these are base prices, actual prices come from stores)
- */
-export const PRICING = {
-  [ProductId.MONTHLY]: {
-    displayPrice: '$4.99',
-    period: 'month',
-  },
-  [ProductId.YEARLY]: {
-    displayPrice: '$29.99',
-    period: 'year',
-    savings: '50%', // vs monthly
-  },
-};

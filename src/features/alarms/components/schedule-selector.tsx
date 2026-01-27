@@ -2,19 +2,13 @@ import { useTranslation } from 'react-i18next';
 
 import { View } from 'react-native';
 
+import { DayOfWeek } from '../types';
+
 import type { SegmentedControlItem } from '@/components/segmented-control';
 import { SegmentedControl } from '@/components/segmented-control';
 
-// Day of week enum for custom schedule
-export enum DayOfWeek {
-  MONDAY = 'monday',
-  TUESDAY = 'tuesday',
-  WEDNESDAY = 'wednesday',
-  THURSDAY = 'thursday',
-  FRIDAY = 'friday',
-  SATURDAY = 'saturday',
-  SUNDAY = 'sunday',
-}
+// Re-export for backwards compatibility
+export { DayOfWeek };
 
 // Day order for sorting
 const DAY_ORDER: Record<DayOfWeek, number> = {

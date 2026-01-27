@@ -1,10 +1,9 @@
-import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import dayjs from 'dayjs';
 import { randomUUID } from 'expo-crypto';
 import { useNavigation, useRouter } from 'expo-router';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,159 +12,39 @@ import { Platform, Pressable, ScrollView, View } from 'react-native';
 import { BackupProtocolsSection } from '../components/backup-protocols-section';
 import { CognitiveActivationSection } from '../components/cognitive-activation-section';
 import { DifficultySelector } from '../components/difficulty-selector';
-import { DayOfWeek, ScheduleSelector } from '../components/schedule-selector';
+import { ScheduleSelector } from '../components/schedule-selector';
 import { TimePickerWheel } from '../components/time-picker-wheel';
+import { BRAND_PRIMARY_SHADOW, CHALLENGE_ICONS } from '../constants/alarm-constants';
 import type { AlarmFormData } from '../schemas/alarm-form.schema';
 import { alarmFormSchema, getDefaultAlarmFormValues } from '../schemas/alarm-form.schema';
+import {
+  getCurrentDayOfWeek,
+  getScheduleLabel,
+  parseScheduleToDays,
+} from '../utils/schedule-utils';
+import {
+  formatTime12h,
+  formatTime24h,
+  getPeriodFromHour,
+  parseTimeString,
+} from '../utils/time-utils';
+import { validateAlarmSubmission } from '../validators/alarm-validators';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Header } from '@/components/header';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { AlarmPermissionsModal } from '@/components/permissions/alarm-permissions-modal';
 import { Text } from '@/components/ui/text';
-import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import * as alarmsDb from '@/db/functions/alarms';
 import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
 import { useAlarms } from '@/hooks/use-alarms';
 import { useAnalyticsScreen } from '@/hooks/use-analytics-screen';
 import { useFeatureAccess } from '@/hooks/use-feature-access';
+import { useIsMounted } from '@/hooks/use-is-mounted';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
+import { useToastNotification } from '@/hooks/use-toast-notification';
 import type { BackupProtocolId } from '@/types/alarm-enums';
-import { ChallengeType, Period } from '@/types/alarm-enums';
-
-const BRAND_PRIMARY_SHADOW = 'rgba(19, 91, 236, 0.3)';
-
-const CHALLENGE_ICONS: Record<ChallengeType, string> = {
-  [ChallengeType.MATH]: 'calculate',
-  [ChallengeType.MEMORY]: 'psychology',
-  [ChallengeType.LOGIC]: 'lightbulb',
-};
-
-// Helper function to get current day of week
-const getCurrentDayOfWeek = (): DayOfWeek => {
-  const dayIndex = dayjs().day(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  const dayMap: Record<number, DayOfWeek> = {
-    0: DayOfWeek.SUNDAY,
-    1: DayOfWeek.MONDAY,
-    2: DayOfWeek.TUESDAY,
-    3: DayOfWeek.WEDNESDAY,
-    4: DayOfWeek.THURSDAY,
-    5: DayOfWeek.FRIDAY,
-    6: DayOfWeek.SATURDAY,
-  };
-  return dayMap[dayIndex];
-};
-
-// Day abbreviations for schedule label
-const DAY_ABBREV: Record<DayOfWeek, string> = {
-  [DayOfWeek.MONDAY]: 'Mon',
-  [DayOfWeek.TUESDAY]: 'Tue',
-  [DayOfWeek.WEDNESDAY]: 'Wed',
-  [DayOfWeek.THURSDAY]: 'Thu',
-  [DayOfWeek.FRIDAY]: 'Fri',
-  [DayOfWeek.SATURDAY]: 'Sat',
-  [DayOfWeek.SUNDAY]: 'Sun',
-};
-
-// Helper function to generate schedule label from selected days
-const getScheduleLabel = (days: DayOfWeek[]): string => {
-  const allDays = Object.values(DayOfWeek);
-  const weekdays = [
-    DayOfWeek.MONDAY,
-    DayOfWeek.TUESDAY,
-    DayOfWeek.WEDNESDAY,
-    DayOfWeek.THURSDAY,
-    DayOfWeek.FRIDAY,
-  ];
-  const weekends = [DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
-
-  // Check if all days selected
-  if (days.length === 7) {
-    return 'Daily';
-  }
-
-  // Check if weekdays only
-  if (
-    days.length === 5 &&
-    weekdays.every((d) => days.includes(d)) &&
-    !weekends.some((d) => days.includes(d))
-  ) {
-    return 'Weekdays';
-  }
-
-  // Check if weekends only
-  if (
-    days.length === 2 &&
-    weekends.every((d) => days.includes(d)) &&
-    !weekdays.some((d) => days.includes(d))
-  ) {
-    return 'Weekends';
-  }
-
-  // Single day
-  if (days.length === 1) {
-    return DAY_ABBREV[days[0]];
-  }
-
-  // Custom: list of day abbreviations
-  const sortedDays = [...days].sort((a, b) => {
-    const order = allDays;
-    return order.indexOf(a) - order.indexOf(b);
-  });
-  return sortedDays.map((d) => DAY_ABBREV[d]).join(', ');
-};
-
-// Map of day abbreviations back to DayOfWeek (reverse of DAY_ABBREV)
-const ABBREV_TO_DAY: Record<string, DayOfWeek> = {
-  Mon: DayOfWeek.MONDAY,
-  Tue: DayOfWeek.TUESDAY,
-  Wed: DayOfWeek.WEDNESDAY,
-  Thu: DayOfWeek.THURSDAY,
-  Fri: DayOfWeek.FRIDAY,
-  Sat: DayOfWeek.SATURDAY,
-  Sun: DayOfWeek.SUNDAY,
-};
-
-// Helper function to parse schedule label back to DayOfWeek array
-const parseScheduleToDays = (schedule: string): DayOfWeek[] => {
-  const allDays = Object.values(DayOfWeek);
-  const weekdays = [
-    DayOfWeek.MONDAY,
-    DayOfWeek.TUESDAY,
-    DayOfWeek.WEDNESDAY,
-    DayOfWeek.THURSDAY,
-    DayOfWeek.FRIDAY,
-  ];
-  const weekends = [DayOfWeek.SATURDAY, DayOfWeek.SUNDAY];
-
-  // Handle preset values
-  if (schedule === 'Daily') {
-    return allDays;
-  }
-  if (schedule === 'Weekdays') {
-    return weekdays;
-  }
-  if (schedule === 'Weekends') {
-    return weekends;
-  }
-
-  // Handle single day abbreviation
-  if (ABBREV_TO_DAY[schedule]) {
-    return [ABBREV_TO_DAY[schedule]];
-  }
-
-  // Handle custom: comma-separated day abbreviations
-  const abbreviations = schedule.split(',').map((s) => s.trim());
-  const days: DayOfWeek[] = [];
-  for (const abbr of abbreviations) {
-    if (ABBREV_TO_DAY[abbr]) {
-      days.push(ABBREV_TO_DAY[abbr]);
-    }
-  }
-
-  // If parsing failed, return current day as fallback
-  return days.length > 0 ? days : [getCurrentDayOfWeek()];
-};
+import { ChallengeType } from '@/types/alarm-enums';
 
 interface AlarmFormScreenProps {
   alarmId?: string; // Optional: if provided, we're in edit mode
@@ -175,12 +54,14 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToastNotification();
+  const isMounted = useIsMounted();
   const insets = useSafeAreaInsets();
 
   // Permissions modal state
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [pendingAlarmData, setPendingAlarmData] = useState<AlarmFormData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Permissions hook
   const {
@@ -216,39 +97,48 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     color: BRAND_PRIMARY_SHADOW,
   });
 
+  // Get the specific alarm if in edit mode (optimized memo)
+  const currentAlarm = useMemo(
+    () => (isEditMode && alarmId ? alarms.find((a) => a.id === alarmId) : undefined),
+    [alarms, alarmId, isEditMode]
+  );
+
   // Get default values based on mode
   const defaultValues = useMemo((): AlarmFormData => {
-    if (isEditMode && alarmId) {
-      const existingAlarm = alarms.find((a) => a.id === alarmId);
-      if (existingAlarm) {
-        // Parse time string "HH:MM" - already in 24h format
-        const [hourStr, minuteStr] = existingAlarm.time.split(':');
+    if (currentAlarm) {
+      const parsedTime = parseTimeString(currentAlarm.time);
+      const defaultVals = getDefaultAlarmFormValues();
 
-        const defaultVals = getDefaultAlarmFormValues();
+      // If time parsing fails, use defaults
+      if (!parsedTime) {
         return {
-          hour: parseInt(hourStr, 10),
-          minute: parseInt(minuteStr, 10),
-          selectedDays: parseScheduleToDays(existingAlarm.schedule),
-          // Use challengeType directly if available, otherwise fall back to icon-based detection
-          challenge:
-            existingAlarm.challengeType ??
-            ((Object.keys(CHALLENGE_ICONS).find(
-              (key) => CHALLENGE_ICONS[key as ChallengeType] === existingAlarm.challengeIcon
-            ) as ChallengeType) ||
-              ChallengeType.MATH),
-          difficulty: existingAlarm.difficulty ?? defaultVals.difficulty,
-          protocols: existingAlarm.protocols ?? defaultVals.protocols,
+          ...defaultVals,
+          selectedDays: [getCurrentDayOfWeek()],
         };
       }
+
+      return {
+        hour: parsedTime.hour,
+        minute: parsedTime.minute,
+        selectedDays: parseScheduleToDays(currentAlarm.schedule),
+        challenge:
+          currentAlarm.challengeType ??
+          ((Object.keys(CHALLENGE_ICONS).find(
+            (key) => CHALLENGE_ICONS[key as ChallengeType] === currentAlarm.challengeIcon
+          ) as ChallengeType) ||
+            ChallengeType.MATH),
+        difficulty: currentAlarm.difficulty ?? defaultVals.difficulty,
+        protocols: currentAlarm.protocols ?? defaultVals.protocols,
+      };
     }
     return {
       ...getDefaultAlarmFormValues(),
       selectedDays: [getCurrentDayOfWeek()],
     };
-  }, [alarmId, isEditMode, alarms]);
+  }, [currentAlarm]);
 
   // React Hook Form setup
-  const { setValue, watch, reset, handleSubmit } = useForm<AlarmFormData>({
+  const { setValue, control, reset, handleSubmit } = useForm<AlarmFormData>({
     resolver: zodResolver(alarmFormSchema),
     defaultValues,
   });
@@ -258,16 +148,13 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  // Watch all form values
-  const hour = watch('hour');
-  const minute = watch('minute');
-  const selectedDays = watch('selectedDays');
-  const challenge = watch('challenge');
-  const difficulty = watch('difficulty');
-  const protocols = watch('protocols');
+  // Optimized watch using useWatch (reduces re-renders)
+  const formValues = useWatch({
+    control,
+    name: ['hour', 'minute', 'selectedDays', 'challenge', 'difficulty', 'protocols'],
+  });
 
-  // Auto-determine period based on hour (0-11 = AM, 12-23 = PM)
-  const period = hour < 12 ? Period.AM : Period.PM;
+  const [hour, minute, selectedDays, challenge, difficulty, protocols] = formValues;
 
   const handleClose = useCallback(() => {
     router.back();
@@ -280,14 +167,24 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     });
   }, [reset]);
 
+  // Cleanup pendingAlarmData on unmount
+  useEffect(() => {
+    return () => {
+      setPendingAlarmData(null);
+    };
+  }, []);
+
   const handleDelete = useCallback(async () => {
     if (alarmId) {
       AnalyticsEvents.alarmDeleted(alarmId);
       await alarmsDb.deleteAlarm(alarmId);
       await refetch();
-      router.back();
+      // Only navigate if component is still mounted
+      if (isMounted()) {
+        router.back();
+      }
     }
-  }, [alarmId, refetch, router]);
+  }, [alarmId, refetch, router, isMounted]);
 
   const handleTimeChange = (newHour: number, newMinute: number) => {
     setValue('hour', newHour);
@@ -300,6 +197,12 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     );
     setValue('protocols', updatedProtocols);
   };
+
+  // Handle permission modal close (cleanup pending data)
+  const handlePermissionsModalClose = useCallback(() => {
+    setShowPermissionsModal(false);
+    setPendingAlarmData(null);
+  }, []);
 
   // Handle permission modal completion
   const handlePermissionsComplete = useCallback(async () => {
@@ -318,9 +221,9 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
 
   // Separated function to create/update alarm (called after all validations)
   const createAlarm = async (data: AlarmFormData) => {
-    // Store time in 24h format
-    const timeString = `${String(data.hour).padStart(2, '0')}:${String(data.minute).padStart(2, '0')}`;
-    const displayPeriod = data.hour < 12 ? Period.AM : Period.PM;
+    // Store time in 24h format using utility
+    const timeString = formatTime24h(data.hour, data.minute);
+    const displayPeriod = getPeriodFromHour(data.hour);
     const challengeIcon = CHALLENGE_ICONS[data.challenge];
     const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
     const scheduleLabel = getScheduleLabel(data.selectedDays);
@@ -357,133 +260,91 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
         AnalyticsEvents.alarmCreated(newId, timeString, data.challenge);
       }
 
-      router.back();
+      // Only navigate if component is still mounted
+      if (isMounted()) {
+        router.back();
+      }
     } catch (error) {
       const title =
         error instanceof Error ? t('newAlarm.validationError.title') : t('newAlarm.error.title');
       const description = error instanceof Error ? error.message : t('newAlarm.error.message');
 
-      toast.show({
-        placement: 'top',
-        duration: 3000,
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
-            <ToastTitle>{title}</ToastTitle>
-            <ToastDescription>{description}</ToastDescription>
-          </Toast>
-        ),
-      });
+      toast.showError(title, description);
     }
   };
 
   const onSubmit = async (data: AlarmFormData) => {
-    // 1️⃣ Validate time format
-    if (
-      typeof data.hour !== 'number' ||
-      typeof data.minute !== 'number' ||
-      isNaN(data.hour) ||
-      isNaN(data.minute) ||
-      data.hour < 0 ||
-      data.hour > 23 ||
-      data.minute < 0 ||
-      data.minute > 59
-    ) {
-      toast.show({
-        placement: 'top',
-        duration: 4000,
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="error" variant="solid">
-            <ToastTitle>{t('newAlarm.validationError.title')}</ToastTitle>
-            <ToastDescription>{t('validation.alarm.timeFormat')}</ToastDescription>
-          </Toast>
-        ),
-      });
-      return;
-    }
+    // Prevent multiple submissions
+    if (isSubmitting) return;
 
-    // 2️⃣ Check difficulty (Pro only for hard/adaptive)
-    if (!canUseDifficulty(data.difficulty)) {
-      toast.show({
-        placement: 'top',
-        duration: 4000,
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
-            <ToastTitle>{t('featureGate.hardDifficulty')}</ToastTitle>
-            <ToastDescription>{t('paywall.features.allDifficulties.description')}</ToastDescription>
-          </Toast>
-        ),
+    setIsSubmitting(true);
+    try {
+      // 1️⃣ Validate form data using centralized validators
+      const validation = validateAlarmSubmission(data, {
+        isEditMode,
+        alarmsCount: alarms.length,
+        canUseDifficulty,
+        canCreateAlarm,
       });
-      await requirePremiumAccess('difficulty_selection');
-      return;
-    }
 
-    // 3️⃣ Check alarm creation limit (only for new alarms)
-    if (!isEditMode && !canCreateAlarm(alarms.length)) {
-      toast.show({
-        placement: 'top',
-        duration: 4000,
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
-            <ToastTitle>{t('featureGate.unlimitedAlarms')}</ToastTitle>
-            <ToastDescription>{t('paywall.features.unlimitedAlarms.description')}</ToastDescription>
-          </Toast>
-        ),
-      });
-      await requirePremiumAccess('alarm_creation');
-      return;
-    }
-
-    // 4️⃣ Request notification permission first (runtime permission)
-    if (needsNotificationPermission) {
-      const granted = await requestNotificationPermission();
-      if (!granted) {
-        toast.show({
-          placement: 'top',
-          duration: 4000,
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="warning" variant="solid">
-              <ToastTitle>{t('permissions.notificationsRequired')}</ToastTitle>
-              <ToastDescription>{t('permissions.openSettings')}</ToastDescription>
-            </Toast>
-          ),
-        });
+      if (!validation.valid && validation.error) {
+        // Handle validation errors based on type
+        if (validation.error === 'validation.alarm.timeFormat') {
+          toast.showError(t('newAlarm.validationError.title'), t(validation.error));
+        } else if (validation.error === 'featureGate.hardDifficulty') {
+          toast.showWarning(
+            t('featureGate.hardDifficulty'),
+            t('paywall.features.allDifficulties.description')
+          );
+          await requirePremiumAccess('difficulty_selection');
+        } else if (validation.error === 'featureGate.unlimitedAlarms') {
+          toast.showWarning(
+            t('featureGate.unlimitedAlarms'),
+            t('paywall.features.unlimitedAlarms.description')
+          );
+          await requirePremiumAccess('alarm_creation');
+        } else {
+          toast.showError(t('newAlarm.validationError.title'), t(validation.error));
+        }
         return;
       }
-    }
 
-    // 5️⃣ Check exact alarm permission (Android 12+)
-    if (needsExactAlarmPermission) {
-      toast.show({
-        placement: 'top',
-        duration: 5000,
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="info" variant="solid">
-            <ToastTitle>{t('permissions.exactAlarmsRequired')}</ToastTitle>
-            <ToastDescription>{t('permissions.batteryOptimization')}</ToastDescription>
-          </Toast>
-        ),
-      });
-      await openAlarmSettings();
-      return;
-    }
+      // 2️⃣ Request notification permission first (runtime permission)
+      if (needsNotificationPermission) {
+        const granted = await requestNotificationPermission();
+        if (!granted) {
+          toast.showWarning(t('permissions.notificationsRequired'), t('permissions.openSettings'));
+          return;
+        }
+      }
 
-    // 6️⃣ FIRST ALARM: Show permissions modal for SYSTEM_ALERT_WINDOW + Auto Start
-    if (
-      Platform.OS === 'android' &&
-      isFirstAlarm &&
-      (status.displayOverOtherApps !== 'granted' || status.autoStart === 'undetermined')
-    ) {
-      setPendingAlarmData(data);
-      setShowPermissionsModal(true);
-      return;
-    }
+      // 3️⃣ Check exact alarm permission (Android 12+)
+      if (needsExactAlarmPermission) {
+        toast.showInfo(t('permissions.exactAlarmsRequired'), t('permissions.batteryOptimization'));
+        await openAlarmSettings();
+        return;
+      }
 
-    // 7️⃣ All validations passed - create the alarm
-    await createAlarm(data);
+      // 4️⃣ FIRST ALARM: Show permissions modal for SYSTEM_ALERT_WINDOW + Auto Start
+      if (
+        Platform.OS === 'android' &&
+        isFirstAlarm &&
+        (status.displayOverOtherApps !== 'granted' || status.autoStart === 'undetermined')
+      ) {
+        setPendingAlarmData(data);
+        setShowPermissionsModal(true);
+        return;
+      }
+
+      // 5️⃣ All validations passed - create the alarm
+      await createAlarm(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // Format time for display (24h format with period indicator)
-  const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
+  // Format time for display using utility (memoized)
+  const formattedTime = useMemo(() => formatTime12h(hour, minute), [hour, minute]);
 
   // Dynamic texts based on mode
   const screenTitle = isEditMode ? t('editAlarm.title') : t('newAlarm.title');
@@ -520,7 +381,7 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
       {Platform.OS === 'android' && (
         <AlarmPermissionsModal
           visible={showPermissionsModal}
-          onClose={() => setShowPermissionsModal(false)}
+          onClose={handlePermissionsModalClose}
           onComplete={handlePermissionsComplete}
         />
       )}
@@ -605,12 +466,17 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
       >
         <Pressable
           onPress={handleSubmit(onSubmit)}
-          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary active:scale-[0.98]"
+          disabled={isSubmitting}
+          className="h-14 w-full flex-row items-center justify-center rounded-xl bg-brand-primary active:scale-[0.98] disabled:opacity-50"
           style={ctaShadow}
           accessibilityRole="button"
         >
-          <Text className="mr-2 text-lg font-bold text-white">{commitButtonText}</Text>
-          <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
+          <Text className="mr-2 text-lg font-bold text-white">
+            {isSubmitting ? t('common.saving') : commitButtonText}
+          </Text>
+          {!isSubmitting && (
+            <MaterialSymbol name="arrow_forward" size={24} className="text-white" />
+          )}
         </Pressable>
       </View>
     </View>
