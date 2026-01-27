@@ -1,10 +1,17 @@
-import ExpoAlarmActivityModule from './src/ExpoAlarmActivityModule';
+import { Platform } from 'react-native';
+
+// Módulo nativo só existe no Android
+const ExpoAlarmActivityModule =
+  Platform.OS === 'android' ? require('./src/ExpoAlarmActivityModule').default : null;
 
 /**
  * Verifica se o app tem permissão para usar Full Screen Intent
  * No Android 14+, esta permissão precisa ser concedida pelo usuário
  */
 export function canUseFullScreenIntent(): boolean {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return false;
+  }
   return ExpoAlarmActivityModule.canUseFullScreenIntent();
 }
 
@@ -13,6 +20,9 @@ export function canUseFullScreenIntent(): boolean {
  * Necessário apenas no Android 14+
  */
 export function requestFullScreenIntentPermission(): string {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return 'Not supported on this platform';
+  }
   return ExpoAlarmActivityModule.requestFullScreenIntentPermission();
 }
 
@@ -28,6 +38,9 @@ export function openAlarmScreen(
   challengeIcon: string,
   type: string
 ): string {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return 'Not supported on this platform';
+  }
   return ExpoAlarmActivityModule.openAlarmScreen(
     alarmId,
     time,

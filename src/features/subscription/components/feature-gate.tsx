@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import { AnalyticsEvents } from '@/analytics';
+import { DashedBorder } from '@/components/dashed-border';
 import { MaterialSymbol } from '@/components/material-symbol';
 import { Text } from '@/components/ui/text';
 import { COLORS } from '@/constants/colors';
@@ -81,7 +82,11 @@ function UpgradePrompt({ message, featureName }: { message?: string; featureName
   };
 
   return (
-    <View className="items-center justify-center rounded-2xl border-2 border-dashed border-primary-300 bg-primary-50/50 p-8 dark:border-primary-700 dark:bg-primary-900/20">
+    <DashedBorder
+      lightColor="#135bec80"
+      darkColor="#135bec"
+      className="items-center justify-center rounded-2xl bg-primary-50/50 p-8 dark:bg-primary-900/20"
+    >
       <View className="mb-4 rounded-full bg-primary-500/10 p-4">
         <MaterialSymbol name="workspace_premium" size={48} color={COLORS.brandPrimary} />
       </View>
@@ -106,6 +111,6 @@ function UpgradePrompt({ message, featureName }: { message?: string; featureName
           <Text className="ml-2 font-bold text-white">{t('settings.subscription.upgrade')}</Text>
         </View>
       </Pressable>
-    </View>
+    </DashedBorder>
   );
 }
