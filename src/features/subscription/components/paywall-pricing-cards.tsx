@@ -19,12 +19,14 @@ interface BasePricingCardProps {
 interface YearlyPricingCardProps extends BasePricingCardProps {
   originalPrice: string;
   badge: string;
-  hasTrial: boolean;
-  trialText: string;
+  hasTrial?: boolean;
+  trialText?: string;
 }
 
 interface MonthlyPricingCardProps extends BasePricingCardProps {
   subtitle: string;
+  hasTrial?: boolean;
+  trialText?: string;
 }
 
 interface LifetimePricingCardProps extends BasePricingCardProps {
@@ -111,6 +113,8 @@ export function MonthlyPricingCard({
   price,
   period,
   subtitle,
+  hasTrial,
+  trialText,
   isSelected,
   onPress,
 }: MonthlyPricingCardProps) {
@@ -121,26 +125,36 @@ export function MonthlyPricingCard({
       accessibilityLabel={`${title}, ${price} ${period}`}
       accessibilityHint={`${subtitle}`}
       accessibilityState={{ selected: isSelected }}
-      className={`flex-row items-center justify-between rounded-xl border p-4 ${
+      className={`overflow-hidden rounded-xl border p-4 ${
         isSelected
           ? 'border-primary-500 bg-white dark:bg-[#1a2233]'
           : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-[#1a2233]'
       }`}
     >
-      <View>
-        <Text
-          className={`text-sm font-medium ${
-            isSelected ? 'text-primary-500' : 'text-gray-900 dark:text-white'
-          }`}
-        >
-          {title}
-        </Text>
-        <Text className="text-xs text-gray-400 dark:text-gray-500">{subtitle}</Text>
+      <View className="flex-row items-center justify-between">
+        <View className="flex-1">
+          <Text
+            className={`text-sm font-medium ${
+              isSelected ? 'text-primary-500' : 'text-gray-900 dark:text-white'
+            }`}
+          >
+            {title}
+          </Text>
+          <Text className="text-xs text-gray-400 dark:text-gray-500">{subtitle}</Text>
+        </View>
+        <View className="flex-row items-center gap-1">
+          <Text className="text-lg font-bold text-gray-900 dark:text-white">{price}</Text>
+          <Text className="text-xs text-gray-400 dark:text-gray-500">{period}</Text>
+        </View>
       </View>
-      <View className="flex-row items-center gap-1">
-        <Text className="text-lg font-bold text-gray-900 dark:text-white">{price}</Text>
-        <Text className="text-xs text-gray-400 dark:text-gray-500">{period}</Text>
-      </View>
+
+      {/* Trial Info */}
+      {hasTrial && trialText ? (
+        <View className="mt-3 flex-row items-center">
+          <MaterialSymbol name="check_circle" size={16} color={COLORS.brandPrimary} />
+          <Text className="ml-2 text-xs font-medium text-primary-500">{trialText}</Text>
+        </View>
+      ) : null}
     </Pressable>
   );
 }

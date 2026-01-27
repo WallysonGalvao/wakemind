@@ -9,16 +9,16 @@ import { ActivityIndicator, Dimensions, Pressable, ScrollView, View } from 'reac
 
 import { FeatureRow, ProBadge } from '../components/paywall-features';
 import { usePaywallHeader } from '../components/paywall-header';
-import {
-  LifetimePricingCard,
-  MonthlyPricingCard,
-  YearlyPricingCard,
-} from '../components/paywall-pricing-cards';
+import { MonthlyPricingCard, YearlyPricingCard } from '../components/paywall-pricing-cards';
 import { PRO_FEATURES } from '../constants/pro-features';
 import type { PlanType } from '../hooks/use-paywall-actions';
 import { usePaywallActions } from '../hooks/use-paywall-actions';
 import { usePaywallPackages } from '../hooks/use-paywall-packages';
-import { formatPackagePrice, usePricingSavings } from '../hooks/use-pricing-calculations';
+import {
+  formatPackagePrice,
+  getIntroOffer,
+  usePricingSavings,
+} from '../hooks/use-pricing-calculations';
 
 import { AnalyticsEvents } from '@/analytics';
 import { Text } from '@/components/ui/text';
@@ -80,6 +80,39 @@ export default function PaywallScreen() {
   // Calculate pricing savings (memoized)
   const yearlySavings = usePricingSavings(monthlyPackage, yearlyPackage);
 
+  // Get intro offer info (memoized)
+  const yearlyIntroOffer = getIntroOffer(yearlyPackage);
+  const monthlyIntroOffer = getIntroOffer(monthlyPackage);
+
+  // Format intro offer text with i18n
+  const formatIntroOfferText = (offer: ReturnType<typeof getIntroOffer>) => {
+    if (!offer.hasIntroOffer || !offer.periodUnit) {
+      return t('paywall.plans.trial');
+    }
+
+    const periodText = t(`paywall.plans.introOffer.${offer.periodUnit}`, {
+      count: offer.periodValue,
+    });
+
+    return `${periodText} ${t('paywall.plans.introOffer.free')}`;
+  };
+
+  // Get dynamic CTA text based on selected plan and intro offer
+  const getCtaText = () => {
+    const currentOffer = selectedPlan === 'yearly' ? yearlyIntroOffer : monthlyIntroOffer;
+
+    // If user selected monthly and there's an intro offer, show dynamic text
+    if (selectedPlan === 'monthly' && currentOffer.hasIntroOffer && currentOffer.periodUnit) {
+      const periodText = t(`paywall.plans.introOffer.${currentOffer.periodUnit}`, {
+        count: currentOffer.periodValue,
+      });
+      return t('paywall.cta.startTrial', { period: periodText.toUpperCase() });
+    }
+
+    // Default: show standard trial text
+    return t('paywall.cta.trial');
+  };
+
   // Actions handlers (memoized)
   const { handleClose, handlePurchase, handleRestore } = usePaywallActions({
     selectedPlan,
@@ -112,7 +145,7 @@ export default function PaywallScreen() {
   // Determine which cards to show based on mode
   const showYearlyCard = mode === 'full' || mode === 'yearly-only';
   const showMonthlyCard = mode === 'full' || mode === 'monthly-only';
-  const showLifetimeCard = mode === 'full'; // Show lifetime only in full mode
+  // const showLifetimeCard = mode === 'full'; // Show lifetime only in full mode
 
   // Dynamic title based on mode
   const getTitle = () => {
@@ -230,13 +263,17 @@ export default function PaywallScreen() {
             price={formatPackagePrice(monthlyPackage)}
             period={t('paywall.plans.monthly.period')}
             subtitle={t('paywall.plans.monthly.subtitle')}
+            hasTrial={monthlyIntroOffer.hasIntroOffer}
+            trialText={
+              monthlyIntroOffer.hasIntroOffer ? formatIntroOfferText(monthlyIntroOffer) : undefined
+            }
             isSelected={selectedPlan === 'monthly'}
             onPress={() => handlePlanSelect('monthly')}
           />
         ) : null}
 
         {/* Lifetime Card */}
-        {showLifetimeCard && lifetimePackage ? (
+        {/* {showLifetimeCard && lifetimePackage ? (
           <LifetimePricingCard
             title={t('paywall.plans.lifetime.title')}
             price={formatPackagePrice(lifetimePackage)}
@@ -245,7 +282,7 @@ export default function PaywallScreen() {
             isSelected={selectedPlan === 'lifetime'}
             onPress={() => handlePlanSelect('lifetime')}
           />
-        ) : null}
+        ) : null} */}
 
         {/* CTA Button */}
         <Pressable
@@ -265,7 +302,7 @@ export default function PaywallScreen() {
             </View>
           ) : (
             <Text className="text-base font-bold uppercase tracking-wide text-white">
-              {t('paywall.cta.trial')}
+              {getCtaText()}
             </Text>
           )}
         </Pressable>
