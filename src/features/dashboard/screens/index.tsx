@@ -204,7 +204,7 @@ export default function DashboardScreen() {
 
         {/* Sleep Quality Score - Premium */}
         {enabledWidgets.has(WidgetType.SLEEP_QUALITY) && (
-          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.sleepQuality')}>
             <SleepQualityScore
               avgSleepHours={sleepQuality.avgSleepHours}
               qualityScore={sleepQuality.qualityScore}
@@ -218,7 +218,10 @@ export default function DashboardScreen() {
 
         {/* Circadian Rhythm Tracker - Premium */}
         {enabledWidgets.has(WidgetType.CIRCADIAN_RHYTHM) && (
-          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+          <FeatureGate
+            featureName="advanced_stats"
+            upgradeMessage={t('featureGate.circadianRhythm')}
+          >
             <CircadianRhythmTracker
               avgWakeTime={circadianRhythm.avgWakeTime}
               alignmentScore={circadianRhythm.alignmentScore}

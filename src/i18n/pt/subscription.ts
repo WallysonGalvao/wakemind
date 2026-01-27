@@ -91,6 +91,12 @@ export default {
   'featureGate.premiumSounds': 'Desbloquear Sons Premium',
   'featureGate.streakFreeze': 'Desbloquear Congelamento de Sequência',
   'featureGate.cloudBackup': 'Desbloquear Backup na Nuvem',
+  'featureGate.sleepQuality':
+    'Desbloqueie análises avançadas de qualidade do sono e recomendações personalizadas',
+  'featureGate.circadianRhythm':
+    'Desbloqueie o rastreamento do seu ritmo circadiano e otimize seus horários de despertar',
+  'featureGate.performanceTrends':
+    'Desbloqueie tendências de desempenho e análises detalhadas de tempo de reação',
 
   // Streak Freeze
   'streakFreeze.title': 'Congelamento de Sequência',

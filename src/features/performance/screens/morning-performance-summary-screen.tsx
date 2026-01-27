@@ -115,7 +115,10 @@ export default function MorningPerformanceSummaryScreen() {
           />
 
           {/* Performance Trends - Premium Feature */}
-          <FeatureGate featureName="advanced_stats" upgradeMessage={t('featureGate.advancedStats')}>
+          <FeatureGate
+            featureName="advanced_stats"
+            upgradeMessage={t('featureGate.performanceTrends')}
+          >
             <PerformanceTrends
               weeklyExecutionRate={metrics.weeklyExecutionRate}
               previousWeekExecutionRate={metrics.previousWeekExecutionRate}

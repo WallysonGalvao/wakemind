@@ -85,6 +85,10 @@ export default {
   'featureGate.premiumSounds': 'Unlock Premium Sounds',
   'featureGate.streakFreeze': 'Unlock Streak Freeze',
   'featureGate.cloudBackup': 'Unlock Cloud Backup',
+  'featureGate.sleepQuality':
+    'Unlock advanced sleep quality analysis and personalized recommendations',
+  'featureGate.circadianRhythm': 'Unlock circadian rhythm tracking and optimize your wake times',
+  'featureGate.performanceTrends': 'Unlock performance trends and detailed reaction time analysis',
 
   // Streak Freeze
   'streakFreeze.title': 'Streak Freeze',
