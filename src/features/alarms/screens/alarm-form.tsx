@@ -43,8 +43,7 @@ import { useFeatureAccess } from '@/hooks/use-feature-access';
 import { useIsMounted } from '@/hooks/use-is-mounted';
 import { useCustomShadow } from '@/hooks/use-shadow-style';
 import { useToastNotification } from '@/hooks/use-toast-notification';
-import type { BackupProtocolId } from '@/types/alarm-enums';
-import { ChallengeType } from '@/types/alarm-enums';
+import { type BackupProtocolId, DifficultyLevel } from '@/types/alarm-enums';
 
 interface AlarmFormScreenProps {
   alarmId?: string; // Optional: if provided, we're in edit mode
@@ -103,50 +102,31 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     [alarms, alarmId, isEditMode]
   );
 
-  // Get default values based on mode
   const defaultValues = useMemo((): AlarmFormData => {
-    if (currentAlarm) {
+    if (isEditMode && currentAlarm) {
+      console.log('currentAlarm:: ' + JSON.stringify(currentAlarm));
       const parsedTime = parseTimeString(currentAlarm.time);
-      const defaultVals = getDefaultAlarmFormValues();
-
-      // If time parsing fails, use defaults
-      if (!parsedTime) {
-        return {
-          ...defaultVals,
-          selectedDays: [getCurrentDayOfWeek()],
-        };
-      }
+      const parsedDays = parseScheduleToDays(currentAlarm.schedule);
 
       return {
-        hour: parsedTime.hour,
-        minute: parsedTime.minute,
-        selectedDays: parseScheduleToDays(currentAlarm.schedule),
-        challenge:
-          currentAlarm.challengeType ??
-          ((Object.keys(CHALLENGE_ICONS).find(
-            (key) => CHALLENGE_ICONS[key as ChallengeType] === currentAlarm.challengeIcon
-          ) as ChallengeType) ||
-            ChallengeType.MATH),
-        difficulty: currentAlarm.difficulty ?? defaultVals.difficulty,
-        protocols: currentAlarm.protocols ?? defaultVals.protocols,
+        hour: parsedTime?.hour || 0,
+        minute: parsedTime?.minute || 0,
+        selectedDays: parsedDays,
+        challenge: currentAlarm.challengeType,
+        difficulty: currentAlarm.difficulty ?? DifficultyLevel.EASY,
+        protocols: currentAlarm.protocols ?? getDefaultAlarmFormValues().protocols,
       };
     }
     return {
       ...getDefaultAlarmFormValues(),
       selectedDays: [getCurrentDayOfWeek()],
     };
-  }, [currentAlarm]);
+  }, [currentAlarm, isEditMode]);
 
-  // React Hook Form setup
   const { setValue, control, reset, handleSubmit } = useForm<AlarmFormData>({
     resolver: zodResolver(alarmFormSchema),
-    defaultValues,
+    values: defaultValues,
   });
-
-  // Reset form when defaultValues change (important for edit mode)
-  useLayoutEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
 
   // Optimized watch using useWatch (reduces re-renders)
   const formValues = useWatch({
@@ -228,34 +208,26 @@ export default function AlarmFormScreen({ alarmId }: AlarmFormScreenProps) {
     const challengeLabel = t(`newAlarm.challenges.${data.challenge}.title`);
     const scheduleLabel = getScheduleLabel(data.selectedDays);
 
+    const alarmData = {
+      time: timeString,
+      period: displayPeriod,
+      challenge: challengeLabel,
+      challengeType: data.challenge,
+      challengeIcon,
+      schedule: scheduleLabel,
+      difficulty: data.difficulty,
+      protocols: data.protocols,
+    };
+
     try {
       // Create or update alarm
       if (isEditMode && alarmId) {
-        await alarmsDb.updateAlarm(alarmId, {
-          time: timeString,
-          period: displayPeriod,
-          challenge: challengeLabel,
-          challengeType: data.challenge,
-          challengeIcon,
-          schedule: scheduleLabel,
-          difficulty: data.difficulty,
-          protocols: data.protocols,
-        });
+        await alarmsDb.updateAlarm(alarmId, alarmData);
         await refetch();
         AnalyticsEvents.alarmUpdated(alarmId);
       } else {
-        const newAlarmInput = {
-          time: timeString,
-          period: displayPeriod,
-          challenge: challengeLabel,
-          challengeType: data.challenge,
-          challengeIcon,
-          schedule: scheduleLabel,
-          difficulty: data.difficulty,
-          protocols: data.protocols,
-        };
         const newId = randomUUID();
-        await alarmsDb.addAlarm(newId, newAlarmInput);
+        await alarmsDb.addAlarm(newId, alarmData);
         await refetch();
         AnalyticsEvents.alarmCreated(newId, timeString, data.challenge);
       }
