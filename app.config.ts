@@ -93,6 +93,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-build-properties',
       {
         android: {
+          minifyEnabled: true,
+          shrinkResources: true,
           gradleProperties: {
             'org.gradle.jvmargs':
               '-Xmx6144m -XX:MaxMetaspaceSize=1536m -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC',
