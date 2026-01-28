@@ -89,6 +89,15 @@ export default {
       footer: 'Você pode configurar isso agora ou fazer mais tarde nas configurações',
     },
 
+    manufacturerAutoStart: {
+      title: 'AutoStart do Sistema',
+      description:
+        'Habilite o AutoStart nas configurações do dispositivo para alarmes funcionarem corretamente',
+      benefitTitle: 'CRÍTICO para seu dispositivo',
+      benefit:
+        'Seu dispositivo possui otimizações que impedem apps de iniciar automaticamente. Sem esta permissão, seus alarmes NÃO vão tocar quando o app estiver fechado.',
+    },
+
     systemAlertWindow: {
       title: 'Para desligar o alarme sem desbloquear',
       description: 'Conceda a permissão de Aparecer sobre outras aplicações',

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Platform } from 'react-native';
 
+import * as ExpoAlarmActivity from '../../modules/expo-alarm-activity';
+
 import { AlarmScheduler, type PermissionStatus } from '@/services/alarm-scheduler';
 
 export interface AlarmPermissionsState {
@@ -66,13 +68,13 @@ export function useAlarmPermissions() {
 
   const openDisplayOverOtherAppsSettings = useCallback(async () => {
     if (Platform.OS === 'android') {
-      await AlarmScheduler.openDisplayOverOtherAppsSettings();
+      ExpoAlarmActivity.openDisplayOverOtherAppsSettings();
     }
   }, []);
 
   const openAutoStartSettings = useCallback(async () => {
     if (Platform.OS === 'android') {
-      await AlarmScheduler.openAutoStartSettings();
+      ExpoAlarmActivity.openAutoStartSettings();
     }
   }, []);
 

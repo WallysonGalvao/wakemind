@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { Platform } from 'react-native';
 
+import * as ExpoAlarmActivity from '../../modules/expo-alarm-activity';
+
 import { AlarmScheduler, type PermissionStatus } from '@/services/alarm-scheduler';
 
 export function usePermissions() {
@@ -18,6 +20,12 @@ export function usePermissions() {
   const checkPermissions = async () => {
     setIsLoading(true);
     const status = await AlarmScheduler.checkPermissions();
+
+    // If device doesn't require manufacturer AutoStart, mark as granted
+    if (Platform.OS === 'android' && !ExpoAlarmActivity.requiresManufacturerAutoStart()) {
+      status.autoStart = 'granted';
+    }
+
     setPermissions(status);
     setIsLoading(false);
     return status;
@@ -53,30 +61,32 @@ export function usePermissions() {
 
   const requestDisplayOverOtherApps = async () => {
     if (Platform.OS === 'android') {
-      await AlarmScheduler.openDisplayOverOtherAppsSettings();
+      ExpoAlarmActivity.openDisplayOverOtherAppsSettings();
       await checkPermissions();
     }
   };
 
   const requestAutoStart = async () => {
     if (Platform.OS === 'android') {
-      await AlarmScheduler.openAutoStartSettings();
-      // AutoStart permission cannot be checked programmatically
-      // Just mark as handled in the UI
-      setPermissions((prev) => ({
-        ...prev,
-        autoStart: 'granted', // Assume user enabled it
-      }));
+      ExpoAlarmActivity.openAutoStartSettings();
+      // Note: AutoStart permission cannot be checked programmatically
+      // The status remains 'undetermined' - user must verify manually
     }
   };
 
   const hasAllCriticalPermissions = () => {
-    return (
+    const basePermissions =
       permissions.notifications === 'granted' &&
       permissions.exactAlarms === 'granted' &&
-      permissions.displayOverOtherApps === 'granted' &&
-      permissions.autoStart === 'granted'
-    );
+      permissions.displayOverOtherApps === 'granted';
+
+    // AutoStart is only critical if device requires it
+    const autoStartOk =
+      Platform.OS !== 'android' ||
+      !ExpoAlarmActivity.requiresManufacturerAutoStart() ||
+      permissions.autoStart === 'granted';
+
+    return basePermissions && autoStartOk;
   };
 
   const hasOptimalPermissions = () => {

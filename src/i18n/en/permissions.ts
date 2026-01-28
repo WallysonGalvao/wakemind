@@ -86,6 +86,14 @@ export default {
       footer: 'You can configure this now or do it later in settings',
     },
 
+    manufacturerAutoStart: {
+      title: 'System AutoStart',
+      description: 'Enable AutoStart in device settings for alarms to work properly',
+      benefitTitle: 'CRITICAL for your device',
+      benefit:
+        'Your device has optimizations that prevent apps from starting automatically. Without this permission, your alarms will NOT ring when the app is closed.',
+    },
+
     systemAlertWindow: {
       title: 'To dismiss alarm without unlocking',
       description: 'Grant permission to Display over other apps',

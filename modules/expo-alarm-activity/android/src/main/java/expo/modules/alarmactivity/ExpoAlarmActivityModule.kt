@@ -83,5 +83,86 @@ class ExpoAlarmActivityModule : Module() {
         return@Function "Error: ${e.message}"
       }
     }
+
+    // ==================== PERMISSÕES ESPECÍFICAS DE FABRICANTES ====================
+    
+    // Detecta o fabricante do dispositivo
+    Function("getDeviceManufacturer") {
+      return@Function ManufacturerPermissionsHelper.getDeviceManufacturer()
+    }
+
+    // Verifica se é Xiaomi/Redmi
+    Function("isXiaomi") {
+      return@Function ManufacturerPermissionsHelper.isXiaomi()
+    }
+
+    // Verifica se o dispositivo requer AutoStart manual (Xiaomi, Huawei, Oppo, Vivo, Samsung)
+    Function("requiresManufacturerAutoStart") {
+      return@Function ManufacturerPermissionsHelper.requiresManufacturerAutoStart()
+    }
+
+    // Abre configurações de AutoStart (específico do fabricante)
+    Function("openAutoStartSettings") {
+      val context = appContext.reactContext
+      
+      if (context == null) {
+        return@Function "Context is null"
+      }
+
+      val success = ManufacturerPermissionsHelper.openAutoStartSettings(context)
+      return@Function if (success) "AutoStart settings opened" else "Fallback to app settings"
+    }
+
+    // Abre configurações de Battery Optimization
+    Function("openBatteryOptimizationSettings") {
+      val context = appContext.reactContext
+      
+      if (context == null) {
+        return@Function "Context is null"
+      }
+
+      ManufacturerPermissionsHelper.openBatteryOptimizationSettings(context)
+      return@Function "Battery optimization settings opened"
+    }
+
+    // Abre configurações de Display Over Other Apps
+    Function("openDisplayOverOtherAppsSettings") {
+      val context = appContext.reactContext
+      
+      if (context == null) {
+        return@Function "Context is null"
+      }
+
+      ManufacturerPermissionsHelper.openDisplayOverOtherAppsSettings(context)
+      return@Function "Display over other apps settings opened"
+    }
+
+    // Verifica se Display Over Other Apps está habilitado
+    Function("canDrawOverlays") {
+      val context = appContext.reactContext
+      
+      if (context == null) {
+        return@Function false
+      }
+
+      return@Function ManufacturerPermissionsHelper.canDrawOverlays(context)
+    }
+
+    // Retorna mensagem específica para o fabricante
+    Function("getManufacturerSpecificMessage") {
+      return@Function ManufacturerPermissionsHelper.getManufacturerSpecificMessage()
+    }
+
+    // Abre configurações gerais do app
+    Function("openAppSettings") {
+      val context = appContext.reactContext
+      
+      if (context == null) {
+        return@Function "Context is null"
+      }
+
+      ManufacturerPermissionsHelper.openAppSettings(context)
+      return@Function "App settings opened"
+    }
   }
 }

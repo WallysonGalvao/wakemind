@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -11,23 +11,17 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AppState, Modal, Pressable, View } from 'react-native';
+import { Modal, Pressable, View } from 'react-native';
 
 import { MaterialSymbol } from '../material-symbol';
 import { Text } from '../ui/text';
 
-import { AnalyticsEvents } from '@/analytics';
-import { useAlarmPermissions } from '@/hooks/use-alarm-permissions';
+import { useAlarmPermissionsModal } from '@/hooks/use-alarm-permissions-modal';
 
 interface AlarmPermissionsModalProps {
   visible: boolean;
   onClose: () => void;
   onComplete: () => void;
-}
-
-enum PermissionStep {
-  SYSTEM_ALERT_WINDOW = 'system_alert_window',
-  BATTERY_OPTIMIZATION = 'battery_optimization',
 }
 
 // Animated pulse ring component
@@ -68,44 +62,6 @@ function PulseRing() {
   );
 }
 
-// Animated ping dot component
-function PingDot() {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
-
-  useEffect(() => {
-    scale.value = withRepeat(
-      withTiming(2, { duration: 1000, easing: Easing.out(Easing.ease) }),
-      -1,
-      false
-    );
-
-    opacity.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 0 }),
-        withTiming(0, { duration: 1000, easing: Easing.out(Easing.ease) })
-      ),
-      -1,
-      false
-    );
-  }, [scale, opacity]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-    opacity: opacity.value,
-  }));
-
-  return (
-    <View className="absolute right-10 top-0 h-2 w-2">
-      <View className="h-2 w-2 rounded-full bg-brand-primary" />
-      <Animated.View
-        style={animatedStyle}
-        className="absolute inset-0 rounded-full bg-brand-primary"
-      />
-    </View>
-  );
-}
-
 export function AlarmPermissionsModal({
   visible,
   onClose,
@@ -113,114 +69,17 @@ export function AlarmPermissionsModal({
 }: AlarmPermissionsModalProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { openDisplayOverOtherAppsSettings, openAutoStartSettings, status, checkPermissions } =
-    useAlarmPermissions();
 
-  const [currentStep, setCurrentStep] = useState<PermissionStep>(
-    PermissionStep.SYSTEM_ALERT_WINDOW
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const appState = useRef(AppState.currentState);
-  const permissionBeforeSettings = useRef<string | null>(null);
-
-  // Track modal shown
-  useEffect(() => {
-    if (visible) {
-      AnalyticsEvents.permissionModalShown('first_alarm');
-      AnalyticsEvents.permissionStepViewed('system_alert_window', 1);
-    }
-  }, [visible]);
-
-  // Listen to app state to check permissions when user returns from settings
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', async (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active' &&
-        permissionBeforeSettings.current &&
-        visible
-      ) {
-        // User returned to app, check if permission was granted
-        await checkPermissions();
-
-        const permission = permissionBeforeSettings.current;
-        let wasGranted = false;
-
-        if (permission === 'system_alert_window') {
-          wasGranted = status.displayOverOtherApps === 'granted';
-        } else if (permission === 'battery_optimization') {
-          wasGranted = status.batteryOptimization === 'granted' || status.autoStart === 'granted';
-        }
-
-        if (!wasGranted) {
-          AnalyticsEvents.permissionDenied(permission);
-        }
-
-        permissionBeforeSettings.current = null;
-      }
-      appState.current = nextAppState;
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, [visible, status, checkPermissions]);
-
-  const handleNext = async () => {
-    if (currentStep === PermissionStep.SYSTEM_ALERT_WINDOW) {
-      setIsLoading(true);
-      try {
-        permissionBeforeSettings.current = 'system_alert_window';
-        await openDisplayOverOtherAppsSettings();
-        // Will check permission status when user returns (via AppState listener)
-        setCurrentStep(PermissionStep.BATTERY_OPTIMIZATION);
-        AnalyticsEvents.permissionStepViewed('battery_optimization', 2);
-      } finally {
-        setIsLoading(false);
-      }
-    } else if (currentStep === PermissionStep.BATTERY_OPTIMIZATION) {
-      setIsLoading(true);
-      try {
-        permissionBeforeSettings.current = 'battery_optimization';
-        await openAutoStartSettings();
-        // Will check permission status when user returns (via AppState listener)
-
-        // Count granted permissions
-        let grantedCount = 0;
-        if (status.displayOverOtherApps === 'granted') grantedCount++;
-        if (status.batteryOptimization === 'granted' || status.autoStart === 'granted')
-          grantedCount++;
-
-        AnalyticsEvents.permissionFlowCompleted(grantedCount, 2);
-        onComplete();
-        handleClose();
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const handleSkip = () => {
-    const step =
-      currentStep === PermissionStep.SYSTEM_ALERT_WINDOW
-        ? 'system_alert_window'
-        : 'battery_optimization';
-    AnalyticsEvents.permissionSkipped(step);
-    AnalyticsEvents.permissionFlowCompleted(0, 2);
-    onComplete();
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setCurrentStep(PermissionStep.SYSTEM_ALERT_WINDOW);
-    onClose();
-  };
+  const { isLoading, stepContent, handleNext, handleSkip, handleClose } = useAlarmPermissionsModal({
+    visible,
+    onClose,
+    onComplete,
+  });
 
   const renderIllustration = () => {
-    const isAutoStart = currentStep === PermissionStep.BATTERY_OPTIMIZATION;
-    const toggleLabel = isAutoStart
-      ? t('permissions.alarmPermissions.illustration.autoStart')
-      : t('permissions.alarmPermissions.illustration.displayOver');
+    const toggleLabel = stepContent.toggleLabel.startsWith('permissions.')
+      ? t(stepContent.toggleLabel)
+      : stepContent.toggleLabel;
 
     return (
       <View className="relative mt-12 w-full flex-1 items-center justify-center">
@@ -256,9 +115,6 @@ export function AlarmPermissionsModal({
           </View>
         </View>
 
-        {/* Animated ping dot */}
-        {/* <PingDot /> */}
-
         {/* Status label */}
         <View className="absolute bottom-36 left-16">
           <Text className="font-mono rotate-90 text-[8px] uppercase tracking-widest text-brand-primary/50">
@@ -270,32 +126,26 @@ export function AlarmPermissionsModal({
   };
 
   const renderStepContent = () => {
-    const isAutoStart = currentStep === PermissionStep.BATTERY_OPTIMIZATION;
-    const stepNumber = isAutoStart ? 2 : 1;
-    const titleKey = isAutoStart
-      ? 'permissions.alarmPermissions.batteryOptimization.title'
-      : 'permissions.alarmPermissions.systemAlertWindow.title';
-    const descriptionKey = isAutoStart
-      ? 'permissions.alarmPermissions.batteryOptimization.description'
-      : 'permissions.alarmPermissions.systemAlertWindow.description';
-
     return (
       <View className="flex-1">
         {/* Progress label */}
         <View className="items-center">
           <Text className="font-mono mb-6 text-[11px] uppercase tracking-[0.2em] text-brand-primary">
-            {t('permissions.alarmPermissions.progress', { current: stepNumber, total: 2 })}
+            {t('permissions.alarmPermissions.progress', {
+              current: stepContent.stepNumber,
+              total: stepContent.totalSteps,
+            })}
           </Text>
         </View>
 
         {/* Title */}
         <Text className="mb-4 text-center text-2xl font-extrabold uppercase leading-tight tracking-tight text-slate-900 dark:text-white">
-          {t(titleKey)}
+          {t(stepContent.titleKey)}
         </Text>
 
         {/* Description */}
         <Text className="mx-auto max-w-[280px] text-center text-[15px] leading-relaxed text-slate-500 dark:text-slate-400">
-          {t(descriptionKey)}
+          {t(stepContent.descriptionKey)}
         </Text>
 
         {/* Illustration */}

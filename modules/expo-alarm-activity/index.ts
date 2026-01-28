@@ -51,4 +51,67 @@ export function openAlarmScreen(
   );
 }
 
+/**
+ * Verifica se o dispositivo requer configuração manual de AutoStart
+ * (Xiaomi, Huawei, Oppo, Vivo, Samsung)
+ */
+export function requiresManufacturerAutoStart(): boolean {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return false;
+  }
+  return ExpoAlarmActivityModule.requiresManufacturerAutoStart();
+}
+
+/**
+ * Abre configurações de AutoStart específicas do fabricante
+ * CRÍTICO para dispositivos com restrições de bateria
+ */
+export function openAutoStartSettings(): string {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return 'Not supported on this platform';
+  }
+  return ExpoAlarmActivityModule.openAutoStartSettings();
+}
+
+/**
+ * Abre configurações de Battery Optimization
+ */
+export function openBatteryOptimizationSettings(): string {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return 'Not supported on this platform';
+  }
+  return ExpoAlarmActivityModule.openBatteryOptimizationSettings();
+}
+
+/**
+ * Abre configurações de Display Over Other Apps (SYSTEM_ALERT_WINDOW)
+ * Necessário para app abrir automaticamente quando alarme dispara
+ */
+export function openDisplayOverOtherAppsSettings(): string {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return 'Not supported on this platform';
+  }
+  return ExpoAlarmActivityModule.openDisplayOverOtherAppsSettings();
+}
+
+/**
+ * Verifica se a permissão Display Over Other Apps está habilitada
+ */
+export function canDrawOverlays(): boolean {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return false;
+  }
+  return ExpoAlarmActivityModule.canDrawOverlays();
+}
+
+/**
+ * Abre configurações gerais do app
+ */
+export function openAppSettings(): string {
+  if (Platform.OS !== 'android' || !ExpoAlarmActivityModule) {
+    return 'Not supported on this platform';
+  }
+  return ExpoAlarmActivityModule.openAppSettings();
+}
+
 export default ExpoAlarmActivityModule;

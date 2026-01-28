@@ -9,7 +9,9 @@ import notifee, {
 import dayjs from 'dayjs';
 import i18n from 'i18next';
 
-import { NativeModules, Platform } from 'react-native';
+import { Platform } from 'react-native';
+
+import * as ExpoAlarmActivity from '../../modules/expo-alarm-activity';
 
 import { getToneFilename } from '@/constants/alarm-tones';
 import { useSettingsStore } from '@/stores/use-settings-store';
@@ -95,15 +97,8 @@ export async function checkPermissions(): Promise<PermissionStatus> {
 
       // Check SYSTEM_ALERT_WINDOW permission (Display over other apps)
       try {
-        const { OverlayPermission } = NativeModules;
-
-        if (OverlayPermission && typeof OverlayPermission.canDrawOverlays === 'function') {
-          const canDrawOverlays = await OverlayPermission.canDrawOverlays();
-          status.displayOverOtherApps = canDrawOverlays ? 'granted' : 'denied';
-        } else {
-          // Assume granted if module not available (shouldn't happen)
-          status.displayOverOtherApps = 'undetermined';
-        }
+        const canDraw = ExpoAlarmActivity.canDrawOverlays();
+        status.displayOverOtherApps = canDraw ? 'granted' : 'denied';
       } catch (error) {
         console.warn('[AlarmScheduler] Could not check overlay permission:', error);
         status.displayOverOtherApps = 'undetermined';
@@ -185,69 +180,6 @@ export async function openNotificationSettings(): Promise<void> {
   if (Platform.OS === 'android') {
     await notifee.openNotificationSettings();
   }
-}
-
-/**
- * Open system settings to allow displaying over other apps (SYSTEM_ALERT_WINDOW)
- * This is CRITICAL for alarms to auto-launch when app is in foreground/background
- */
-export async function openDisplayOverOtherAppsSettings(): Promise<void> {
-  if (Platform.OS === 'android') {
-    try {
-      const { OverlayPermission } = NativeModules;
-
-      if (OverlayPermission && typeof OverlayPermission.openSettings === 'function') {
-        await OverlayPermission.openSettings();
-      } else {
-        // Fallback: open app notification settings
-        console.warn('[AlarmScheduler] OverlayPermission module not available, using fallback');
-        await notifee.openNotificationSettings();
-      }
-    } catch (error) {
-      console.error('[AlarmScheduler] Error opening overlay settings:', error);
-      // Last resort: open notification settings
-      await notifee.openNotificationSettings();
-    }
-  }
-}
-
-/**
- * Open manufacturer-specific AutoStart settings
- * This is CRITICAL for Xiaomi, Huawei, Oppo, Vivo, Samsung devices
- * Allows the app to start automatically in background and show alarms
- */
-export async function openAutoStartSettings(): Promise<void> {
-  if (Platform.OS === 'android') {
-    try {
-      const { OverlayPermission } = NativeModules;
-
-      if (OverlayPermission && typeof OverlayPermission.openAutoStartSettings === 'function') {
-        await OverlayPermission.openAutoStartSettings();
-      } else {
-        console.warn('[AlarmScheduler] OverlayPermission module not available');
-      }
-    } catch (error) {
-      console.error('[AlarmScheduler] Error opening auto-start settings:', error);
-    }
-  }
-}
-
-/**
- * Get device manufacturer name
- */
-export async function getDeviceManufacturer(): Promise<string> {
-  if (Platform.OS === 'android') {
-    try {
-      const { OverlayPermission } = NativeModules;
-
-      if (OverlayPermission && typeof OverlayPermission.getManufacturer === 'function') {
-        return await OverlayPermission.getManufacturer();
-      }
-    } catch (error) {
-      console.error('[AlarmScheduler] Error getting manufacturer:', error);
-    }
-  }
-  return 'unknown';
 }
 
 /**
@@ -658,9 +590,6 @@ export const AlarmScheduler = {
   openBatteryOptimizationSettings,
   openAlarmPermissionSettings,
   openNotificationSettings,
-  openDisplayOverOtherAppsSettings,
-  openAutoStartSettings,
-  getDeviceManufacturer,
   scheduleAlarm,
   cancelAlarm,
   cancelAllAlarmNotifications,
