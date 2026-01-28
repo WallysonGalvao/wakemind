@@ -32,9 +32,9 @@ function withNotifee(config) {
     'android',
     async (config) => {
       const projectRoot = config.modRequest.projectRoot;
-      const soundSourcePath = path.join(projectRoot, 'assets', 'sounds', 'classic-alarm.wav');
+      const soundSourcePath = path.join(projectRoot, 'assets', 'sounds', 'classic-alarm.mp3');
       const rawDir = path.join(projectRoot, 'android', 'app', 'src', 'main', 'res', 'raw');
-      const soundDestPath = path.join(rawDir, 'alarm_sound.wav');
+      const soundDestPath = path.join(rawDir, 'alarm_sound.mp3');
 
       // Create raw directory if it doesn't exist
       if (!fs.existsSync(rawDir)) {
