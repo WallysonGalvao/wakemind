@@ -9,6 +9,13 @@
                 <action android:name="expo.modules.alarmactivity.ACTION_ALARM" />
             </intent-filter>
         </receiver>
+        
+        <!-- Foreground Service para manter processo vivo durante alarme -->
+        <service
+            android:name=".AlarmForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
     </application>
     <!-- Módulo não precisa declarar a AlarmActivity -->
     <!-- Ela é criada pelo plugin withFullScreenIntent no app principal -->

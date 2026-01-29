@@ -219,6 +219,38 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
     triggerTimestamp,
   });
 
+  // ANDROID: Use native AlarmManager for maximum reliability
+  if (Platform.OS === 'android') {
+    try {
+      // Verify SCHEDULE_EXACT_ALARM permission
+      const canSchedule = ExpoAlarmActivity.canScheduleExactAlarms();
+      if (!canSchedule) {
+        console.warn('[AlarmScheduler] Missing SCHEDULE_EXACT_ALARM permission');
+        ExpoAlarmActivity.openExactAlarmSettings();
+        throw new Error('Missing exact alarm permission. Please grant it in settings.');
+      }
+
+      // Schedule using native AlarmManager
+      const result = ExpoAlarmActivity.scheduleNativeAlarm(alarm.id, triggerTimestamp, {
+        time: alarm.time,
+        period: alarm.period,
+        challenge: alarm.challenge || '',
+        challengeIcon: alarm.challengeIcon || '',
+        type: isRepeating ? 'repeating' : 'one-time',
+      });
+
+      console.log('[AlarmScheduler] Native alarm scheduled:', result);
+      console.log('[AlarmScheduler] Alarm will trigger via AlarmManager + Foreground Service');
+
+      return alarm.id;
+    } catch (error) {
+      console.error('[AlarmScheduler] Failed to schedule native alarm:', error);
+      throw error;
+    }
+  }
+
+  // iOS: Continue using Notifee with critical alerts
+
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
     timestamp: triggerTimestamp,
@@ -306,14 +338,21 @@ export async function scheduleAlarm(alarm: Alarm): Promise<string> {
  */
 export async function cancelAlarm(alarmId: string): Promise<void> {
   try {
-    await notifee.cancelNotification(alarmId);
+    // ANDROID: Cancel native AlarmManager alarm
+    if (Platform.OS === 'android') {
+      const result = ExpoAlarmActivity.cancelNativeAlarm(alarmId);
+      console.log('[AlarmScheduler] Native alarm cancelled:', result);
+    } else {
+      // iOS: Cancel Notifee notification
+      await notifee.cancelNotification(alarmId);
+    }
   } catch (error) {
     console.error(`[AlarmScheduler] Error cancelling alarm ${alarmId}:`, error);
   }
 }
 
 /**
- * Cancel all notifications related to an alarm (main, snooze, wake-check)
+ * Cancel all alarm notifications (main alarm + snooze + wake-check)
  */
 export async function cancelAllAlarmNotifications(alarmId: string): Promise<void> {
   try {
@@ -434,6 +473,16 @@ export async function snoozeAlarm(alarm: Alarm, durationMinutes: number = 5): Pr
  */
 export async function dismissAlarm(alarm: Alarm): Promise<void> {
   console.log('[AlarmScheduler] Dismissing alarm:', alarm.id);
+
+  // ANDROID: Stop Foreground Service
+  if (Platform.OS === 'android') {
+    try {
+      const result = ExpoAlarmActivity.stopAlarmService();
+      console.log('[AlarmScheduler] Foreground Service stopped:', result);
+    } catch (error) {
+      console.error('[AlarmScheduler] Failed to stop foreground service:', error);
+    }
+  }
 
   // Cancel all notifications related to this alarm
   await cancelAllAlarmNotifications(alarm.id);
